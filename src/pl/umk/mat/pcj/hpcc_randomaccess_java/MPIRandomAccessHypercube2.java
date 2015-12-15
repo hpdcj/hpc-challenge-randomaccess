@@ -32,12 +32,12 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
     //for timeBound algorithm; signifies that one of the threads has reached time limit of execution;
     @Shared
     private boolean bailOut;
-    @Shared
-    long[] thr0, thr1, thr2, thr3, thr4, thr5, thr6, thr7, thr8, thr9, thr10, thr11, thr12, thr13, thr14, thr15, thr16, thr17, thr18, thr19, thr20, thr21, thr22, thr23, thr24, thr25, thr26, thr27, thr28, thr29, thr30, thr31, thr32, thr33, thr34, thr35, thr36, thr37, thr38, thr39, thr40, thr41, thr42, thr43, thr44, thr45, thr46, thr47, thr48, thr49, thr50, thr51, thr52, thr53, thr54, thr55, thr56, thr57, thr58, thr59, thr60, thr61, thr62, thr63, thr64, thr65, thr66, thr67, thr68, thr69, thr70, thr71, thr72, thr73, thr74, thr75, thr76, thr77, thr78, thr79, thr80, thr81, thr82, thr83, thr84, thr85, thr86, thr87, thr88, thr89, thr90, thr91, thr92, thr93, thr94, thr95, thr96, thr97, thr98, thr99, thr100, thr101, thr102, thr103, thr104, thr105, thr106, thr107, thr108, thr109, thr110, thr111, thr112, thr113, thr114, thr115, thr116, thr117, thr118, thr119, thr120, thr121, thr122, thr123, thr124, thr125, thr126, thr127, thr128, thr129, thr130, thr131, thr132, thr133, thr134, thr135, thr136, thr137, thr138, thr139, thr140, thr141, thr142, thr143, thr144, thr145, thr146, thr147, thr148, thr149, thr150, thr151, thr152, thr153, thr154, thr155, thr156, thr157, thr158, thr159, thr160, thr161, thr162, thr163, thr164, thr165, thr166, thr167, thr168, thr169, thr170, thr171, thr172, thr173, thr174, thr175, thr176, thr177, thr178, thr179, thr180, thr181, thr182, thr183, thr184, thr185, thr186, thr187, thr188, thr189, thr190, thr191, thr192, thr193, thr194, thr195, thr196, thr197, thr198, thr199, thr200, thr201, thr202, thr203, thr204, thr205, thr206, thr207, thr208, thr209, thr210, thr211, thr212, thr213, thr214, thr215, thr216, thr217, thr218, thr219, thr220, thr221, thr222, thr223, thr224, thr225, thr226, thr227, thr228, thr229, thr230, thr231, thr232, thr233, thr234, thr235, thr236, thr237, thr238, thr239, thr240, thr241, thr242, thr243, thr244, thr245, thr246, thr247, thr248, thr249, thr250, thr251, thr252, thr253, thr254, thr255;
+    
     ArrayList<Long> send = new ArrayList<>();
     ArrayList<Long> keep = new ArrayList<>();
     int threadsPerNode;
     int updatesNumber = -1;
+
     public void Power2NodesMPIRandomAccessUpdate(HPCC_RandomAccess_tabparams_s tparams) {
         long i = 0, j;
         int proc_count;
@@ -48,6 +48,7 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
         /* unsigned */ long Ran, GlobalOffset, LocalOffset = 0;
         int NumberReceiving = tparams.NumProcs - 1;
         long SendCnt = tparams.ProcNumUpdates; /* SendCnt = (4 * LocalTableSize); */
+
         Ran = Utility.HPCC_starts(4 * tparams.GlobalStartMyProc);
         long start = System.currentTimeMillis();
         long GlbNumUpdates = 0;
@@ -90,7 +91,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
                 }
                 i++; //increase the number of generated random numbers
             }
-
 
             //all-to-all hypercube personalized communication, per 
             //http://www.sandia.gov/~sjplimp/docs/cluster06.pdf, p. 5.
@@ -149,24 +149,24 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
 
                 if (timeBound == false || bailed[partner] == false) {
                     PCJ.put(partner, "thr" + tparams.MyProc, buff);
-                 //               System.err.println (tparams.MyProc + " waiting for " + partner);
-                     if (timeBound && bailed[tparams.MyProc] == true) {
+                    //               System.err.println (tparams.MyProc + " waiting for " + partner);
+                    if (timeBound && bailed[tparams.MyProc] == true) {
                         bailed[partner] = true;
                     }
                     PCJ.waitFor("thr" + partner);
                     //                System.err.println ("finished wait");
                     long[] recv = PCJ.get("thr" + partner);
-                     if (timeBound) {
+                    if (timeBound) {
                         if (recv[0] >= 100_000) {
                             bailed[partner] = true;
                             bailed[tparams.MyProc] = true;
                             recv[0] -= 100_000;
                         }
-                  }
+                    }
                     for (int zz = 1; zz <= recv[0]; zz++) {
                         //  System.err.println (tparams.MyProc + " " + zz + " " + recv[0]);
-                     keep.add(recv[zz]);
-                  }
+                        keep.add(recv[zz]);
+                    }
                 }
 
                 list.clear();
@@ -196,7 +196,7 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
         }
 
         PCJ.put("GlbNumUpdates", GlbNumUpdates);
-        
+
         if (performVerification && timeBound) {
             PCJ.put("targetPECounter", targetPECounter);
         }
@@ -221,7 +221,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
                     break;
 
                     /* number of processes is not a power 2 (too many shifts may introduce negative values or 0) */
-
                 } else if (i > tparams.NumProcs || i <= 0) {
                     //Tangible multiline preserve/* Minimum local table size --- some processors have an additional entry */
                     tparams.MinLocalTableSize = (tparams.TableSize / tparams.NumProcs);
@@ -292,23 +291,19 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
 
         double timeBound = -1; // OPTIONAL time bound for execution time
       /* unsigned */ long NumUpdates_Default; // Number of updates to table (suggested: 4x number of table entries)
-      /* unsigned */ long NumUpdates; /* actual number of updates to table - may be smaller than                    * NumUpdates_Default due to execution time bounds */
+      /* unsigned */ long NumUpdates; /* actual number of updates to table - may be smaller than                    
+      * NumUpdates_Default due to execution time bounds */
 
         //C++ TO JAVA CONVERTER TODO TASK: There is no preprocessor in Java:
         ///#if RA_TIME_BOUND
         long localProcNumUpdates; // for reduction
 
-
-
-
         long MPIRandomAccess_ExeUpdates;
         double MPIRandomAccess_TimeBound;
-
 
         if (performVerification && this.timeBound == true) {
             PCJ.put("targetPECounter", new long[PCJ.numNodes()]);
         }
-
 
         PrintWriter outFile = null;
 
@@ -334,7 +329,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
         /*  TotalMem = HPLMaxProcMem; // max single node memory
          TotalMem *= tparams.NumProcs; // max memory in tparams.NumProcs nodes
          TotalMem /= 8; //sizeof(u64Int);*/
-
         TotalMem = Math.pow(2, bits);
 
         //  System.err.println (PCJ.myNode() + " calculating internal distribution");
@@ -355,7 +349,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
                 break;
 
                 /* number of processes is not a power 2 (too many shifts may introduce negative values or 0) */
-
             } else if (i > tparams.NumProcs || i <= 0) {
                 PowerofTwo = DefineConstants.HPCC_FALSE;
                 tparams.PowerOfTwo = false;
@@ -378,7 +371,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
             } // end else if
         } // end for i
 
-
         sAbort = 0;
         HPCC_Table = new /* unsigned */ long[(int) tparams.LocalTableSize];
 
@@ -390,7 +382,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
 
         NumUpdates = NumUpdates_Default;
 
-
         tparams.ProcNumUpdates = /*Math.min(GlbNumUpdates, (*/ ((4 * tparams.LocalTableSize));
         /* works for both PowerofTwo and AnyNodes */
         NumUpdates = Math.min((tparams.ProcNumUpdates * tparams.NumProcs), (long) NumUpdates_Default);
@@ -399,7 +390,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
             tparams.ProcNumUpdates = updatesNumber;
         }
 
-
         //System.err.println (PCJ.myNode() + " initializing main table");
         /* Initialize main table */
         for (i = 0; i < tparams.LocalTableSize; i++) {
@@ -407,7 +397,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
         }
 
         PCJ.sync();
-
 
         ThreadMXBean bean = ManagementFactory.getThreadMXBean();
         boolean CPUTimeSupported = bean.isCurrentThreadCpuTimeSupported();
@@ -459,7 +448,6 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
             MPIRandomAccess_TimeBound = timeBound;
         }
 
-        
         CPUTime *= 1e-9;
         RealTime *= 1e-9;
         if (tparams.MyProc == 0) {
@@ -515,14 +503,10 @@ public class MPIRandomAccessHypercube2 extends Storage implements StartPoint {
             tableBits = Integer.parseInt(reader.readLine());
             performVerification = Boolean.parseBoolean(reader.readLine());
             timeBound = Boolean.parseBoolean(reader.readLine());
-            threadsPerNode = Integer.parseInt(reader.readLine());
-            updatesNumber = Integer.parseInt(reader.readLine());            
             reader.close();
         } catch (Throwable t) {
             //... do nothing
         }
-//        Thread.sleep(60_000); //allow other sockets to start
-        //      System.err.println ("thread#" + PCJ.myNode() + " available CPUs = " + Runtime.getRuntime().availableProcessors());
         HPCC_MPIRandomAccess(tableBits, null);
     }
 
