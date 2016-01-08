@@ -34,7 +34,7 @@ public class RandomAccessNew implements StartPoint {
     int logLocalN;
     int localN;
     int logNumProcs;
-    long updates;
+    long localUpdates;
     RandomForRA random;
     public static final int BUFFERED_UPDATES = 1024;
 
@@ -47,16 +47,24 @@ public class RandomAccessNew implements StartPoint {
     }
 
     public void main() throws Throwable {
-        initializeData();
-        PCJ.barrier();
-        double start = System.currentTimeMillis();
-        performRandomAccess();
-        double stop = System.currentTimeMillis();
-        PCJ.log("Starting verification");
-        verifyResultsLocally();
-        thread0VerifyAll();
-        if (PCJ.myId() == 0) {
-            System.out.println("Time: " + (stop - start) * 1e-9 + " s.");
+        String[] rounds = {"Warmup", "After warmup"};
+        for (int i = 0; i < 2; i++) {
+            if (PCJ.myId() == 0) {
+                PCJ.log(rounds[i] + " round");
+            }
+            initializeData();
+            PCJ.barrier();
+            double start = System.currentTimeMillis();
+            performRandomAccess();
+            double stop = System.currentTimeMillis();
+            PCJ.log("Starting verification");
+            verifyResultsLocally();
+            thread0VerifyAll();
+            if (PCJ.myId() == 0) {
+                double seconds = (stop - start) * 1e-3;
+                double gups = localUpdates*PCJ.threadCount() * 1e-6 / seconds;
+                System.out.println("Time: " + seconds + " s, performance: " + gups);
+            }
         }
     }
 
@@ -66,7 +74,7 @@ public class RandomAccessNew implements StartPoint {
         logNumProcs = (int) (Math.log(PCJ.threadCount()) / Math.log(2));
         logLocalN = logN - logNumProcs;
         localN = 1 << logLocalN;
-        updates = 4 * localN;
+        localUpdates = 4 * localN;
         long[] table = new long[localN];
         for (int i = 0; i < localN; i++) {
             table[i] = i + PCJ.myId() * localN;
@@ -85,7 +93,7 @@ public class RandomAccessNew implements StartPoint {
     private List<Long> localUpdatesAndGenerateRemoteUpdates(int update, int CHUNK_SIZE) {
         List<Long> numbers = new ArrayList<>();
 
-        for (int k = 0; k < CHUNK_SIZE && update + k < updates; k++) {
+        for (int k = 0; k < CHUNK_SIZE && update + k < localUpdates; k++) {
             long rand = random.nextLong();
             numbers.add(rand);
         }
@@ -93,7 +101,7 @@ public class RandomAccessNew implements StartPoint {
     }
 
     private void performRandomAccess() {
-        for (int update = 0; update < updates; update += BUFFERED_UPDATES) {
+        for (int update = 0; update < localUpdates; update += BUFFERED_UPDATES) {
             List<Long> updateList = localUpdatesAndGenerateRemoteUpdates(update, BUFFERED_UPDATES);
             updateList = alltoallHypercube(updateList);
             performUpdates(updateList);
@@ -177,7 +185,7 @@ public class RandomAccessNew implements StartPoint {
         for (int PE = 0; PE < PCJ.threadCount(); PE++) {
             RandomForRA random = new RandomForRA(PE);
 
-            for (int update = 0; update < updates; update++) {
+            for (int update = 0; update < localUpdates; update++) {
                 long val = random.nextLong();
                 if (whichPE(val) == PCJ.myId()) {
 
