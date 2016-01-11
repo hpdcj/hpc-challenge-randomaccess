@@ -1,0 +1,16 @@
+#! /bin/bash
+
+MAXPROCS = $((UC_NODES * UC_PROCESSORS_PER_NODE))
+for size in 23 25 27 
+do
+	num=1
+	while [ $num -le $MAXPROCS ]
+	do
+		echo $num
+		mpiexec -np $num /bin/hostname -s | sort > nodes.txt
+		mpiexec -np $num  echo /bin/hostname -s
+
+		num = $((num * 2))
+	done
+	echo $size > ra.config
+done
