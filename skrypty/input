@@ -1,6 +1,7 @@
 #! /bin/bash
 
-MAXPROCS = $((UC_NODES * UC_PROCESSORS_PER_NODE))
+module load plgrid/tools/openmpi/common plgrid/tools/java8/oracle || exit 1
+MAXPROCS=$((UC_NODES * UC_PROCESSORS_PER_NODE))
 for size in 23 25 27 
 do
 	num=1
@@ -8,9 +9,9 @@ do
 	do
 		echo $num
 		mpiexec -np $num /bin/hostname -s | sort > nodes.txt
-		mpiexec -np $num  echo /bin/hostname -s
+		mpiexec -np $num  /bin/hostname -s
 
-		num = $((num * 2))
+		num=$(( num * 2 ))
 	done
 	echo $size > ra.config
 done
