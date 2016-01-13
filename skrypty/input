@@ -5,13 +5,14 @@ MAXPROCS=$((UC_NODES * UC_PROCESSORS_PER_NODE))
 for size in 23 25 27 
 do
 	num=1
+	
+	echo $size > ra.config
 	while [ $num -le $MAXPROCS ]
 	do
 		echo $num
 		mpiexec -np $num /bin/hostname -s | sort > nodes.txt
-		mpiexec -np $num  /bin/hostname -s
+		mpiexec -np $num java -Dpcj.port=8099 -cp "./*" pl.umk.mat.pcj.hpcc_randomaccess_java.RandomAccessNew
 
 		num=$(( num * 2 ))
 	done
-	echo $size > ra.config
 done
