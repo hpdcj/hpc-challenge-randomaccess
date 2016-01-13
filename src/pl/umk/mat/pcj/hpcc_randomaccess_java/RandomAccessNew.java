@@ -21,7 +21,10 @@ class RandomAccessNewStorage extends Storage {
     private long[] table;
 
     @Shared
-    private ArrayList<Long> receivedUpdates;
+    private ArrayList<Long> receivedUpdates0;
+
+    @Shared
+    private ArrayList<Long> receivedUpdates1;
 
     @Shared
     private int okCells;
@@ -62,7 +65,7 @@ public class RandomAccessNew implements StartPoint {
             thread0VerifyAll();
             if (PCJ.myId() == 0) {
                 double seconds = (stop - start) * 1e-3;
-                double gups = localUpdates*PCJ.threadCount() * 1e-6 / seconds;
+                double gups = localUpdates * PCJ.threadCount() * 1e-6 / seconds;
                 System.out.println("Time: " + seconds + " s, performance: " + gups);
             }
         }
@@ -114,32 +117,38 @@ public class RandomAccessNew implements StartPoint {
         List<Long> list = updates;
         for (int dimension = 0; dimension < logNumProcs; dimension++) {
             int partner = (1 << dimension) ^ PCJ.myId();
-            PCJ.barrier(partner);
             long mask = 1L << (logLocalN + dimension);
             prepareUpdateLists(partner, list, mask);
-            sendListToPartner(partner);
-            PCJ.barrier(partner);
-            PCJ.waitFor("receivedUpdates");
-            receiveUpdates();
+            sendListToPartner(partner, dimension);
+            receiveUpdates(dimension);
 
             list.clear();
             list.addAll(keep);
             keep.clear();
 
         }
+        
+        receiveUpdates (logNumProcs);
+        list.clear();
+        list.addAll(keep);
+        keep.clear();
+        
         return list;
     }
 
-    private void sendListToPartner(int partner) throws ClassCastException {
-        PCJ.put(partner, "receivedUpdates", send);
+    private void sendListToPartner(int partner, int dimension) throws ClassCastException {
+        PCJ.put(partner, "receivedUpdates" + (dimension % 2), send);
         send.clear();
     }
 
-    private void receiveUpdates() {
-        List<Long> receivedUpdates = PCJ.getLocal("receivedUpdates");
+    private void receiveUpdates(int dimension) {
+        if (dimension > 0) {
+            int previousDimension = dimension - 1;
+            PCJ.waitFor("receivedUpdates" + (previousDimension % 2));
+            List<Long> receivedUpdates = PCJ.getLocal("receivedUpdates" + (previousDimension % 2));
 
-        keep.addAll(receivedUpdates);
-
+            keep.addAll(receivedUpdates);
+        }
     }
 
     private void prepareUpdateLists(int partner, List<Long> updates1, long mask) {
