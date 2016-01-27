@@ -1,0 +1,17 @@
+#!/bin/bash 
+
+module load plgrid/tools/openmpi/common plgrid/libs/openblas/0.2.8 || exit 1
+
+max=$((UC_NODES * UC_PROCESSORS_PER_NODE))
+num=1
+
+chmod +x hpcc
+for size in 23 25 27 
+do
+	while [ $num -le $max ]
+	do
+		mpirun -np $num ./hpcc $mem
+		num=$((num * 2))
+	done
+done
+

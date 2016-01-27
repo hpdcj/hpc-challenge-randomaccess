@@ -1,4 +1,4 @@
-package pl.umk.mat.pcj.hpcc_randomaccess_java;
+package pl.umk.mat.pcj.hpcc_randomaccess_java.cas;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import org.pcj.FutureObject;
 import org.pcj.PCJ;
 import org.pcj.Shared;
 import org.pcj.StartPoint;
@@ -21,16 +22,11 @@ class RandomAccessNewStorage extends Storage {
     private long[] table;
 
     @Shared
-    private ArrayList<Long> receivedUpdates0;
-
-    @Shared
-    private ArrayList<Long> receivedUpdates1;
-
-    @Shared
     private int okCells;
+
 }
 
-public class RandomAccessNew implements StartPoint {
+public class RandomAccessCAS implements StartPoint {
 
     int logN;
     int globalN;
@@ -40,21 +36,55 @@ public class RandomAccessNew implements StartPoint {
     long localUpdates;
     int threadCount;
     int myId;
-    
+
     RandomForRA random;
     public static final int BUFFERED_UPDATES = 1024;
+
+    private boolean checkCasResult(Update update) {
+        if (update.casResult.isDone()) {
+            long result = update.casResult.get();
+            if (result == update.expected) {
+                return true;
+            } else {
+                update.casResult = update.getRemoteResult = null;
+                
+            }
+        }
+        return false;
+    }
+
+    private void checkRemoteGetResult(Update update) {
+        if (update.getRemoteResult.isDone()) {
+            update.expected = update.getRemoteResult.get();
+            long result = update.expected ^ update.update;
+            update.casResult = PCJ.cas(whichPE(update.update), "table", update.expected, result, randomNumberToLocalPosition(update.update));
+        }
+    }
+
+    private void getRemotely(Update update) {
+        update.getRemoteResult = PCJ.getFutureObject(whichPE(update.update), "table", randomNumberToLocalPosition(update.update));
+    }
+
+    private static class Update {
+
+        public long update;
+        public long expected;
+        public FutureObject<Long> casResult;
+        public FutureObject<Long> getRemoteResult;
+
+    }
 
     public static void main(String[] args) {
         String nodesFileName = "nodes.txt";
         if (args.length > 0) {
             nodesFileName = args[0];
         }
-        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
+        PCJ.deploy(RandomAccessCAS.class, RandomAccessNewStorage.class, nodesFileName);
     }
 
     public void main() throws Throwable {
         String[] rounds = {"Warmup", "After warmup"};
-        for (String round: rounds) {
+        for (String round : rounds) {
             if (myId == 0) {
                 PCJ.log(round + " round");
             }
@@ -96,77 +126,24 @@ public class RandomAccessNew implements StartPoint {
         return (int) (rand & (localN - 1));
     }
 
-    private List<Long> generateRemoteUpdates(int update, int CHUNK_SIZE) {
-        List<Long> numbers = new ArrayList<>();
-
-        for (int k = 0; k < CHUNK_SIZE && update + k < localUpdates; k++) {
-            long rand = random.nextLong();
-            numbers.add(rand);
-        }
-        return numbers;
-    }
-
     private void performRandomAccess() {
-        for (int update = 0; update < localUpdates; update += BUFFERED_UPDATES) {
-            List<Long> updateList = generateRemoteUpdates(update, BUFFERED_UPDATES);
-            updateList = alltoallHypercube(updateList);
-            performUpdates(updateList);
+
+        List<Update> updateList = new ArrayList<>();
+        int update;
+        for (update = 0; update < localUpdates;) {
+            generateRemoteUpdates(updateList, update, BUFFERED_UPDATES);
+            int performedUpdates = performUpdates(updateList);
+            update += performedUpdates;
         }
     }
 
-    private List<Long> alltoallHypercube(List<Long> updates) {
-        //all-to-all hypercube personalized communication, per 
-        //http://www.sandia.gov/~sjplimp/docs/cluster06.pdf, p. 5.
-        List<Long> send = new ArrayList<>();
-        List<Long> keep = new ArrayList<>();
+    private void generateRemoteUpdates(List<Update> numbers, int update, int CHUNK_SIZE) {
         
-        for (int dimension = 0; dimension < logNumProcs; dimension++) {
-            PCJ.barrier(); //try removing this or changing to barrier(partner)
-            int partner = (1 << dimension) ^ myId;
-            long mask = 1L << (logLocalN + dimension);
-            List<Long> received = receiveUpdates(dimension);
-            updates.addAll(received);
-            prepareUpdateLists(partner, updates, keep, send, mask);
-            sendListToPartner(send, partner, dimension);
-            updates = keep;
-            keep = new ArrayList<>();
-        }
-        List<Long> received = receiveUpdates(logNumProcs);
-        updates.addAll(received);
-        return updates;
-    }
-
-    private void sendListToPartner(List<Long> send, int partner, int dimension) throws ClassCastException {
-        PCJ.put(partner, "receivedUpdates" + (dimension % 2), send);
-        send.clear();
-    }
-
-    private List<Long> receiveUpdates(int dimension) {
-        if (dimension > 0) {
-            int previousDimension = dimension - 1;
-            PCJ.waitFor("receivedUpdates" + (previousDimension % 2));
-            return PCJ.getLocal("receivedUpdates" + (previousDimension % 2));
-        }
-        return new ArrayList<>();
-    }
-
-    private void prepareUpdateLists(int partner, List<Long> updates1, List<Long> keep, List<Long> send, long mask) {
-        if (partner > myId) {
-            for (long update : updates1) {
-                if ((update & mask) != 0) {
-                    send.add(update);
-                } else {
-                    keep.add(update);
-                }
-            }
-        } else {
-            for (long update : updates1) {
-                if ((update & mask) != 0) {
-                    keep.add(update);
-                } else {
-                    send.add(update);
-                }
-            }
+        for (int k = numbers.size(); k < CHUNK_SIZE && update + k < localUpdates; k++) {
+            long rand = random.nextLong();
+            Update updateClass = new Update();
+            updateClass.update = rand;
+            numbers.add(updateClass);
         }
     }
 
@@ -174,10 +151,24 @@ public class RandomAccessNew implements StartPoint {
         return (int) (pos >> logLocalN) & (threadCount - 1);
     }
 
-    private void performUpdates(List<Long> updateList) {
-        for (long update : updateList) {
-            updateSingleCell(update);
+    private int performUpdates(List<Update> updateList) {
+        int updateCounter = 0;
+        Iterator<Update> iterator = updateList.iterator();
+        while (iterator.hasNext()) {
+            Update update = iterator.next();
+            if (update.casResult != null) {
+                boolean casSuccessful = checkCasResult(update);
+                if (casSuccessful) {
+                    iterator.remove();
+                    updateCounter++;
+                }
+            } else if (update.getRemoteResult != null) {
+                checkRemoteGetResult(update);
+            } else {
+                getRemotely(update);
+            }
         }
+        return updateCounter;
     }
 
     private void updateSingleCell(long update) throws ClassCastException {
