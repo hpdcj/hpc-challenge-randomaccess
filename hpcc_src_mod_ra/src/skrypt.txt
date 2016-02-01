@@ -1,0 +1,5 @@
+#! /bin/bash
+for i in {1..8}
+do
+mpirun -np $i hpcc.exe 28
+done
