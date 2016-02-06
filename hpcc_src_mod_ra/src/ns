@@ -1,0 +1,332 @@
+DGEMM/onecpu.c:  params->DGEMM_N = n;
+DGEMM/onecpu.c:  if (failureAll) params->Failure = 1;
+DGEMM/onecpu.c:  MPI_Bcast( &avgGflops, 1, MPI_DOUBLE, 0, comm ); params->StarDGEMMGflops = avgGflops;
+DGEMM/onecpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+DGEMM/onecpu.c:  if (failure) params->Failure = 1;
+DGEMM/onecpu.c:  params->SingleDGEMMGflops = localGflops;
+DGEMM/onecpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+DGEMM/tstdgemm.c:    outFile = fopen( params->outFname, "a" );
+DGEMM/tstdgemm.c:  n = (int)(sqrt( params->HPLMaxProcMem / sizeof(double) / 3 + 0.25 ) - 0.5);
+DGEMM/tstdgemm.c:  if (sres < params->test.thrsh)
+FFT/mpifft.c:  if (maxErr / log(n) / deps < params->test.thrsh) failure = 0;
+FFT/mpifft.c:    outFile = fopen( params->outFname, "a" );
+FFT/mpifft.c:  HPCC_fft_timings_forward = params->MPIFFTtimingsForward;
+FFT/mpifft.c:  HPCC_fft_timings_backward = params->MPIFFTtimingsBackward;
+FFT/mpifft.c:  params->MPIFFT_N = n;
+FFT/mpifft.c:  params->MPIFFT_Procs = procCnt;
+FFT/mpifft.c:  params->MPIFFT_maxErr = maxErr;
+FFT/mpifft.c:  params->MPIFFTGflops = Gflops;
+FFT/mpifft.c:  params->FFTEnblk = FFTE_NBLK;
+FFT/mpifft.c:  params->FFTEnp = FFTE_NP;
+FFT/mpifft.c:  params->FFTEl2size = FFTE_L2SIZE;
+FFT/mpifft.c:    params->Failure = 1;
+FFT/onecpu.c:  params->FFT_N = n;
+FFT/onecpu.c:  if (failureAll) params->Failure = 1;
+FFT/onecpu.c:  MPI_Bcast( &avgGflops, 1, MPI_DOUBLE, 0, comm ); params->StarFFTGflops = avgGflops;
+FFT/onecpu.c:  BEGIN_IO( commRank, params->outFname, outputFile);
+FFT/onecpu.c:  if (failure) params->Failure = 1;
+FFT/onecpu.c:  params->SingleFFTGflops = localGflops;
+FFT/onecpu.c:  BEGIN_IO( commRank, params->outFname, outputFile);
+FFT/tstfft.c:  if (maxErr / log(n) / deps < params->test.thrsh) failure = 0;
+FFT/tstfft.c:    outFile = fopen( params->outFname, "a" );
+include/hpcc.h:params->Failure.
+PTRANS/pdtransdriver.c:  GBs = &params->PTRANSrdata.GBs;
+PTRANS/pdtransdriver.c:    outFile = fopen( params->outFname, "a" );
+PTRANS/pdtransdriver.c:  nmat = params->PTRANSns;
+PTRANS/pdtransdriver.c:  mval = params->PTRANSnval;
+PTRANS/pdtransdriver.c:  nval = params->PTRANSnval;
+PTRANS/pdtransdriver.c:  nbmat = params->PTRANSnbs;
+PTRANS/pdtransdriver.c:  mbval = params->PTRANSnbval;
+PTRANS/pdtransdriver.c:  nbval = params->PTRANSnbval;
+PTRANS/pdtransdriver.c:  ngrids = params->PTRANSnpqs;
+PTRANS/pdtransdriver.c:  npval = params->PTRANSpval;
+PTRANS/pdtransdriver.c:  nqval = params->PTRANSqval;
+PTRANS/pdtransdriver.c:  thresh = params->test.thrsh;
+PTRANS/pdtransdriver.c:  eps = params->test.epsil;
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.time = wtime[0];
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.residual = resid0;
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.n = n;
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.nb = nb;
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.nprow = nprow;
+PTRANS/pdtransdriver.c:          params->PTRANSrdata.npcol = npcol;
+PTRANS/pdtransdriver.c:  if (ktests) params->Failure = 1;
+PTRANS/pdtransdriver.c:  if (ktests) params->Failure = 1;
+RandomAccess/core_single_cpu.c:    outFile = fopen( params->outFname, "a" );
+RandomAccess/core_single_cpu.c:  /* totalMem = params->HPLMaxProcMem;
+RandomAccess/core_single_cpu.c:	totalMem = pow (2, params->bits);
+RandomAccess/core_single_cpu.c:  params->RandomAccess_N = (s64Int)TableSize;
+RandomAccess/core_single_cpu_lcg.c:    outFile = fopen( params->outFname, "a" );
+RandomAccess/core_single_cpu_lcg.c:  totalMem = params->HPLMaxProcMem;
+RandomAccess/core_single_cpu_lcg.c:  params->RandomAccess_LCG_N = (s64Int)TableSize;
+RandomAccess/MPIRandomAccess.c:  GUPs = &params->MPIRandomAccess_GUPs;
+RandomAccess/MPIRandomAccess.c:    outFile = fopen( params->outFname, "a" );
+RandomAccess/MPIRandomAccess.c:  TotalMem = params->HPLMaxProcMem; /* max single node memory */
+RandomAccess/MPIRandomAccess.c:  TotalMem =  pow ((double)2.0l, (double)params->bits);
+RandomAccess/MPIRandomAccess.c:  params->MPIRandomAccess_N = (s64Int)tparams.TableSize;
+RandomAccess/MPIRandomAccess.c:  MPI_Allreduce( &params->HPLrdata.time, &timeBound, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );///
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_ExeUpdates = NumUpdates;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_TimeBound = timeBound;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_time = RealTime;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_CheckTime = RealTime;
+RandomAccess/MPIRandomAccess.c:    if (GlbNumErrors > 0.01*tparams.TableSize) params->Failure = 1;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_Errors = (s64Int)GlbNumErrors;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_ErrorsFraction = (double)GlbNumErrors / (double)tparams.TableSize;
+RandomAccess/MPIRandomAccess.c:    params->MPIRandomAccess_Algorithm = HPCC_RA_ALGORITHM;
+RandomAccess/MPIRandomAccessLCG.c:  GUPs = &params->MPIRandomAccess_LCG_GUPs;
+RandomAccess/MPIRandomAccessLCG.c:    outFile = fopen( params->outFname, "a" );
+RandomAccess/MPIRandomAccessLCG.c:  TotalMem = params->HPLMaxProcMem; /* max single node memory */
+RandomAccess/MPIRandomAccessLCG.c:  params->MPIRandomAccess_LCG_N = (s64Int)tparams.TableSize;
+RandomAccess/MPIRandomAccessLCG.c:  MPI_Allreduce( &params->HPLrdata.time, &timeBound, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_ExeUpdates = NumUpdates;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_TimeBound = timeBound;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_time = RealTime;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_CheckTime = RealTime;
+RandomAccess/MPIRandomAccessLCG.c:    if (GlbNumErrors > 0.01*tparams.TableSize) params->Failure = 1;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_Errors = (s64Int)GlbNumErrors;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_ErrorsFraction = (double)GlbNumErrors / (double)tparams.TableSize;
+RandomAccess/MPIRandomAccessLCG.c:    params->MPIRandomAccess_LCG_Algorithm = HPCC_RA_ALGORITHM;
+Plik binarny RandomAccess/randomaccess.sdf pasuje do wzorca
+Plik binarny RandomAccess/RAndomAccessC.sdf pasuje do wzorca
+RandomAccess/single_cpu.c:  params->SingleGUPs = localGUPs;
+RandomAccess/single_cpu.c:  if (failure) params->Failure = 1;
+RandomAccess/single_cpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+RandomAccess/single_cpu_lcg.c:  params->Single_LCG_GUPs = localGUPs;
+RandomAccess/single_cpu_lcg.c:  if (failure) params->Failure = 1;
+RandomAccess/single_cpu_lcg.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+RandomAccess/star_single_cpu.c:  if (failureAll) params->Failure = 1;
+RandomAccess/star_single_cpu.c:  params->StarGUPs = avgGUPs;
+RandomAccess/star_single_cpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+RandomAccess/star_single_cpu_lcg.c:  if (failureAll) params->Failure = 1;
+RandomAccess/star_single_cpu_lcg.c:  params->Star_LCG_GUPs = avgGUPs;
+RandomAccess/star_single_cpu_lcg.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+src/bench_lat_bw_1.5.2.c:    OutFile = fopen( params->outFname, "a" );
+src/bench_lat_bw_1.5.2.c:  bench_lat_bw_print( &params->MaxPingPongLatency, &params->RandomlyOrderedRingLatency,
+src/bench_lat_bw_1.5.2.c:                      &params->MinPingPongBandwidth, &params->NaturallyOrderedRingBandwidth,
+src/bench_lat_bw_1.5.2.c:                      &params->RandomlyOrderedRingBandwidth,
+src/bench_lat_bw_1.5.2.c:                      &params->MinPingPongLatency, &params->AvgPingPongLatency,
+src/bench_lat_bw_1.5.2.c:                      &params->MaxPingPongBandwidth, &params->AvgPingPongBandwidth,
+src/bench_lat_bw_1.5.2.c:                      &params->NaturallyOrderedRingLatency );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->MaxPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->RandomlyOrderedRingLatency, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->MinPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->NaturallyOrderedRingBandwidth, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->RandomlyOrderedRingBandwidth, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->MinPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->AvgPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->MaxPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->AvgPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+src/bench_lat_bw_1.5.2.c:  MPI_Bcast( &params->NaturallyOrderedRingLatency, 1, MPI_DOUBLE, 0, comm );
+src/io.c:    f = fopen( params->inFname, "r" );
+src/io.c:      BEGIN_IO(myRank, params->outFname, outputFile);
+src/io.c:    ReadInts( buf, n, params->PTRANSnval );
+src/io.c:    maxHPLn = params->nval[iiamax( params->ns, params->nval, 1 )];
+src/io.c:      if (params->PTRANSnval[i] >= 0.9486 * maxHPLn * 0.5) {
+src/io.c:        params->PTRANSnval[j] = params->PTRANSnval[i];
+src/io.c:    for (i = 0; i < params->ns; i++)
+src/io.c:      params->PTRANSnval[i + n] = params->nval[i] / 2;
+src/io.c:    params->PTRANSns = n + params->ns;
+src/io.c:      BEGIN_IO( myRank, params->outFname, outputFile );
+src/io.c:    ReadInts( buf, n, params->PTRANSnbval );
+src/io.c:    icopy( params->nbs, params->nbval, 1, params->PTRANSnbval + n, 1 );
+src/io.c:    params->PTRANSnbs = n + params->nbs;
+src/io.c:    for (i = 0; i < params->ns; i++)
+src/io.c:      params->PTRANSnval[i] = params->nval[i] / 2;
+src/io.c:    params->PTRANSns = params->ns;
+src/io.c:    icopy( params->nbs, params->nbval, 1, params->PTRANSnbval, 1 );
+src/io.c:    params->PTRANSnbs = params->nbs;
+src/io.c:  MPI_Bcast( &params->PTRANSns, 1, MPI_INT, 0, comm );
+src/io.c:  if (params->PTRANSns > 0)
+src/io.c:    MPI_Bcast( &params->PTRANSnval, params->PTRANSns, MPI_INT, 0, comm );
+src/io.c:  MPI_Bcast( &params->PTRANSnbs, 1, MPI_INT, 0, comm );
+src/io.c:  if (params->PTRANSnbs > 0)
+src/io.c:    MPI_Bcast( &params->PTRANSnbval, params->PTRANSnbs, MPI_INT, 0, comm );
+src/io.c:  params->PTRANSnpqs = params->npqs;
+src/io.c:  icopy( params->npqs, params->qval, 1, params->PTRANSqval, 1 );
+src/io.c:  icopy( params->npqs, params->pval, 1, params->PTRANSpval, 1 );
+src/io.c:  strcpy( params->inFname, inFname );
+src/io.c:  strcpy( params->outFname, outFname );
+src/io.c:    outputFile = fopen( params->outFname, "a" );
+src/io.c:  BEGIN_IO( myRank, params->outFname, outputFile );
+src/io.c:  params->Failure = 0;
+src/io.c:  params->RunHPL = 0;
+src/io.c:  params->RunStarDGEMM = 0;
+src/io.c:  params->RunSingleDGEMM = 0;
+src/io.c:  params->RunPTRANS = 0;
+src/io.c:  params->RunStarStream = 0;
+src/io.c:  params->RunSingleStream = 0;
+src/io.c:  params->RunMPIRandomAccess_LCG = 0;
+src/io.c:  params->RunStarRandomAccess_LCG = 0;
+src/io.c:  params->RunSingleRandomAccess_LCG = 0;
+src/io.c:  params->RunMPIRandomAccess = 0;
+src/io.c:  params->RunStarRandomAccess = 0;
+src/io.c:  params->RunSingleRandomAccess = 0;
+src/io.c:  params->RunLatencyBandwidth = 0;
+src/io.c:  params->RunMPIFFT = 0;
+src/io.c:  params->RunStarFFT = 0;
+src/io.c:  params->RunSingleFFT = 0;
+src/io.c:  params->RunHPL = params->RunStarDGEMM = params->RunSingleDGEMM =
+src/io.c:  params->RunPTRANS = params->RunStarStream = params->RunSingleStream =
+src/io.c:  params->RunMPIRandomAccess_LCG = params->RunStarRandomAccess_LCG = params->RunSingleRandomAccess_LCG =
+src/io.c:  params->RunMPIRandomAccess = params->RunStarRandomAccess = params->RunSingleRandomAccess =
+src/io.c:  params->RunMPIFFT = params->RunStarFFT = params->RunSingleFFT =
+src/io.c:  params->RunLatencyBandwidth = 1;
+src/io.c:  params->MPIRandomAccess_LCG_GUPs =
+src/io.c:  params->MPIRandomAccess_GUPs = params->StarGUPs = params->SingleGUPs =
+src/io.c:  params->StarDGEMMGflops = params->SingleDGEMMGflops = -1.0;
+src/io.c:  params->StarStreamCopyGBs = params->StarStreamScaleGBs = params->StarStreamAddGBs =
+src/io.c:  params->StarStreamTriadGBs = params->SingleStreamCopyGBs = params->SingleStreamScaleGBs =
+src/io.c:  params->SingleStreamAddGBs = params->SingleStreamTriadGBs =
+src/io.c:  params->SingleFFTGflops = params->StarFFTGflops = params->MPIFFTGflops = params->MPIFFT_maxErr =
+src/io.c:  params->MaxPingPongLatency = params-> RandomlyOrderedRingLatency = params-> MinPingPongBandwidth =
+src/io.c:  params->NaturallyOrderedRingBandwidth = params->RandomlyOrderedRingBandwidth =
+src/io.c:  params->MinPingPongLatency = params->AvgPingPongLatency = params->MaxPingPongBandwidth =
+src/io.c:  params->AvgPingPongBandwidth = params->NaturallyOrderedRingLatency = -1.0;
+src/io.c:  params->HPLrdata.Gflops = -1000.0;
+src/io.c:  params->HPLrdata.time = params->HPLrdata.eps = params->HPLrdata.RnormI = params->HPLrdata.Anorm1 = params->HPLrdata.AnormI = params->HPLrdata.Xnorm1 = params->HPLrdata.XnormI = -1.0;
+src/io.c:  params->HPLrdata.N = params->HPLrdata.NB = params->HPLrdata.nprow = params->HPLrdata.npcol = params->HPLrdata.depth = params->HPLrdata.nbdiv = params->HPLrdata.nbmin = -1;
+src/io.c:  params->HPLrdata.cpfact = params->HPLrdata.crfact = params->HPLrdata.ctop = params->HPLrdata.order = '-';
+src/io.c:  params->PTRANSrdata.GBs = params->PTRANSrdata.time = params->PTRANSrdata.residual = -1.0;
+src/io.c:  params->PTRANSrdata.n = params->PTRANSrdata.nb = params->PTRANSrdata.nprow =
+src/io.c:  params->PTRANSrdata.npcol = -1;
+src/io.c:  params->MPIRandomAccess_LCG_ErrorsFraction =
+src/io.c:  params->MPIRandomAccess_ErrorsFraction =
+src/io.c:  params->MPIRandomAccess_LCG_time = params->MPIRandomAccess_LCG_CheckTime =
+src/io.c:  params->MPIRandomAccess_time = params->MPIRandomAccess_CheckTime =
+src/io.c:  params->MPIRandomAccess_LCG_TimeBound =
+src/io.c:  params->MPIRandomAccess_TimeBound = -1.0;
+src/io.c:  params->DGEMM_N =
+src/io.c:  params->FFT_N =
+src/io.c:  params->StreamVectorSize =
+src/io.c:  params->MPIRandomAccess_LCG_Algorithm =
+src/io.c:  params->MPIRandomAccess_Algorithm =
+src/io.c:  params->MPIFFT_Procs = -1;
+src/io.c:  params->StreamThreads = 1;
+src/io.c:  params->FFTEnblk = params->FFTEnp = params->FFTEl2size = -1;
+src/io.c:  params->MPIFFT_N =
+src/io.c:  params->RandomAccess_LCG_N =
+src/io.c:  params->MPIRandomAccess_LCG_N =
+src/io.c:  params->MPIRandomAccess_LCG_Errors =
+src/io.c:  params->RandomAccess_N =
+src/io.c:  params->MPIRandomAccess_N =
+src/io.c:  params->MPIRandomAccess_Errors =
+src/io.c:  params->MPIRandomAccess_LCG_ExeUpdates =
+src/io.c:  params->MPIRandomAccess_ExeUpdates = (s64Int)(-1);
+src/io.c:  procMax = procMin = params->pval[0] * params->qval[0];
+src/io.c:  for (i = 1; i < params->npqs; ++i) {
+src/io.c:    procCur = params->pval[i] * params->qval[i];
+src/io.c:  params->HPLMaxProc = procMax;
+src/io.c:  params->HPLMinProc = procMin;
+src/io.c:  nMax = params->nval[iiamax( params->ns, params->nval, 1 )];
+src/io.c:  params->HPLMaxProcMem = totalMem / procMin;
+src/io.c:    params->MPIFFTtimingsForward[i] = 0.0;
+src/io.c:  i = iiamax( params->PTRANSnbs, params->PTRANSnbval, 1 );
+src/io.c:  nbMax = params->PTRANSnbval[i];
+src/io.c:  MaxMem( commSize, 0, 0, params->PTRANSns, params->PTRANSnval, params->PTRANSnval, params->PTRANSnbs, params->PTRANSnbval, params->PTRANSnbval, params->PTRANSnpqs, params->PTRANSpval, params->PTRANSqval, &dMemSize );
+src/io.c:  hpl_mem = params->HPLMaxProcMem + (nMax + nbMax) * sizeof(double) * nbMax;
+src/io.c:  BEGIN_IO(myRank, params->outFname, outputFile);
+src/io.c:  fprintf( outputFile, "Success=%d\n", params->Failure ? 0 : 1 );
+src/io.c:  fprintf( outputFile, "HPL_Tflops=%g\n", params->HPLrdata.Gflops * 1e-3 );
+src/io.c:  fprintf( outputFile, "HPL_time=%g\n", params->HPLrdata.time );
+src/io.c:  fprintf( outputFile, "HPL_eps=%g\n", params->HPLrdata.eps );
+src/io.c:  fprintf( outputFile, "HPL_RnormI=%g\n", params->HPLrdata.RnormI );
+src/io.c:  fprintf( outputFile, "HPL_Anorm1=%g\n", params->HPLrdata.Anorm1 );
+src/io.c:  fprintf( outputFile, "HPL_AnormI=%g\n", params->HPLrdata.AnormI );
+src/io.c:  fprintf( outputFile, "HPL_Xnorm1=%g\n", params->HPLrdata.Xnorm1 );
+src/io.c:  fprintf( outputFile, "HPL_XnormI=%g\n", params->HPLrdata.XnormI );
+src/io.c:  fprintf( outputFile, "HPL_BnormI=%g\n", params->HPLrdata.BnormI );
+src/io.c:  fprintf( outputFile, "HPL_N=%d\n", params->HPLrdata.N );
+src/io.c:  fprintf( outputFile, "HPL_NB=%d\n", params->HPLrdata.NB );
+src/io.c:  fprintf( outputFile, "HPL_nprow=%d\n", params->HPLrdata.nprow );
+src/io.c:  fprintf( outputFile, "HPL_npcol=%d\n", params->HPLrdata.npcol );
+src/io.c:  fprintf( outputFile, "HPL_depth=%d\n", params->HPLrdata.depth );
+src/io.c:  fprintf( outputFile, "HPL_nbdiv=%d\n", params->HPLrdata.nbdiv );
+src/io.c:  fprintf( outputFile, "HPL_nbmin=%d\n", params->HPLrdata.nbmin );
+src/io.c:  fprintf( outputFile, "HPL_cpfact=%c\n", params->HPLrdata.cpfact );
+src/io.c:  fprintf( outputFile, "HPL_crfact=%c\n", params->HPLrdata.crfact );
+src/io.c:  fprintf( outputFile, "HPL_ctop=%c\n", params->HPLrdata.ctop );
+src/io.c:  fprintf( outputFile, "HPL_order=%c\n", params->HPLrdata.order );
+src/io.c:  fprintf( outputFile, "HPLMaxProcs=%d\n", params->HPLMaxProc );
+src/io.c:  fprintf( outputFile, "HPLMinProcs=%d\n", params->HPLMinProc );
+src/io.c:  fprintf( outputFile, "DGEMM_N=%d\n", params->DGEMM_N );
+src/io.c:  fprintf( outputFile, "StarDGEMM_Gflops=%g\n",   params->StarDGEMMGflops );
+src/io.c:  fprintf( outputFile, "SingleDGEMM_Gflops=%g\n", params->SingleDGEMMGflops );
+src/io.c:  fprintf( outputFile, "PTRANS_GBs=%g\n", params->PTRANSrdata.GBs );
+src/io.c:  fprintf( outputFile, "PTRANS_time=%g\n", params->PTRANSrdata.time );
+src/io.c:  fprintf( outputFile, "PTRANS_residual=%g\n", params->PTRANSrdata.residual );
+src/io.c:  fprintf( outputFile, "PTRANS_n=%d\n", params->PTRANSrdata.n );
+src/io.c:  fprintf( outputFile, "PTRANS_nb=%d\n", params->PTRANSrdata.nb );
+src/io.c:  fprintf( outputFile, "PTRANS_nprow=%d\n", params->PTRANSrdata.nprow );
+src/io.c:  fprintf( outputFile, "PTRANS_npcol=%d\n", params->PTRANSrdata.npcol );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_N=" FSTR64 "\n", params->MPIRandomAccess_LCG_N );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_time=%g\n", params->MPIRandomAccess_LCG_time );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_CheckTime=%g\n", params->MPIRandomAccess_LCG_CheckTime );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_Errors=" FSTR64 "\n", params->MPIRandomAccess_LCG_Errors );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_ErrorsFraction=%g\n", params->MPIRandomAccess_LCG_ErrorsFraction );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_ExeUpdates=" FSTR64 "\n", params->MPIRandomAccess_LCG_ExeUpdates );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_GUPs=%g\n", params->MPIRandomAccess_LCG_GUPs );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_TimeBound=%g\n", params->MPIRandomAccess_LCG_TimeBound );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_LCG_Algorithm=%d\n", params->MPIRandomAccess_LCG_Algorithm );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_N=" FSTR64 "\n", params->MPIRandomAccess_N );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_time=%g\n", params->MPIRandomAccess_time );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_CheckTime=%g\n", params->MPIRandomAccess_CheckTime );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_Errors=" FSTR64 "\n", params->MPIRandomAccess_Errors );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_ErrorsFraction=%g\n", params->MPIRandomAccess_ErrorsFraction );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_ExeUpdates=" FSTR64 "\n", params->MPIRandomAccess_ExeUpdates );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_GUPs=%g\n", params->MPIRandomAccess_GUPs );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_TimeBound=%g\n", params->MPIRandomAccess_TimeBound );
+src/io.c:  fprintf( outputFile, "MPIRandomAccess_Algorithm=%d\n", params->MPIRandomAccess_Algorithm );
+src/io.c:  fprintf( outputFile, "RandomAccess_LCG_N=" FSTR64 "\n", params->RandomAccess_LCG_N );
+src/io.c:  fprintf( outputFile, "StarRandomAccess_LCG_GUPs=%g\n", params->Star_LCG_GUPs );
+src/io.c:  fprintf( outputFile, "SingleRandomAccess_LCG_GUPs=%g\n", params->Single_LCG_GUPs );
+src/io.c:  fprintf( outputFile, "RandomAccess_N=" FSTR64 "\n", params->RandomAccess_N );
+src/io.c:  fprintf( outputFile, "StarRandomAccess_GUPs=%g\n", params->StarGUPs );
+src/io.c:  fprintf( outputFile, "SingleRandomAccess_GUPs=%g\n", params->SingleGUPs );
+src/io.c:  fprintf( outputFile, "STREAM_VectorSize=%d\n", params->StreamVectorSize );
+src/io.c:  fprintf( outputFile, "STREAM_Threads=%d\n", params->StreamThreads );
+src/io.c:  fprintf( outputFile, "StarSTREAM_Copy=%g\n", params->StarStreamCopyGBs );
+src/io.c:  fprintf( outputFile, "StarSTREAM_Scale=%g\n", params->StarStreamScaleGBs );
+src/io.c:  fprintf( outputFile, "StarSTREAM_Add=%g\n", params->StarStreamAddGBs );
+src/io.c:  fprintf( outputFile, "StarSTREAM_Triad=%g\n", params->StarStreamTriadGBs );
+src/io.c:  fprintf( outputFile, "SingleSTREAM_Copy=%g\n", params->SingleStreamCopyGBs );
+src/io.c:  fprintf( outputFile, "SingleSTREAM_Scale=%g\n", params->SingleStreamScaleGBs );
+src/io.c:  fprintf( outputFile, "SingleSTREAM_Add=%g\n", params->SingleStreamAddGBs );
+src/io.c:  fprintf( outputFile, "SingleSTREAM_Triad=%g\n", params->SingleStreamTriadGBs );
+src/io.c:  fprintf( outputFile, "FFT_N=%d\n", params->FFT_N );
+src/io.c:  fprintf( outputFile, "StarFFT_Gflops=%g\n",   params->StarFFTGflops );
+src/io.c:  fprintf( outputFile, "SingleFFT_Gflops=%g\n", params->SingleFFTGflops );
+src/io.c:  fprintf( outputFile, "MPIFFT_N=" FSTR64 "\n", params->MPIFFT_N );
+src/io.c:  fprintf( outputFile, "MPIFFT_Gflops=%g\n", params->MPIFFTGflops );
+src/io.c:  fprintf( outputFile, "MPIFFT_maxErr=%g\n", params->MPIFFT_maxErr );
+src/io.c:  fprintf( outputFile, "MPIFFT_Procs=%d\n", params->MPIFFT_Procs );
+src/io.c:  fprintf( outputFile, "MaxPingPongLatency_usec=%g\n", params->MaxPingPongLatency );
+src/io.c:  fprintf( outputFile, "RandomlyOrderedRingLatency_usec=%g\n", params->RandomlyOrderedRingLatency );
+src/io.c:  fprintf( outputFile, "MinPingPongBandwidth_GBytes=%g\n", params->MinPingPongBandwidth );
+src/io.c:  fprintf( outputFile, "NaturallyOrderedRingBandwidth_GBytes=%g\n", params->NaturallyOrderedRingBandwidth );
+src/io.c:  fprintf( outputFile, "RandomlyOrderedRingBandwidth_GBytes=%g\n", params->RandomlyOrderedRingBandwidth );
+src/io.c:  fprintf( outputFile, "MinPingPongLatency_usec=%g\n", params->MinPingPongLatency );
+src/io.c:  fprintf( outputFile, "AvgPingPongLatency_usec=%g\n", params->AvgPingPongLatency );
+src/io.c:  fprintf( outputFile, "MaxPingPongBandwidth_GBytes=%g\n", params->MaxPingPongBandwidth );
+src/io.c:  fprintf( outputFile, "AvgPingPongBandwidth_GBytes=%g\n", params->AvgPingPongBandwidth );
+src/io.c:  fprintf( outputFile, "NaturallyOrderedRingLatency_usec=%g\n", params->NaturallyOrderedRingLatency );
+src/io.c:  fprintf( outputFile, "FFTEnblk=%d\n", params->FFTEnblk );
+src/io.c:  fprintf( outputFile, "FFTEnp=%d\n", params->FFTEnp );
+src/io.c:  fprintf( outputFile, "FFTEl2size=%d\n", params->FFTEl2size );
+src/io.c:    fprintf( outputFile, "MPIFFT_time%d=%g\n", i, params->MPIFFTtimingsForward[i+1] - params->MPIFFTtimingsForward[i] );
+src/io.c:  /* flg2 = floor(log2(params->HPLMaxProcMem / size / vecCnt)) */
+src/io.c:  for (flg2 = 1; params->HPLMaxProcMem / size / vecCnt >> flg2; ++flg2)
+src/io.c:    return params->HPLMaxProcMem / size / vecCnt;
+STREAM/onecpu.c:  if (failureAll) params->Failure = 1;
+STREAM/onecpu.c:  MPI_Bcast( &copyAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamCopyGBs = copyAvgGBs;
+STREAM/onecpu.c:  MPI_Bcast( &scaleAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamScaleGBs = scaleAvgGBs;
+STREAM/onecpu.c:  MPI_Bcast( &addAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamAddGBs = addAvgGBs;
+STREAM/onecpu.c:  MPI_Bcast( &triadAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamTriadGBs = triadAvgGBs;
+STREAM/onecpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+STREAM/onecpu.c:  if (failure) params->Failure = 1;
+STREAM/onecpu.c:  params->SingleStreamCopyGBs = copyLocalGBs;
+STREAM/onecpu.c:  params->SingleStreamScaleGBs = scaleLocalGBs;
+STREAM/onecpu.c:  params->SingleStreamAddGBs = addLocalGBs;
+STREAM/onecpu.c:  params->SingleStreamTriadGBs = triadLocalGBs;
+STREAM/onecpu.c:  BEGIN_IO( myRank, params->outFname, outputFile);
+STREAM/stream.c:      outFile = fopen( params->outFname, "a" );
+STREAM/stream.c:    params->StreamVectorSize = VectorSize;
+STREAM/stream.c:        params->StreamThreads = k;

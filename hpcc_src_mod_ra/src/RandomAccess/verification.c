@@ -16,7 +16,6 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
 
   u64Int *LocalBuckets, *GlobalBuckets; /* buckets used in verification phase */
 
-
   LocalBuckets = XMALLOC( u64Int, (tparams.NumProcs*(BUCKET_SIZE+FIRST_SLOT)));
   sAbort = 0; if (! LocalBuckets) sAbort = 1;
   MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
@@ -32,15 +31,12 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
     goto failed_globalbuckets;
   }
 
-
   SendCnt = tparams.ProcNumUpdates; /*  SendCnt = 4 * LocalTableSize; */
   Ran = HPCC_starts (4 * tparams.GlobalStartMyProc);
 
   PeCheckDone = XMALLOC ( s64Int, tparams.NumProcs);
-
   for (i=0; i<tparams.NumProcs; i++)
     PeCheckDone[i] = HPCC_FALSE;
-
   while(LocalAllDone == HPCC_FALSE){
     if (SendCnt > 0) {
       /* Initalize local buckets */
@@ -49,7 +45,6 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
         LocalBuckets[PeBucketBase+SLOT_CNT] = FIRST_SLOT;
         LocalBuckets[PeBucketBase+HPCC_DONE] = HPCC_FALSE;
       }
-
       /* Fill local buckets until one is full or out of data */
       NextSlot = FIRST_SLOT;
       while(NextSlot != (BUCKET_SIZE+FIRST_SLOT) && SendCnt>0 ) {
@@ -61,22 +56,18 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
         LocalBuckets[PeBucketBase+SLOT_CNT] = ++NextSlot;
         SendCnt--;
       }
-
       if (SendCnt == 0)
         for (i=0; i<tparams.NumProcs; i++)
           LocalBuckets[i*(BUCKET_SIZE+FIRST_SLOT)+HPCC_DONE] = HPCC_TRUE;
 
     } /* End of sending loop */
-
     MPI_Barrier(MPI_COMM_WORLD);
 
     LocalAllDone = HPCC_TRUE;
-
     /* Now move all the buckets to the appropriate pe */
     MPI_Alltoall(LocalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
                  GlobalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
                  MPI_COMM_WORLD);
-
     for (i = 0; i < tparams.NumProcs; i ++) {
       if(PeCheckDone[i] == HPCC_FALSE) {
         PeBucketBase = i * (BUCKET_SIZE+FIRST_SLOT);
@@ -95,7 +86,6 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
   for (il=0; il < tparams.LocalTableSize; il++)
     if (HPCC_Table[il] != il + tparams.GlobalStartMyProc)
       errors++;
-
   *NumErrors = errors;
 
   free( PeCheckDone );
@@ -103,7 +93,6 @@ HPCC_Power2NodesMPIRandomAccessCheck(HPCC_RandomAccess_tabparams_t tparams, s64I
   free( GlobalBuckets );
 
   failed_globalbuckets:
-
   free( LocalBuckets );
 
   failed_localbuckets:
