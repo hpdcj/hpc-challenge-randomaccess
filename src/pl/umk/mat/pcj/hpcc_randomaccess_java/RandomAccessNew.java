@@ -28,6 +28,12 @@ class RandomAccessNewStorage extends Storage {
 
     @Shared
     private int okCells;
+
+    @Shared
+    private int executed;
+
+    @Shared
+    private boolean bailOut = false;
 }
 
 public class RandomAccessNew implements StartPoint {
@@ -40,9 +46,11 @@ public class RandomAccessNew implements StartPoint {
     long localUpdates;
     int threadCount;
     int myId;
-    
+
     RandomForRA random;
     public static final int BUFFERED_UPDATES = 1024;
+
+    long timeBoundSeconds = Long.MAX_VALUE;
 
     public static void main(String[] args) {
         String nodesFileName = "nodes.txt";
@@ -54,29 +62,43 @@ public class RandomAccessNew implements StartPoint {
 
     public void main() throws Throwable {
         String[] rounds = {"Warmup", "After warmup"};
-        for (String round: rounds) {
-            if (myId == 0) {
-                PCJ.log(round + " round");
-            }
+        for (String round : rounds) {
+
+            PCJ.log(round + " round");
+
             initializeData();
             PCJ.barrier();
             double start = System.currentTimeMillis();
             performRandomAccess();
             double stop = System.currentTimeMillis();
+            
+            PCJ.putLocal("executed", this.preparedLocally);
+            PCJ.waitFor("executed");
             PCJ.log("Starting verification");
             verifyResultsLocally();
             thread0VerifyAll();
             if (myId == 0) {
                 double seconds = (stop - start) * 1e-3;
-                double gups = localUpdates * threadCount * 1e-9 / seconds;
-                System.out.println("Time: " + seconds + " s, performance: " + gups);
+                int updatesPerformedGlobally = 0;
+                for (int PE = 0; PE < PCJ.threadCount(); PE++) {
+                    updatesPerformedGlobally += (int) PCJ.get(PE, "executed");
+                }
+                double gups = updatesPerformedGlobally * 1e-9 / seconds;
+                System.out.println("Time: " + seconds + " s, updates = " + updatesPerformedGlobally + ", performance: " + gups);
             }
+            PCJ.barrier();
+
         }
     }
 
     private void initializeData() throws FileNotFoundException {
-        Scanner in = new Scanner(new File("ra.config"));
-        logN = in.nextInt();
+
+        try (Scanner in = new Scanner(new File("ra.config"))) {
+            logN = in.nextInt();
+            if (in.hasNextLong()) {
+                this.timeBoundSeconds = in.nextLong();
+            }
+        }
         threadCount = PCJ.threadCount();
         myId = PCJ.myId();
         logNumProcs = (int) (Math.log(threadCount) / Math.log(2));
@@ -87,8 +109,28 @@ public class RandomAccessNew implements StartPoint {
         for (int i = 0; i < localN; i++) {
             table[i] = i + myId * localN;
         }
+
+                PCJ.monitor("receivedUpdates0");
+        PCJ.monitor("receivedUpdates1");
+        
         PCJ.putLocal("table", table);
+        PCJ.putLocal("bailOut", false);
+        PCJ.putLocal("executed", 0);
+        PCJ.putLocal("okCells", 0);
+        PCJ.putLocal("receivedUpdates0", new ArrayList<Long>());
+        PCJ.putLocal("receivedUpdates1", new ArrayList<Long>());
+
+        PCJ.waitFor ("receivedUpdates0");
+        PCJ.waitFor ("receivedUpdates1");
+        
+        PCJ.monitor("receivedUpdates0");
+        PCJ.monitor("receivedUpdates1");
+        PCJ.monitor("executed");
+        PCJ.monitor("okCells");
+        PCJ.monitor("bailOut");
+        PCJ.monitor("table");
         random = new RandomForRA(myId);
+        this.preparedLocally = 0;
 
     }
 
@@ -103,14 +145,35 @@ public class RandomAccessNew implements StartPoint {
             long rand = random.nextLong();
             numbers.add(rand);
         }
+
+        preparedLocally += numbers.size();
         return numbers;
     }
 
+    boolean isTimeBound() {
+        return timeBoundSeconds != Long.MAX_VALUE;
+    }
+
     private void performRandomAccess() {
+        long timeBoundStart = System.currentTimeMillis();
         for (int update = 0; update < localUpdates; update += BUFFERED_UPDATES) {
             List<Long> updateList = generateRemoteUpdates(update, BUFFERED_UPDATES);
+
+            if (isTimeBound()) {
+                if (System.currentTimeMillis() - timeBoundStart > timeBoundSeconds * 1e3) {
+                    PCJ.broadcast("bailOut", true);
+                }
+            }
+
             updateList = alltoallHypercube(updateList);
             performUpdates(updateList);
+
+            if (isTimeBound()) {
+                boolean finish = PCJ.getLocal("bailOut");
+                if (finish) {
+                    break;
+                }
+            }
         }
     }
 
@@ -119,10 +182,11 @@ public class RandomAccessNew implements StartPoint {
         //http://www.sandia.gov/~sjplimp/docs/cluster06.pdf, p. 5.
         List<Long> send = new ArrayList<>();
         List<Long> keep = new ArrayList<>();
-        
+
         for (int dimension = 0; dimension < logNumProcs; dimension++) {
             PCJ.barrier(); //try removing this or changing to barrier(partner)
             int partner = (1 << dimension) ^ myId;
+
             long mask = 1L << (logLocalN + dimension);
             List<Long> received = receiveUpdates(dimension);
             updates.addAll(received);
@@ -174,6 +238,8 @@ public class RandomAccessNew implements StartPoint {
         return (int) (pos >> logLocalN) & (threadCount - 1);
     }
 
+    int preparedLocally = 0;
+
     private void performUpdates(List<Long> updateList) {
         for (long update : updateList) {
             updateSingleCell(update);
@@ -193,7 +259,8 @@ public class RandomAccessNew implements StartPoint {
         for (int PE = 0; PE < threadCount; PE++) {
             RandomForRA random = new RandomForRA(PE);
 
-            for (int update = 0; update < localUpdates; update++) {
+            int executedRemotely = PCJ.get(PE, "executed");
+            for (int update = 0; update < executedRemotely; update++) {
                 long val = random.nextLong();
                 if (whichPE(val) == myId) {
 
@@ -212,6 +279,7 @@ public class RandomAccessNew implements StartPoint {
             }
         }
         PCJ.putLocal("okCells", ok);
+        PCJ.waitFor("okCells");
         PCJ.barrier();
     }
 

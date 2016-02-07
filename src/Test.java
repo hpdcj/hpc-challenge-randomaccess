@@ -1,4 +1,5 @@
 
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.pcj.FutureObject;
@@ -20,45 +21,18 @@ import org.pcj.Storage;
 public class Test extends Storage implements StartPoint {
     
     @Shared
-    Integer happySharedInteger;
-    String name = "happySharedInteger";
+    boolean bailOut=false;
     
+    Random random = new Random();
+
+    public void main () {
+        for (int i = 0; i < 100_000; i++) {
+            PCJ.put(random.nextInt(PCJ.threadCount()), "bailOut", random.nextBoolean());
+            PCJ.getLocal("bailOut");
+        }
+    }
     public static void main (String[] args) {
-        PCJ.deploy(Test.class, Test.class, new String[]{"localhost", "localhost"});
-    }
-
-    @Override
-    public void main() throws Throwable {
-        if (PCJ.myId() == 0) {
-            thread0();
-        } else {
-            thread1();
-        }
-    }
-
-    private void thread0() {
-        try {
-            Thread.sleep(2000);
-            FutureObject<Integer> result = PCJ.cas(1, name, 2, 3); // <-----  2
-            Thread.sleep(5000);
-            PCJ.barrier();
-            Thread.sleep(2000);
-            System.out.println(result.get());
-            System.out.println(PCJ.get(1, name));
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void thread1() {
-        try {
-            PCJ.putLocal(name, 1); // <--- 1
-            Thread.sleep(5000);
-            PCJ.barrier();
-            PCJ.putLocal(name, 2); // <--- 3
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        PCJ.deploy(Test.class, Test.class, new String[] {"localhost", "localhost","localhost","localhost","localhost","localhost","localhost","localhost"});
     }
     
 }
