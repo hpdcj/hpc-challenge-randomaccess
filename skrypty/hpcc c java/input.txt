@@ -1,0 +1,24 @@
+#!/bin/bash 
+
+module load plgrid/tools/openmpi/common plgrid/libs/openblas/0.2.8 || exit 1
+
+max=$((UC_NODES * UC_PROCESSORS_PER_NODE))
+num=1
+
+chmod +x hpcc
+for size in 23 25 27 
+do
+	bytes=`echo 2^$size | bc`
+	while [ $num -le $max ]
+	do
+		echo Total=$bytes > hpccmemf.txt
+		mpirun -np $num ./hpcc
+		
+		echo $size > ra.config
+		mpiexec -np $num /bin/hostname -s | sort > nodes.txt
+		mpiexec -np $num java -Dpcj.port=8099 -cp "./*" -Xms4g -Xmx4g pl.umk.mat.pcj.hpcc_randomaccess_java.RandomAccessNew
+		
+		num=$((num * 2))
+	done
+done
+
