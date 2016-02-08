@@ -32,11 +32,21 @@ class RandomAccessNewStorage extends Storage {
     @Shared
     private int executed;
 
-    @Shared
-    private boolean bailOut = false;
 }
 
 public class RandomAccessNew implements StartPoint {
+
+    public static final int BUFFERED_UPDATES = 1024;
+    public static final long POISON_PILL = -1;
+
+    public static void main(String[] args) {
+        String nodesFileName = "nodes.txt";
+        if (args.length > 0) {
+            nodesFileName = args[0];
+        }
+        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
+        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
+    }
 
     int logN;
     int globalN;
@@ -48,20 +58,13 @@ public class RandomAccessNew implements StartPoint {
     int myId;
 
     RandomForRA random;
-    public static final int BUFFERED_UPDATES = 1024;
 
     long timeBoundSeconds = Long.MAX_VALUE;
-
-    public static void main(String[] args) {
-        String nodesFileName = "nodes.txt";
-        if (args.length > 0) {
-            nodesFileName = args[0];
-        }
-        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
-    }
+    boolean shutDown = false;
+    int preparedLocally = 0;
 
     public void main() throws Throwable {
-        String[] rounds = {"Warmup", "After warmup"};
+        String[] rounds = {"Warmup",};
         for (String round : rounds) {
 
             PCJ.log(round + " round");
@@ -71,7 +74,7 @@ public class RandomAccessNew implements StartPoint {
             double start = System.currentTimeMillis();
             performRandomAccess();
             double stop = System.currentTimeMillis();
-            
+
             PCJ.putLocal("executed", this.preparedLocally);
             PCJ.waitFor("executed");
             PCJ.log("Starting verification");
@@ -110,27 +113,26 @@ public class RandomAccessNew implements StartPoint {
             table[i] = i + myId * localN;
         }
 
-                PCJ.monitor("receivedUpdates0");
+        PCJ.monitor("receivedUpdates0");
         PCJ.monitor("receivedUpdates1");
-        
+
         PCJ.putLocal("table", table);
-        PCJ.putLocal("bailOut", false);
         PCJ.putLocal("executed", 0);
         PCJ.putLocal("okCells", 0);
         PCJ.putLocal("receivedUpdates0", new ArrayList<Long>());
         PCJ.putLocal("receivedUpdates1", new ArrayList<Long>());
 
-        PCJ.waitFor ("receivedUpdates0");
-        PCJ.waitFor ("receivedUpdates1");
-        
+        PCJ.waitFor("receivedUpdates0");
+        PCJ.waitFor("receivedUpdates1");
+
         PCJ.monitor("receivedUpdates0");
         PCJ.monitor("receivedUpdates1");
         PCJ.monitor("executed");
         PCJ.monitor("okCells");
-        PCJ.monitor("bailOut");
         PCJ.monitor("table");
         random = new RandomForRA(myId);
         this.preparedLocally = 0;
+        this.shutDown = false;
 
     }
 
@@ -140,6 +142,10 @@ public class RandomAccessNew implements StartPoint {
 
     private List<Long> generateRemoteUpdates(int update, int CHUNK_SIZE) {
         List<Long> numbers = new ArrayList<>();
+
+        if (isTimeBound() && shutDown) {
+            return numbers;
+        }
 
         for (int k = 0; k < CHUNK_SIZE && update + k < localUpdates; k++) {
             long rand = random.nextLong();
@@ -160,8 +166,8 @@ public class RandomAccessNew implements StartPoint {
             List<Long> updateList = generateRemoteUpdates(update, BUFFERED_UPDATES);
 
             if (isTimeBound()) {
-                if (System.currentTimeMillis() - timeBoundStart > timeBoundSeconds * 1e3) {
-                    PCJ.broadcast("bailOut", true);
+                if (PCJ.myId() == 0) {
+                    shutDown = System.currentTimeMillis() - timeBoundStart > timeBoundSeconds * 1e3;
                 }
             }
 
@@ -169,8 +175,7 @@ public class RandomAccessNew implements StartPoint {
             performUpdates(updateList);
 
             if (isTimeBound()) {
-                boolean finish = PCJ.getLocal("bailOut");
-                if (finish) {
+                if (shutDown) {
                     break;
                 }
             }
@@ -217,6 +222,11 @@ public class RandomAccessNew implements StartPoint {
     private void prepareUpdateLists(int partner, List<Long> updates1, List<Long> keep, List<Long> send, long mask) {
         if (partner > myId) {
             for (long update : updates1) {
+
+                if (update == POISON_PILL) {
+                    shutDown = true;
+                    continue;
+                }
                 if ((update & mask) != 0) {
                     send.add(update);
                 } else {
@@ -225,6 +235,12 @@ public class RandomAccessNew implements StartPoint {
             }
         } else {
             for (long update : updates1) {
+
+                if (update == POISON_PILL) {
+                    shutDown = true;
+                    continue;
+                }
+
                 if ((update & mask) != 0) {
                     keep.add(update);
                 } else {
@@ -232,17 +248,24 @@ public class RandomAccessNew implements StartPoint {
                 }
             }
         }
+
+        if (shutDown) {
+            keep.add(POISON_PILL);
+            send.add(POISON_PILL);
+        }
     }
 
     int whichPE(long pos) {
         return (int) (pos >> logLocalN) & (threadCount - 1);
     }
 
-    int preparedLocally = 0;
-
     private void performUpdates(List<Long> updateList) {
         for (long update : updateList) {
-            updateSingleCell(update);
+            if (update == POISON_PILL) {
+                shutDown = true;
+            } else {
+                updateSingleCell(update);
+            }
         }
     }
 
