@@ -45,7 +45,6 @@ public class RandomAccessNew implements StartPoint {
             nodesFileName = args[0];
         }
         PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
-        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
     }
 
     int logN;
@@ -64,7 +63,7 @@ public class RandomAccessNew implements StartPoint {
     int preparedLocally = 0;
 
     public void main() throws Throwable {
-        String[] rounds = {"Warmup",};
+        String[] rounds = {"Warmup", "After warmup"};
         for (String round : rounds) {
 
             PCJ.log(round + " round");
@@ -87,7 +86,7 @@ public class RandomAccessNew implements StartPoint {
                     updatesPerformedGlobally += (int) PCJ.get(PE, "executed");
                 }
                 double gups = updatesPerformedGlobally * 1e-9 / seconds;
-                System.out.println("Time: " + seconds + " s, updates = " + updatesPerformedGlobally + ", performance: " + gups);
+                System.out.println("Time: " + seconds + " s, global size = " + this.globalN + " updates = " + updatesPerformedGlobally + ", performance: " + gups);
             }
             PCJ.barrier();
 
@@ -107,6 +106,7 @@ public class RandomAccessNew implements StartPoint {
         logNumProcs = (int) (Math.log(threadCount) / Math.log(2));
         logLocalN = logN - logNumProcs;
         localN = 1 << logLocalN;
+        globalN = localN * threadCount;
         localUpdates = 4 * localN;
         long[] table = new long[localN];
         for (int i = 0; i < localN; i++) {
