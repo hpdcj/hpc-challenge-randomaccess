@@ -1,0 +1,830 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/time_bound_lcg.c
+Compiled : 2016-03-19  13:20:12
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/time_bound_lcg.o
+           -c ../../../../RandomAccess/time_bound_lcg.c -I ../../../../include
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/time_bound_lcg.c
+Date     : 03/19/2016  13:20:12
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.              /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.              /* time_bound.c
+    3.               *
+    4.               * Estimates the largest number of updates that
+    5.               * will keep the benchmark's execution time under
+    6.               * a specified time bound.
+    7.               *
+    8.               * The number of updates is estimated by performing
+    9.               * a fraction (currently 1% as defined in time_bound.h)
+   10.               * of the default number of updates and
+   11.               * measuring the execution time. The maximum
+   12.               * number of updates then is estimated based on
+   13.               * the average execution time per update and the time
+   14.               * bound.
+   15.               */
+   16.              
+   17.              
+   18.              #include <hpcc.h>
+   19.              #include "RandomAccess.h"
+   20.              #include "time_bound.h"
+   21.              #include "buckets.h"
+   22.              
+   23.              
+   24.              void HPCC_Power2NodesTimeLCG(HPCC_RandomAccess_tabparams_t tparams, double timeBound, u64Int *EstimatedNumIter) {
+   25.                s64Int i, j;
+   26.                int proc_count;
+   27.              
+   28.                s64Int SendCnt;
+   29.                u64Int Ran;
+   30.                s64Int WhichPe;
+   31.                u64Int LocalOffset;
+   32.                int logLocalTableSize = tparams.logTableSize - tparams.logNumProcs;
+   33.                int NumberReceiving = tparams.NumProcs - 1;
+   34.              #ifdef USE_MULTIPLE_RECV
+   35.                int index, NumRecvs;
+   36.                MPI_Request inreq[MAX_RECV]  = { MPI_REQUEST_NULL };
+   37.                MPI_Request outreq = MPI_REQUEST_NULL;
+   38.              #else
+   39.                MPI_Request inreq, outreq = MPI_REQUEST_NULL;
+   40.              #endif
+   41.                int bufferBase;
+   42.                u64Int inmsg;
+   43.                MPI_Status status;
+   44.                int have_done;
+   45.              
+   46.                int pe;
+   47.                int pendingUpdates;
+   48.                int maxPendingUpdates;
+   49.                int localBufferSize;
+   50.                int peUpdates;
+   51.                int recvUpdates;
+   52.                Bucket_Ptr Buckets;
+   53.              
+   54.                double ra_LoopRealTime;
+   55.                double iterTime;
+   56.              
+   57.                /* Initialize main table */
+   58.    Vr2-----<   for (i=0; i<tparams.LocalTableSize; i++)
+   59.    Vr2----->     HPCC_Table[i] = i + tparams.GlobalStartMyProc;
+   60.              
+   61.                /* Perform updates to main table.  The scalar equivalent is:
+   62.                 *
+   63.                 *     u64Int Ran;
+   64.                 *     Ran = 1;
+   65.                 *     for (i=0; i<NUPDATE; i++) {
+   66.                 *       Ran = LCG_MUL64 * Ran + LCG_ADD64;
+   67.                 *       Table[Ran >> (64 - LOG2_TABSIZE)] ^= Ran;
+   68.                 *     }
+   69.                 */
+   70.              
+   71.  +             ra_LoopRealTime = -RTSEC();
+   72.              
+   73.                pendingUpdates = 0;
+   74.                maxPendingUpdates = MAX_TOTAL_PENDING_UPDATES;
+   75.                localBufferSize = LOCAL_BUFFER_SIZE;
+   76.  +             Buckets = HPCC_InitBuckets(tparams.NumProcs, maxPendingUpdates);
+   77.              
+   78.                SendCnt = 4 * tparams.LocalTableSize/RA_SAMPLE_FACTOR;
+   79.  +             Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+   80.              
+   81.                i = 0;
+   82.              #ifdef USE_MULTIPLE_RECV
+   83.                NumRecvs = (tparams.NumProcs > 4) ? (Mmin(4,MAX_RECV)) : 1;
+   84.  + 1-------<   for (j = 0; j < NumRecvs; j++)
+   85.    1             MPI_Irecv(&LocalRecvBuffer[j*LOCAL_BUFFER_SIZE], localBufferSize,
+   86.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+   87.    1------->               &inreq[j]);
+   88.              #else
+   89.                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+   90.                        MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+   91.              #endif
+   92.              
+   93.  + 1-------<   while (i < SendCnt) {
+   94.    1         
+   95.    1              /* receive messages */
+   96.  + 1 2-----<      do {
+   97.    1 2       #ifdef USE_MULTIPLE_RECV
+   98.  + 1 2              MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+   99.    1 2       #else
+  100.    1 2              MPI_Test(&inreq, &have_done, &status);
+  101.    1 2       #endif
+  102.    1 2              if (have_done) {
+  103.    1 2                if (status.MPI_TAG == UPDATE_TAG) {
+  104.  + 1 2                  MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  105.    1 2       #ifdef USE_MULTIPLE_RECV
+  106.    1 2                  bufferBase = index*LOCAL_BUFFER_SIZE;
+  107.    1 2       #else
+  108.    1 2                  bufferBase = 0;
+  109.    1 2       #endif
+  110.  + 1 2 r4--<            for (j=0; j < recvUpdates; j ++) {
+  111.    1 2 r4                 inmsg = LocalRecvBuffer[bufferBase+j];
+  112.    1 2 r4                 HPCC_Table[(inmsg  >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize - 1)] ^= inmsg;
+  113.    1 2 r4-->            }
+  114.    1 2                } else if (status.MPI_TAG == FINISHED_TAG) {
+  115.    1 2                  /* we got a done message.  Thanks for playing... */
+  116.    1 2                  NumberReceiving--;
+  117.    1 2                } else {
+  118.  + 1 2                  MPI_Abort( MPI_COMM_WORLD, -1 );
+  119.    1 2                }
+  120.    1 2       #ifdef USE_MULTIPLE_RECV
+  121.    1 2                MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  122.    1 2                          tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  123.    1 2                          &inreq[index]);
+  124.    1 2       #else
+  125.    1 2                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  126.    1 2                          MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  127.    1 2       #endif
+  128.    1 2              }
+  129.    1 2----->      } while (have_done && NumberReceiving > 0);
+  130.    1         
+  131.    1         
+  132.    1              if (pendingUpdates < maxPendingUpdates) {
+  133.    1                Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  134.    1                WhichPe = (Ran >> (64 - tparams.logTableSize + logLocalTableSize)) & (tparams.NumProcs - 1);
+  135.    1                if (WhichPe == tparams.MyProc) {
+  136.    1                  LocalOffset = (Ran >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  137.    1                  HPCC_Table[LocalOffset] ^= Ran;
+  138.    1                }
+  139.    1                else {
+  140.  + 1                  HPCC_InsertUpdate(Ran, WhichPe, Buckets);
+  141.    1                  pendingUpdates++;
+  142.    1                }
+  143.    1                i++;
+  144.    1              }
+  145.    1         
+  146.    1              else {
+  147.  + 1                MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  148.    1                if (have_done) {
+  149.    1                  outreq = MPI_REQUEST_NULL;
+  150.  + 1                  pe = HPCC_GetUpdates (Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  151.    1                  MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  152.    1                            MPI_COMM_WORLD, &outreq);
+  153.    1                  pendingUpdates -= peUpdates;
+  154.    1                }
+  155.    1         
+  156.    1              }
+  157.    1------->    }
+  158.              
+  159.                 /* send updates in buckets */
+  160.  + 1-------<    while (pendingUpdates > 0) {
+  161.    1         
+  162.    1              /* receive messages */
+  163.  + 1 2-----<      do {
+  164.    1 2       #ifdef USE_MULTIPLE_RECV
+  165.  + 1 2              MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  166.    1 2       #else
+  167.    1 2              MPI_Test(&inreq, &have_done, &status);
+  168.    1 2       #endif
+  169.    1 2              if (have_done) {
+  170.    1 2                if (status.MPI_TAG == UPDATE_TAG) {
+  171.  + 1 2                  MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  172.    1 2       #ifdef USE_MULTIPLE_RECV
+  173.    1 2                  bufferBase = index * LOCAL_BUFFER_SIZE;
+  174.    1 2       #else
+  175.    1 2                  bufferBase = 0;
+  176.    1 2       #endif
+  177.  + 1 2 r4--<            for (j=0; j < recvUpdates; j ++) {
+  178.    1 2 r4                 inmsg = LocalRecvBuffer[bufferBase+j];
+  179.    1 2 r4                 HPCC_Table[(inmsg >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize-1)] ^= inmsg;
+  180.    1 2 r4-->            }
+  181.    1 2                } else if (status.MPI_TAG == FINISHED_TAG) {
+  182.    1 2                  /* we got a done message.  Thanks for playing... */
+  183.    1 2                  NumberReceiving--;
+  184.    1 2                } else {
+  185.  + 1 2                  MPI_Abort( MPI_COMM_WORLD, -1 );
+  186.    1 2                }
+  187.    1 2       #ifdef USE_MULTIPLE_RECV
+  188.    1 2                MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  189.    1 2                          tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  190.    1 2                          &inreq[index]);
+  191.    1 2       #else
+  192.    1 2                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  193.    1 2                          MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  194.    1 2       #endif
+  195.    1 2              }
+  196.    1 2----->      } while (have_done && NumberReceiving > 0);
+  197.    1         
+  198.    1         
+  199.  + 1              MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  200.    1              if (have_done) {
+  201.    1                outreq = MPI_REQUEST_NULL;
+  202.  + 1                pe = HPCC_GetUpdates(Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  203.    1                MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  204.    1                          MPI_COMM_WORLD, &outreq);
+  205.    1                pendingUpdates -= peUpdates;
+  206.    1              }
+  207.    1------->    }
+  208.              
+  209.              
+  210.                 /* send our done messages */
+  211.  + 1-------<    for (proc_count = 0 ; proc_count < tparams.NumProcs ; ++proc_count) {
+  212.    1              if (proc_count == tparams.MyProc) { tparams.finish_req[tparams.MyProc] = MPI_REQUEST_NULL; continue; }
+  213.    1              /* send garbage - who cares, no one will look at it */
+  214.    1              MPI_Isend(&Ran, 0, tparams.dtype64, proc_count, FINISHED_TAG,
+  215.    1                        MPI_COMM_WORLD, tparams.finish_req + proc_count);
+  216.    1------->    }
+  217.              
+  218.              
+  219.                 /* Finish everyone else up... */
+  220.  + 1-------<    while (NumberReceiving > 0) {
+  221.    1         #ifdef USE_MULTIPLE_RECV
+  222.  + 1              MPI_Waitany(NumRecvs, inreq, &index, &status);
+  223.    1         #else
+  224.    1              MPI_Wait(&inreq, &status);
+  225.    1         #endif
+  226.    1              if (status.MPI_TAG == UPDATE_TAG) {
+  227.  + 1                MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  228.    1         #ifdef USE_MULTIPLE_RECV
+  229.    1                bufferBase = index * LOCAL_BUFFER_SIZE;
+  230.    1         #else
+  231.    1                bufferBase = 0;
+  232.    1         #endif
+  233.  + 1 r4----<        for (j=0; j <recvUpdates; j ++) {
+  234.    1 r4               inmsg = LocalRecvBuffer[bufferBase+j];
+  235.    1 r4               HPCC_Table[(inmsg >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize - 1)] ^= inmsg;
+  236.    1 r4---->        }
+  237.    1              } else if (status.MPI_TAG == FINISHED_TAG) {
+  238.    1                /* we got a done message.  Thanks for playing... */
+  239.    1                NumberReceiving--;
+  240.    1              } else {
+  241.  + 1                MPI_Abort( MPI_COMM_WORLD, -1 );
+  242.    1              }
+  243.    1         #ifdef USE_MULTIPLE_RECV
+  244.    1              MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  245.    1                        tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  246.    1                        &inreq[index]);
+  247.    1         #else
+  248.    1              MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  249.    1                        MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  250.    1         #endif
+  251.    1------->    }
+  252.              
+  253.  +              ra_LoopRealTime += RTSEC();
+  254.              
+  255.                 /* estimate largest number of iterations that satisfy time bound */
+  256.                 iterTime = (double)(ra_LoopRealTime/SendCnt);
+  257.                 *EstimatedNumIter = timeBound/iterTime;
+  258.              #ifdef DEBUG_TIME_BOUND
+  259.                 fprintf (stdout, "MyProc: %4d SampledNumIter: %8d ", tparams.MyProc, SendCnt);
+  260.                 fprintf (stdout, "LoopRealTime: %.8f IterTime: %.8f EstimatedNumIter: %8d\n",
+  261.                     ra_LoopRealTime, iterTime, *EstimatedNumIter);
+  262.              #endif
+  263.              
+  264.                 MPI_Waitall( tparams.NumProcs, tparams.finish_req, tparams.finish_statuses);
+  265.              
+  266.                 /* Be nice and clean up after ourselves */
+  267.  +              HPCC_FreeBuckets(Buckets, tparams.NumProcs);
+  268.              #ifdef USE_MULTIPLE_RECV
+  269.  + 1-------<   for (j = 0; j < NumRecvs; j++) {
+  270.  + 1             MPI_Cancel(&inreq[j]);
+  271.    1             MPI_Wait(&inreq[j], MPI_STATUS_IGNORE);
+  272.    1------->   }
+  273.              #else
+  274.                MPI_Cancel(&inreq);
+  275.                MPI_Wait(&inreq, MPI_STATUS_IGNORE);
+  276.              #endif
+  277.                MPI_Wait(&outreq, MPI_STATUS_IGNORE);
+  278.              
+  279.              /* end multiprocessor code */
+  280.              }
+  281.              
+  282.              
+  283.              
+  284.              void HPCC_AnyNodesTimeLCG(HPCC_RandomAccess_tabparams_t tparams, double timeBound, u64Int *EstimatedNumIter) {
+  285.                s64Int i, j;
+  286.                int proc_count;
+  287.              
+  288.                s64Int SendCnt;
+  289.                u64Int Ran;
+  290.                s64Int WhichPe;
+  291.                u64Int GlobalOffset, LocalOffset;
+  292.                int NumberReceiving = tparams.NumProcs - 1;
+  293.              #ifdef USE_MULTIPLE_RECV
+  294.                int index, NumRecvs;
+  295.                MPI_Request inreq[MAX_RECV]  = { MPI_REQUEST_NULL };
+  296.                MPI_Request outreq = MPI_REQUEST_NULL;
+  297.              #else
+  298.                MPI_Request inreq, outreq = MPI_REQUEST_NULL;
+  299.              #endif
+  300.                u64Int inmsg;
+  301.                int bufferBase;
+  302.                MPI_Status status;
+  303.                int have_done;
+  304.              
+  305.                int pe;
+  306.                int pendingUpdates;
+  307.                int maxPendingUpdates;
+  308.                int localBufferSize;
+  309.                int peUpdates;
+  310.                int recvUpdates;
+  311.                Bucket_Ptr Buckets;
+  312.              
+  313.                double ra_LoopRealTime;
+  314.                double iterTime;
+  315.              
+  316.                /* Initialize main table */
+  317.    Vr2-----<   for (i=0; i<tparams.LocalTableSize; i++)
+  318.    Vr2----->     HPCC_Table[i] = i + tparams.GlobalStartMyProc;
+  319.              
+  320.                /* Perform updates to main table.  The scalar equivalent is:
+  321.                 *
+  322.                 *     u64Int Ran;
+  323.                 *     Ran = 1;
+  324.                 *     for (i=0; i<NUPDATE; i++) {
+  325.                 *       Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  326.                 *       Table[Ran >> (64 - LOG2_TABSIZE)] ^= Ran;
+  327.                 *     }
+  328.                 */
+  329.              
+  330.  +             ra_LoopRealTime = -RTSEC();
+  331.              
+  332.                pendingUpdates = 0;
+  333.                maxPendingUpdates = MAX_TOTAL_PENDING_UPDATES;
+  334.                localBufferSize = LOCAL_BUFFER_SIZE;
+  335.  +             Buckets = HPCC_InitBuckets(tparams.NumProcs, maxPendingUpdates);
+  336.              
+  337.                SendCnt = 4 * tparams.LocalTableSize/RA_SAMPLE_FACTOR;
+  338.  +             Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+  339.              
+  340.                i = 0;
+  341.              #ifdef USE_MULTIPLE_RECV
+  342.                NumRecvs = (tparams.NumProcs > 4) ? (Mmin(4,MAX_RECV)) : 1;
+  343.  + 1-------<   for (j = 0; j < NumRecvs; j++)
+  344.    1             MPI_Irecv(&LocalRecvBuffer[j*LOCAL_BUFFER_SIZE], localBufferSize,
+  345.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  346.    1------->               &inreq[j]);
+  347.              #else
+  348.                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  349.                          MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  350.              #endif
+  351.              
+  352.  + 1-------<   while (i < SendCnt) {
+  353.    1         
+  354.    1             /* receive messages */
+  355.  + 1 2-----<     do {
+  356.    1 2       #ifdef USE_MULTIPLE_RECV
+  357.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  358.    1 2       #else
+  359.    1 2             MPI_Test(&inreq, &have_done, &status);
+  360.    1 2       #endif
+  361.    1 2             if (have_done) {
+  362.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  363.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  364.    1 2       #ifdef USE_MULTIPLE_RECV
+  365.    1 2                 bufferBase = index*LOCAL_BUFFER_SIZE;
+  366.    1 2       #else
+  367.    1 2                 bufferBase = 0;
+  368.    1 2       #endif
+  369.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  370.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  371.    1 2 r4                LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  372.    1 2 r4                HPCC_Table[LocalOffset] ^= inmsg;
+  373.    1 2 r4-->           }
+  374.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  375.    1 2                 /* we got a done message.  Thanks for playing... */
+  376.    1 2                 NumberReceiving--;
+  377.    1 2               } else {
+  378.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  379.    1 2               }
+  380.    1 2       #ifdef USE_MULTIPLE_RECV
+  381.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  382.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  383.    1 2                         &inreq[index]);
+  384.    1 2       #else
+  385.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  386.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  387.    1 2       #endif
+  388.    1 2             }
+  389.    1 2----->     } while (have_done && NumberReceiving > 0);
+  390.    1         
+  391.    1         
+  392.    1             if (pendingUpdates < maxPendingUpdates) {
+  393.    1               Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  394.    1               GlobalOffset = Ran >> (64 - tparams.logTableSize);
+  395.    1               if ( GlobalOffset < tparams.Top)
+  396.    1                 WhichPe = ( GlobalOffset / (tparams.MinLocalTableSize + 1) );
+  397.    1               else
+  398.    1                 WhichPe = ( (GlobalOffset - tparams.Remainder) / tparams.MinLocalTableSize );
+  399.    1         
+  400.    1               if (WhichPe == tparams.MyProc) {
+  401.    1                 LocalOffset = (Ran >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  402.    1                 HPCC_Table[LocalOffset] ^= Ran;
+  403.    1               }
+  404.    1               else {
+  405.  + 1                 HPCC_InsertUpdate(Ran, WhichPe, Buckets);
+  406.    1                 pendingUpdates++;
+  407.    1               }
+  408.    1               i++;
+  409.    1             }
+  410.    1         
+  411.    1             else {
+  412.  + 1               MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  413.    1               if (have_done) {
+  414.    1                 outreq = MPI_REQUEST_NULL;
+  415.  + 1                 pe = HPCC_GetUpdates (Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  416.    1                 MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  417.    1                           MPI_COMM_WORLD, &outreq);
+  418.    1                 pendingUpdates -= peUpdates;
+  419.    1               }
+  420.    1             }
+  421.    1         
+  422.    1------->   }
+  423.              
+  424.              
+  425.                /* send updates in buckets */
+  426.  + 1-------<   while (pendingUpdates > 0) {
+  427.    1         
+  428.    1             /* receive messages */
+  429.  + 1 2-----<     do {
+  430.    1 2       #ifdef USE_MULTIPLE_RECV
+  431.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  432.    1 2       #else
+  433.    1 2             MPI_Test(&inreq, &have_done, &status);
+  434.    1 2       #endif
+  435.    1 2             if (have_done) {
+  436.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  437.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  438.    1 2       #ifdef USE_MULTIPLE_RECV
+  439.    1 2                 bufferBase = index*LOCAL_BUFFER_SIZE;
+  440.    1 2       #else
+  441.    1 2                 bufferBase = 0;
+  442.    1 2       #endif
+  443.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  444.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  445.    1 2 r4                LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  446.    1 2 r4                HPCC_Table[LocalOffset] ^= inmsg;
+  447.    1 2 r4-->           }
+  448.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  449.    1 2                 /* we got a done message.  Thanks for playing... */
+  450.    1 2                 NumberReceiving--;
+  451.    1 2               } else {
+  452.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  453.    1 2               }
+  454.    1 2       #ifdef USE_MULTIPLE_RECV
+  455.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  456.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  457.    1 2                         &inreq[index]);
+  458.    1 2       #else
+  459.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  460.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  461.    1 2       #endif
+  462.    1 2             }
+  463.    1 2----->     } while (have_done && NumberReceiving > 0);
+  464.    1         
+  465.    1         
+  466.  + 1             MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  467.    1             if (have_done) {
+  468.    1               outreq = MPI_REQUEST_NULL;
+  469.  + 1               pe = HPCC_GetUpdates (Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  470.    1               MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  471.    1                         MPI_COMM_WORLD, &outreq);
+  472.    1               pendingUpdates -= peUpdates;
+  473.    1             }
+  474.    1         
+  475.    1------->   }
+  476.              
+  477.                /* send our done messages */
+  478.  + 1-------<   for (proc_count = 0 ; proc_count < tparams.NumProcs ; ++proc_count) {
+  479.    1             if (proc_count == tparams.MyProc) { tparams.finish_req[tparams.MyProc] = MPI_REQUEST_NULL; continue; }
+  480.    1             /* send garbage - who cares, no one will look at it */
+  481.    1             MPI_Isend(&Ran, 0, tparams.dtype64, proc_count, FINISHED_TAG,
+  482.    1                       MPI_COMM_WORLD, tparams.finish_req + proc_count);
+  483.    1------->   }
+  484.              
+  485.                /* Finish everyone else up... */
+  486.  + 1-------<   while (NumberReceiving > 0) {
+  487.    1         #ifdef USE_MULTIPLE_RECV
+  488.  + 1             MPI_Waitany(NumRecvs, inreq, &index, &status);
+  489.    1         #else
+  490.    1             MPI_Wait(&inreq, &status);
+  491.    1         #endif
+  492.    1             if (status.MPI_TAG == UPDATE_TAG) {
+  493.  + 1               MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  494.    1         #ifdef USE_MULTIPLE_RECV
+  495.    1               bufferBase = index * LOCAL_BUFFER_SIZE;
+  496.    1         #else
+  497.    1               bufferBase = 0;
+  498.    1         #endif
+  499.  + 1 r4----<       for (j=0; j <recvUpdates; j ++) {
+  500.    1 r4              inmsg = LocalRecvBuffer[bufferBase+j];
+  501.    1 r4              LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  502.    1 r4              HPCC_Table[LocalOffset] ^= inmsg;
+  503.    1 r4---->       }
+  504.    1             } else if (status.MPI_TAG == FINISHED_TAG) {
+  505.    1               /* we got a done message.  Thanks for playing... */
+  506.    1               NumberReceiving--;
+  507.    1             } else {
+  508.  + 1               MPI_Abort( MPI_COMM_WORLD, -1 );
+  509.    1             }
+  510.    1         #ifdef USE_MULTIPLE_RECV
+  511.    1             MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  512.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  513.    1                       &inreq[index]);
+  514.    1         #else
+  515.    1             MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  516.    1                       MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  517.    1         #endif
+  518.    1------->   }
+  519.              
+  520.  +             ra_LoopRealTime += RTSEC();
+  521.                iterTime = (double) (ra_LoopRealTime/SendCnt);
+  522.                *EstimatedNumIter = (int)(timeBound/iterTime);
+  523.              
+  524.              #ifdef DEBUG_TIME_BOUND
+  525.                fprintf (stdout, "MyProc: %4d SampledNumIter: %8d ", tparams.MyProc, SendCnt);
+  526.                fprintf (stdout, "LoopRealTime: %.8f IterTime: %.8f EstimatedNumIter: %8d\n",
+  527.                   ra_LoopRealTime, iterTime, *EstimatedNumIter);
+  528.              #endif
+  529.              
+  530.                MPI_Waitall( tparams.NumProcs, tparams.finish_req, tparams.finish_statuses);
+  531.              
+  532.                /* Be nice and clean up after ourselves */
+  533.  +             HPCC_FreeBuckets(Buckets, tparams.NumProcs);
+  534.              #ifdef USE_MULTIPLE_RECV
+  535.  + 1-------<   for (j = 0; j < NumRecvs; j++) {
+  536.  + 1             MPI_Cancel(&inreq[j]);
+  537.    1             MPI_Wait(&inreq[j], MPI_STATUS_IGNORE);
+  538.    1------->   }
+  539.              #else
+  540.                MPI_Cancel(&inreq);
+  541.                MPI_Wait(&inreq, MPI_STATUS_IGNORE);
+  542.              #endif
+  543.                MPI_Wait(&outreq, MPI_STATUS_IGNORE);
+  544.              
+  545.                /* end multiprocessor code */
+  546.              }
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 58 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = time_bound_lcg.c, Line = 58 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 71 
+  "MPI_Wtime" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 76 
+  "HPCC_InitBuckets" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 79 
+  "HPCC_starts_LCG" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 84 
+  A loop was not vectorized because it contains a call to function "MPI_Irecv" on line 85.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 96 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 98.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 98 
+  "MPI_Testany" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 104 
+  "MPI_Get_count" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 110 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 110 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 111 and "HPCC_Table" at line 112.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 118 
+  "MPI_Abort" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 140 
+  "HPCC_InsertUpdate" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 147 
+  "MPI_Test" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 150 
+  "HPCC_GetUpdates" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 163 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 165.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 165 
+  "MPI_Testany" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 171 
+  "MPI_Get_count" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 177 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 177 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 178 and "HPCC_Table" at line 179.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 185 
+  "MPI_Abort" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 199 
+  "MPI_Test" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 202 
+  "HPCC_GetUpdates" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 211 
+  A loop was not vectorized because it contains a call to function "MPI_Isend" on line 214.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 220 
+  A loop was not vectorized because it contains a call to function "MPI_Waitany" on line 222.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 222 
+  "MPI_Waitany" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 227 
+  "MPI_Get_count" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 233 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 233 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 234 and "HPCC_Table" at line 235.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 241 
+  "MPI_Abort" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 253 
+  "MPI_Wtime" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 267 
+  "HPCC_FreeBuckets" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 269 
+  A loop was not vectorized because it contains a call to function "MPI_Cancel" on line 270.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 270 
+  "MPI_Cancel" (called from "HPCC_Power2NodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 317 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = time_bound_lcg.c, Line = 317 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 330 
+  "MPI_Wtime" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 335 
+  "HPCC_InitBuckets" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 338 
+  "HPCC_starts_LCG" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 343 
+  A loop was not vectorized because it contains a call to function "MPI_Irecv" on line 344.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 355 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 357.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 357 
+  "MPI_Testany" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 363 
+  "MPI_Get_count" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 369 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 369 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 370 and "HPCC_Table" at line 372.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 378 
+  "MPI_Abort" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 405 
+  "HPCC_InsertUpdate" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 412 
+  "MPI_Test" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 415 
+  "HPCC_GetUpdates" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 429 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 431.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 431 
+  "MPI_Testany" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 437 
+  "MPI_Get_count" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 443 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 443 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 444 and "HPCC_Table" at line 446.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 452 
+  "MPI_Abort" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 466 
+  "MPI_Test" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 469 
+  "HPCC_GetUpdates" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 478 
+  A loop was not vectorized because it contains a call to function "MPI_Isend" on line 481.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 486 
+  A loop was not vectorized because it contains a call to function "MPI_Waitany" on line 488.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 488 
+  "MPI_Waitany" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 493 
+  "MPI_Get_count" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = time_bound_lcg.c, Line = 499 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = time_bound_lcg.c, Line = 499 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 500 and "HPCC_Table" at line 502.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 508 
+  "MPI_Abort" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 520 
+  "MPI_Wtime" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 533 
+  "HPCC_FreeBuckets" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = time_bound_lcg.c, Line = 535 
+  A loop was not vectorized because it contains a call to function "MPI_Cancel" on line 536.
+
+CC-3021 CC: IPA File = time_bound_lcg.c, Line = 536 
+  "MPI_Cancel" (called from "HPCC_AnyNodesTimeLCG") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

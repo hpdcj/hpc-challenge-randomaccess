@@ -1,0 +1,1061 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dtrsm.c
+Compiled : 2016-03-19  13:19:28
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/blas/HPL_dtrsm.o -c ../../../src/blas/HPL_dtrsm.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dtrsm.c
+Date     : 03/19/2016  13:19:28
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifndef HPL_dtrsm
+   53.     
+   54.     #ifdef HPL_CALL_VSIPL
+   55.     
+   56.     #ifdef HPL_STDC_HEADERS
+   57.     static void HPL_dtrsmLLNN
+   58.     (
+   59.        const int                  M,
+   60.        const int                  N,
+   61.        const double               ALPHA,
+   62.        const double               * A,
+   63.        const int                  LDA,
+   64.        double                     * B,
+   65.        const int                  LDB
+   66.     )
+   67.     #else
+   68.     static void HPL_dtrsmLLNN( M, N, ALPHA, A, LDA, B, LDB )
+   69.        const int                  LDA, LDB, M, N;
+   70.        const double               ALPHA;
+   71.        const double               * A;
+   72.        double                     * B;
+   73.     #endif
+   74.     {
+   75.        int                        i, iaik, ibij, ibkj, j, jak, jbj, k;
+   76.     
+   77.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+   78.        {
+   79.           for( i = 0, ibij= jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+   80.           for( k = 0, jak  = 0, ibkj = jbj; k < M; k++, jak += LDA, ibkj += 1 )
+   81.           {
+   82.              B[ibkj] /= A[k+jak];
+   83.              for( i = k+1,    iaik  = k+1+jak, ibij  = k+1+jbj;
+   84.                   i < M; i++, iaik +=1,        ibij += 1 )
+   85.              { B[ibij] -= B[ibkj] * A[iaik]; }
+   86.           }
+   87.        }
+   88.     }
+   89.     
+   90.     #ifdef HPL_STDC_HEADERS
+   91.     static void HPL_dtrsmLLNU
+   92.     (
+   93.        const int                  M,
+   94.        const int                  N,
+   95.        const double               ALPHA,
+   96.        const double               * A,
+   97.        const int                  LDA,
+   98.        double                     * B,
+   99.        const int                  LDB
+  100.     )
+  101.     #else
+  102.     static void HPL_dtrsmLLNU( M, N, ALPHA, A, LDA, B, LDB )
+  103.        const int                  LDA, LDB, M, N;
+  104.        const double               ALPHA;
+  105.        const double               * A;
+  106.        double                     * B;
+  107.     #endif
+  108.     {
+  109.        int                        i, iaik, ibij, ibkj, j, jak, jbj, k;
+  110.     
+  111.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+  112.        {
+  113.           for( i = 0, ibij= jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  114.           for( k = 0, jak  = 0, ibkj = jbj; k < M; k++, jak += LDA, ibkj += 1 )
+  115.           {
+  116.              for( i = k+1,    iaik  = k+1+jak, ibij  = k+1+jbj;
+  117.                   i < M; i++, iaik +=1,        ibij += 1 )
+  118.              { B[ibij] -= B[ibkj] * A[iaik]; }
+  119.           }
+  120.        }
+  121.     }
+  122.     
+  123.     #ifdef HPL_STDC_HEADERS
+  124.     static void HPL_dtrsmLLTN
+  125.     (
+  126.        const int                  M,
+  127.        const int                  N,
+  128.        const double               ALPHA,
+  129.        const double               * A,
+  130.        const int                  LDA,
+  131.        double                     * B,
+  132.        const int                  LDB
+  133.     )
+  134.     #else
+  135.     static void HPL_dtrsmLLTN( M, N, ALPHA, A, LDA, B, LDB )
+  136.        const int                  LDA, LDB, M, N;
+  137.        const double               ALPHA;
+  138.        const double               * A;
+  139.        double                     * B;
+  140.     #endif
+  141.     {
+  142.        register double            t0;
+  143.        int                        i, iaki, ibij, ibkj, j, jai, jbj, k;
+  144.     
+  145.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+  146.        {
+  147.           for( i = M-1,     jai  = (M-1)*LDA, ibij  = M-1+jbj;
+  148.                i >= 0; i--, jai -= LDA,       ibij -= 1 )
+  149.           {
+  150.              t0 = ALPHA * B[ibij];
+  151.              for( k = i+1,    iaki  = i+1+jai, ibkj  = i+1+jbj;
+  152.                   k < M; k++, iaki += 1,       ibkj += 1 )
+  153.              { t0 -= A[iaki] * B[ibkj]; }
+  154.              t0 /= A[i+jai];
+  155.              B[ibij] = t0;
+  156.           }
+  157.        }
+  158.     }
+  159.     
+  160.     #ifdef HPL_STDC_HEADERS
+  161.     static void HPL_dtrsmLLTU
+  162.     (
+  163.        const int                  M,
+  164.        const int                  N,
+  165.        const double               ALPHA,
+  166.        const double               * A,
+  167.        const int                  LDA,
+  168.        double                     * B,
+  169.        const int                  LDB
+  170.     )
+  171.     #else
+  172.     static void HPL_dtrsmLLTU( M, N, ALPHA, A, LDA, B, LDB )
+  173.        const int                  LDA, LDB, M, N;
+  174.        const double               ALPHA;
+  175.        const double               * A;
+  176.        double                     * B;
+  177.     #endif
+  178.     {
+  179.        register double            t0;
+  180.        int                        i, iaki, ibij, ibkj, j, jai, jbj, k;
+  181.     
+  182.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+  183.        {
+  184.           for( i = M-1,     jai  = (M-1)*LDA, ibij  = M-1+jbj;
+  185.                i >= 0; i--, jai -= LDA,       ibij -= 1 )
+  186.           {
+  187.              t0 = ALPHA * B[ibij];
+  188.              for( k = i+1,    iaki  = i+1+jai, ibkj  = i+1+jbj;
+  189.                   k < M; k++, iaki += 1,       ibkj += 1 )
+  190.              { t0 -= A[iaki] * B[ibkj]; }
+  191.              B[ibij] = t0;
+  192.           }
+  193.        }
+  194.     }
+  195.     
+  196.     #ifdef HPL_STDC_HEADERS
+  197.     static void HPL_dtrsmLUNN
+  198.     (
+  199.        const int                  M,
+  200.        const int                  N,
+  201.        const double               ALPHA,
+  202.        const double               * A,
+  203.        const int                  LDA,
+  204.        double                     * B,
+  205.        const int                  LDB
+  206.     )
+  207.     #else
+  208.     static void HPL_dtrsmLUNN( M, N, ALPHA, A, LDA, B, LDB )
+  209.        const int                  LDA, LDB, M, N;
+  210.        const double               ALPHA;
+  211.        const double               * A;
+  212.        double                     * B;
+  213.     #endif
+  214.     {
+  215.        int                        i, iaik, ibij, ibkj, j, jak, jbj, k;
+  216.     
+  217.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+  218.        {
+  219.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  220.           for( k = M-1,     jak  = (M-1)*LDA, ibkj  = M-1+jbj;
+  221.                k >= 0; k--, jak -= LDA,       ibkj -= 1 )
+  222.           {
+  223.              B[ibkj] /= A[k+jak];
+  224.              for( i = 0,      iaik  = jak, ibij  = jbj;
+  225.                   i < k; i++, iaik += 1,   ibij += 1 )
+  226.              { B[ibij] -= B[ibkj] * A[iaik]; }
+  227.           }
+  228.        }
+  229.     }
+  230.     
+  231.     
+  232.     #ifdef HPL_STDC_HEADERS
+  233.     static void HPL_dtrsmLUNU
+  234.     (
+  235.        const int                  M,
+  236.        const int                  N,
+  237.        const double               ALPHA,
+  238.        const double               * A,
+  239.        const int                  LDA,
+  240.        double                     * B,
+  241.        const int                  LDB
+  242.     )
+  243.     #else
+  244.     static void HPL_dtrsmLUNU( M, N, ALPHA, A, LDA, B, LDB )
+  245.        const int                  LDA, LDB, M, N;
+  246.        const double               ALPHA;
+  247.        const double               * A;
+  248.        double                     * B;
+  249.     #endif
+  250.     {
+  251.        int                        i, iaik, ibij, ibkj, j, jak, jbj, k;
+  252.     
+  253.        for( j = 0, jbj = 0; j < N; j++, jbj += LDB )
+  254.        {
+  255.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  256.           for( k = M-1,     jak  = (M-1)*LDA, ibkj  = M-1+jbj;
+  257.                k >= 0; k--, jak -= LDA,       ibkj -= 1 )
+  258.           {
+  259.              for( i = 0,      iaik  = jak, ibij  = jbj;
+  260.                   i < k; i++, iaik += 1,   ibij += 1 )
+  261.              { B[ibij] -= B[ibkj] * A[iaik]; }
+  262.           }
+  263.        }
+  264.     }
+  265.     
+  266.     
+  267.     #ifdef HPL_STDC_HEADERS
+  268.     static void HPL_dtrsmLUTN
+  269.     (
+  270.        const int                  M,
+  271.        const int                  N,
+  272.        const double               ALPHA,
+  273.        const double               * A,
+  274.        const int                  LDA,
+  275.        double                     * B,
+  276.        const int                  LDB
+  277.     )
+  278.     #else
+  279.     static void HPL_dtrsmLUTN( M, N, ALPHA, A, LDA, B, LDB )
+  280.        const int                  LDA, LDB, M, N;
+  281.        const double               ALPHA;
+  282.        const double               * A;
+  283.        double                     * B;
+  284.     #endif
+  285.     {
+  286.        int                        i, iaki, ibij, ibkj, j, jai, jbj, k;
+  287.        register double            t0;
+  288.     
+  289.        for( j = 0, jbj  = 0; j < N; j++, jbj += LDB )
+  290.        {
+  291.           for( i = 0, jai  = 0, ibij = jbj; i < M; i++, jai += LDA, ibij += 1 )
+  292.           {
+  293.              t0 = ALPHA * B[ibij];
+  294.              for( k = 0, iaki = jai, ibkj = jbj; k < i; k++, iaki += 1, ibkj += 1 )
+  295.              { t0 -= A[iaki] * B[ibkj]; }
+  296.              t0 /= A[i+jai];
+  297.              B[ibij] = t0;
+  298.           }
+  299.        }
+  300.     }
+  301.     
+  302.     
+  303.     #ifdef HPL_STDC_HEADERS
+  304.     static void HPL_dtrsmLUTU
+  305.     (
+  306.        const int                  M,
+  307.        const int                  N,
+  308.        const double               ALPHA,
+  309.        const double               * A,
+  310.        const int                  LDA,
+  311.        double                     * B,
+  312.        const int                  LDB
+  313.     )
+  314.     #else
+  315.     static void HPL_dtrsmLUTU( M, N, ALPHA, A, LDA, B, LDB )
+  316.        const int                  LDA, LDB, M, N;
+  317.        const double               ALPHA;
+  318.        const double               * A;
+  319.        double                     * B;
+  320.     #endif
+  321.     {
+  322.        register double            t0;
+  323.        int                        i, iaki, ibij, ibkj, j, jai, jbj, k;
+  324.     
+  325.        for( j = 0, jbj  = 0; j < N; j++, jbj += LDB )
+  326.        {
+  327.           for( i = 0, jai  = 0, ibij = jbj; i < M; i++, jai += LDA, ibij += 1 )
+  328.           {
+  329.              t0 = ALPHA * B[ibij];
+  330.              for( k = 0, iaki = jai, ibkj = jbj; k < i; k++, iaki += 1, ibkj += 1 )
+  331.              { t0 -= A[iaki] * B[ibkj]; }
+  332.              B[ibij] = t0;
+  333.           }
+  334.        }
+  335.     }
+  336.     
+  337.     
+  338.     #ifdef HPL_STDC_HEADERS
+  339.     static void HPL_dtrsmRLNN
+  340.     (
+  341.        const int                  M,
+  342.        const int                  N,
+  343.        const double               ALPHA,
+  344.        const double               * A,
+  345.        const int                  LDA,
+  346.        double                     * B,
+  347.        const int                  LDB
+  348.     )
+  349.     #else
+  350.     static void HPL_dtrsmRLNN( M, N, ALPHA, A, LDA, B, LDB )
+  351.        const int                  LDA, LDB, M, N;
+  352.        const double               ALPHA;
+  353.        const double               * A;
+  354.        double                     * B;
+  355.     #endif
+  356.     {
+  357.        int                        i, iakj, ibij, ibik, j, jaj, jbj, jbk, k;
+  358.     
+  359.        for( j = N-1,      jaj  = (N-1)*LDA, jbj  = (N-1)*LDB;
+  360.             j >= 0;  j--, jaj -= LDA,       jbj -= LDB )
+  361.        {
+  362.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  363.           for( k = j+1,    iakj  = j+1+jaj, jbk  = (j+1)*LDB;
+  364.                k < N; k++, iakj += 1,       jbk += LDB )
+  365.           {
+  366.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  367.              { B[ibij] -= A[iakj] * B[ibik]; }
+  368.           }
+  369.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] /= A[j+jaj]; }
+  370.        }
+  371.     }
+  372.     
+  373.     
+  374.     #ifdef HPL_STDC_HEADERS
+  375.     static void HPL_dtrsmRLNU
+  376.     (
+  377.        const int                  M,
+  378.        const int                  N,
+  379.        const double               ALPHA,
+  380.        const double               * A,
+  381.        const int                  LDA,
+  382.        double                     * B,
+  383.        const int                  LDB
+  384.     )
+  385.     #else
+  386.     static void HPL_dtrsmRLNU( M, N, ALPHA, A, LDA, B, LDB )
+  387.        const int                  LDA, LDB, M, N;
+  388.        const double               ALPHA;
+  389.        const double               * A;
+  390.        double                     * B;
+  391.     #endif
+  392.     {
+  393.        int                        i, iakj, ibij, ibik, j, jaj, jbj, jbk, k;
+  394.     
+  395.        for( j = N-1,      jaj  = (N-1)*LDA, jbj  = (N-1)*LDB;
+  396.             j >= 0;  j--, jaj -= LDA,       jbj -= LDB )
+  397.        {
+  398.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  399.           for( k = j+1,    iakj  = j+1+jaj, jbk  = (j+1)*LDB;
+  400.                k < N; k++, iakj += 1,       jbk += LDB )
+  401.           {
+  402.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  403.              { B[ibij] -= A[iakj] * B[ibik]; }
+  404.           }
+  405.        }
+  406.     }
+  407.     
+  408.     
+  409.     #ifdef HPL_STDC_HEADERS
+  410.     static void HPL_dtrsmRLTN
+  411.     (
+  412.        const int                  M,
+  413.        const int                  N,
+  414.        const double               ALPHA,
+  415.        const double               * A,
+  416.        const int                  LDA,
+  417.        double                     * B,
+  418.        const int                  LDB
+  419.     )
+  420.     #else
+  421.     static void HPL_dtrsmRLTN( M, N, ALPHA, A, LDA, B, LDB )
+  422.        const int                  LDA, LDB, M, N;
+  423.        const double               ALPHA;
+  424.        const double               * A;
+  425.        double                     * B;
+  426.     #endif
+  427.     {
+  428.        register double            t0;
+  429.        int                        i, iajk, ibij, ibik, j, jak, jbj, jbk, k;
+  430.     
+  431.        for( k = 0, jak = 0, jbk = 0; k < N; k++, jak += LDA, jbk += LDB )
+  432.        {
+  433.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] /= A[k+jak]; }
+  434.           for( j = k+1,    iajk  = (k+1)+jak, jbj  = (k+1)*LDB;
+  435.                j < N; j++, iajk += 1,         jbj += LDB )
+  436.           {
+  437.              t0 = A[iajk];
+  438.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  439.              { B[ibij] -= t0 * B[ibik]; }
+  440.           }
+  441.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] *= ALPHA; }
+  442.        }
+  443.     }
+  444.     
+  445.     
+  446.     #ifdef HPL_STDC_HEADERS
+  447.     static void HPL_dtrsmRLTU
+  448.     (
+  449.        const int                  M,
+  450.        const int                  N,
+  451.        const double               ALPHA,
+  452.        const double               * A,
+  453.        const int                  LDA,
+  454.        double                     * B,
+  455.        const int                  LDB
+  456.     )
+  457.     #else
+  458.     static void HPL_dtrsmRLTU( M, N, ALPHA, A, LDA, B, LDB )
+  459.        const int                  LDA, LDB, M, N;
+  460.        const double               ALPHA;
+  461.        const double               * A;
+  462.        double                     * B;
+  463.     #endif
+  464.     {
+  465.        register double            t0;
+  466.        int                        i, iajk, ibij, ibik, j, jak, jbj, jbk, k;
+  467.     
+  468.        for( k = 0, jak = 0, jbk = 0; k < N; k++, jak += LDA, jbk += LDB )
+  469.        {
+  470.           for( j = k+1,    iajk  = (k+1)+jak, jbj  = (k+1)*LDB;
+  471.                j < N; j++, iajk += 1,         jbj += LDB )
+  472.           {
+  473.              t0 = A[iajk];
+  474.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  475.              { B[ibij] -= t0 * B[ibik]; }
+  476.           }
+  477.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] *= ALPHA; }
+  478.        }
+  479.     }
+  480.     
+  481.     
+  482.     #ifdef HPL_STDC_HEADERS
+  483.     static void HPL_dtrsmRUNN
+  484.     (
+  485.        const int                  M,
+  486.        const int                  N,
+  487.        const double               ALPHA,
+  488.        const double               * A,
+  489.        const int                  LDA,
+  490.        double                     * B,
+  491.        const int                  LDB
+  492.     )
+  493.     #else
+  494.     static void HPL_dtrsmRUNN( M, N, ALPHA, A, LDA, B, LDB )
+  495.        const int                  LDA, LDB, M, N;
+  496.        const double               ALPHA;
+  497.        const double               * A;
+  498.        double                     * B;
+  499.     #endif
+  500.     {
+  501.        int                        i, iakj, ibij, ibik, j, jaj, jbj, jbk, k;
+  502.     
+  503.        for( j = 0, jaj = 0, jbj = 0; j < N; j++, jaj += LDA, jbj += LDB )
+  504.        {
+  505.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  506.           for( k = 0, iakj = jaj, jbk = 0; k < j; k++, iakj += 1, jbk += LDB )
+  507.           {
+  508.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  509.              { B[ibij] -= A[iakj] * B[ibik]; }
+  510.           }
+  511.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] /= A[j+jaj]; }
+  512.        }
+  513.     }
+  514.     
+  515.     
+  516.     #ifdef HPL_STDC_HEADERS
+  517.     static void HPL_dtrsmRUNU
+  518.     (
+  519.        const int                  M,
+  520.        const int                  N,
+  521.        const double               ALPHA,
+  522.        const double               * A,
+  523.        const int                  LDA,
+  524.        double                     * B,
+  525.        const int                  LDB
+  526.     )
+  527.     #else
+  528.     static void HPL_dtrsmRUNU( M, N, ALPHA, A, LDA, B, LDB )
+  529.        const int                  LDA, LDB, M, N;
+  530.        const double               ALPHA;
+  531.        const double               * A;
+  532.        double                     * B;
+  533.     #endif
+  534.     {
+  535.        int                        i, iakj, ibij, ibik, j, jaj, jbj, jbk, k;
+  536.     
+  537.        for( j = 0, jaj = 0, jbj = 0; j < N; j++, jaj += LDA, jbj += LDB )
+  538.        {
+  539.           for( i = 0, ibij = jbj; i < M; i++, ibij += 1 ) { B[ibij] *= ALPHA; }
+  540.           for( k = 0, iakj = jaj, jbk = 0; k < j; k++, iakj += 1, jbk += LDB )
+  541.           {
+  542.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  543.              { B[ibij] -= A[iakj] * B[ibik]; }
+  544.           }
+  545.        }
+  546.     }
+  547.     
+  548.     
+  549.     #ifdef HPL_STDC_HEADERS
+  550.     static void HPL_dtrsmRUTN
+  551.     (
+  552.        const int                  M,
+  553.        const int                  N,
+  554.        const double               ALPHA,
+  555.        const double               * A,
+  556.        const int                  LDA,
+  557.        double                     * B,
+  558.        const int                  LDB
+  559.     )
+  560.     #else
+  561.     static void HPL_dtrsmRUTN( M, N, ALPHA, A, LDA, B, LDB )
+  562.        const int                  LDA, LDB, M, N;
+  563.        const double               ALPHA;
+  564.        const double               * A;
+  565.        double                     * B;
+  566.     #endif
+  567.     {
+  568.        register double            t0;
+  569.        int                        i, iajk, ibij, ibik, j, jak, jbj, jbk, k;
+  570.     
+  571.        for( k = N-1,     jak  = (N-1)*LDA, jbk  = (N-1)*LDB;
+  572.             k >= 0; k--, jak -= LDA,       jbk -= LDB )
+  573.        {
+  574.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] /= A[k+jak]; }
+  575.           for( j = 0, iajk = jak, jbj = 0; j < k; j++, iajk += 1, jbj += LDB )
+  576.           {
+  577.              t0 = A[iajk];
+  578.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  579.              { B[ibij] -= t0 * B[ibik]; }
+  580.           }
+  581.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] *= ALPHA; }
+  582.        }
+  583.     }
+  584.     
+  585.     #ifdef HPL_STDC_HEADERS
+  586.     static void HPL_dtrsmRUTU
+  587.     (
+  588.        const int                  M,
+  589.        const int                  N,
+  590.        const double               ALPHA,
+  591.        const double               * A,
+  592.        const int                  LDA,
+  593.        double                     * B,
+  594.        const int                  LDB
+  595.     )
+  596.     #else
+  597.     static void HPL_dtrsmRUTU( M, N, ALPHA, A, LDA, B, LDB )
+  598.        const int                  LDA, LDB, M, N;
+  599.        const double               ALPHA;
+  600.        const double               * A;
+  601.        double                     * B;
+  602.     #endif
+  603.     {
+  604.        register double            t0;
+  605.        int                        i, iajk, ibij, ibik, j, jak, jbj, jbk, k;
+  606.     
+  607.        for( k = N-1,     jak  = (N-1)*LDA, jbk  = (N-1)*LDB;
+  608.             k >= 0; k--, jak -= LDA,       jbk -= LDB )
+  609.        {
+  610.           for( j = 0, iajk = jak, jbj = 0; j < k; j++, iajk += 1, jbj += LDB )
+  611.           {
+  612.              t0 = A[iajk];
+  613.              for( i = 0, ibij = jbj, ibik = jbk; i < M; i++, ibij += 1, ibik += 1 )
+  614.              { B[ibij] -= t0 * B[ibik]; }
+  615.           }
+  616.           for( i = 0, ibik = jbk; i < M; i++, ibik += 1 ) { B[ibik] *= ALPHA; }
+  617.        }
+  618.     }
+  619.     
+  620.     #ifdef HPL_STDC_HEADERS
+  621.     static void HPL_dtrsm0
+  622.     (
+  623.        const enum HPL_SIDE        SIDE,
+  624.        const enum HPL_UPLO        UPLO,
+  625.        const enum HPL_TRANS       TRANS,
+  626.        const enum HPL_DIAG        DIAG,
+  627.        const int                  M,
+  628.        const int                  N,
+  629.        const double               ALPHA,
+  630.        const double               * A,
+  631.        const int                  LDA,
+  632.        double                     * B,
+  633.        const int                  LDB
+  634.     )
+  635.     #else
+  636.     static void HPL_dtrsm0( SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A, LDA, B, LDB )
+  637.        const enum HPL_SIDE        SIDE;
+  638.        const enum HPL_UPLO        UPLO;
+  639.        const enum HPL_TRANS       TRANS;
+  640.        const enum HPL_DIAG        DIAG;
+  641.        const int                  LDA, LDB, M, N;
+  642.        const double               ALPHA;
+  643.        const double               * A;
+  644.        double                     * B;
+  645.     #endif
+  646.     { 
+  647.        int                        i, j;
+  648.     
+  649.        if( ( M == 0 ) || ( N == 0 ) ) return;
+  650.      
+  651.        if( ALPHA == HPL_rzero )
+  652.        {
+  653.           for( j = 0; j < N; j++ )
+  654.           {  for( i = 0; i < M; i++ ) *(B+i+j*LDB) = HPL_rzero; }
+  655.           return;
+  656.        }
+  657.     
+  658.        if( SIDE == HplLeft )
+  659.        {
+  660.           if( UPLO == HplUpper )
+  661.           {
+  662.              if( TRANS == HplNoTrans )
+  663.              {
+  664.                 if( DIAG == HplNonUnit )
+  665.                 {      HPL_dtrsmLUNN( M, N, ALPHA, A, LDA, B, LDB ); }
+  666.                 else { HPL_dtrsmLUNU( M, N, ALPHA, A, LDA, B, LDB ); }
+  667.              }
+  668.              else
+  669.              {
+  670.                 if( DIAG == HplNonUnit )
+  671.                 {      HPL_dtrsmLUTN( M, N, ALPHA, A, LDA, B, LDB ); }
+  672.                 else { HPL_dtrsmLUTU( M, N, ALPHA, A, LDA, B, LDB ); }
+  673.              }
+  674.           }
+  675.           else
+  676.           {
+  677.              if( TRANS == HplNoTrans )
+  678.              {
+  679.                 if( DIAG == HplNonUnit )
+  680.                 {      HPL_dtrsmLLNN( M, N, ALPHA, A, LDA, B, LDB ); }
+  681.                 else { HPL_dtrsmLLNU( M, N, ALPHA, A, LDA, B, LDB ); }
+  682.              }
+  683.              else
+  684.              {
+  685.                 if( DIAG == HplNonUnit )
+  686.                 {      HPL_dtrsmLLTN( M, N, ALPHA, A, LDA, B, LDB ); }
+  687.                 else { HPL_dtrsmLLTU( M, N, ALPHA, A, LDA, B, LDB ); }
+  688.              }
+  689.           }
+  690.        }
+  691.        else
+  692.        {
+  693.           if( UPLO == HplUpper )
+  694.           {
+  695.              if( TRANS == HplNoTrans )
+  696.              {
+  697.                 if( DIAG == HplNonUnit )
+  698.                 {      HPL_dtrsmRUNN( M, N, ALPHA, A, LDA, B, LDB ); }
+  699.                 else { HPL_dtrsmRUNU( M, N, ALPHA, A, LDA, B, LDB ); }
+  700.              }
+  701.              else
+  702.              {
+  703.                 if( DIAG == HplNonUnit )
+  704.                 {      HPL_dtrsmRUTN( M, N, ALPHA, A, LDA, B, LDB ); }
+  705.                 else { HPL_dtrsmRUTU( M, N, ALPHA, A, LDA, B, LDB ); }
+  706.              }
+  707.           }
+  708.           else
+  709.           {
+  710.              if( TRANS == HplNoTrans )
+  711.              {
+  712.                 if( DIAG == HplNonUnit )
+  713.                 {      HPL_dtrsmRLNN( M, N, ALPHA, A, LDA, B, LDB ); }
+  714.                 else { HPL_dtrsmRLNU( M, N, ALPHA, A, LDA, B, LDB ); }
+  715.              }
+  716.              else
+  717.              {
+  718.                 if( DIAG == HplNonUnit )
+  719.                 {      HPL_dtrsmRLTN( M, N, ALPHA, A, LDA, B, LDB ); }
+  720.                 else { HPL_dtrsmRLTU( M, N, ALPHA, A, LDA, B, LDB ); }
+  721.              }
+  722.           }
+  723.        }
+  724.     }
+  725.     
+  726.     #endif
+  727.     
+  728.     #ifdef HPL_STDC_HEADERS
+  729.     void HPL_dtrsm
+  730.     (
+  731.        const enum HPL_ORDER             ORDER,
+  732.        const enum HPL_SIDE              SIDE,
+  733.        const enum HPL_UPLO              UPLO,
+  734.        const enum HPL_TRANS             TRANS,
+  735.        const enum HPL_DIAG              DIAG,
+  736.        const int                        M,
+  737.        const int                        N,
+  738.        const double                     ALPHA,
+  739.        const double *                   A,
+  740.        const int                        LDA,
+  741.        double *                         B,
+  742.        const int                        LDB
+  743.     )
+  744.     #else
+  745.     void HPL_dtrsm
+  746.     ( ORDER, SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A, LDA, B, LDB )
+  747.        const enum HPL_ORDER             ORDER;
+  748.        const enum HPL_SIDE              SIDE;
+  749.        const enum HPL_UPLO              UPLO;
+  750.        const enum HPL_TRANS             TRANS;
+  751.        const enum HPL_DIAG              DIAG;
+  752.        const int                        M;
+  753.        const int                        N;
+  754.        const double                     ALPHA;
+  755.        const double *                   A;
+  756.        const int                        LDA;
+  757.        double *                         B;
+  758.        const int                        LDB;
+  759.     #endif
+  760.     {
+  761.     /* 
+  762.      * Purpose
+  763.      * =======
+  764.      *
+  765.      * HPL_dtrsm solves one of the matrix equations
+  766.      *  
+  767.      *    op( A ) * X = alpha * B,   or  X * op( A ) = alpha * B,
+  768.      *  
+  769.      * where alpha is a scalar, X and B are m by n matrices, A is a unit, or
+  770.      * non-unit, upper or lower triangular matrix and op(A) is one of
+  771.      *  
+  772.      *    op( A ) = A   or   op( A ) = A^T.
+  773.      *  
+  774.      * The matrix X is overwritten on B.
+  775.      *  
+  776.      * No test for  singularity  or  near-singularity  is included  in  this
+  777.      * routine. Such tests must be performed before calling this routine.
+  778.      *
+  779.      * Arguments
+  780.      * =========
+  781.      *
+  782.      * ORDER   (local input)                 const enum HPL_ORDER
+  783.      *         On entry, ORDER  specifies the storage format of the operands
+  784.      *         as follows:                                                  
+  785.      *            ORDER = HplRowMajor,                                      
+  786.      *            ORDER = HplColumnMajor.                                   
+  787.      *
+  788.      * SIDE    (local input)                 const enum HPL_SIDE
+  789.      *         On entry, SIDE  specifies  whether  op(A) appears on the left
+  790.      *         or right of X as follows:
+  791.      *            SIDE==HplLeft    op( A ) * X = alpha * B,
+  792.      *            SIDE==HplRight   X * op( A ) = alpha * B.
+  793.      *
+  794.      * UPLO    (local input)                 const enum HPL_UPLO
+  795.      *         On  entry,   UPLO   specifies  whether  the  upper  or  lower
+  796.      *         triangular  part  of the array  A  is to be referenced.  When
+  797.      *         UPLO==HplUpper, only  the upper triangular part of A is to be
+  798.      *         referenced, otherwise only the lower triangular part of A is 
+  799.      *         to be referenced. 
+  800.      *
+  801.      * TRANS   (local input)                 const enum HPL_TRANS
+  802.      *         On entry, TRANSA  specifies the form of  op(A)  to be used in
+  803.      *         the matrix-matrix operation follows:                         
+  804.      *            TRANSA==HplNoTrans    : op( A ) = A,                     
+  805.      *            TRANSA==HplTrans      : op( A ) = A^T,                   
+  806.      *            TRANSA==HplConjTrans  : op( A ) = A^T.                   
+  807.      *
+  808.      * DIAG    (local input)                 const enum HPL_DIAG
+  809.      *         On entry,  DIAG  specifies  whether  A  is unit triangular or
+  810.      *         not. When DIAG==HplUnit,  A is assumed to be unit triangular,
+  811.      *         and otherwise, A is not assumed to be unit triangular.
+  812.      *
+  813.      * M       (local input)                 const int
+  814.      *         On entry,  M  specifies  the number of rows of the  matrix B.
+  815.      *         M must be at least zero.
+  816.      *
+  817.      * N       (local input)                 const int
+  818.      *         On entry, N  specifies the number of columns of the matrix B.
+  819.      *         N must be at least zero.
+  820.      *
+  821.      * ALPHA   (local input)                 const double
+  822.      *         On entry, ALPHA specifies the scalar alpha.   When  ALPHA  is
+  823.      *         supplied  as  zero then the elements of the matrix B need not
+  824.      *         be set on input.
+  825.      *
+  826.      * A       (local input)                 const double *
+  827.      *         On entry,  A  points  to an array of size equal to or greater
+  828.      *         than LDA * k,  where  k is m  when  SIDE==HplLeft  and  is  n
+  829.      *         otherwise.  Before  entry  with  UPLO==HplUpper,  the leading
+  830.      *         k by k upper triangular  part of the array A must contain the
+  831.      *         upper triangular  matrix and the  strictly  lower  triangular
+  832.      *         part of A is not referenced.  When  UPLO==HplLower on  entry,
+  833.      *         the  leading k by k lower triangular part of the array A must
+  834.      *         contain the lower triangular matrix  and  the  strictly upper
+  835.      *         triangular part of A is not referenced.
+  836.      *          
+  837.      *         Note that  when  DIAG==HplUnit,  the  diagonal elements of  A
+  838.      *         not referenced  either,  but are assumed to be unity.
+  839.      *
+  840.      * LDA     (local input)                 const int
+  841.      *         On entry,  LDA  specifies  the  leading  dimension  of  A  as
+  842.      *         declared  in  the  calling  (sub) program.  LDA  must  be  at
+  843.      *         least MAX(1,m) when SIDE==HplLeft, and MAX(1,n) otherwise.
+  844.      *
+  845.      * B       (local input/output)          double *
+  846.      *         On entry,  B  points  to an array of size equal to or greater
+  847.      *         than LDB * n.  Before entry, the leading  m by n  part of the
+  848.      *         array B must contain the matrix  B, except when beta is zero,
+  849.      *         in which case B need not be set on entry.  On exit, the array
+  850.      *         B is overwritten by the m by n solution matrix.
+  851.      *
+  852.      * LDB     (local input)                 const int
+  853.      *         On entry,  LDB  specifies  the  leading  dimension  of  B  as
+  854.      *         declared  in  the  calling  (sub) program.  LDB  must  be  at
+  855.      *         least MAX(1,m).
+  856.      *
+  857.      * ---------------------------------------------------------------------
+  858.      */ 
+  859.     #ifdef HPL_CALL_CBLAS
+  860.        cblas_dtrsm( ORDER, SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A, LDA, B, LDB );
+  861.     #endif
+  862.     #ifdef HPL_CALL_VSIPL
+  863.        if( ORDER == HplColumnMajor )
+  864.        {
+  865.           HPL_dtrsm0( SIDE, UPLO, TRANS, DIAG, M, N, ALPHA, A, LDA, B, LDB );
+  866.        }
+  867.        else
+  868.        {
+  869.           HPL_dtrsm0( ( SIDE == HplRight ? HplLeft  : HplRight ),
+  870.                       ( UPLO == HplLower ? HplUpper : HplLower ),
+  871.                       TRANS, DIAG, N, M, ALPHA, A, LDA, B, LDB );
+  872.        }
+  873.     #endif
+  874.     #ifdef HPL_CALL_FBLAS
+  875.        double                    alpha = ALPHA;
+  876.     #ifdef StringSunStyle
+  877.     #if defined( HPL_USE_F77_INTEGER_DEF )
+  878.        F77_INTEGER               IONE = 1;
+  879.     #else
+  880.        int                       IONE = 1;
+  881.     #endif
+  882.     #endif
+  883.     #ifdef StringStructVal
+  884.        F77_CHAR                  fside;
+  885.        F77_CHAR                  fuplo;
+  886.        F77_CHAR                  ftran;
+  887.        F77_CHAR                  fdiag;
+  888.     #endif
+  889.     #ifdef StringStructPtr
+  890.        F77_CHAR                  fside;
+  891.        F77_CHAR                  fuplo;
+  892.        F77_CHAR                  ftran;
+  893.        F77_CHAR                  fdiag;
+  894.     #endif
+  895.     #ifdef StringCrayStyle
+  896.        F77_CHAR                  fside;
+  897.        F77_CHAR                  fuplo;
+  898.        F77_CHAR                  ftran;
+  899.        F77_CHAR                  fdiag;
+  900.     #endif
+  901.     #ifdef HPL_USE_F77_INTEGER_DEF
+  902.        const F77_INTEGER         F77M   = M,   F77N   = N,
+  903.                                  F77lda = LDA, F77ldb = LDB;
+  904.     #else
+  905.     #define  F77M                M
+  906.     #define  F77N                N
+  907.     #define  F77lda              LDA
+  908.     #define  F77ldb              LDB
+  909.     #endif
+  910.        char                      cside, cuplo, ctran, cdiag;
+  911.     
+  912.        if(      TRANS == HplNoTrans ) ctran = 'N';
+  913.        else if( TRANS == HplTrans   ) ctran = 'T';
+  914.        else                           ctran = 'C';
+  915.        cdiag = ( DIAG == HplUnit  ? 'U' : 'N' );
+  916.     
+  917.        if( ORDER == HplColumnMajor )
+  918.        {
+  919.           cside = ( SIDE == HplRight ? 'R' : 'L' );
+  920.           cuplo = ( UPLO == HplLower ? 'L' : 'U' );
+  921.     #ifdef StringSunStyle
+  922.  +        F77dtrsm( &cside, &cuplo, &ctran, &cdiag, &F77M, &F77N, &alpha,
+  923.                     A, &F77lda, B, &F77ldb, IONE, IONE, IONE, IONE );
+  924.     #endif
+  925.     #ifdef StringCrayStyle
+  926.           fside = HPL_C2F_CHAR( cside ); fuplo = HPL_C2F_CHAR( cuplo );
+  927.           ftran = HPL_C2F_CHAR( ctran ); fdiag = HPL_C2F_CHAR( cdiag );
+  928.           F77dtrsm( fside,  fuplo,  ftran,  fdiag,  &F77M, &F77N, &alpha,
+  929.                     A, &F77lda, B, &F77ldb );
+  930.     #endif
+  931.     #ifdef StringStructVal
+  932.           fside.len = 1; fside.cp = &cside; fuplo.len = 1; fuplo.cp = &cuplo;
+  933.           ftran.len = 1; ftran.cp = &ctran; fdiag.len = 1; fdiag.cp = &cdiag;
+  934.           F77dtrsm( fside,  fuplo,  ftran,  fdiag,  &F77M, &F77N, &alpha,
+  935.                     A, &F77lda, B, &F77ldb );
+  936.     #endif
+  937.     #ifdef StringStructPtr
+  938.           fside.len = 1; fside.cp = &cside; fuplo.len = 1; fuplo.cp = &cuplo;
+  939.           ftran.len = 1; ftran.cp = &ctran; fdiag.len = 1; fdiag.cp = &cdiag;
+  940.           F77dtrsm( &fside, &fuplo, &ftran, &fdiag, &F77M, &F77N, &alpha,
+  941.                     A, &F77lda, B, &F77ldb );
+  942.     #endif
+  943.        }
+  944.        else
+  945.        {
+  946.           cside = ( SIDE == HplRight ? 'L' : 'R' );
+  947.           cuplo = ( UPLO == HplLower ? 'U' : 'L' );
+  948.     #ifdef StringSunStyle
+  949.  +        F77dtrsm( &cside, &cuplo, &ctran, &cdiag, &F77N, &F77M, &alpha,
+  950.                     A, &F77lda, B, &F77ldb, IONE, IONE, IONE, IONE );
+  951.     #endif
+  952.     #ifdef StringCrayStyle
+  953.           fside = HPL_C2F_CHAR( cside ); fuplo = HPL_C2F_CHAR( cuplo );
+  954.           ftran = HPL_C2F_CHAR( ctran ); fdiag = HPL_C2F_CHAR( cdiag );
+  955.           F77dtrsm( fside,  fuplo,  ftran,  fdiag,  &F77N, &F77M, &alpha,
+  956.                     A, &F77lda, B, &F77ldb );
+  957.     #endif
+  958.     #ifdef StringStructVal
+  959.           fside.len = 1; fside.cp = &cside; fuplo.len = 1; fuplo.cp = &cuplo;
+  960.           ftran.len = 1; ftran.cp = &ctran; fdiag.len = 1; fdiag.cp = &cdiag;
+  961.           F77dtrsm( fside,  fuplo,  ftran,  fdiag,  &F77N, &F77M, &alpha,
+  962.                     A, &F77lda, B, &F77ldb );
+  963.     #endif
+  964.     #ifdef StringStructPtr
+  965.           fside.len = 1; fside.cp = &cside; fuplo.len = 1; fuplo.cp = &cuplo;
+  966.           ftran.len = 1; ftran.cp = &ctran; fdiag.len = 1; fdiag.cp = &cdiag;
+  967.           F77dtrsm( &fside, &fuplo, &ftran, &fdiag, &F77N, &F77M, &alpha,
+  968.                     A, &F77lda, B, &F77ldb );
+  969.     #endif
+  970.        }
+  971.     #endif
+  972.     /*
+  973.      * End of HPL_dtrsm
+  974.      */
+  975.     }
+  976.     
+  977.     #endif
+
+CC-3021 CC: IPA File = HPL_dtrsm.c, Line = 922 
+  "dtrsm_" (called from "HPL_dtrsm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_dtrsm.c, Line = 949 
+  "dtrsm_" (called from "HPL_dtrsm") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

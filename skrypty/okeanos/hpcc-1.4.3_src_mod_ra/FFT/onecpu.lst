@@ -1,0 +1,246 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/onecpu.c
+Compiled : 2016-03-19  13:20:31
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/onecpu.o -c ../../../../FFT/onecpu.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/onecpu.c
+Date     : 03/19/2016  13:20:32
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.         
+    3.         #include <hpcc.h>
+    4.         
+    5.         int
+    6.         HPCC_StarFFT(HPCC_Params *params) {
+    7.           int commRank, commSize;
+    8.           int rv, errCount, failure = 0, failureAll = 0;
+    9.           double localGflops, minGflops, maxGflops, avgGflops;
+   10.           int n;
+   11.           FILE *outputFile;
+   12.           MPI_Comm comm = MPI_COMM_WORLD;
+   13.         
+   14.           localGflops = minGflops = maxGflops = avgGflops = 0.0;
+   15.         
+   16.  +        MPI_Comm_size( comm, &commSize );
+   17.  +        MPI_Comm_rank( comm, &commRank );
+   18.         
+   19.  +        rv = HPCC_TestFFT( params, 0 == commRank, &localGflops, &n, &failure );
+   20.           params->FFT_N = n;
+   21.         
+   22.  +        MPI_Reduce( &rv, &errCount, 1, MPI_INT, MPI_SUM, 0, comm );
+   23.  +        MPI_Allreduce( &failure, &failureAll, 1, MPI_INT, MPI_MAX, comm );
+   24.           if (failureAll) params->Failure = 1;
+   25.         
+   26.  +        MPI_Reduce( &localGflops, &minGflops, 1, MPI_DOUBLE, MPI_MIN, 0, comm );
+   27.  +        MPI_Reduce( &localGflops, &avgGflops, 1, MPI_DOUBLE, MPI_SUM, 0, comm );
+   28.  +        MPI_Reduce( &localGflops, &maxGflops, 1, MPI_DOUBLE, MPI_MAX, 0, comm );
+   29.           avgGflops /= commSize;
+   30.         
+   31.  +        MPI_Bcast( &avgGflops, 1, MPI_DOUBLE, 0, comm ); params->StarFFTGflops = avgGflops;
+   32.         
+   33.  +        BEGIN_IO( commRank, params->outFname, outputFile);
+   34.           fprintf( outputFile, "Node(s) with error %d\n", errCount );
+   35.           fprintf( outputFile, "Minimum Gflop/s %.6f\n", minGflops );
+   36.           fprintf( outputFile, "Average Gflop/s %.6f\n", avgGflops );
+   37.           fprintf( outputFile, "Maximum Gflop/s %.6f\n", maxGflops );
+   38.  +        END_IO( commRank, outputFile );
+   39.         
+   40.           return 0;
+   41.         }
+   42.         
+   43.         int
+   44.         HPCC_SingleFFT(HPCC_Params *params) {
+   45.           int commRank, commSize;
+   46.           int rv, errCount, rank, failure = 0;
+   47.           int n;
+   48.           double localGflops;
+   49.           double scl = 1.0 / RAND_MAX;
+   50.           FILE *outputFile;
+   51.           MPI_Comm comm = MPI_COMM_WORLD;
+   52.         
+   53.           localGflops = 0.0;
+   54.         
+   55.  +        MPI_Comm_size( comm, &commSize );
+   56.  +        MPI_Comm_rank( comm, &commRank );
+   57.         
+   58.  +        srand(time(NULL));
+   59.           scl *= commSize;
+   60.         
+   61.           /* select a node at random, but not node 0 (unless there is just one node) */
+   62.           if (1 == commSize)
+   63.             rank = 0;
+   64.           else
+   65.  + 1--<     for (rank = 0; ; rank = (int)(scl * rand())) {
+   66.    1          if (rank > 0 && rank < commSize) break;
+   67.    1-->     }
+   68.         
+   69.  +        MPI_Bcast( &rank, 1, MPI_INT, 0, comm ); /* broadcast the rank selected on node 0 */
+   70.         
+   71.           if (commRank == rank) /* if this node has been selected */
+   72.  +          rv = HPCC_TestFFT( params, 0 == commRank, &localGflops, &n, &failure );
+   73.         
+   74.  +        MPI_Bcast( &rv, 1, MPI_INT, rank, comm ); /* broadcast error code */
+   75.           errCount = rv;
+   76.  +        MPI_Bcast( &failure, 1, MPI_INT, rank, comm ); /* broadcast failure indication */
+   77.           if (failure) params->Failure = 1;
+   78.         
+   79.           /* broadcast results */
+   80.  +        MPI_Bcast( &localGflops, 1, MPI_DOUBLE, rank, comm );
+   81.           params->SingleFFTGflops = localGflops;
+   82.         
+   83.  +        BEGIN_IO( commRank, params->outFname, outputFile);
+   84.           fprintf( outputFile, "Node(s) with error %d\n", errCount );
+   85.           fprintf( outputFile, "Node selected %d\n", rank );
+   86.           fprintf( outputFile, "Single FFT Gflop/s %.6f\n", localGflops );
+   87.  +        END_IO( commRank, outputFile );
+   88.         
+   89.           return 0;
+   90.         }
+
+CC-3021 CC: IPA File = onecpu.c, Line = 16 
+  "MPI_Comm_size" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 17 
+  "MPI_Comm_rank" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 19 
+  "HPCC_TestFFT" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 22 
+  "MPI_Reduce" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 23 
+  "MPI_Allreduce" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 26 
+  "MPI_Reduce" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 27 
+  "MPI_Reduce" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 28 
+  "MPI_Reduce" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 31 
+  "MPI_Bcast" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 33 
+  "fopen" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 38 
+  "fflush" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 38 
+  "fclose" (called from "HPCC_StarFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 55 
+  "MPI_Comm_size" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 56 
+  "MPI_Comm_rank" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 58 
+  "time" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 58 
+  "srand" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = onecpu.c, Line = 65 
+  A loop was not vectorized because it contains a call to function "rand" on line 65.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 65 
+  "rand" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 69 
+  "MPI_Bcast" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 72 
+  "HPCC_TestFFT" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 74 
+  "MPI_Bcast" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 76 
+  "MPI_Bcast" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 80 
+  "MPI_Bcast" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 83 
+  "fopen" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 87 
+  "fflush" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 87 
+  "fclose" (called from "HPCC_SingleFFT") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,237 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/grid/HPL_broadcast.c
+Compiled : 2016-03-19  13:19:33
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/grid/HPL_broadcast.o
+           -c ../../../src/grid/HPL_broadcast.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/grid/HPL_broadcast.c
+Date     : 03/19/2016  13:19:34
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          /* 
+    2.           * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.           *    HPL - 2.0 - September 10, 2008                          
+    4.           *    Antoine P. Petitet                                                
+    5.           *    University of Tennessee, Knoxville                                
+    6.           *    Innovative Computing Laboratory                                 
+    7.           *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.           *                                                                      
+    9.           * -- Copyright notice and Licensing terms:                             
+   10.           *                                                                      
+   11.           * Redistribution  and  use in  source and binary forms, with or without
+   12.           * modification, are  permitted provided  that the following  conditions
+   13.           * are met:                                                             
+   14.           *                                                                      
+   15.           * 1. Redistributions  of  source  code  must retain the above copyright
+   16.           * notice, this list of conditions and the following disclaimer.        
+   17.           *                                                                      
+   18.           * 2. Redistributions in binary form must reproduce  the above copyright
+   19.           * notice, this list of conditions,  and the following disclaimer in the
+   20.           * documentation and/or other materials provided with the distribution. 
+   21.           *                                                                      
+   22.           * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.           * software must display the following acknowledgement:                 
+   24.           * This  product  includes  software  developed  at  the  University  of
+   25.           * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.           *                                                                      
+   27.           * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.           * names  of  its  contributors  may  not  be used to endorse or promote
+   29.           * products  derived   from   this  software  without  specific  written
+   30.           * permission.                                                          
+   31.           *                                                                      
+   32.           * -- Disclaimer:                                                       
+   33.           *                                                                      
+   34.           * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.           * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.           * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.           * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.           * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.           * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.           * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.           * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.           * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.           * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.           * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.           * ---------------------------------------------------------------------
+   46.           */ 
+   47.          /*
+   48.           * Include files
+   49.           */
+   50.          #include "hpl.h"
+   51.          
+   52.          #ifdef HPL_STDC_HEADERS
+   53.          int HPL_broadcast
+   54.          (
+   55.             void *                           BUFFER,
+   56.             const int                        COUNT,
+   57.             const HPL_T_TYPE                 DTYPE,
+   58.             const int                        ROOT,
+   59.             MPI_Comm                         COMM
+   60.          )
+   61.          #else
+   62.          int HPL_broadcast
+   63.          ( BUFFER, COUNT, DTYPE, ROOT, COMM )
+   64.             void *                           BUFFER;
+   65.             const int                        COUNT;
+   66.             const HPL_T_TYPE                 DTYPE;
+   67.             const int                        ROOT;
+   68.             MPI_Comm                         COMM;
+   69.          #endif
+   70.          {
+   71.          /* 
+   72.           * Purpose
+   73.           * =======
+   74.           *
+   75.           * HPL_broadcast broadcasts  a message from the process with rank ROOT to
+   76.           * all processes in the group.
+   77.           *
+   78.           * Arguments
+   79.           * =========
+   80.           *
+   81.           * BUFFER  (local input/output)          void *
+   82.           *         On entry,  BUFFER  points to  the  buffer to be broadcast. On
+   83.           *         exit, this array contains the broadcast data and is identical
+   84.           *         on all processes in the group.
+   85.           *
+   86.           * COUNT   (global input)                const int
+   87.           *         On entry,  COUNT  indicates the number of entries in  BUFFER.
+   88.           *         COUNT must be at least zero.
+   89.           *
+   90.           * DTYPE   (global input)                const HPL_T_TYPE
+   91.           *         On entry,  DTYPE  specifies the type of the buffers operands.
+   92.           *
+   93.           * ROOT    (global input)                const int
+   94.           *         On entry, ROOT is the coordinate of the source process.
+   95.           *
+   96.           * COMM    (global/local input)          MPI_Comm
+   97.           *         The MPI communicator identifying the process collection.
+   98.           *
+   99.           * ---------------------------------------------------------------------
+  100.           */ 
+  101.          /*
+  102.           * .. Local Variables ..
+  103.           */
+  104.             int                        hplerr=MPI_SUCCESS, ip2=1, kk, mask=1, 
+  105.                                        mpierr, mydist, partner, rank, size, 
+  106.                                        tag = MSGID_BEGIN_COLL;
+  107.             MPI_Status                 status;
+  108.          /* ..
+  109.           * .. Executable Statements ..
+  110.           */
+  111.             if( COUNT <= 0 ) return( MPI_SUCCESS );
+  112.  +          mpierr = MPI_Comm_size( COMM, &size ); if( size <= 1 ) return( mpierr );
+  113.  +          mpierr = MPI_Comm_rank( COMM, &rank );
+  114.          
+  115.             kk = size - 1;
+  116.  + 1--<>    while( kk > 1 ) { kk >>= 1; ip2 <<= 1; mask <<= 1; mask++; }
+  117.             mydist = MModSub( rank, ROOT, size );
+  118.          
+  119.  + 1---<    do
+  120.    1        {
+  121.    1           mask ^= ip2;
+  122.    1           if( ( mydist & mask ) == 0 )
+  123.    1           {
+  124.    1              partner = mydist ^ ip2;
+  125.    1     
+  126.    1              if( mydist & ip2 )
+  127.    1              {
+  128.    1                 partner = MModAdd( ROOT, partner, size );
+  129.    1                 mpierr  = MPI_Recv(  BUFFER, COUNT, HPL_2_MPI_TYPE( DTYPE ),
+  130.    1                                      partner, tag, COMM, &status );
+  131.    1              }
+  132.    1              else if( partner < size )
+  133.    1              {
+  134.    1                 partner = MModAdd( ROOT, partner, size );
+  135.    1                 mpierr  = MPI_Send( BUFFER, COUNT, HPL_2_MPI_TYPE( DTYPE ),
+  136.    1                                     partner, tag, COMM );
+  137.    1              }
+  138.    1              if( mpierr != MPI_SUCCESS ) hplerr = mpierr;
+  139.    1           }
+  140.    1           ip2 >>= 1;
+  141.    1--->    } while( ip2 );
+  142.          
+  143.             return( hplerr );
+  144.          /*
+  145.           * End of HPL_broadcast
+  146.           */
+  147.          }
+
+CC-3021 CC: IPA File = HPL_broadcast.c, Line = 112 
+  "MPI_Comm_size" (called from "HPL_broadcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_broadcast.c, Line = 113 
+  "MPI_Comm_rank" (called from "HPL_broadcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_broadcast.c, Line = 116 
+  A loop was not vectorized because a recurrence was found on "ip2" at line 116.
+
+CC-6254 CC: VECTOR File = HPL_broadcast.c, Line = 119 
+  A loop was not vectorized because a recurrence was found on "mask" at line 121.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

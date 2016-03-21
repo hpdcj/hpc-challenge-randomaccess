@@ -1,0 +1,171 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/pool.c
+Compiled : 2016-03-19  13:20:10
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/pool.o
+           -c ../../../../RandomAccess/pool.c -I ../../../../include
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/pool.c
+Date     : 03/19/2016  13:20:10
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* pool.c */
+    2.         
+    3.         /*
+    4.          * POOL Operations: used to manage the allocation of memory.
+    5.          * In order to use a pool, the first element of each structure must be
+    6.          * a char pointer "poolNext",  which maintain the pool lists.
+    7.          */
+    8.         
+    9.         #include <hpcc.h>
+   10.         
+   11.         #include "pool.h"
+   12.         
+   13.         /* PoolInit: create a pool of objects */
+   14.         POOL* HPCC_PoolInit(int numObjects, int objSize)
+   15.         {
+   16.         
+   17.           char* ptr;
+   18.           int i;
+   19.           POOL* poolPtr;
+   20.         
+   21.           poolPtr = (POOL *) malloc (1 * sizeof (POOL));
+   22.         
+   23.           poolPtr->head = HPCC_NULL_PTR;                 /* Points to unallocated objects    */
+   24.           poolPtr->tail = HPCC_NULL_PTR;                 /* Points to unallocated objects    */
+   25.           poolPtr->numObjs = numObjects+1;          /* Number of objects to allocate */
+   26.           poolPtr->objSize = objSize;               /* Size of each object              */
+   27.         
+   28.           ptr = (char*)malloc((poolPtr->numObjs)*(poolPtr->objSize)); /* Get a block of objects */
+   29.         
+   30.           if (ptr == HPCC_NULL_PTR) {
+   31.             fprintf(stdout,"Malloc fails in PoolInit\n");
+   32.  +          MPI_Abort( MPI_COMM_WORLD, -1 );
+   33.           }
+   34.         
+   35.           poolPtr->poolBase = ptr;
+   36.         
+   37.  + 1--<   for(i = 0; i<(poolPtr->numObjs)-1; i++) { /* link together the new objects*/
+   38.    1        *((char**)(ptr+i*(poolPtr->objSize))) = ptr+(i+1)*(poolPtr->objSize); /* setting up poolNext */
+   39.    1-->   }
+   40.         
+   41.           poolPtr->head = ptr;
+   42.           poolPtr->tail = ptr + (poolPtr->numObjs - 1)*(poolPtr->objSize);  /* adjust tail pointer  */
+   43.           *((char**)(poolPtr->tail)) = HPCC_NULL_PTR; /* last object has no next object */
+   44.         
+   45.           return (poolPtr);
+   46.         
+   47.         }
+   48.         
+   49.         
+   50.         char *HPCC_PoolGetObj(POOL* poolPtr)
+   51.         {
+   52.            char *ptr;
+   53.         
+   54.            if (poolPtr->head == HPCC_NULL_PTR) {
+   55.              fprintf(stdout,"No unallocated objects in pool\n");
+   56.  +           MPI_Abort( MPI_COMM_WORLD, -1 );
+   57.            }
+   58.            ptr = poolPtr->head;
+   59.            poolPtr->head = *((char**)(poolPtr->head));
+   60.         
+   61.            return ptr;
+   62.         }
+   63.         
+   64.         void HPCC_PoolReturnObj(POOL *poolPtr,void *optr)
+   65.         {
+   66.         
+   67.            if (poolPtr->tail) {
+   68.              *((char **) (poolPtr->tail)) = (char*)optr;
+   69.              *((char **) ((char *)optr)) = HPCC_NULL_PTR;
+   70.              poolPtr->tail = (char*)optr;
+   71.            }
+   72.            else {
+   73.              poolPtr->head = (char*)optr;
+   74.              poolPtr->tail = (char*)optr;
+   75.              *((char **) ((char *)optr)) = HPCC_NULL_PTR;
+   76.            }
+   77.         
+   78.         }
+   79.         
+   80.         void HPCC_PoolFree(POOL* poolPtr)
+   81.         {
+   82.           free(poolPtr->poolBase);
+   83.         }
+
+CC-3021 CC: IPA File = pool.c, Line = 32 
+  "MPI_Abort" (called from "HPCC_PoolInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = pool.c, Line = 37 
+  A loop was not vectorized because a recurrence was found between "poolPtr" and "ptr" at line 38.
+
+CC-3021 CC: IPA File = pool.c, Line = 56 
+  "MPI_Abort" (called from "HPCC_PoolGetObj") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

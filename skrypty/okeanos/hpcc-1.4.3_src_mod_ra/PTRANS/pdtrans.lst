@@ -1,0 +1,1333 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdtrans.c
+Compiled : 2016-03-19  13:20:18
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/pdtrans.o -c ../../../../PTRANS/pdtrans.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdtrans.c
+Date     : 03/19/2016  13:20:20
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                  /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.                  
+    3.                  #include <hpcc.h>
+    4.                  
+    5.                  #include "cblacslt.h"
+    6.                  
+    7.                  /* Common Block Declarations */
+    8.                  
+    9.                  struct {
+   10.                      int iaz, jaz, itz, jtz;
+   11.                  } commtrb_;
+   12.                  
+   13.                  #define commtrb_1 commtrb_
+   14.                  
+   15.                  extern struct {
+   16.                      int ictxt;
+   17.                  } context_;
+   18.                  
+   19.                  #define context_1 context_
+   20.                  
+   21.                  /* Table of constant values */
+   22.                  
+   23.                  static int c__0 = 0;
+   24.                  
+   25.                  static int
+   26.                  dtr2mx_(double *a, int *lda, double *beta, double *t, int *ldt, int *nrow, int *ncol, int *
+   27.                  	mb, int *nb, int *ilt, int *jlt) {
+   28.                      /* System generated locals */
+   29.                      long a_dim1, a_offset, t_dim1, t_offset;
+   30.                      int i__1, i__2, i__3, i__4;
+   31.                  
+   32.                      /* Local variables */
+   33.                      static int k, ia, ja, jj, ki, kj, it, jt, mr, irm, jrm;
+   34.                  
+   35.                  
+   36.                  /*  -- PUMMA Package routine (version 2.1) -- */
+   37.                  /*     Jaeyoung Choi, Oak Ridge National Laboratory. */
+   38.                  /*     Jack Dongarra, Univ. of Tennessee, Oak Ridge National Laboratory. */
+   39.                  /*     David Walker,  Oak Ridge National Laboratory. */
+   40.                  /*     October 31, 1994. */
+   41.                  
+   42.                  /*  Purpose */
+   43.                  
+   44.                  /*  T <== A' + beta*T (assume beta = 0.0, or 1.0) */
+   45.                  /*  T is a scattered 2-D array from a scattered 2-D array A */
+   46.                  
+   47.                  /*     T = A' */
+   48.                  
+   49.                      /* Parameter adjustments */
+   50.                      a_dim1 = *lda;
+   51.                      a_offset = 1 + a_dim1;
+   52.                      a -= a_offset;
+   53.                      t_dim1 = *ldt;
+   54.                      t_offset = 1 + t_dim1;
+   55.                      t -= t_offset;
+   56.                  
+   57.                      /* Function Body */
+   58.                      ia = 0;
+   59.                      jt = 0;
+   60.                  
+   61.                      if (*beta == 0.) {
+   62.                  	i__1 = *nrow - 2;
+   63.  + 1-----------< 	for (ki = 0; ki <= i__1; ++ki) {
+   64.    1             	    ja = 0;
+   65.    1             	    it = 0;
+   66.    1             	    i__2 = *ncol - 2;
+   67.  + 1 2---------< 	    for (kj = 0; kj <= i__2; ++kj) {
+   68.    1 2           		i__3 = *nb;
+   69.  + 1 2 3-------< 		for (jj = 1; jj <= i__3; ++jj) {
+   70.    1 2 3         		    i__4 = *mb;
+   71.    1 2 3 Vpr2--< 		    for (k = 1; k <= i__4; ++k) {
+   72.    1 2 3 Vpr2    			t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+   73.    1 2 3 Vpr2    /* L10: */
+   74.    1 2 3 Vpr2--> 		    }
+   75.    1 2 3-------> 		}
+   76.    1 2           		ja += commtrb_1.jaz;
+   77.    1 2           		it += commtrb_1.itz;
+   78.    1 2           /* L20: */
+   79.    1 2---------> 	    }
+   80.    1             
+   81.    1             	    jrm = *jlt - ja;
+   82.    1             	    if (jrm > 0) {
+   83.    1             		i__2 = Mmin(*nb,jrm);
+   84.  + 1 2---------< 		for (jj = 1; jj <= i__2; ++jj) {
+   85.    1 2           		    i__4 = *mb;
+   86.    1 2 Vpr2----< 		    for (k = 1; k <= i__4; ++k) {
+   87.    1 2 Vpr2      			t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+   88.    1 2 Vpr2      /* L30: */
+   89.    1 2 Vpr2----> 		    }
+   90.    1 2---------> 		}
+   91.    1             	    }
+   92.    1             	    ia += commtrb_1.iaz;
+   93.    1             	    jt += commtrb_1.jtz;
+   94.    1             /* L40: */
+   95.    1-----------> 	}
+   96.                  
+   97.                  	irm = *ilt - ia;
+   98.                  	if (irm > 0) {
+   99.                  	    ja = 0;
+  100.                  	    it = 0;
+  101.                  	    mr = Mmin(irm,*mb);
+  102.                  	    i__1 = *ncol - 2;
+  103.  + 1-----------< 	    for (kj = 0; kj <= i__1; ++kj) {
+  104.    1             		i__4 = *nb;
+  105.  + 1 2---------< 		for (jj = 1; jj <= i__4; ++jj) {
+  106.    1 2           		    i__2 = mr;
+  107.    1 2 Vpr2----< 		    for (k = 1; k <= i__2; ++k) {
+  108.    1 2 Vpr2      			t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  109.    1 2 Vpr2      /* L50: */
+  110.    1 2 Vpr2----> 		    }
+  111.    1 2---------> 		}
+  112.    1             		ja += commtrb_1.jaz;
+  113.    1             		it += commtrb_1.itz;
+  114.    1             /* L60: */
+  115.    1-----------> 	    }
+  116.                  
+  117.                  	    jrm = *jlt - ja;
+  118.                  	    if (jrm > 0) {
+  119.                  		i__1 = Mmin(*nb,jrm);
+  120.  + 1-----------< 		for (jj = 1; jj <= i__1; ++jj) {
+  121.    1             		    i__2 = mr;
+  122.  + 1 Vpr2------< 		    for (k = 1; k <= i__2; ++k) {
+  123.    1 Vpr2        			t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  124.    1 Vpr2        /* L70: */
+  125.    1 Vpr2------> 		    }
+  126.    1-----------> 		}
+  127.                  	    }
+  128.                  	}
+  129.                  
+  130.                      } else {
+  131.                  
+  132.                  /*         T = A' + T */
+  133.                  
+  134.                  	i__2 = *nrow - 2;
+  135.  + 1-----------< 	for (ki = 0; ki <= i__2; ++ki) {
+  136.    1             	    ja = 0;
+  137.    1             	    it = 0;
+  138.    1             	    i__1 = *ncol - 2;
+  139.  + 1 2---------< 	    for (kj = 0; kj <= i__1; ++kj) {
+  140.    1 2           		i__4 = *nb;
+  141.  + 1 2 3-------< 		for (jj = 1; jj <= i__4; ++jj) {
+  142.    1 2 3         		    i__3 = *mb;
+  143.    1 2 3 Vcr2--< 		    for (k = 1; k <= i__3; ++k) {
+  144.    1 2 3 Vcr2    			t[it + jj + (jt + k) * t_dim1] += a[ia + k + (ja + jj) * a_dim1];
+  145.    1 2 3 Vcr2    /* L80: */
+  146.    1 2 3 Vcr2--> 		    }
+  147.    1 2 3-------> 		}
+  148.    1 2           		ja += commtrb_1.jaz;
+  149.    1 2           		it += commtrb_1.itz;
+  150.    1 2           /* L90: */
+  151.    1 2---------> 	    }
+  152.    1             
+  153.    1             	    jrm = *jlt - ja;
+  154.    1             	    if (jrm > 0) {
+  155.    1             		i__1 = Mmin(*nb,jrm);
+  156.  + 1 2---------< 		for (jj = 1; jj <= i__1; ++jj) {
+  157.    1 2           		    i__3 = *mb;
+  158.    1 2 Vcr2----< 		    for (k = 1; k <= i__3; ++k) {
+  159.    1 2 Vcr2      			t[it + jj + (jt + k) * t_dim1] += a[ia + k + (ja + jj) * a_dim1];
+  160.    1 2 Vcr2      /* L100: */
+  161.    1 2 Vcr2----> 		    }
+  162.    1 2---------> 		}
+  163.    1             	    }
+  164.    1             	    ia += commtrb_1.iaz;
+  165.    1             	    jt += commtrb_1.jtz;
+  166.    1             /* L110: */
+  167.    1-----------> 	}
+  168.                  
+  169.                  	irm = *ilt - ia;
+  170.                  	if (irm > 0) {
+  171.                  	    ja = 0;
+  172.                  	    it = 0;
+  173.                  	    mr = Mmin(irm,*mb);
+  174.                  	    i__2 = *ncol - 2;
+  175.  + 1-----------< 	    for (kj = 0; kj <= i__2; ++kj) {
+  176.    1             		i__3 = *nb;
+  177.  + 1 2---------< 		for (jj = 1; jj <= i__3; ++jj) {
+  178.    1 2           		    i__1 = mr;
+  179.    1 2 Vcr2----< 		    for (k = 1; k <= i__1; ++k) {
+  180.    1 2 Vcr2      			t[it + jj + (jt + k) * t_dim1] += a[ia + k + (ja + jj) * a_dim1];
+  181.    1 2 Vcr2      /* L120: */
+  182.    1 2 Vcr2----> 		    }
+  183.    1 2---------> 		}
+  184.    1             		ja += commtrb_1.jaz;
+  185.    1             		it += commtrb_1.itz;
+  186.    1             /* L130: */
+  187.    1-----------> 	    }
+  188.                  
+  189.                  	    jrm = *jlt - ja;
+  190.                  	    if (jrm > 0) {
+  191.                  		i__2 = Mmin(*nb,jrm);
+  192.  + 1-----------< 		for (jj = 1; jj <= i__2; ++jj) {
+  193.    1             		    i__1 = mr;
+  194.    1 Vcr2------< 		    for (k = 1; k <= i__1; ++k) {
+  195.    1 Vcr2        			t[it + jj + (jt + k) * t_dim1] += a[ia + k + (ja + jj) * a_dim1];
+  196.    1 Vcr2        /* L140: */
+  197.    1 Vcr2------> 		    }
+  198.    1-----------> 		}
+  199.                  	    }
+  200.                  	}
+  201.                      }
+  202.                  
+  203.                      return 0;
+  204.                  } /* dtr2mx_ */
+  205.                  
+  206.                  static int
+  207.                  dtr2bf_(double *a, int *lda, double *t, int *ldt, int *nrow, int *ncol, int *mb, int *nb,
+  208.                  	int *ilt, int *jlt) {
+  209.                      /* System generated locals */
+  210.                      long a_dim1, a_offset, t_dim1, t_offset;
+  211.                      int i__1, i__2, i__3, i__4;
+  212.                  
+  213.                      /* Local variables */
+  214.                      static int k, ia, ja, jj, ki, kj, it, jt, mr, irm, jrm;
+  215.                  
+  216.                  
+  217.                  /*  -- PUMMA Package routine (version 2.1) -- */
+  218.                  /*     Jaeyoung Choi, Oak Ridge National Laboratory. */
+  219.                  /*     Jack Dongarra, Univ. of Tennessee, Oak Ridge National Laboratory. */
+  220.                  /*     David Walker,  Oak Ridge National Laboratory. */
+  221.                  /*     October 31, 1994. */
+  222.                  
+  223.                  /*  Purpose */
+  224.                  
+  225.                  /*  T <== A' */
+  226.                  /*  T is a condensed 2-D buffer from a scattered 2-D array A */
+  227.                  
+  228.                      /* Parameter adjustments */
+  229.                      a_dim1 = *lda;
+  230.                      a_offset = 1 + a_dim1;
+  231.                      a -= a_offset;
+  232.                      t_dim1 = *ldt;
+  233.                      t_offset = 1 + t_dim1;
+  234.                      t -= t_offset;
+  235.                  
+  236.                      /* Function Body */
+  237.                      ia = 0;
+  238.                      jt = 0;
+  239.                      i__1 = *nrow - 2;
+  240.  + 1-----------<     for (ki = 0; ki <= i__1; ++ki) {
+  241.    1             	ja = 0;
+  242.    1             	it = 0;
+  243.    1             	i__2 = *ncol - 2;
+  244.  + 1 2---------< 	for (kj = 0; kj <= i__2; ++kj) {
+  245.    1 2           	    i__3 = *nb;
+  246.  + 1 2 3-------< 	    for (jj = 1; jj <= i__3; ++jj) {
+  247.    1 2 3         		i__4 = *mb;
+  248.    1 2 3 Vpr2--< 		for (k = 1; k <= i__4; ++k) {
+  249.    1 2 3 Vpr2    		    t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  250.    1 2 3 Vpr2    /* L10: */
+  251.    1 2 3 Vpr2--> 		}
+  252.    1 2 3-------> 	    }
+  253.    1 2           	    ja += commtrb_1.jaz;
+  254.    1 2           	    it += *nb;
+  255.    1 2           /* L20: */
+  256.    1 2---------> 	}
+  257.    1             
+  258.    1             	jrm = *jlt - ja;
+  259.    1             	if (jrm > 0) {
+  260.    1             	    i__2 = Mmin(*nb,jrm);
+  261.  + 1 2---------< 	    for (jj = 1; jj <= i__2; ++jj) {
+  262.    1 2           		i__4 = *mb;
+  263.    1 2 Vpr2----< 		for (k = 1; k <= i__4; ++k) {
+  264.    1 2 Vpr2      		    t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  265.    1 2 Vpr2      /* L30: */
+  266.    1 2 Vpr2----> 		}
+  267.    1 2---------> 	    }
+  268.    1             	}
+  269.    1             	ia += commtrb_1.iaz;
+  270.    1             	jt += *mb;
+  271.    1             /* L40: */
+  272.    1----------->     }
+  273.                  
+  274.                      irm = *ilt - ia;
+  275.                      if (irm > 0) {
+  276.                  	ja = 0;
+  277.                  	it = 0;
+  278.                  	mr = Mmin(*mb,irm);
+  279.                  	i__1 = *ncol - 2;
+  280.  + 1-----------< 	for (kj = 0; kj <= i__1; ++kj) {
+  281.    1             	    i__4 = *nb;
+  282.  + 1 2---------< 	    for (jj = 1; jj <= i__4; ++jj) {
+  283.    1 2           		i__2 = mr;
+  284.    1 2 Vpr2----< 		for (k = 1; k <= i__2; ++k) {
+  285.    1 2 Vpr2      		    t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  286.    1 2 Vpr2      /* L50: */
+  287.    1 2 Vpr2----> 		}
+  288.    1 2---------> 	    }
+  289.    1             	    ja += commtrb_1.jaz;
+  290.    1             	    it += *nb;
+  291.    1             /* L60: */
+  292.    1-----------> 	}
+  293.                  
+  294.                  	jrm = *jlt - ja;
+  295.                  	if (jrm > 0) {
+  296.                  	    i__1 = Mmin(*nb,jrm);
+  297.  + 1-----------< 	    for (jj = 1; jj <= i__1; ++jj) {
+  298.    1             		i__2 = mr;
+  299.  + 1 Vpr2------< 		for (k = 1; k <= i__2; ++k) {
+  300.    1 Vpr2        		    t[it + jj + (jt + k) * t_dim1] = a[ia + k + (ja + jj) * a_dim1];
+  301.    1 Vpr2        /* L70: */
+  302.    1 Vpr2------> 		}
+  303.    1-----------> 	    }
+  304.                  	}
+  305.                      }
+  306.                  
+  307.                      return 0;
+  308.                  } /* dtr2bf_ */
+  309.                  
+  310.                  
+  311.                  static int
+  312.                  dmv2mx_(double *t, int *ldt, double *beta, double *a, int *lda, int *nrow, int *ncol,
+  313.                    int *mb, int *nb, int *ilt, int *jlt) {
+  314.                      /* System generated locals */
+  315.                      long t_dim1, t_offset, a_dim1, a_offset;
+  316.                      int i__1, i__2, i__3, i__4;
+  317.                  
+  318.                      /* Local variables */
+  319.                      static int k, ia, ja, jj, ki, kj, it, jt, mr, irm, jrm;
+  320.                  
+  321.                  
+  322.                  /*  -- PUMMA Package routine (version 2.1) -- */
+  323.                  /*     Jaeyoung Choi, Oak Ridge National Laboratory. */
+  324.                  /*     Jack Dongarra, Univ. of Tennessee, Oak Ridge National Laboratory. */
+  325.                  /*     David Walker,  Oak Ridge National Laboratory. */
+  326.                  /*     October 31, 1994. */
+  327.                  
+  328.                  /*  Purpose */
+  329.                  
+  330.                  /*  A <== T + beta*A (assume beta = 0.0, or 1.0) */
+  331.                  /*  A is a scattered 2-D array from a condensed 2-D buffer T */
+  332.                  
+  333.                      /* Parameter adjustments */
+  334.                      t_dim1 = *ldt;
+  335.                      t_offset = 1 + t_dim1;
+  336.                      t -= t_offset;
+  337.                      a_dim1 = *lda;
+  338.                      a_offset = 1 + a_dim1;
+  339.                      a -= a_offset;
+  340.                  
+  341.                      /* Function Body */
+  342.                      it = 0;
+  343.                      ia = 0;
+  344.                  
+  345.                  /*     A <== T */
+  346.                  
+  347.                      if (*beta == 0.) {
+  348.                  
+  349.                  /*         If NPROW = 1, use DCOPY */
+  350.                  
+  351.                  	if (*nrow == 1) {
+  352.                  	    jt = 0;
+  353.                  	    ja = 0;
+  354.                  	    i__1 = *ncol - 2;
+  355.  + 1-----------< 	    for (kj = 0; kj <= i__1; ++kj) {
+  356.    1             		i__2 = *nb;
+  357.  + 1 2---------< 		for (jj = 1; jj <= i__2; ++jj) {
+  358.    1 2           		    i__3 = Mmin(*mb,*ilt);
+  359.  + 1 2           		    HPL_dcopy(i__3, &t[(jt + jj) * t_dim1 + 1], 1, &a[(ja + jj) * a_dim1 + 1], 1);
+  360.    1 2           /* L10: */
+  361.    1 2---------> 		}
+  362.    1             		jt += *nb;
+  363.    1             		ja += commtrb_1.jtz;
+  364.    1             /* L20: */
+  365.    1-----------> 	    }
+  366.                  
+  367.                  	    jrm = *jlt - ja;
+  368.                  	    if (jrm > 0) {
+  369.                  		i__1 = Mmin(*nb,jrm);
+  370.  + 1-----------< 		for (jj = 1; jj <= i__1; ++jj) {
+  371.    1             		    i__2 = Mmin(*mb,*ilt);
+  372.  + 1             		    HPL_dcopy(i__2, &t[(jt + jj) * t_dim1 + 1], 1, &a[(ja + jj) * a_dim1 + 1], 1);
+  373.    1             /* L30: */
+  374.    1-----------> 		}
+  375.                  	    }
+  376.                  
+  377.                  	} else {
+  378.                  
+  379.                  	    i__1 = *nrow - 2;
+  380.  + 1-----------< 	    for (ki = 0; ki <= i__1; ++ki) {
+  381.    1             		jt = 0;
+  382.    1             		ja = 0;
+  383.    1             		i__2 = *ncol - 2;
+  384.  + 1 2---------< 		for (kj = 0; kj <= i__2; ++kj) {
+  385.    1 2           		    i__3 = *nb;
+  386.  + 1 2 3-------< 		    for (jj = 1; jj <= i__3; ++jj) {
+  387.    1 2 3         			i__4 = *mb;
+  388.    1 2 3 A-----< 			for (k = 1; k <= i__4; ++k) {
+  389.    1 2 3 A       			    a[ia + k + (ja + jj) * a_dim1] = t[it + k + (jt + jj) * t_dim1];
+  390.    1 2 3 A       /* L40: */
+  391.    1 2 3 A-----> 			}
+  392.    1 2 3-------> 		    }
+  393.    1 2           		    jt += *nb;
+  394.    1 2           		    ja += commtrb_1.jtz;
+  395.    1 2           /* L50: */
+  396.    1 2---------> 		}
+  397.    1             
+  398.    1             		jrm = *jlt - ja;
+  399.    1             		if (jrm > 0) {
+  400.    1             		    i__2 = Mmin(*nb,jrm);
+  401.  + 1 2---------< 		    for (jj = 1; jj <= i__2; ++jj) {
+  402.    1 2           			i__4 = *mb;
+  403.    1 2 A-------< 			for (k = 1; k <= i__4; ++k) {
+  404.    1 2 A         			    a[ia + k + (ja + jj) * a_dim1] = t[it + k + (jt + jj) * t_dim1];
+  405.    1 2 A         /* L60: */
+  406.    1 2 A-------> 			}
+  407.    1 2---------> 		    }
+  408.    1             		}
+  409.    1             		it += *mb;
+  410.    1             		ia += commtrb_1.itz;
+  411.    1             /* L70: */
+  412.    1-----------> 	    }
+  413.                  
+  414.                  	    irm = *ilt - ia;
+  415.                  	    if (irm > 0) {
+  416.                  		jt = 0;
+  417.                  		ja = 0;
+  418.                  		mr = Mmin(*mb,irm);
+  419.                  		i__1 = *ncol - 2;
+  420.  + 1-----------< 		for (kj = 0; kj <= i__1; ++kj) {
+  421.    1             		    i__4 = *nb;
+  422.  + 1 2---------< 		    for (jj = 1; jj <= i__4; ++jj) {
+  423.    1 2           			i__2 = mr;
+  424.    1 2 A-------< 			for (k = 1; k <= i__2; ++k) {
+  425.    1 2 A         			    a[ia + k + (ja + jj) * a_dim1] = t[it + k + (jt + jj) * t_dim1];
+  426.    1 2 A         /* L80: */
+  427.    1 2 A-------> 			}
+  428.    1 2---------> 		    }
+  429.    1             		    jt += *nb;
+  430.    1             		    ja += commtrb_1.jtz;
+  431.    1             /* L90: */
+  432.    1-----------> 		}
+  433.                  
+  434.                  		jrm = *jlt - ja;
+  435.                  		if (jrm > 0) {
+  436.                  		    i__1 = Mmin(*nb,jrm);
+  437.  + 1-----------< 		    for (jj = 1; jj <= i__1; ++jj) {
+  438.    1             			i__2 = mr;
+  439.    1 A---------< 			for (k = 1; k <= i__2; ++k) {
+  440.    1 A           			    a[ia + k + (ja + jj) * a_dim1] = t[it + k + (jt + jj) * t_dim1];
+  441.    1 A           /* L100: */
+  442.    1 A---------> 			}
+  443.    1-----------> 		    }
+  444.                  		}
+  445.                  	    }
+  446.                  	}
+  447.                  
+  448.                  /*         A <== T + A */
+  449.                  
+  450.                      } else {
+  451.                  
+  452.                  /*         If NPROW = 1, use DAXPY */
+  453.                  
+  454.                  	if (*nrow == 1) {
+  455.                  	    jt = 0;
+  456.                  	    ja = 0;
+  457.                  	    i__2 = *ncol - 2;
+  458.  + 1-----------< 	    for (kj = 0; kj <= i__2; ++kj) {
+  459.    1             		i__1 = *nb;
+  460.  + 1 2---------< 		for (jj = 1; jj <= i__1; ++jj) {
+  461.    1 2           		    i__4 = Mmin(*mb,*ilt);
+  462.  + 1 2           		    HPL_daxpy(i__4, 1.0, &t[(jt + jj) * t_dim1 + 1], 1, &a[(ja + jj) * a_dim1 + 1], 1);
+  463.    1 2           /* L110: */
+  464.    1 2---------> 		}
+  465.    1             		jt += *nb;
+  466.    1             		ja += commtrb_1.jtz;
+  467.    1             /* L120: */
+  468.    1-----------> 	    }
+  469.                  
+  470.                  	    jrm = *jlt - ja;
+  471.                  	    if (jrm > 0) {
+  472.                  		i__2 = Mmin(*nb,jrm);
+  473.  + 1-----------< 		for (jj = 1; jj <= i__2; ++jj) {
+  474.    1             		    i__1 = Mmin(*mb,*ilt);
+  475.  + 1             		    HPL_daxpy(i__1, 1.0, &t[(jt + jj) * t_dim1 + 1], 1, & a[(ja + jj) * a_dim1 + 1], 1);
+  476.    1             /* L130: */
+  477.    1-----------> 		}
+  478.                  	    }
+  479.                  
+  480.                  	} else {
+  481.                  	    i__2 = *nrow - 2;
+  482.  + 1-----------< 	    for (ki = 0; ki <= i__2; ++ki) {
+  483.    1             		jt = 0;
+  484.    1             		ja = 0;
+  485.    1             		i__1 = *ncol - 2;
+  486.  + 1 2---------< 		for (kj = 0; kj <= i__1; ++kj) {
+  487.    1 2           		    i__4 = *nb;
+  488.  + 1 2 3-------< 		    for (jj = 1; jj <= i__4; ++jj) {
+  489.    1 2 3         			i__3 = *mb;
+  490.    1 2 3 Vr2---< 			for (k = 1; k <= i__3; ++k) {
+  491.    1 2 3 Vr2     			    a[ia + k + (ja + jj) * a_dim1] += t[it + k + (jt + jj) * t_dim1];
+  492.    1 2 3 Vr2     /* L140: */
+  493.    1 2 3 Vr2---> 			}
+  494.    1 2 3-------> 		    }
+  495.    1 2           		    jt += *nb;
+  496.    1 2           		    ja += commtrb_1.jtz;
+  497.    1 2           /* L150: */
+  498.    1 2---------> 		}
+  499.    1             
+  500.    1             		jrm = *jlt - ja;
+  501.    1             		if (jrm > 0) {
+  502.    1             		    i__1 = Mmin(*nb,jrm);
+  503.  + 1 2---------< 		    for (jj = 1; jj <= i__1; ++jj) {
+  504.    1 2           			i__3 = *mb;
+  505.    1 2 Vr2-----< 			for (k = 1; k <= i__3; ++k) {
+  506.    1 2 Vr2       			    a[ia + k + (ja + jj) * a_dim1] += t[it + k + (jt + jj) * t_dim1];
+  507.    1 2 Vr2       /* L160: */
+  508.    1 2 Vr2-----> 			}
+  509.    1 2---------> 		    }
+  510.    1             		}
+  511.    1             		it += *mb;
+  512.    1             		ia += commtrb_1.itz;
+  513.    1             /* L170: */
+  514.    1-----------> 	    }
+  515.                  
+  516.                  	    irm = *ilt - ia;
+  517.                  	    if (irm > 0) {
+  518.                  		jt = 0;
+  519.                  		ja = 0;
+  520.                  		mr = Mmin(*mb,irm);
+  521.                  		i__2 = *ncol - 2;
+  522.  + 1-----------< 		for (kj = 0; kj <= i__2; ++kj) {
+  523.    1             		    i__3 = *nb;
+  524.  + 1 2---------< 		    for (jj = 1; jj <= i__3; ++jj) {
+  525.    1 2           			i__1 = mr;
+  526.    1 2 Vr2-----< 			for (k = 1; k <= i__1; ++k) {
+  527.    1 2 Vr2       			    a[ia + k + (ja + jj) * a_dim1] += t[it + k + (jt + jj) * t_dim1];
+  528.    1 2 Vr2       /* L180: */
+  529.    1 2 Vr2-----> 			}
+  530.    1 2---------> 		    }
+  531.    1             		    jt += *nb;
+  532.    1             		    ja += commtrb_1.jtz;
+  533.    1             /* L190: */
+  534.    1-----------> 		}
+  535.                  
+  536.                  		jrm = *jlt - ja;
+  537.                  		if (jrm > 0) {
+  538.                  		    i__2 = Mmin(*nb,jrm);
+  539.  + 1-----------< 		    for (jj = 1; jj <= i__2; ++jj) {
+  540.    1             			i__1 = mr;
+  541.    1 Vr2-------< 			for (k = 1; k <= i__1; ++k) {
+  542.    1 Vr2         			    a[ia + k + (ja + jj) * a_dim1] += t[it + k + (jt + jj) * t_dim1];
+  543.    1 Vr2         /* L200: */
+  544.    1 Vr2-------> 			}
+  545.    1-----------> 		    }
+  546.                  		}
+  547.                  	    }
+  548.                  	}
+  549.                      }
+  550.                  
+  551.                      return 0;
+  552.                  } /* dmv2mx_ */
+  553.                  
+  554.                  int
+  555.                  pdtrans(char *trans, int *m, int *n, int * mb, int *nb, double *a, int *lda, double *beta,
+  556.                  	double *c__, int *ldc, int *imrow, int *imcol, double *work, int *iwork) {
+  557.                      /* System generated locals */
+  558.                      long a_dim1, a_offset, c_dim1, c_offset;
+  559.                      int i__1, i__2, i__3, i__4;
+  560.                  
+  561.                      /* Local variables */
+  562.                      int j1, k1, k2, ml, nl, mp, mq, np, nq, mb0, mb1, mb2, nb0,
+  563.                  	    nb1, nb2, kia, kja, kic, kjc, lbm, lbn, lcm, ldt, lbm0, lbm1,
+  564.                  	     lbm2, lbn0, lbn1, lbn2, igcd;
+  565.                      long ipt;
+  566.                      int mcol, info, lcmp, lcmq, item, ncol, kmod1, kmod2;
+  567.                      double tbeta;
+  568.                      int kpcol, mpcol, npcol, mrcol, mycol, kprow, mprow, nprow, mrrow, myrow;
+  569.                  
+  570.                  /*  -- PUMMA Package routine (version 2.1) -- */
+  571.                  /*     Jaeyoung Choi, Oak Ridge National Laboratory. */
+  572.                  /*     Jack Dongarra, Univ. of Tennessee, Oak Ridge National Laboratory. */
+  573.                  /*     David Walker,  Oak Ridge National Laboratory. */
+  574.                  /*     October 31, 1994. */
+  575.                  
+  576.                  /*  Purpose */
+  577.                  
+  578.                  /*  PDTRANS routine is one of the PUMMA package based on block cyclic */
+  579.                  /*  data distribution on 2-D process configuration. */
+  580.                  
+  581.                  /*  It is used for the following matrix transposition, */
+  582.                  
+  583.                  /*     Form  C := A' + beta*C */
+  584.                  
+  585.                  /*  where beta is a scalar, and A and C are matrices, with A an M by N */
+  586.                  /*  matrix (globally), and C an N by M matrix (globally). */
+  587.                  
+  588.                  /*  Parameters */
+  589.                  
+  590.                  /*  TRANS  - (input) CHARACTER*1 */
+  591.                  /*           TRANS specifies whether A is transposed or conjugate */
+  592.                  /*           transposed. */
+  593.                  
+  594.                  /*              TRANS = 'T',   transpose; */
+  595.                  
+  596.                  /*              TRANS = 'C',   conjugate transpose. */
+  597.                  
+  598.                  /*  M      - (input) INTEGER */
+  599.                  /*           M specifies the (global) number of rows of the matrix A and */
+  600.                  /*           the (global) number of rows of the matrix C.  M >= 0. */
+  601.                  
+  602.                  /*  N      - (input) INTEGER */
+  603.                  /*           N specifies the (global) number of columns of the matrix A */
+  604.                  /*           and columns of the matrix B.  N >= 0. */
+  605.                  
+  606.                  /*  MB     - (input) INTEGER */
+  607.                  /*           MB specifies the row block size of the matrix A and the */
+  608.                  /*           column block of the matrix C.  MB >= 1. */
+  609.                  
+  610.                  /*  NB     - (input) INTEGER */
+  611.                  /*           NB specifies the column block size of the matrix A and the */
+  612.                  /*           row block size of the matrix C.  NB >= 1. */
+  613.                  
+  614.                  /*  A      - (input) DOUBLE PRECISION array of DIMENSION ( LDA, Nq ). */
+  615.                  /*           The leading Mp by Nq part of the array A must contain the */
+  616.                  /*           local matrix  A.  Mp and Nq are local variables */
+  617.                  /*           (see description of local parameters). */
+  618.                  
+  619.                  /*  LDA    - (input) INTEGER */
+  620.                  /*           The leading dimension of the (local) array A. */
+  621.                  /*           LDA >= MAX( 1, Mp ). */
+  622.                  
+  623.                  /*  BETA   - (input) DOUBLE PRECISION */
+  624.                  /*           BETA  specifies the scalar beta.  When BETA is supplied as */
+  625.                  /*           zero then C need not be set on input. */
+  626.                  
+  627.                  /*  C      - (input/ouput) DOUBLE PRECISION array of DIMENSION (LDC, Mq). */
+  628.                  /*           On entry the leading Np by Mq part of the array C must */
+  629.                  /*           contain the local matrix C, except when beta is zero, */
+  630.                  /*           in which case C need not be set on entry. */
+  631.                  /*           On exit, the array C is overwritten by the Np by Mq matrix */
+  632.                  /*           (A'+bata*C).  Np and Mq are local variables */
+  633.                  /*           (see description of local parameters). */
+  634.                  
+  635.                  /*  LDC    - (input) INTEGER */
+  636.                  /*           The leading dimension of the (local) array C. */
+  637.                  /*           LDC >= MAX( 1, Np ). */
+  638.                  
+  639.                  /*  IMROW  - (input) INTEGER */
+  640.                  /*           IMROW specifies a row of the process template, which holds */
+  641.                  /*           the first block of the matrices.  0 <= IMROW < NPROW. */
+  642.                  
+  643.                  /*  IMCOL  - (input) INTEGER */
+  644.                  /*           IMCOL specifies a column of the process template, which */
+  645.                  /*           holds the first block of the matrices.  0 <= IMCOL < NPCOL. */
+  646.                  
+  647.                  /*  WORK   - (workspace) DOUBLE PRECISION array */
+  648.                  /*           See requirements. */
+  649.                  
+  650.                  /*  IWORK  - (workspace) INTEGER array */
+  651.                  /*           See requirements. */
+  652.                  
+  653.                  /*  Local  Parameters */
+  654.                  
+  655.                  /*  LCM   =  the lowest common multiple of P and Q */
+  656.                  /*  LCMP  =  LCM/P = number of template rows in LCM block */
+  657.                  /*  LCMQ  =  LCM/Q = number of template columns in LCM block */
+  658.                  /*  IGCD   =  the greatest common divisor (GCD) of P and Q */
+  659.                  /*  MpxNq =  size of (local) matrix A in the process, iam */
+  660.                  /*  NpxMq =  size of (local) matrix C in the process, iam */
+  661.                  /*  KMOD  =  Define Group I.D. */
+  662.                  /*  item  =  temporal integer parameter */
+  663.                  
+  664.                  /*    Two buffers for storing A' and T(= subblock of A') */
+  665.                  /*       WORK       <== A' */
+  666.                  /*       WORK(IPT)  <== T */
+  667.                  
+  668.                  /*    Three interger buffers */
+  669.                  /*       IWORK(1,k) <== starting point of row subblock of A  to send and */
+  670.                  /*                      C to receive in K2 loop (rowwise communication) */
+  671.                  /*       IWORK(2,k) <== starting point of column subblock of A to send in */
+  672.                  /*                      J1 loop (columnwise communication) */
+  673.                  /*       IWORK(3,k) <== starting point of column subblock of C to receive */
+  674.                  /*                      in J1 loop (columnwise communication) */
+  675.                  
+  676.                  /*  Requirements (approximate) */
+  677.                  
+  678.                  /*   Size(IWORK) = 3 x MAX(P, Q) */
+  679.                  /*   Size(WORK)  = 2 x Ceil(Ceil(M,MB),LCM)xMB x Ceil(Ceil(N,NB),LCM)xNB */
+  680.                  
+  681.                  /*     Get grid parameters */
+  682.                  
+  683.                      /* Parameter adjustments */
+  684.                      a_dim1 = *lda;
+  685.                      a_offset = 1 + a_dim1;
+  686.                      a -= a_offset;
+  687.                      c_dim1 = *ldc;
+  688.                      c_offset = 1 + c_dim1;
+  689.                      c__ -= c_offset;
+  690.                      --work;
+  691.                      --iwork;
+  692.                  
+  693.                      /* Function Body */
+  694.  +                   Cblacs_gridinfo(context_1.ictxt, &nprow, &npcol, &myrow, &mycol);
+  695.                  
+  696.                  /*     Test for the input parameters. */
+  697.                  
+  698.                      info = 0;
+  699.                      if (*trans != 'T' && *trans != 'C') {
+  700.                  	info = 1;
+  701.                      } else if (*m < 0) {
+  702.                  	info = 2;
+  703.                      } else if (*n < 0) {
+  704.                  	info = 3;
+  705.                      } else if (*mb < 1) {
+  706.                  	info = 4;
+  707.                      } else if (*nb < 1) {
+  708.                  	info = 5;
+  709.                      } else if (*lda < 1) {
+  710.                  	info = 7;
+  711.                      } else if (*ldc < 1) {
+  712.                  	info = 10;
+  713.                      } else if (*imrow < 0 || *imrow >= nprow) {
+  714.                  	info = 11;
+  715.                      } else if (*imcol < 0 || *imcol >= npcol) {
+  716.                  	info = 12;
+  717.                      }
+  718.                  
+  719.  +               L10:
+  720.                      if (info != 0) {
+  721.  +               	pxerbla( &context_1.ictxt, "PDTRANS", &info );
+  722.                  	return 0;
+  723.                      }
+  724.                  
+  725.                  /*     Initialize parameters */
+  726.                  
+  727.                      mprow = nprow + myrow;
+  728.                      mpcol = npcol + mycol;
+  729.                      mrrow = (mprow - *imrow) % nprow;
+  730.                      mrcol = (mpcol - *imcol) % npcol;
+  731.                  
+  732.  +                   lcm = ilcm_(&nprow, &npcol);
+  733.                      lcmp = lcm / nprow;
+  734.                      lcmq = lcm / npcol;
+  735.                      igcd = nprow / lcmq;
+  736.                  
+  737.  +                   mp = numroc_(m, mb, &mrrow, &c__0, &nprow);
+  738.  +                   mq = numroc_(m, mb, &mrcol, &c__0, &npcol);
+  739.  +                   np = numroc_(n, nb, &mrrow, &c__0, &nprow);
+  740.  +                   nq = numroc_(n, nb, &mrcol, &c__0, &npcol);
+  741.                  
+  742.  +                   i__1 = iceil_(m, mb);
+  743.  +                   lbm = iceil_(&i__1, &lcm);
+  744.  +                   i__1 = iceil_(n, nb);
+  745.  +                   lbn = iceil_(&i__1, &lcm);
+  746.                  
+  747.                  /*     Test for the input parameters again with local parameters */
+  748.                  
+  749.                      if (*lda < mp) {
+  750.                  	info = 7;
+  751.                      } else if (*ldc < np) {
+  752.                  	info = 10;
+  753.                      }
+  754.                      if (info != 0) {
+  755.                  	goto L10;
+  756.                      }
+  757.                  
+  758.                  /*     Quick return if possible. */
+  759.                  
+  760.                      if (*m == 0 || *n == 0) {
+  761.                  	return 0;
+  762.                      }
+  763.                  
+  764.                  /*     At first, scale C with beta if beta != 0.0 & beta != 1.0 */
+  765.                  
+  766.                      tbeta = *beta;
+  767.                      if (*beta != 0. && *beta != 1.) {
+  768.                  	i__1 = mq;
+  769.  + 1-----------< 	for (j1 = 1; j1 <= i__1; ++j1) {
+  770.  + 1             	    HPL_dscal( np, *beta, &c__[j1 * c_dim1 + 1], 1 );
+  771.    1             /* L20: */
+  772.    1-----------> 	}
+  773.                  	tbeta = 1.;
+  774.                      }
+  775.                  
+  776.                      commtrb_1.iaz = lcmp * *mb;
+  777.                      commtrb_1.jaz = lcmq * *nb;
+  778.                      commtrb_1.itz = lcmp * *nb;
+  779.                      commtrb_1.jtz = lcmq * *mb;
+  780.                  
+  781.                      ml = lbm * *mb;
+  782.                      nl = lbn * *nb;
+  783.                      ipt = (long)ml * (long)nl + 1;
+  784.                      ldt = nl;
+  785.                      kprow = mrrow + nprow;
+  786.                      kpcol = mrcol + npcol;
+  787.                  
+  788.                  /*     Initialize Parameters -- Compute the positions of subblocks */
+  789.                  
+  790.                      i__1 = npcol - 1;
+  791.  + 1-----------<     for (k1 = 0; k1 <= i__1; ++k1) {
+  792.    1             	ncol = (kpcol - k1) % npcol;
+  793.    1             	i__2 = lcmq - 1;
+  794.  + 1 r4--------< 	for (j1 = 0; j1 <= i__2; ++j1) {
+  795.    1 r4          	    item = npcol * j1 + ncol;
+  796.    1 r4          	    if (item % nprow == mrrow) {
+  797.    1 r4          		iwork[ncol * 3 + 1] = item / nprow;
+  798.    1 r4          	    }
+  799.    1 r4          /* L30: */
+  800.    1 r4--------> 	}
+  801.    1----------->     }
+  802.                  
+  803.                      i__2 = lcmq - 1;
+  804.  + r4----------<     for (j1 = 0; j1 <= i__2; ++j1) {
+  805.    r4            	item = (npcol * j1 + mrcol) % nprow;
+  806.    r4            	iwork[item * 3 + 2] = j1;
+  807.    r4            	iwork[item * 3 + 3] = j1;
+  808.    r4            	i__1 = igcd - 1;
+  809.  + r4 2--------< 	for (k1 = 1; k1 <= i__1; ++k1) {
+  810.    r4 2          	    iwork[(item + nprow - k1) % nprow * 3 + 2] = j1;
+  811.    r4 2          	    iwork[(item + k1) % nprow * 3 + 3] = j1;
+  812.    r4 2          /* L40: */
+  813.    r4 2--------> 	}
+  814.    r4---------->     }
+  815.                  
+  816.                  /*     Set parameters for efficient copying */
+  817.                  
+  818.                      lbm0 = lbm;
+  819.                      lbm1 = lbm;
+  820.                      lbm2 = lbm;
+  821.                      lbn0 = lbn;
+  822.                      lbn1 = lbn;
+  823.                      lbn2 = lbn;
+  824.                      mb0 = *mb;
+  825.                      mb1 = *mb;
+  826.                      mb2 = *mb;
+  827.                      nb0 = *nb;
+  828.                      nb1 = *nb;
+  829.                      nb2 = *nb;
+  830.                  
+  831.                      if (nprow == npcol) {
+  832.                  	lbm0 = 1;
+  833.                  	lbn0 = 1;
+  834.                  	mb0 = mp;
+  835.                  	nb0 = nq;
+  836.                      }
+  837.                      if (nprow == lcm) {
+  838.                  	lbm1 = 1;
+  839.                  	lbn2 = 1;
+  840.                  	mb1 = mp;
+  841.                  	nb2 = np;
+  842.                      }
+  843.                      if (npcol == lcm) {
+  844.                  	lbn1 = 1;
+  845.                  	lbm2 = 1;
+  846.                  	nb1 = nq;
+  847.                  	mb2 = mq;
+  848.                      }
+  849.                  
+  850.                  /*     For each K2 loop (rowwise), Copy A' to WORK & Send it to KTPROC */
+  851.                  /*                                 then, Receive WORK and Copy WORK to C */
+  852.                  
+  853.                      kmod1 = (nprow + mrcol - mrrow) % igcd;
+  854.                      kmod2 = (igcd - kmod1) % igcd;
+  855.                  
+  856.                      i__1 = lcmp - 1;
+  857.  + 1-----------<     for (k2 = 0; k2 <= i__1; ++k2) {
+  858.    1             
+  859.    1             /*        Copy A' to WORK in the appropriate order & Send it */
+  860.    1             
+  861.    1             	k1 = k2 * igcd + kmod1;
+  862.    1             	mcol = (kpcol - k1) % npcol;
+  863.    1             	kia = iwork[mcol * 3 + 1] * *mb;
+  864.    1             	mcol = (mcol + *imcol) % npcol;
+  865.    1             	ncol = (mrcol + k2 * igcd + kmod2) % npcol;
+  866.    1             	kic = iwork[ncol * 3 + 1] * *nb;
+  867.    1             	ncol = (ncol + *imcol) % npcol;
+  868.    1             
+  869.    1             	i__2 = lcmq - 1;
+  870.  + 1 2---------< 	for (j1 = 0; j1 <= i__2; ++j1) {
+  871.    1 2           	    kja = iwork[(mrrow + igcd * j1) % nprow * 3 + 2] * *nb;
+  872.    1 2           
+  873.    1 2           	    if (myrow == (myrow + igcd * j1 + kmod1) % nprow && mycol == mcol)
+  874.    1 2           		     {
+  875.    1 2           		kjc = iwork[(kprow - igcd * j1) % nprow * 3 + 3] * *mb;
+  876.    1 2           		i__3 = mp - kia;
+  877.    1 2           		i__4 = nq - kja;
+  878.  + 1 2           		dtr2mx_(&a[kia + 1 + (kja + 1) * a_dim1], lda, &tbeta, &c__[
+  879.    1 2           			kic + 1 + (kjc + 1) * c_dim1], ldc, &lbm0, &lbn0, &
+  880.    1 2           			mb0, &nb0, &i__3, &i__4);
+  881.    1 2           
+  882.    1 2           	    } else {
+  883.    1 2           		i__3 = mp - kia;
+  884.    1 2           		i__4 = nq - kja;
+  885.  + 1 2           		dtr2bf_(&a[kia + 1 + (kja + 1) * a_dim1], lda, &work[1], &ldt,
+  886.    1 2           			 &lbm1, &lbn1, &mb1, &nb1, &i__3, &i__4);
+  887.    1 2           
+  888.    1 2           		if (nprow == npcol && *beta == 0. && *ldc == ldt) {
+  889.    1 2           		    i__3 = (myrow + igcd * j1 + kmod1) % nprow;
+  890.    1 2           		    i__4 = (mprow - igcd * j1 - kmod2) % nprow;
+  891.    1 2           		    kjc = iwork[(kprow - igcd * j1) % nprow * 3 + 3] * *mb;
+  892.    1 2           #if 0
+  893.    1 2           		    Cdgesd2d(context_1.ictxt,nl,ml,&work[1],nl,i__3,mcol);
+  894.    1 2           		    Cdgerv2d(context_1.ictxt,nl,ml,&c__[(kjc + 1) * c_dim1 + 1],*ldc,i__4,ncol);
+  895.    1 2           #else
+  896.  + 1 2           		    Cblacs_dSendrecv( context_1.ictxt,
+  897.    1 2                                     nl, ml, &work[1], nl, i__3, mcol,
+  898.    1 2                                     nl, ml, &c__[(kjc + 1) * c_dim1 + 1], *ldc, i__4, ncol );
+  899.    1 2           #endif
+  900.    1 2           
+  901.    1 2           		} else {
+  902.    1 2           		    i__3 = (myrow + igcd * j1 + kmod1) % nprow;
+  903.    1 2           		    i__4 = (mprow - igcd * j1 - kmod2) % nprow;
+  904.    1 2           #if 0
+  905.    1 2           		    Cdgesd2d(context_1.ictxt,nl,ml,&work[1],nl,i__3,mcol);
+  906.    1 2           		    Cdgerv2d(context_1.ictxt,nl,ml,&work[ipt],nl, i__4,ncol);
+  907.    1 2           #else
+  908.  + 1 2                   Cblacs_dSendrecv( context_1.ictxt,
+  909.    1 2                                     nl, ml, &work[1],   nl, i__3, mcol,
+  910.    1 2                                     nl, ml, &work[ipt], nl, i__4, ncol );
+  911.    1 2           #endif
+  912.    1 2           
+  913.    1 2           		    kjc = iwork[(kprow - igcd * j1) % nprow * 3 + 3] * *mb;
+  914.    1 2           		    i__3 = np - kic;
+  915.    1 2           		    i__4 = mq - kjc;
+  916.  + 1 2           		    dmv2mx_(&work[ipt], &ldt, &tbeta, &c__[kic + 1 + (kjc + 1)
+  917.    1 2           			     * c_dim1], ldc, &lbn2, &lbm2, &nb2, &mb2, &i__3,
+  918.    1 2           			    &i__4);
+  919.    1 2           		}
+  920.    1 2           	    }
+  921.    1 2---------> 	}
+  922.    1----------->     }
+  923.                  
+  924.                      return 0;
+  925.                  } /* pdtrans_ */
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 63 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 67 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 69 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 71 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 71 
+  A loop was partially vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 84 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 86 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 86 
+  A loop was partially vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 103 
+  A loop was not vectorized because the loop starting at line 175 was not vectorizable.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 105 
+  A loop was not vectorized because a better candidate was found at line 107.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 107 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 107 
+  A loop was partially vectorized.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 120 
+  A loop was not vectorized because a better candidate was found at line 122.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 122 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = pdtrans.c, Line = 122 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 122 
+  A loop was partially vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 135 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 139 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 141 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 143 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = pdtrans.c, Line = 143 
+  A loop was conditionally vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 156 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 158 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = pdtrans.c, Line = 158 
+  A loop was conditionally vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 175 
+  A loop was not vectorized because the loop starting at line 103 was not vectorizable.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 177 
+  A loop was not vectorized because a better candidate was found at line 179.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 179 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = pdtrans.c, Line = 179 
+  A loop was conditionally vectorized.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 192 
+  A loop was not vectorized because a better candidate was found at line 194.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 194 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = pdtrans.c, Line = 194 
+  A loop was conditionally vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 240 
+  A loop was not vectorized because the loop starting at line 280 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 244 
+  A loop was not vectorized because the loop starting at line 280 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 246 
+  A loop was not vectorized because the loop starting at line 280 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 248 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 248 
+  A loop was partially vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 261 
+  A loop was not vectorized because the loop starting at line 280 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 263 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 263 
+  A loop was partially vectorized.
+
+CC-6254 CC: VECTOR File = pdtrans.c, Line = 280 
+  A loop was not vectorized because a recurrence was found on "t" at line 285.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 282 
+  A loop was not vectorized because a better candidate was found at line 284.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 284 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 284 
+  A loop was partially vectorized.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 297 
+  A loop was not vectorized because a better candidate was found at line 299.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 299 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = pdtrans.c, Line = 299 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = pdtrans.c, Line = 299 
+  A loop was partially vectorized.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 355 
+  A loop was not vectorized because it contains a call to function "HPL_dcopy" on line 359.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 357 
+  A loop was not vectorized because it contains a call to function "HPL_dcopy" on line 359.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 359 
+  "HPL_dcopy" (called from "dmv2mx_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 370 
+  A loop was not vectorized because it contains a call to function "HPL_dcopy" on line 372.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 372 
+  "HPL_dcopy" (called from "dmv2mx_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 380 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 384 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 386 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6202 CC: VECTOR File = pdtrans.c, Line = 388 
+  A loop was replaced by a library call.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 401 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6202 CC: VECTOR File = pdtrans.c, Line = 403 
+  A loop was replaced by a library call.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 420 
+  A loop was not vectorized because the loop starting at line 522 was not vectorizable.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 422 
+  A loop was not vectorized because a better candidate was found at line 424.
+
+CC-6202 CC: VECTOR File = pdtrans.c, Line = 424 
+  A loop was replaced by a library call.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 437 
+  A loop was not vectorized because a better candidate was found at line 439.
+
+CC-6202 CC: VECTOR File = pdtrans.c, Line = 439 
+  A loop was replaced by a library call.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 458 
+  A loop was not vectorized because it contains a call to function "HPL_daxpy" on line 462.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 460 
+  A loop was not vectorized because it contains a call to function "HPL_daxpy" on line 462.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 462 
+  "HPL_daxpy" (called from "dmv2mx_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 473 
+  A loop was not vectorized because it contains a call to function "HPL_daxpy" on line 475.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 475 
+  "HPL_daxpy" (called from "dmv2mx_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 482 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 486 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 488 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 490 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = pdtrans.c, Line = 490 
+  A loop was vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 503 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 505 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = pdtrans.c, Line = 505 
+  A loop was vectorized.
+
+CC-6302 CC: VECTOR File = pdtrans.c, Line = 522 
+  A loop was not vectorized because the loop starting at line 420 was not vectorizable.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 524 
+  A loop was not vectorized because a better candidate was found at line 526.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 526 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = pdtrans.c, Line = 526 
+  A loop was vectorized.
+
+CC-6294 CC: VECTOR File = pdtrans.c, Line = 539 
+  A loop was not vectorized because a better candidate was found at line 541.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 541 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = pdtrans.c, Line = 541 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 694 
+  "Cblacs_gridinfo" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 719 
+  A loop was not vectorized because it contains a call to function "ilcm_" on line 732.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 721 
+  "pxerbla" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 732 
+  "ilcm_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 737 
+  "numroc_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 738 
+  "numroc_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 739 
+  "numroc_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 740 
+  "numroc_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 742 
+  "iceil_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 743 
+  "iceil_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 744 
+  "iceil_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 745 
+  "iceil_" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 769 
+  A loop was not vectorized because it contains a call to function "HPL_dscal" on line 770.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 770 
+  "HPL_dscal" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = pdtrans.c, Line = 791 
+  A loop was not vectorized because a recurrence was found between "nprow" and "iwork" at line 797.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 794 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = pdtrans.c, Line = 794 
+  A loop was not vectorized because a recurrence was found between "nprow" and "iwork" at line 797.
+
+CC-6005 CC: SCALAR File = pdtrans.c, Line = 804 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = pdtrans.c, Line = 804 
+  A loop was not vectorized because a recurrence was found between "nprow" at line 805 and "iwork" at line 806.
+
+CC-6290 CC: VECTOR File = pdtrans.c, Line = 809 
+  A loop was not vectorized because a recurrence was found between "nprow" and "iwork" at line 810.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 857 
+  A loop was not vectorized because it contains a call to function "dtr2mx_" on line 878.
+
+CC-6287 CC: VECTOR File = pdtrans.c, Line = 870 
+  A loop was not vectorized because it contains a call to function "dtr2mx_" on line 878.
+
+CC-3172 CC: IPA File = pdtrans.c, Line = 878 
+  "dtr2mx_" (called from "pdtrans") was not inlined because the enclosing loop body did not completely flatten.
+
+CC-3172 CC: IPA File = pdtrans.c, Line = 885 
+  "dtr2bf_" (called from "pdtrans") was not inlined because the enclosing loop body did not completely flatten.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 896 
+  "Cblacs_dSendrecv" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdtrans.c, Line = 908 
+  "Cblacs_dSendrecv" (called from "pdtrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = pdtrans.c, Line = 916 
+  "dmv2mx_" (called from "pdtrans") was not inlined because the call site will not flatten.  "HPL_daxpy" is missing.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

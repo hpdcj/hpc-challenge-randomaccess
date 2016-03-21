@@ -1,0 +1,260 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dscal.c
+Compiled : 2016-03-19  13:19:27
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/blas/HPL_dscal.o -c ../../../src/blas/HPL_dscal.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dscal.c
+Date     : 03/19/2016  13:19:27
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifndef HPL_dscal
+   53.     
+   54.     #ifdef HPL_STDC_HEADERS
+   55.     void HPL_dscal
+   56.     (
+   57.        const int                        N,
+   58.        const double                     ALPHA,
+   59.        double *                         X,
+   60.        const int                        INCX
+   61.     )
+   62.     #else
+   63.     void HPL_dscal
+   64.     ( N, ALPHA, X, INCX )
+   65.        const int                        N;
+   66.        const double                     ALPHA;
+   67.        double *                         X;
+   68.        const int                        INCX;
+   69.     #endif
+   70.     {
+   71.     /* 
+   72.      * Purpose
+   73.      * =======
+   74.      *
+   75.      * HPL_dscal scales the vector x by alpha.
+   76.      * 
+   77.      *
+   78.      * Arguments
+   79.      * =========
+   80.      *
+   81.      * N       (local input)                 const int
+   82.      *         On entry, N specifies the length of the vector x. N  must  be
+   83.      *         at least zero.
+   84.      *
+   85.      * ALPHA   (local input)                 const double
+   86.      *         On entry, ALPHA specifies the scalar alpha.   When  ALPHA  is
+   87.      *         supplied as zero, then the entries of the incremented array X
+   88.      *         need not be set on input.
+   89.      *
+   90.      * X       (local input/output)          double *
+   91.      *         On entry,  X  is an incremented array of dimension  at  least
+   92.      *         ( 1 + ( n - 1 ) * abs( INCX ) )  that  contains the vector x.
+   93.      *         On exit, the entries of the incremented array  X  are  scaled
+   94.      *         by the scalar alpha.
+   95.      *
+   96.      * INCX    (local input)                 const int
+   97.      *         On entry, INCX specifies the increment for the elements of X.
+   98.      *         INCX must not be zero.
+   99.      *
+  100.      * ---------------------------------------------------------------------
+  101.      */ 
+  102.     #ifdef HPL_CALL_CBLAS
+  103.        cblas_dscal( N, ALPHA, X, INCX );
+  104.     #endif
+  105.     #ifdef HPL_CALL_VSIPL
+  106.        register double           x0, x1, x2, x3, x4, x5, x6, x7;
+  107.        register const double     alpha = ALPHA;
+  108.        const double              * StX;
+  109.        register int              i;
+  110.        int                       nu;
+  111.        const int                 incX2 = 2 * INCX, incX3 = 3 * INCX,
+  112.                                  incX4 = 4 * INCX, incX5 = 5 * INCX,
+  113.                                  incX6 = 6 * INCX, incX7 = 7 * INCX,
+  114.                                  incX8 = 8 * INCX;
+  115.     
+  116.        if( ( N > 0 ) && ( alpha != HPL_rone ) )
+  117.        {
+  118.           if( alpha == HPL_rzero )
+  119.           {
+  120.              if( ( nu = ( N >> 3 ) << 3 ) != 0 )
+  121.              {
+  122.                 StX = (double *)X + nu * INCX;
+  123.      
+  124.                 do
+  125.                 {
+  126.                    (*X)     = HPL_rzero; X[incX4] = HPL_rzero;
+  127.                    X[INCX ] = HPL_rzero; X[incX5] = HPL_rzero;
+  128.                    X[incX2] = HPL_rzero; X[incX6] = HPL_rzero;
+  129.                    X[incX3] = HPL_rzero; X[incX7] = HPL_rzero; X += incX8;
+  130.     
+  131.                 } while( X != StX );
+  132.              }
+  133.      
+  134.              for( i = N - nu; i != 0; i-- ) { *X = HPL_rzero; X += INCX; }
+  135.           }
+  136.           else
+  137.           {
+  138.              if( ( nu = ( N >> 3 ) << 3 ) != 0 )
+  139.              {
+  140.                 StX = X + nu * INCX;
+  141.      
+  142.                 do
+  143.                 {
+  144.                    x0 = (*X);     x4 = X[incX4]; x1 = X[INCX ]; x5 = X[incX5];
+  145.                    x2 = X[incX2]; x6 = X[incX6]; x3 = X[incX3]; x7 = X[incX7];
+  146.      
+  147.                    x0 *= alpha;   x4 *= alpha;   x1 *= alpha;   x5 *= alpha;
+  148.                    x2 *= alpha;   x6 *= alpha;   x3 *= alpha;   x7 *= alpha;
+  149.      
+  150.                    (*X)     = x0; X[incX4] = x4; X[INCX ] = x1; X[incX5] = x5;
+  151.                    X[incX2] = x2; X[incX6] = x6; X[incX3] = x3; X[incX7] = x7;
+  152.      
+  153.                    X  += incX8;
+  154.      
+  155.                 } while( X != StX );
+  156.              }
+  157.      
+  158.              for( i = N - nu; i != 0; i-- )
+  159.              { x0 = (*X); x0 *= alpha; *X = x0; X += INCX; }
+  160.           }
+  161.        }
+  162.     #endif
+  163.     #ifdef HPL_CALL_FBLAS
+  164.        double                    alpha = ALPHA;
+  165.     #ifdef HPL_USE_F77_INTEGER_DEF
+  166.        const F77_INTEGER         F77N = N, F77incx = INCX;
+  167.     #else
+  168.     #define F77N                 N
+  169.     #define F77incx              INCX
+  170.     #endif
+  171.     
+  172.  +     F77dscal( &F77N, &alpha, X, &F77incx );
+  173.     #endif
+  174.     /*
+  175.      * End of HPL_dscal
+  176.      */
+  177.     }
+  178.      
+  179.     #endif
+
+CC-3021 CC: IPA File = HPL_dscal.c, Line = 172 
+  "dscal_" (called from "HPL_dscal") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

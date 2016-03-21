@@ -1,0 +1,413 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/verification_lcg.c
+Compiled : 2016-03-19  13:20:12
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/verification_lcg.o
+           -c ../../../../RandomAccess/verification_lcg.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/verification_lcg.c
+Date     : 03/19/2016  13:20:13
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                #include <hpcc.h>
+    2.                #include "RandomAccess.h"
+    3.                
+    4.                /* Verification phase: local buckets to sort into */
+    5.                #define BUCKET_SIZE 1024
+    6.                #define SLOT_CNT 1
+    7.                #define FIRST_SLOT 2
+    8.                
+    9.                void
+   10.                HPCC_Power2NodesMPIRandomAccessCheck_LCG(HPCC_RandomAccess_tabparams_t tparams, s64Int *NumErrors) {
+   11.                  u64Int Ran, RanTmp;
+   12.                  s64Int NextSlot, WhichPe, PeBucketBase, SendCnt, errors, *PeCheckDone, il;
+   13.                  int i, j, n;
+   14.                  int LocalAllDone =  HPCC_FALSE;
+   15.                  int sAbort, rAbort;
+   16.                
+   17.                  u64Int *LocalBuckets, *GlobalBuckets; /* buckets used in verification phase */
+   18.                
+   19.                
+   20.                  LocalBuckets = XMALLOC( u64Int, (tparams.NumProcs*(BUCKET_SIZE+FIRST_SLOT)));
+   21.                  sAbort = 0; if (! LocalBuckets) sAbort = 1;
+   22.  +               MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+   23.                  if (rAbort > 0) {
+   24.                    if (tparams.MyProc == 0) fprintf(stderr, "Failed to allocate memory for local buckets.\n");
+   25.                    goto failed_localbuckets;
+   26.                  }
+   27.                  GlobalBuckets = XMALLOC( u64Int, (tparams.NumProcs*(BUCKET_SIZE+FIRST_SLOT)));
+   28.                  sAbort = 0; if (! GlobalBuckets) sAbort = 1;
+   29.  +               MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+   30.                  if (rAbort > 0) {
+   31.                    if (tparams.MyProc == 0) fprintf(stderr, "Failed to allocate memory for global buckets.\n");
+   32.                    goto failed_globalbuckets;
+   33.                  }
+   34.                
+   35.                
+   36.                  SendCnt = tparams.ProcNumUpdates; /*  SendCnt = 4 * LocalTableSize; */
+   37.  +               Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+   38.                
+   39.                  PeCheckDone = XMALLOC ( s64Int, tparams.NumProcs);
+   40.                
+   41.    A---------<   for (i=0; i<tparams.NumProcs; i++)
+   42.    A--------->     PeCheckDone[i] = HPCC_FALSE;
+   43.                
+   44.  + 1---------<   while(LocalAllDone == HPCC_FALSE){
+   45.    1               if (SendCnt > 0) {
+   46.    1                 /* Initalize local buckets */
+   47.  + 1 r8------<       for (i=0; i<tparams.NumProcs; i++){
+   48.    1 r8                PeBucketBase = i * (BUCKET_SIZE+FIRST_SLOT);
+   49.    1 r8                LocalBuckets[PeBucketBase+SLOT_CNT] = FIRST_SLOT;
+   50.    1 r8                LocalBuckets[PeBucketBase+HPCC_DONE] = HPCC_FALSE;
+   51.    1 r8------>       }
+   52.    1           
+   53.    1                 /* Fill local buckets until one is full or out of data */
+   54.    1                 NextSlot = FIRST_SLOT;
+   55.  + 1 2-------<       while(NextSlot != (BUCKET_SIZE+FIRST_SLOT) && SendCnt>0 ) {
+   56.    1 2                 Ran = LCG_MUL64 * Ran + LCG_ADD64;
+   57.    1 2                 WhichPe = (Ran >> (64 - tparams.logNumProcs)) & (tparams.NumProcs - 1);
+   58.    1 2                 PeBucketBase = WhichPe * (BUCKET_SIZE+FIRST_SLOT);
+   59.    1 2                 NextSlot = LocalBuckets[PeBucketBase+SLOT_CNT];
+   60.    1 2                 LocalBuckets[PeBucketBase+NextSlot] = Ran;
+   61.    1 2                 LocalBuckets[PeBucketBase+SLOT_CNT] = ++NextSlot;
+   62.    1 2                 SendCnt--;
+   63.    1 2------->       }
+   64.    1           
+   65.    1                 if (SendCnt == 0)
+   66.  + 1 r8------<         for (i=0; i<tparams.NumProcs; i++)
+   67.    1 r8------>           LocalBuckets[i*(BUCKET_SIZE+FIRST_SLOT)+HPCC_DONE] = HPCC_TRUE;
+   68.    1           
+   69.    1               } /* End of sending loop */
+   70.    1           
+   71.  + 1               MPI_Barrier(MPI_COMM_WORLD);
+   72.    1           
+   73.    1               LocalAllDone = HPCC_TRUE;
+   74.    1           
+   75.    1               /* Now move all the buckets to the appropriate pe */
+   76.  + 1               MPI_Alltoall(LocalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
+   77.    1                            GlobalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
+   78.    1                            MPI_COMM_WORLD);
+   79.    1           
+   80.  + 1 2-------<     for (i = 0; i < tparams.NumProcs; i ++) {
+   81.    1 2               if(PeCheckDone[i] == HPCC_FALSE) {
+   82.    1 2                 PeBucketBase = i * (BUCKET_SIZE+FIRST_SLOT);
+   83.    1 2                 PeCheckDone[i] = GlobalBuckets[PeBucketBase+HPCC_DONE];
+   84.    1 2                 n = (int)(GlobalBuckets[PeBucketBase+SLOT_CNT]);
+   85.    1 2 Vpr2--<         for (j = FIRST_SLOT; j < n; ++j) {
+   86.    1 2 Vpr2              RanTmp = GlobalBuckets[PeBucketBase+j];
+   87.    1 2 Vpr2              HPCC_Table[(RanTmp >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize-1)] ^= RanTmp;
+   88.    1 2 Vpr2-->         }
+   89.    1 2                 LocalAllDone &= PeCheckDone[i];
+   90.    1 2               }
+   91.    1 2------->     }
+   92.    1--------->   }
+   93.                
+   94.                  errors = 0;
+   95.    Vr2-------<   for (il=0; il < tparams.LocalTableSize; il++)
+   96.    Vr2             if (HPCC_Table[il] != il + tparams.GlobalStartMyProc)
+   97.    Vr2------->       errors++;
+   98.                
+   99.                  *NumErrors = errors;
+  100.                
+  101.                  free( PeCheckDone );
+  102.                
+  103.                  free( GlobalBuckets );
+  104.                
+  105.                  failed_globalbuckets:
+  106.                
+  107.                  free( LocalBuckets );
+  108.                
+  109.                  failed_localbuckets:
+  110.                  return;
+  111.                }
+  112.                
+  113.                void
+  114.                HPCC_AnyNodesMPIRandomAccessCheck_LCG(HPCC_RandomAccess_tabparams_t tparams, s64Int *NumErrors) {
+  115.                  u64Int Ran, RanTmp;
+  116.                  s64Int WhichPe, LocalOffset, NextSlot, PeBucketBase, SendCnt, errors, *PeCheckDone, il;
+  117.                  u64Int GlobalOffset;
+  118.                  int i, j, n;
+  119.                  int LocalAllDone =  HPCC_FALSE;
+  120.                  int sAbort, rAbort;
+  121.                
+  122.                  u64Int *LocalBuckets, *GlobalBuckets; /* buckets used in verification phase */
+  123.                
+  124.                  LocalBuckets = XMALLOC( u64Int, (tparams.NumProcs*(BUCKET_SIZE+FIRST_SLOT)));
+  125.                  sAbort = 0; if (! LocalBuckets) sAbort = 1;
+  126.  +               MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+  127.                  if (rAbort > 0) {
+  128.                    if (tparams.MyProc == 0) fprintf(stderr, "Failed to allocate memory for local buckets.\n");
+  129.                    goto failed_localbuckets;
+  130.                  }
+  131.                  GlobalBuckets = XMALLOC( u64Int, (tparams.NumProcs*(BUCKET_SIZE+FIRST_SLOT)));
+  132.                  sAbort = 0; if (! GlobalBuckets) sAbort = 1;
+  133.  +               MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+  134.                  if (rAbort > 0) {
+  135.                    if (tparams.MyProc == 0) fprintf(stderr, "Failed to allocate memory for global buckets.\n");
+  136.                    goto failed_globalbuckets;
+  137.                  }
+  138.                
+  139.                
+  140.                  SendCnt = tparams.ProcNumUpdates; /* SendCnt = 4 * LocalTableSize; */
+  141.  +               Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+  142.                
+  143.                  PeCheckDone = XMALLOC (s64Int, tparams.NumProcs);
+  144.    A---------<   for (i=0; i<tparams.NumProcs; i++)
+  145.    A--------->     PeCheckDone[i] = HPCC_FALSE;
+  146.                
+  147.  + 1---------<   while(LocalAllDone == HPCC_FALSE){
+  148.    1               if (SendCnt > 0) {
+  149.    1                 /* Initalize local buckets */
+  150.  + 1 r8------<       for (i=0; i<tparams.NumProcs; i++){
+  151.    1 r8                PeBucketBase = i * (BUCKET_SIZE+FIRST_SLOT);
+  152.    1 r8                LocalBuckets[PeBucketBase+SLOT_CNT] = FIRST_SLOT;
+  153.    1 r8                LocalBuckets[PeBucketBase+HPCC_DONE] = HPCC_FALSE;
+  154.    1 r8------>       }
+  155.    1           
+  156.    1                 /* Fill local buckets until one is full or out of data */
+  157.    1                 NextSlot = FIRST_SLOT;
+  158.  + 1 2-------<       while(NextSlot != (BUCKET_SIZE+FIRST_SLOT) && SendCnt>0 ) {
+  159.    1 2                 Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  160.    1 2                 GlobalOffset = Ran >> (64 - tparams.logTableSize);
+  161.    1 2                 if ( GlobalOffset < tparams.Top)
+  162.    1 2                   WhichPe = ( GlobalOffset / (tparams.MinLocalTableSize + 1) );
+  163.    1 2                 else
+  164.    1 2                   WhichPe = ( (GlobalOffset - tparams.Remainder) / tparams.MinLocalTableSize );
+  165.    1 2                 PeBucketBase = WhichPe * (BUCKET_SIZE+FIRST_SLOT);
+  166.    1 2                 NextSlot = LocalBuckets[PeBucketBase+SLOT_CNT];
+  167.    1 2                 LocalBuckets[PeBucketBase+NextSlot] = Ran;
+  168.    1 2                 LocalBuckets[PeBucketBase+SLOT_CNT] = ++NextSlot;
+  169.    1 2                 SendCnt--;
+  170.    1 2------->       }
+  171.    1           
+  172.    1                 if (SendCnt == 0)
+  173.  + 1 r8------<         for (i=0; i<tparams.NumProcs; i++)
+  174.    1 r8------>           LocalBuckets[i*(BUCKET_SIZE+FIRST_SLOT)+HPCC_DONE] = HPCC_TRUE;
+  175.    1           
+  176.    1               } /* End of sending loop */
+  177.    1           
+  178.  + 1               MPI_Barrier(MPI_COMM_WORLD);
+  179.    1           
+  180.    1               LocalAllDone = HPCC_TRUE;
+  181.    1           
+  182.    1               /* Now move all the buckets to the appropriate pe*/
+  183.  + 1               MPI_Alltoall(LocalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
+  184.    1                            GlobalBuckets, (BUCKET_SIZE+FIRST_SLOT), tparams.dtype64,
+  185.    1                            MPI_COMM_WORLD);
+  186.    1           
+  187.  + 1 2-------<     for (i = 0; i < tparams.NumProcs; i ++) {
+  188.    1 2               if(PeCheckDone[i] == HPCC_FALSE) {
+  189.    1 2                 PeBucketBase = i * (BUCKET_SIZE+FIRST_SLOT);
+  190.    1 2                 PeCheckDone[i] = GlobalBuckets[PeBucketBase+HPCC_DONE];
+  191.    1 2                 n = (int)(GlobalBuckets[PeBucketBase+SLOT_CNT]);
+  192.    1 2 Vpr2--<         for (j = FIRST_SLOT; j < n; ++j) {
+  193.    1 2 Vpr2              RanTmp = GlobalBuckets[PeBucketBase+j];
+  194.    1 2 Vpr2              GlobalOffset = RanTmp >> (64 - tparams.logTableSize);
+  195.    1 2 Vpr2              LocalOffset = GlobalOffset - tparams.GlobalStartMyProc;
+  196.    1 2 Vpr2              HPCC_Table[LocalOffset] ^= RanTmp;
+  197.    1 2 Vpr2-->         }
+  198.    1 2                 LocalAllDone &= PeCheckDone[i];
+  199.    1 2               }
+  200.    1 2------->     }
+  201.    1           
+  202.    1--------->   } /* no more local data */
+  203.                
+  204.                  errors  = 0;
+  205.    Vr2-------<   for (il=0; il < tparams.LocalTableSize; il++)
+  206.    Vr2             if (HPCC_Table[il] != il + tparams.GlobalStartMyProc)
+  207.    Vr2------->       errors++;
+  208.                
+  209.                  *NumErrors = errors;
+  210.                
+  211.                  free( PeCheckDone );
+  212.                
+  213.                  free( GlobalBuckets );
+  214.                
+  215.                  failed_globalbuckets:
+  216.                
+  217.                  free( LocalBuckets );
+  218.                
+  219.                  failed_localbuckets:
+  220.                
+  221.                  return;
+  222.                }
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 22 
+  "MPI_Allreduce" (called from "HPCC_Power2NodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 29 
+  "MPI_Allreduce" (called from "HPCC_Power2NodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 37 
+  "HPCC_starts_LCG" (called from "HPCC_Power2NodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6202 CC: VECTOR File = verification_lcg.c, Line = 41 
+  A loop was replaced by a library call.
+
+CC-6287 CC: VECTOR File = verification_lcg.c, Line = 44 
+  A loop was not vectorized because it contains a call to function "MPI_Barrier" on line 71.
+
+CC-6332 CC: VECTOR File = verification_lcg.c, Line = 47 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 47 
+  A loop was unrolled 8 times.
+
+CC-6289 CC: VECTOR File = verification_lcg.c, Line = 55 
+  A loop was not vectorized because a recurrence was found on "LocalBuckets" between lines 59 and 60.
+
+CC-6332 CC: VECTOR File = verification_lcg.c, Line = 66 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 66 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 71 
+  "MPI_Barrier" (called from "HPCC_Power2NodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 76 
+  "MPI_Alltoall" (called from "HPCC_Power2NodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6254 CC: VECTOR File = verification_lcg.c, Line = 80 
+  A loop was not vectorized because a recurrence was found on "HPCC_Table" at line 87.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 85 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = verification_lcg.c, Line = 85 
+  A loop was partially vectorized.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 95 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = verification_lcg.c, Line = 95 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 126 
+  "MPI_Allreduce" (called from "HPCC_AnyNodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 133 
+  "MPI_Allreduce" (called from "HPCC_AnyNodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 141 
+  "HPCC_starts_LCG" (called from "HPCC_AnyNodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6202 CC: VECTOR File = verification_lcg.c, Line = 144 
+  A loop was replaced by a library call.
+
+CC-6287 CC: VECTOR File = verification_lcg.c, Line = 147 
+  A loop was not vectorized because it contains a call to function "MPI_Barrier" on line 178.
+
+CC-6332 CC: VECTOR File = verification_lcg.c, Line = 150 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 150 
+  A loop was unrolled 8 times.
+
+CC-6289 CC: VECTOR File = verification_lcg.c, Line = 158 
+  A loop was not vectorized because a recurrence was found on "LocalBuckets" between lines 166 and 167.
+
+CC-6332 CC: VECTOR File = verification_lcg.c, Line = 173 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 173 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 178 
+  "MPI_Barrier" (called from "HPCC_AnyNodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = verification_lcg.c, Line = 183 
+  "MPI_Alltoall" (called from "HPCC_AnyNodesMPIRandomAccessCheck_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6254 CC: VECTOR File = verification_lcg.c, Line = 187 
+  A loop was not vectorized because a recurrence was found on "HPCC_Table" at line 196.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 192 
+  A loop was unrolled 2 times.
+
+CC-6209 CC: VECTOR File = verification_lcg.c, Line = 192 
+  A loop was partially vectorized.
+
+CC-6005 CC: SCALAR File = verification_lcg.c, Line = 205 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = verification_lcg.c, Line = 205 
+  A loop was vectorized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

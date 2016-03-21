@@ -1,0 +1,206 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/wrapfftw.c
+Compiled : 2016-03-19  13:20:32
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/wrapfftw.o -c ../../../../FFT/wrapfftw.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/wrapfftw.c
+Date     : 03/19/2016  13:20:33
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          
+    2.          #include <stdio.h>
+    3.          #include <stdlib.h>
+    4.          
+    5.          #include "hpccfft.h"
+    6.          
+    7.          #ifdef _OPENMP
+    8.          #include <omp.h>
+    9.          #endif
+   10.          
+   11.          hpcc_fftw_plan
+   12.          HPCC_fftw_create_plan(int n, fftw_direction dir, int flags) {
+   13.            hpcc_fftw_plan p;
+   14.            fftw_complex *a = NULL, *b = NULL;
+   15.            size_t w1_size, w2_size, ww1_size, ww2_size, ww3_size, ww4_size;
+   16.          
+   17.            p = (hpcc_fftw_plan)fftw_malloc( sizeof *p );
+   18.            if (! p) return p;
+   19.          
+   20.            w1_size = Mmax( FFTE_NDA2/2 + FFTE_NP, (int)(1.100 * sqrt( n )) );
+   21.            w2_size = Mmax( FFTE_NDA2/2 + FFTE_NP, (int)(0.375 * sqrt( n )) );
+   22.            ww1_size = Mmax( FFTE_NDA2 + FFTE_NDA4*FFTE_NP + FFTE_NP, (int)(1.0 * sqrt( n )) );
+   23.            ww2_size = Mmax( FFTE_NDA2 + FFTE_NDA4*FFTE_NP + FFTE_NP, (int)(3.9 * sqrt( n )) );
+   24.            ww3_size = Mmax( FFTE_NDA2 + FFTE_NDA4*FFTE_NP + FFTE_NP, (int)(5.4773 * sqrt( n )) );
+   25.            ww4_size = Mmax( FFTE_NDA2 + (1 << 13), (int)(1.0/256.0 * n) );
+   26.          
+   27.            p->w1 = (fftw_complex *)fftw_malloc( w1_size * (sizeof *p->w1) );
+   28.            p->w2 = (fftw_complex *)fftw_malloc( w2_size * (sizeof *p->w2) );
+   29.            p->ww1 = (fftw_complex *)fftw_malloc( ww1_size * (sizeof *p->ww1) );
+   30.            p->ww2 = (fftw_complex *)fftw_malloc( ww2_size * (sizeof *p->ww1) );
+   31.            p->ww3 = (fftw_complex *)fftw_malloc( ww3_size * (sizeof *p->ww1) );
+   32.            p->ww4 = (fftw_complex *)fftw_malloc( ww4_size * (sizeof *p->ww1) );
+   33.          
+   34.            p->c_size = Mmax( (FFTE_NDA2+FFTE_NP) * FFTE_NBLK + FFTE_NP, (int)(16.75 * sqrt( n )) );
+   35.            p->d_size = Mmax( FFTE_NDA2+FFTE_NP, (int)(1.0 * sqrt( n )) );
+   36.          #ifdef _OPENMP
+   37.          #pragma omp parallel
+   38.    M---<   {
+   39.    M     #pragma omp single
+   40.    M         {
+   41.    M           int i;
+   42.  + M           i = omp_get_num_threads();
+   43.    M           p->c = (fftw_complex *)fftw_malloc( p->c_size * (sizeof *p->c) * i );
+   44.    M           p->d = (fftw_complex *)fftw_malloc( p->d_size * (sizeof *p->d) * i );
+   45.    M         }
+   46.    M--->   }
+   47.          #else
+   48.            p->c = (fftw_complex *)fftw_malloc( p->c_size * (sizeof *p->c) );
+   49.            p->d = (fftw_complex *)fftw_malloc( p->d_size * (sizeof *p->d) );
+   50.          #endif
+   51.          
+   52.            if (! p->w1 || ! p->w2 || ! p->ww1 || ! p->ww2 || ! p->ww3 || ! p->ww4 || ! p->c || ! p->d) {
+   53.              if (p->d) fftw_free( p->d );
+   54.              if (p->c) fftw_free( p->c );
+   55.              if (p->ww4) fftw_free( p->ww4 );
+   56.              if (p->ww3) fftw_free( p->ww3 );
+   57.              if (p->ww2) fftw_free( p->ww2 );
+   58.              if (p->ww1) fftw_free( p->ww1 );
+   59.              if (p->w2) fftw_free( p->w2 );
+   60.              if (p->w1) fftw_free( p->w1 );
+   61.              fftw_free( p );
+   62.              return NULL;
+   63.            }
+   64.          
+   65.  +         HPCC_zfft1d( n, a, b, 0, p );
+   66.          
+   67.            p->n = n;
+   68.            p->dir = dir;
+   69.            p->flags = flags;
+   70.          
+   71.            return p;
+   72.          }
+   73.          
+   74.          void
+   75.          HPCC_fftw_destroy_plan(hpcc_fftw_plan p) {
+   76.            if (! p) return;
+   77.            fftw_free( p->d );
+   78.            fftw_free( p->c );
+   79.            fftw_free( p->ww4 );
+   80.            fftw_free( p->ww3 );
+   81.            fftw_free( p->ww2 );
+   82.            fftw_free( p->ww1 );
+   83.            fftw_free( p->w2 );
+   84.            fftw_free( p->w1 );
+   85.            fftw_free( p );
+   86.          }
+   87.          
+   88.          /* Without additional storage of size p->n there is no way to preserve FFTW 2
+   89.             semantics (the `in' vector is not modified). But it doesn't matter for the
+   90.             calling code: it doesn't rely on this semantics. The change in semantics
+   91.             occured while going from FFTE 3.3 to FFTE 4.0. */
+   92.          void
+   93.          HPCC_fftw_one(hpcc_fftw_plan p, fftw_complex *in, fftw_complex *out) {
+   94.            int i, n;
+   95.          
+   96.            if (FFTW_FORWARD == p->dir)
+   97.  +           HPCC_zfft1d( p->n, in, out, -1, p );
+   98.            else
+   99.  +           HPCC_zfft1d( p->n, in, out, +1, p );
+  100.          
+  101.            n = p->n;
+  102.            /* Copy the transform to `out' vector. */
+  103.  + r8--<   for (i = 0; i < n; ++i) {
+  104.    r8        c_assgn( out[i], in[i] );
+  105.    r8-->   }
+  106.          }
+
+CC-6823 CC: THREAD File = wrapfftw.c, Line = 38 
+  A region starting at line 38 and ending at line 46 was multi-threaded.
+
+CC-3021 CC: IPA File = wrapfftw.c, Line = 42 
+  "omp_get_num_threads" (called from "HPCC_fftw_create_plan") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = wrapfftw.c, Line = 65 
+  "HPCC_zfft1d" (called from "HPCC_fftw_create_plan") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapfftw.c, Line = 97 
+  "HPCC_zfft1d" (called from "HPCC_fftw_one") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapfftw.c, Line = 99 
+  "HPCC_zfft1d" (called from "HPCC_fftw_one") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = wrapfftw.c, Line = 103 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = wrapfftw.c, Line = 103 
+  A loop was unrolled 8 times.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

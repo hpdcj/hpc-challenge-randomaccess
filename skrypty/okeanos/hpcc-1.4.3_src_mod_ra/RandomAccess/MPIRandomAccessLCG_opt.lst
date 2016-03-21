@@ -1,0 +1,501 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/MPIRandomAccessLCG_opt.c
+Compiled : 2016-03-19  13:20:15
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/MPIRandomAccessLCG_opt.o
+           -c ../../../../RandomAccess/MPIRandomAccessLCG_opt.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/MPIRandomAccessLCG_opt.c
+Date     : 03/19/2016  13:20:15
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     There are no optimizations or loops to mark
+
+
+    1.    /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.    
+    3.    /*
+    4.     * This code has been contributed by the DARPA HPCS program.  Contact
+    5.     * David Koester <dkoester@mitre.org> or Bob Lucas <rflucas@isi.edu>
+    6.     * if you have questions.
+    7.     *
+    8.     *
+    9.     * GUPS (Giga UPdates per Second) is a measurement that profiles the memory
+   10.     * architecture of a system and is a measure of performance similar to MFLOPS.
+   11.     * The HPCS HPCchallenge RandomAccess benchmark is intended to exercise the
+   12.     * GUPS capability of a system, much like the LINPACK benchmark is intended to
+   13.     * exercise the MFLOPS capability of a computer.  In each case, we would
+   14.     * expect these benchmarks to achieve close to the "peak" capability of the
+   15.     * memory system. The extent of the similarities between RandomAccess and
+   16.     * LINPACK are limited to both benchmarks attempting to calculate a peak system
+   17.     * capability.
+   18.     *
+   19.     * GUPS is calculated by identifying the number of memory locations that can be
+   20.     * randomly updated in one second, divided by 1 billion (1e9). The term "randomly"
+   21.     * means that there is little relationship between one address to be updated and
+   22.     * the next, except that they occur in the space of one half the total system
+   23.     * memory.  An update is a read-modify-write operation on a table of 64-bit words.
+   24.     * An address is generated, the value at that address read from memory, modified
+   25.     * by an integer operation (add, and, or, xor) with a literal value, and that
+   26.     * new value is written back to memory.
+   27.     *
+   28.     * We are interested in knowing the GUPS performance of both entire systems and
+   29.     * system subcomponents --- e.g., the GUPS rating of a distributed memory
+   30.     * multiprocessor the GUPS rating of an SMP node, and the GUPS rating of a
+   31.     * single processor.  While there is typically a scaling of FLOPS with processor
+   32.     * count, a similar phenomenon may not always occur for GUPS.
+   33.     *
+   34.     * Select the memory size to be the power of two such that 2^n <= 1/2 of the
+   35.     * total memory.  Each CPU operates on its own address stream, and the single
+   36.     * table may be distributed among nodes. The distribution of memory to nodes
+   37.     * is left to the implementer.  A uniform data distribution may help balance
+   38.     * the workload, while non-uniform data distributions may simplify the
+   39.     * calculations that identify processor location by eliminating the requirement
+   40.     * for integer divides. A small (less than 1%) percentage of missed updates
+   41.     * are permitted.
+   42.     *
+   43.     * When implementing a benchmark that measures GUPS on a distributed memory
+   44.     * multiprocessor system, it may be required to define constraints as to how
+   45.     * far in the random address stream each node is permitted to "look ahead".
+   46.     * Likewise, it may be required to define a constraint as to the number of
+   47.     * update messages that can be stored before processing to permit multi-level
+   48.     * parallelism for those systems that support such a paradigm.  The limits on
+   49.     * "look ahead" and "stored updates" are being implemented to assure that the
+   50.     * benchmark meets the intent to profile memory architecture and not induce
+   51.     * significant artificial data locality. For the purpose of measuring GUPS,
+   52.     * we will stipulate that each process is permitted to look ahead no more than
+   53.     * 1024 random address stream samples with the same number of update messages
+   54.     * stored before processing.
+   55.     *
+   56.     * The supplied MPI-1 code generates the input stream {A} on all processors
+   57.     * and the global table has been distributed as uniformly as possible to
+   58.     * balance the workload and minimize any Amdahl fraction.  This code does not
+   59.     * exploit "look-ahead".  Addresses are sent to the appropriate processor
+   60.     * where the table entry resides as soon as each address is calculated.
+   61.     * Updates are performed as addresses are received.  Each message is limited
+   62.     * to a single 64 bit long integer containing element ai from {A}.
+   63.     * Local offsets for T[ ] are extracted by the destination processor.
+   64.     *
+   65.     * If the number of processors is equal to a power of two, then the global
+   66.     * table can be distributed equally over the processors.  In addition, the
+   67.     * processor number can be determined from that portion of the input stream
+   68.     * that identifies the address into the global table by masking off log2(p)
+   69.     * bits in the address.
+   70.     *
+   71.     * If the number of processors is not equal to a power of two, then the global
+   72.     * table cannot be equally distributed between processors.  In the MPI-1
+   73.     * implementation provided, there has been an attempt to minimize the differences
+   74.     * in workloads and the largest difference in elements of T[ ] is one.  The
+   75.     * number of values in the input stream generated by each processor will be
+   76.     * related to the number of global table entries on each processor.
+   77.     *
+   78.     * The MPI-1 version of RandomAccess treats the potential instance where the
+   79.     * number of processors is a power of two as a special case, because of the
+   80.     * significant simplifications possible because processor location and local
+   81.     * offset can be determined by applying masks to the input stream values.
+   82.     * The non power of two case uses an integer division to determine the processor
+   83.     * location.  The integer division will be more costly in terms of machine
+   84.     * cycles to perform than the bit masking operations
+   85.     *
+   86.     * For additional information on the GUPS metric, the HPCchallenge RandomAccess
+   87.     * Benchmark,and the rules to run RandomAccess or modify it to optimize
+   88.     * performance -- see http://icl.cs.utk.edu/hpcc/
+   89.     *
+   90.     */
+   91.    
+   92.    /* Jan 2005
+   93.     *
+   94.     * This code has been modified to allow local bucket sorting of updates.
+   95.     * The total maximum number of updates in the local buckets of a process
+   96.     * is currently defined in "RandomAccess.h" as MAX_TOTAL_PENDING_UPDATES.
+   97.     * When the total maximum number of updates is reached, the process selects
+   98.     * the bucket (or destination process) with the largest number of
+   99.     * updates and sends out all the updates in that bucket. See buckets.c
+  100.     * for details about the buckets' implementation.
+  101.     *
+  102.     * This code also supports posting multiple MPI receive descriptors (based
+  103.     * on a contribution by David Addison).
+  104.     *
+  105.     * In addition, this implementation provides an option for limiting
+  106.     * the execution time of the benchmark to a specified time bound
+  107.     * (see time_bound.c). The time bound is currently defined in
+  108.     * time_bound.h, but it should be a benchmark parameter. By default
+  109.     * the benchmark will execute the recommended number of updates,
+  110.     * that is, four times the global table size.
+  111.     */
+  112.    
+  113.    #include <hpcc.h>
+  114.    
+  115.    #include "RandomAccess.h"
+  116.    #include "buckets.h"
+  117.    #include "time_bound.h"
+  118.    
+  119.    #define CHUNK       MAX_TOTAL_PENDING_UPDATES
+  120.    #define CHUNKBIG    (32*CHUNK)
+  121.    #define RCHUNK      (16384)
+  122.    #define PITER       8
+  123.    #define MAXLOGPROCS 20
+  124.    
+  125.    #ifdef RA_SANDIA_OPT2
+  126.    void
+  127.    HPCC_AnyNodesMPIRandomAccessUpdate_LCG(HPCC_RandomAccess_tabparams_t tparams) {
+  128.      int i, ipartner,npartition,proclo,nlower,nupper,procmid;
+  129.      int ndata,nkeep,nsend,nrecv,nfrac;
+  130.      s64Int iterate, niterate;
+  131.      u64Int ran,datum,nglobalm1,indexmid, index;
+  132.      u64Int *data,*send, *offsets;
+  133.      MPI_Status status;
+  134.    
+  135.      /* setup: should not really be part of this timed routine
+  136.         NOTE: niterate must be computed from global TableSize * 4
+  137.               not from ProcNumUpdates since that can be different on each proc
+  138.               round niterate up by 1 to do slightly more than required updates */
+  139.    
+  140.      data = (u64Int *) malloc(CHUNKBIG*sizeof(u64Int));
+  141.      send = (u64Int *) malloc(CHUNKBIG*sizeof(u64Int));
+  142.    
+  143.      ran = HPCC_starts_LCG(4*tparams.GlobalStartMyProc);
+  144.    
+  145.      offsets = (u64Int *) malloc((tparams.NumProcs+1)*sizeof(u64Int));
+  146.      MPI_Allgather(&tparams.GlobalStartMyProc,1,tparams.dtype64,offsets,1,tparams.dtype64,
+  147.                    MPI_COMM_WORLD);
+  148.      offsets[tparams.NumProcs] = tparams.TableSize;
+  149.    
+  150.      niterate = 4 * tparams.TableSize / tparams.NumProcs / CHUNK + 1;
+  151.      nglobalm1 = 64 - tparams.logTableSize;
+  152.    
+  153.      /* actual update loop: this is only section that should be timed */
+  154.    
+  155.      for (iterate = 0; iterate < niterate; iterate++) {
+  156.        for (i = 0; i < CHUNK; i++) {
+  157.          ran = LCG_MUL64 * ran + LCG_ADD64;
+  158.          data[i] = ran;
+  159.        }
+  160.        ndata = CHUNK;
+  161.    
+  162.        npartition = tparams.NumProcs;
+  163.        proclo = 0;
+  164.        while (npartition > 1) {
+  165.          nlower = npartition/2;
+  166.          nupper = npartition - nlower;
+  167.          procmid = proclo + nlower;
+  168.          indexmid = offsets[procmid];
+  169.    
+  170.          nkeep = nsend = 0;
+  171.          if (tparams.MyProc < procmid) {
+  172.            for (i = 0; i < ndata; i++) {
+  173.              if ((data[i] >> nglobalm1) >= indexmid) send[nsend++] = data[i];
+  174.              else data[nkeep++] = data[i];
+  175.            }
+  176.          } else {
+  177.            for (i = 0; i < ndata; i++) {
+  178.              if ((data[i] >> nglobalm1) < indexmid) send[nsend++] = data[i];
+  179.              else data[nkeep++] = data[i];
+  180.            }
+  181.          }
+  182.    
+  183.          if (nlower == nupper) {
+  184.            if (tparams.MyProc < procmid) ipartner = tparams.MyProc + nlower;
+  185.            else ipartner = tparams.MyProc - nlower;
+  186.            MPI_Sendrecv(send,nsend,tparams.dtype64,ipartner,0,&data[nkeep],
+  187.                         CHUNKBIG,tparams.dtype64,ipartner,0,MPI_COMM_WORLD,&status);
+  188.            MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  189.            ndata = nkeep + nrecv;
+  190.          } else {
+  191.            if (tparams.MyProc < procmid) {
+  192.              nfrac = (nlower - (tparams.MyProc-proclo)) * nsend / nupper;
+  193.              ipartner = tparams.MyProc + nlower;
+  194.              MPI_Sendrecv(send,nfrac,tparams.dtype64,ipartner,0,&data[nkeep],
+  195.                           CHUNKBIG,tparams.dtype64,ipartner,0,MPI_COMM_WORLD,&status);
+  196.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  197.              nkeep += nrecv;
+  198.              MPI_Sendrecv(&send[nfrac],nsend-nfrac,tparams.dtype64,ipartner+1,0,
+  199.                           &data[nkeep],CHUNKBIG,tparams.dtype64,
+  200.                           ipartner+1,0,MPI_COMM_WORLD,&status);
+  201.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  202.              ndata = nkeep + nrecv;
+  203.            } else if (tparams.MyProc > procmid && tparams.MyProc < procmid+nlower) {
+  204.              nfrac = (tparams.MyProc - procmid) * nsend / nlower;
+  205.              ipartner = tparams.MyProc - nlower;
+  206.              MPI_Sendrecv(&send[nfrac],nsend-nfrac,tparams.dtype64,ipartner,0,
+  207.                           &data[nkeep],CHUNKBIG,tparams.dtype64,
+  208.                           ipartner,0,MPI_COMM_WORLD,&status);
+  209.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  210.              nkeep += nrecv;
+  211.              MPI_Sendrecv(send,nfrac,tparams.dtype64,ipartner-1,0,&data[nkeep],
+  212.                           CHUNKBIG,tparams.dtype64,ipartner-1,0,MPI_COMM_WORLD,&status);
+  213.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  214.              ndata = nkeep + nrecv;
+  215.            } else {
+  216.              if (tparams.MyProc == procmid) ipartner = tparams.MyProc - nlower;
+  217.              else ipartner = tparams.MyProc - nupper;
+  218.              MPI_Sendrecv(send,nsend,tparams.dtype64,ipartner,0,&data[nkeep],
+  219.                           CHUNKBIG,tparams.dtype64,ipartner,0,MPI_COMM_WORLD,&status);
+  220.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  221.              ndata = nkeep + nrecv;
+  222.            }
+  223.          }
+  224.    
+  225.          if (tparams.MyProc < procmid) npartition = nlower;
+  226.          else {
+  227.            proclo = procmid;
+  228.            npartition = nupper;
+  229.          }
+  230.        }
+  231.    
+  232.        for (i = 0; i < ndata; i++) {
+  233.          datum = data[i];
+  234.          index = (datum >> nglobalm1) - tparams.GlobalStartMyProc;
+  235.          HPCC_Table[index] ^= datum;
+  236.        }
+  237.      }
+  238.    
+  239.      /* clean up: should not really be part of this timed routine */
+  240.    
+  241.      free(data);
+  242.      free(send);
+  243.      free(offsets);
+  244.    }
+  245.    
+  246.    /* This sort is manually unrolled to make sure the compiler can see
+  247.     * the parallelism -KDU
+  248.     */
+  249.    
+  250.    static
+  251.    void sort_data(u64Int *source, u64Int *nomatch, u64Int *match, int number,
+  252.                   int *nnomatch, int *nmatch, int mask_shift)
+  253.    {
+  254.      int i,dindex,myselect[8],counts[2];
+  255.      int div_num = number / 8;
+  256.      int loop_total = div_num * 8;
+  257.      u64Int procmask = ((u64Int) 1) << mask_shift;
+  258.      u64Int *buffers[2];
+  259.    
+  260.      buffers[0] = nomatch;
+  261.      counts[0] = *nnomatch;
+  262.      buffers[1] = match;
+  263.      counts[1] = *nmatch;
+  264.    
+  265.      for (i = 0; i < div_num; i++) {
+  266.        dindex = i*8;
+  267.        myselect[0] = (source[dindex] & procmask) >> mask_shift;
+  268.        myselect[1] = (source[dindex+1] & procmask) >> mask_shift;
+  269.        myselect[2] = (source[dindex+2] & procmask) >> mask_shift;
+  270.        myselect[3] = (source[dindex+3] & procmask) >> mask_shift;
+  271.        myselect[4] = (source[dindex+4] & procmask) >> mask_shift;
+  272.        myselect[5] = (source[dindex+5] & procmask) >> mask_shift;
+  273.        myselect[6] = (source[dindex+6] & procmask) >> mask_shift;
+  274.        myselect[7] = (source[dindex+7] & procmask) >> mask_shift;
+  275.        buffers[myselect[0]][counts[myselect[0]]++] = source[dindex];
+  276.        buffers[myselect[1]][counts[myselect[1]]++] = source[dindex+1];
+  277.        buffers[myselect[2]][counts[myselect[2]]++] = source[dindex+2];
+  278.        buffers[myselect[3]][counts[myselect[3]]++] = source[dindex+3];
+  279.        buffers[myselect[4]][counts[myselect[4]]++] = source[dindex+4];
+  280.        buffers[myselect[5]][counts[myselect[5]]++] = source[dindex+5];
+  281.        buffers[myselect[6]][counts[myselect[6]]++] = source[dindex+6];
+  282.        buffers[myselect[7]][counts[myselect[7]]++] = source[dindex+7];
+  283.      }
+  284.    
+  285.      for (i = loop_total; i < number; i++) {
+  286.        u64Int mydata = source[i];
+  287.        if (mydata & procmask) buffers[1][counts[1]++] = mydata;
+  288.        else buffers[0][counts[0]++] = mydata;
+  289.      }
+  290.    
+  291.      *nnomatch = counts[0];
+  292.      *nmatch = counts[1];
+  293.    }
+  294.    
+  295.    /* Manual unrolling is a significant win if -Msafeptr is used -KDU */
+  296.    
+  297.    static
+  298.    void update_table(u64Int *data, u64Int *table, int number, int nglobalm1, u64Int nlocalm1) {
+  299.      int i,dindex;
+  300.      int div_num = number / 8;
+  301.      int loop_total = div_num * 8;
+  302.      u64Int index,index0,index1,index2,index3,index4,index5,index6,index7;
+  303.      u64Int ltable0,ltable1,ltable2,ltable3,ltable4,ltable5,ltable6,ltable7;
+  304.    
+  305.      for (i = 0; i < div_num; i++) {
+  306.        dindex = i*8;
+  307.    
+  308.        index0 = (data[dindex  ] >> nglobalm1) & nlocalm1;
+  309.        index1 = (data[dindex+1] >> nglobalm1) & nlocalm1;
+  310.        index2 = (data[dindex+2] >> nglobalm1) & nlocalm1;
+  311.        index3 = (data[dindex+3] >> nglobalm1) & nlocalm1;
+  312.        index4 = (data[dindex+4] >> nglobalm1) & nlocalm1;
+  313.        index5 = (data[dindex+5] >> nglobalm1) & nlocalm1;
+  314.        index6 = (data[dindex+6] >> nglobalm1) & nlocalm1;
+  315.        index7 = (data[dindex+7] >> nglobalm1) & nlocalm1;
+  316.        ltable0 = table[index0];
+  317.        ltable1 = table[index1];
+  318.        ltable2 = table[index2];
+  319.        ltable3 = table[index3];
+  320.        ltable4 = table[index4];
+  321.        ltable5 = table[index5];
+  322.        ltable6 = table[index6];
+  323.        ltable7 = table[index7];
+  324.    
+  325.        table[index0] = ltable0 ^ data[dindex];
+  326.        table[index1] = ltable1 ^ data[dindex+1];
+  327.        table[index2] = ltable2 ^ data[dindex+2];
+  328.        table[index3] = ltable3 ^ data[dindex+3];
+  329.        table[index4] = ltable4 ^ data[dindex+4];
+  330.        table[index5] = ltable5 ^ data[dindex+5];
+  331.        table[index6] = ltable6 ^ data[dindex+6];
+  332.        table[index7] = ltable7 ^ data[dindex+7];
+  333.      }
+  334.    
+  335.      for (i = loop_total; i < number; i++) {
+  336.        u64Int datum = data[i];
+  337.        index = (datum >> nglobalm1) & nlocalm1;
+  338.        table[index] ^= datum;
+  339.      }
+  340.    }
+  341.    
+  342.    void
+  343.    HPCC_Power2NodesMPIRandomAccessUpdate_LCG(HPCC_RandomAccess_tabparams_t tparams) {
+  344.      int i, j, k, logTableLocal, ipartner;
+  345.      int ndata, nkeep, nsend, nrecv, nglobalm1, nkept;
+  346.      s64Int iterate, niterate, iter_mod;
+  347.      u64Int ran, nlocalm1;
+  348.      u64Int *data,*send,*send1,*send2;
+  349.      u64Int *recv[PITER][MAXLOGPROCS];
+  350.      MPI_Status status;
+  351.      MPI_Request request[PITER][MAXLOGPROCS];
+  352.      MPI_Request srequest;
+  353.    
+  354.      /* setup: should not really be part of this timed routine */
+  355.    
+  356.      data = (u64Int *) malloc(CHUNKBIG*sizeof(u64Int));
+  357.      send1 = (u64Int *) malloc(CHUNKBIG*sizeof(u64Int));
+  358.      send2 = (u64Int *) malloc(CHUNKBIG*sizeof(u64Int));
+  359.      send = send1;
+  360.    
+  361.      for (j = 0; j < PITER; j++)
+  362.        for (i = 0; i < tparams.logNumProcs; i++)
+  363.          recv[j][i] = (u64Int *) malloc(sizeof(u64Int)*RCHUNK);
+  364.    
+  365.      ran = HPCC_starts_LCG(4*tparams.GlobalStartMyProc);
+  366.    
+  367.      niterate = tparams.ProcNumUpdates / CHUNK;
+  368.      logTableLocal = tparams.logTableSize - tparams.logNumProcs;
+  369.      nglobalm1 = 64 - tparams.logTableSize;
+  370.      nlocalm1 = (u64Int)(tparams.LocalTableSize - 1);
+  371.    
+  372.      /* actual update loop: this is only section that should be timed */
+  373.    
+  374.      for (iterate = 0; iterate < niterate; iterate++) {
+  375.        iter_mod = iterate % PITER;
+  376.        for (i = 0; i < CHUNK; i++) {
+  377.          ran = LCG_MUL64 * ran + LCG_ADD64;
+  378.          data[i] = ran;
+  379.        }
+  380.        nkept = CHUNK;
+  381.        nrecv = 0;
+  382.    
+  383.        if (iter_mod == 0)
+  384.          for (k = 0; k < PITER; k++)
+  385.            for (j = 0; j < tparams.logNumProcs; j++) {
+  386.              ipartner = (1 << j) ^ tparams.MyProc;
+  387.              MPI_Irecv(recv[k][j],RCHUNK,tparams.dtype64,ipartner,0,MPI_COMM_WORLD,
+  388.                        &request[k][j]);
+  389.            }
+  390.    
+  391.        for (j = 0; j < tparams.logNumProcs; j++) {
+  392.          nkeep = nsend = 0;
+  393.          send = (send == send1) ? send2 : send1;
+  394.          ipartner = (1 << j) ^ tparams.MyProc;
+  395.          if (ipartner > tparams.MyProc) {
+  396.          	sort_data(data,data,send,nkept,&nkeep,&nsend,nglobalm1 + logTableLocal+j);
+  397.            if (j > 0) {
+  398.              MPI_Wait(&request[iter_mod][j-1],&status);
+  399.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  400.          	  sort_data(recv[iter_mod][j-1],data,send,nrecv,&nkeep,
+  401.                        &nsend,nglobalm1 + logTableLocal+j);
+  402.            }
+  403.          } else {
+  404.            sort_data(data,send,data,nkept,&nsend,&nkeep,nglobalm1 + logTableLocal+j);
+  405.            if (j > 0) {
+  406.              MPI_Wait(&request[iter_mod][j-1],&status);
+  407.              MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  408.              sort_data(recv[iter_mod][j-1],send,data,nrecv,&nsend,
+  409.                        &nkeep,nglobalm1 + logTableLocal+j);
+  410.            }
+  411.          }
+  412.          if (j > 0) MPI_Wait(&srequest,&status);
+  413.          MPI_Isend(send,nsend,tparams.dtype64,ipartner,0,MPI_COMM_WORLD,&srequest);
+  414.          if (j == (tparams.logNumProcs - 1)) update_table(data,HPCC_Table,nkeep,nglobalm1, nlocalm1);
+  415.          nkept = nkeep;
+  416.        }
+  417.    
+  418.        if (tparams.logNumProcs == 0) update_table(data,HPCC_Table,nkept,nglobalm1, nlocalm1);
+  419.        else {
+  420.          MPI_Wait(&request[iter_mod][j-1],&status);
+  421.          MPI_Get_count(&status,tparams.dtype64,&nrecv);
+  422.          update_table(recv[iter_mod][j-1],HPCC_Table,nrecv,nglobalm1, nlocalm1);
+  423.          MPI_Wait(&srequest,&status);
+  424.        }
+  425.    
+  426.        ndata = nkept + nrecv;
+  427.      }
+  428.    
+  429.      /* clean up: should not really be part of this timed routine */
+  430.    
+  431.      for (j = 0; j < PITER; j++)
+  432.        for (i = 0; i < tparams.logNumProcs; i++) free(recv[j][i]);
+  433.    
+  434.      free(data);
+  435.      free(send1);
+  436.      free(send2);
+  437.    }
+  438.    #endif
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,450 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/mpifft.c
+Compiled : 2016-03-19  13:20:33
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/mpifft.o -c ../../../../FFT/mpifft.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/mpifft.c
+Date     : 03/19/2016  13:20:33
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.            /* mpifft.c
+    3.             */
+    4.            
+    5.            #include <hpcc.h>
+    6.            
+    7.            #include "hpccfft.h"
+    8.            #include "wrapmpifftw.h"
+    9.            
+   10.            double *HPCC_fft_timings_forward, *HPCC_fft_timings_backward;
+   11.            
+   12.            static void
+   13.            MPIFFT0(HPCC_Params *params, int doIO, FILE *outFile, MPI_Comm comm, int locN,
+   14.                    double *UGflops, s64Int_t *Un, double *UmaxErr, int *Ufailure) {
+   15.              int commRank, commSize, failure, flags;
+   16.              s64Int_t i, n;
+   17.              s64Int_t locn, loc0, alocn, aloc0, tls;
+   18.              double maxErr, tmp1, tmp2, tmp3, t0, t1, t2, t3, Gflops;
+   19.              double deps;
+   20.              fftw_complex *inout, *work;
+   21.              fftw_mpi_plan p;
+   22.              hpcc_fftw_mpi_plan ip;
+   23.              int sAbort, rAbort;
+   24.            #ifdef USING_FFTW
+   25.              int ilocn, iloc0, ialocn, ialoc0, itls;
+   26.            #endif
+   27.            
+   28.              failure = 1;
+   29.              Gflops = -1.0;
+   30.  +           deps = HPL_dlamch( HPL_MACH_EPS );
+   31.              maxErr = 1.0 / deps;
+   32.            
+   33.  +           MPI_Comm_size( comm, &commSize );
+   34.  +           MPI_Comm_rank( comm, &commRank );
+   35.            
+   36.              n = locN;
+   37.            
+   38.              /* number of processes have been factored out - need to put it back in */
+   39.              n *= commSize;
+   40.            
+   41.              n *= commSize; /* global vector size */
+   42.            
+   43.            #ifdef USING_FFTW
+   44.              /* FFTW ver. 2 only supports vector sizes that fit in 'int' */
+   45.              if (n > (1<<30)-1+(1<<30)) {
+   46.            #ifdef HPCC_FFTW_CHECK32
+   47.                goto no_plan;
+   48.            #else
+   49.              if (doIO) {
+   50.                fprintf( outFile, "Warning: problem size too large: %ld*%d*%d\n", (long)(n / commSize / commSize), commSize, commSize );
+   51.              }
+   52.            #endif
+   53.              }
+   54.            #endif
+   55.            
+   56.            #ifdef HPCC_FFTW_ESTIMATE
+   57.              flags = FFTW_ESTIMATE;
+   58.            #else
+   59.              flags = FFTW_MEASURE;
+   60.            #endif
+   61.            
+   62.  +           t1 = -MPI_Wtime();
+   63.  +           p = fftw_mpi_create_plan( comm, n, FFTW_FORWARD, flags );
+   64.  +           t1 += MPI_Wtime();
+   65.            
+   66.              if (! p) goto no_plan;
+   67.            
+   68.            #ifdef USING_FFTW
+   69.              fftw_mpi_local_sizes( p, &ilocn, &iloc0, &ialocn, &ialoc0, &itls );
+   70.              locn = ilocn;
+   71.              loc0 = iloc0;
+   72.              alocn = ialocn;
+   73.              aloc0 = ialoc0;
+   74.              tls = itls;
+   75.            #else
+   76.  +           fftw_mpi_local_sizes( p, &locn, &loc0, &alocn, &aloc0, &tls );
+   77.            #endif
+   78.            
+   79.              inout = (fftw_complex *)HPCC_fftw_malloc( tls * (sizeof *inout) );
+   80.              work  = (fftw_complex *)HPCC_fftw_malloc( tls * (sizeof *work) );
+   81.            
+   82.              sAbort = 0;
+   83.              if (! inout || ! work) sAbort = 1;
+   84.  +           MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, comm );
+   85.              if (rAbort > 0) {
+   86.  +             fftw_mpi_destroy_plan( p );
+   87.                goto comp_end;
+   88.              }
+   89.            
+   90.              /* Make sure that `inout' and `work' are initialized in parallel if using
+   91.                 Open MP: this will ensure better placement of pages if first-touch policy
+   92.                 is used by a distrubuted shared memory machine. */
+   93.            #ifdef _OPENMP
+   94.            #pragma omp parallel for
+   95.  + Mmr8--<   for (i = 0; i < tls; ++i) {
+   96.    Mmr8        c_re( inout[i] ) = c_re( work[i] ) = 0.0;
+   97.    Mmr8        c_re( inout[i] ) = c_im( work[i] ) = 0.0;
+   98.    Mmr8-->   }
+   99.            #endif
+  100.            
+  101.  +           t0 = -MPI_Wtime();
+  102.  +           HPCC_bcnrand( 2 * tls, 53 * commRank * 2 * tls, inout );
+  103.  +           t0 += MPI_Wtime();
+  104.            
+  105.  +           t2 = -MPI_Wtime();
+  106.  +           fftw_mpi( p, 1, inout, work );
+  107.  +           t2 += MPI_Wtime();
+  108.            
+  109.  +           fftw_mpi_destroy_plan( p );
+  110.            
+  111.  +           ip = HPCC_fftw_mpi_create_plan( comm, n, FFTW_BACKWARD, FFTW_ESTIMATE );
+  112.            
+  113.              if (ip) {
+  114.  +             t3 = -MPI_Wtime();
+  115.  +             HPCC_fftw_mpi( ip, 1, inout, work );
+  116.  +             t3 += MPI_Wtime();
+  117.            
+  118.  +             HPCC_fftw_mpi_destroy_plan( ip );
+  119.              }
+  120.            
+  121.  +           HPCC_bcnrand( 2 * tls, 53 * commRank * 2 * tls, work ); /* regenerate data */
+  122.            
+  123.              maxErr = 0.0;
+  124.    Vpr3--<   for (i = 0; i < locn; ++i) {
+  125.    Vpr3        tmp1 = c_re( inout[i] ) - c_re( work[i] );
+  126.    Vpr3        tmp2 = c_im( inout[i] ) - c_im( work[i] );
+  127.    Vpr3        tmp3 = sqrt( tmp1*tmp1 + tmp2*tmp2 );
+  128.    Vpr3        maxErr = maxErr >= tmp3 ? maxErr : tmp3;
+  129.    Vpr3-->   }
+  130.  +           MPI_Allreduce( &maxErr, UmaxErr, 1, MPI_DOUBLE, MPI_MAX, comm );
+  131.              maxErr = *UmaxErr;
+  132.              if (maxErr / log(n) / deps < params->test.thrsh) failure = 0;
+  133.            
+  134.              if (t2 > 0.0) Gflops = 1e-9 * (5.0 * n * log(n) / log(2.0)) / t2;
+  135.            
+  136.              if (doIO) {
+  137.                fprintf( outFile, "Number of nodes: %d\n", commSize );
+  138.                fprintf( outFile, "Vector size: %20.0f\n", tmp1 = (double)n );
+  139.                fprintf( outFile, "Generation time: %9.3f\n", t0 );
+  140.                fprintf( outFile, "Tuning: %9.3f\n", t1 );
+  141.                fprintf( outFile, "Computing: %9.3f\n", t2 );
+  142.                fprintf( outFile, "Inverse FFT: %9.3f\n", t3 );
+  143.                fprintf( outFile, "max(|x-x0|): %9.3e\n", maxErr );
+  144.                fprintf( outFile, "Gflop/s: %9.3f\n", Gflops );
+  145.              }
+  146.            
+  147.              comp_end:
+  148.            
+  149.              if (work) HPCC_fftw_free( work );
+  150.              if (inout) HPCC_fftw_free( inout );
+  151.            
+  152.              no_plan:
+  153.            
+  154.              *UGflops = Gflops;
+  155.              *Un = n;
+  156.              *UmaxErr = maxErr;
+  157.              *Ufailure = failure;
+  158.            }
+  159.            
+  160.            int
+  161.            HPCC_MPIFFT(HPCC_Params *params) {
+  162.              int commRank, commSize;
+  163.              int locN, procCnt, isComputing, doIO, failure = 0;
+  164.              s64Int_t n;
+  165.              double Gflops = -1.0, maxErr = -1.0;
+  166.              MPI_Comm comm;
+  167.              FILE *outFile;
+  168.            
+  169.  +           MPI_Comm_size( MPI_COMM_WORLD, &commSize );
+  170.  +           MPI_Comm_rank( MPI_COMM_WORLD, &commRank );
+  171.            
+  172.              doIO = commRank == 0 ? 1 : 0;
+  173.            
+  174.              if (doIO) {
+  175.  +             outFile = fopen( params->outFname, "a" );
+  176.                if (! outFile) outFile = stderr;
+  177.              }
+  178.            
+  179.              /*
+  180.              There are two vectors of size 'n'/'commSize': inout, work,
+  181.              and internal work: 2*'n'/'commSize'; it's 4 vectors then.
+  182.            
+  183.              FFTE requires that the global vector size 'n' has to be at least
+  184.              as big as square of number of processes. The square is calculated
+  185.              in each factor independently. In other words, 'n' has to have
+  186.              at least twice as many 2 factors as the process count, twice as many
+  187.              3 factors and twice as many 5 factors.
+  188.              */
+  189.            
+  190.            #ifdef HPCC_FFT_235
+  191.              locN = 0; procCnt = commSize + 1;
+  192.              do {
+  193.                int f[3];
+  194.            
+  195.                procCnt--;
+  196.            
+  197.                for ( ; procCnt > 1 && HPCC_factor235( procCnt, f ); procCnt--)
+  198.                  ; /* EMPTY */
+  199.            
+  200.                /* Make sure the local vector size is greater than 0 */
+  201.                locN = HPCC_LocalVectorSize( params, 4*procCnt, sizeof(fftw_complex), 0 );
+  202.                for ( ; locN >= 1 && HPCC_factor235( locN, f ); locN--)
+  203.                  ; /* EMPTY */
+  204.              } while (locN < 1);
+  205.            #else
+  206.              /* Find power of two that is smaller or equal to number of processes */
+  207.  + 1-----<   for (procCnt = 1; procCnt <= (commSize >> 1); procCnt <<= 1)
+  208.    1----->     ; /* EMPTY */
+  209.            
+  210.              /* Make sure the local vector size is greater than 0 */
+  211.  + 1-----<   while (1) {
+  212.  + 1           locN = HPCC_LocalVectorSize( params, 4*procCnt, sizeof(fftw_complex), 1 );
+  213.    1           if (locN) break;
+  214.    1           procCnt >>= 1;
+  215.    1----->   }
+  216.            #endif
+  217.            
+  218.              isComputing = commRank < procCnt ? 1 : 0;
+  219.            
+  220.              HPCC_fft_timings_forward = params->MPIFFTtimingsForward;
+  221.              HPCC_fft_timings_backward = params->MPIFFTtimingsBackward;
+  222.            
+  223.              if (commSize == procCnt)
+  224.                comm = MPI_COMM_WORLD;
+  225.              else
+  226.  +             MPI_Comm_split( MPI_COMM_WORLD, isComputing ? 0 : MPI_UNDEFINED, commRank, &comm );
+  227.            
+  228.              if (isComputing)
+  229.  +             MPIFFT0( params, doIO, outFile, comm, locN, &Gflops, &n, &maxErr, &failure );
+  230.            
+  231.              if (commSize != procCnt && isComputing && comm != MPI_COMM_NULL)
+  232.  +             MPI_Comm_free( &comm );
+  233.            
+  234.              params->MPIFFT_N = n;
+  235.              params->MPIFFT_Procs = procCnt;
+  236.              params->MPIFFT_maxErr = maxErr;
+  237.            
+  238.  +           MPI_Bcast( &Gflops, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD );
+  239.            
+  240.              params->MPIFFTGflops = Gflops;
+  241.            
+  242.              params->FFTEnblk = FFTE_NBLK;
+  243.              params->FFTEnp = FFTE_NP;
+  244.              params->FFTEl2size = FFTE_L2SIZE;
+  245.            
+  246.              if (failure)
+  247.                params->Failure = 1;
+  248.            
+  249.  +           if (doIO) if (outFile != stderr) fclose( outFile );
+  250.            
+  251.              return 0;
+  252.            }
+
+CC-3021 CC: IPA File = mpifft.c, Line = 30 
+  "HPL_dlamch" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 33 
+  "MPI_Comm_size" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 34 
+  "MPI_Comm_rank" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 62 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 63 
+  "HPCC_fftw_mpi_create_plan" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 64 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 76 
+  "HPCC_fftw_mpi_local_sizes" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 84 
+  "MPI_Allreduce" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 86 
+  "HPCC_fftw_mpi_destroy_plan" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = mpifft.c, Line = 95 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = mpifft.c, Line = 95 
+  A loop was unrolled 8 times.
+
+CC-6823 CC: THREAD File = mpifft.c, Line = 95 
+  A region starting at line 95 and ending at line 98 was multi-threaded.
+
+CC-6817 CC: THREAD File = mpifft.c, Line = 95 
+  A loop was partitioned.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 101 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 102 
+  "HPCC_bcnrand" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 103 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 105 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 106 
+  "HPCC_fftw_mpi" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 107 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 109 
+  "HPCC_fftw_mpi_destroy_plan" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 111 
+  "HPCC_fftw_mpi_create_plan" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 114 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 115 
+  "HPCC_fftw_mpi" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 116 
+  "MPI_Wtime" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 118 
+  "HPCC_fftw_mpi_destroy_plan" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 121 
+  "HPCC_bcnrand" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = mpifft.c, Line = 124 
+  A loop was unrolled 3 times.
+
+CC-6209 CC: VECTOR File = mpifft.c, Line = 124 
+  A loop was partially vectorized.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 130 
+  "MPI_Allreduce" (called from "MPIFFT0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 169 
+  "MPI_Comm_size" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 170 
+  "MPI_Comm_rank" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 175 
+  "fopen" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = mpifft.c, Line = 207 
+  A loop was not vectorized because a recurrence was found on "procCnt" at line 207.
+
+CC-6287 CC: VECTOR File = mpifft.c, Line = 211 
+  A loop was not vectorized because it contains a call to function "HPCC_LocalVectorSize" on line 212.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 212 
+  "HPCC_LocalVectorSize" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 226 
+  "MPI_Comm_split" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = mpifft.c, Line = 229 
+  "MPIFFT0" (called from "HPCC_MPIFFT") was not inlined because the type of argument 8 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 232 
+  "MPI_Comm_free" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 238 
+  "MPI_Bcast" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = mpifft.c, Line = 249 
+  "fclose" (called from "HPCC_MPIFFT") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

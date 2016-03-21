@@ -1,0 +1,543 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/sclapack.c
+Compiled : 2016-03-19  13:20:20
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/sclapack.o -c ../../../../PTRANS/sclapack.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/sclapack.c
+Date     : 03/19/2016  13:20:20
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.           /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.           
+    3.           #include <hpcc.h>
+    4.           
+    5.           #include "cblacslt.h"
+    6.           
+    7.           /* Common Block Declarations */
+    8.           
+    9.           struct {
+   10.               double cpusec[64], wallsec[64], cpustart[64], wallstart[64];
+   11.               int disabled;
+   12.           } sltimer00_;
+   13.           
+   14.           #define sltimer00_1 sltimer00_
+   15.           
+   16.           /* Table of constant values */
+   17.           
+   18.           static int c__1 = 1;
+   19.           static int c_n1 = -1;
+   20.           static int c__0 = 0;
+   21.           
+   22.           int
+   23.           iceil_(int *inum, int *idenom) {
+   24.               /* System generated locals */
+   25.               int ret_val;
+   26.           
+   27.           
+   28.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+   29.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+   30.           /*     and University of California, Berkeley. */
+   31.           /*     May 1, 1997 */
+   32.           
+   33.           /*  Purpose */
+   34.           
+   35.           /*  ICEIL returns the ceiling of the division of two integers. */
+   36.           
+   37.           /*  Arguments */
+   38.           
+   39.           /*  INUM     (local input) INTEGER */
+   40.           /*           The numerator, */
+   41.           
+   42.           /*  IDENOM   (local input) INTEGER */
+   43.           /*           and the denominator of the fraction to be evaluated. */
+   44.           
+   45.               ret_val = (*inum + *idenom - 1) / *idenom;
+   46.           
+   47.               return ret_val;
+   48.           } /* iceil_ */
+   49.           
+   50.           int
+   51.           numroc_(int *n, int *nb, int *iproc, int *isrcproc, int *nprocs)
+   52.           {
+   53.               /* System generated locals */
+   54.               int ret_val;
+   55.           
+   56.               /* Local variables */
+   57.               int extrablks, mydist, nblocks;
+   58.           
+   59.           
+   60.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+   61.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+   62.           /*     and University of California, Berkeley. */
+   63.           /*     May 1, 1997 */
+   64.           
+   65.           /*  Purpose */
+   66.           
+   67.           /*  NUMROC computes the NUMber of Rows Or Columns of a distributed */
+   68.           /*  matrix owned by the process indicated by IPROC. */
+   69.           
+   70.           /*  Arguments */
+   71.           
+   72.           /*  N         (global input) INTEGER */
+   73.           /*            The number of rows/columns in distributed matrix. */
+   74.           
+   75.           /*  NB        (global input) INTEGER */
+   76.           /*            Block size, size of the blocks the distributed matrix is */
+   77.           /*            split into. */
+   78.           
+   79.           /*  IPROC     (local input) INTEGER */
+   80.           /*            The coordinate of the process whose local array row or */
+   81.           /*            column is to be determined. */
+   82.           
+   83.           /*  ISRCPROC  (global input) INTEGER */
+   84.           /*            The coordinate of the process that possesses the first */
+   85.           /*            row or column of the distributed matrix. */
+   86.           
+   87.           /*  NPROCS    (global input) INTEGER */
+   88.           /*            The total number processes over which the matrix is */
+   89.           /*            distributed. */
+   90.           
+   91.           /*     Figure PROC's distance from source process */
+   92.           
+   93.               mydist = (*nprocs + *iproc - *isrcproc) % *nprocs;
+   94.           
+   95.           /*     Figure the total number of whole NB blocks N is split up into */
+   96.           
+   97.               nblocks = *n / *nb;
+   98.           
+   99.           /*     Figure the minimum number of rows/cols a process can have */
+  100.           
+  101.               ret_val = nblocks / *nprocs * *nb;
+  102.           
+  103.           /*     See if there are any extra blocks */
+  104.           
+  105.               extrablks = nblocks % *nprocs;
+  106.           
+  107.           /*     If I have an extra block */
+  108.           
+  109.               if (mydist < extrablks) {
+  110.           	ret_val += *nb;
+  111.           
+  112.           /*         If I have last block, it may be a partial block */
+  113.           
+  114.               } else if (mydist == extrablks) {
+  115.           	ret_val += *n % *nb;
+  116.               }
+  117.           
+  118.               return ret_val;
+  119.           } /* numroc_ */
+  120.           
+  121.           int ilcm_(int *m, int *n)
+  122.           {
+  123.             /* System generated locals */
+  124.             int ret_val;
+  125.           
+  126.             /* Local variables */
+  127.             int ia, iq, ir;
+  128.           
+  129.           
+  130.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+  131.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+  132.           /*     and University of California, Berkeley. */
+  133.           /*     May 1, 1997 */
+  134.           
+  135.           /*  Purpose */
+  136.           
+  137.           /*  ILCM computes and returns the Least Common Multiple (LCM) of two */
+  138.           /*  positive integers M and N. In fact the routine computes the greatest */
+  139.           /*  common divisor (GCD) and use the fact that M*N = GCD*LCM. */
+  140.           
+  141.           /*  Arguments */
+  142.           
+  143.           /*  M       (input) INTEGER */
+  144.           /*          On entry, M >=0. Unchanged on exit. */
+  145.           
+  146.           /*  N       (input) INTEGER */
+  147.           /*          On entry, N >=0. Unchanged on exit. */
+  148.           
+  149.             if (*m >= *n) {
+  150.               ia = *m;
+  151.               ret_val = *n;
+  152.             } else {
+  153.               ia = *n;
+  154.               ret_val = *m;
+  155.             }
+  156.           
+  157.  + 1----<   for (;;) {
+  158.    1          iq = ia / ret_val;
+  159.    1          ir = ia - iq * ret_val;
+  160.    1          if (ir == 0) {
+  161.    1            ret_val = *m * *n / ret_val;
+  162.    1            return ret_val;
+  163.    1          }
+  164.    1          ia = ret_val;
+  165.    1          ret_val = ir;
+  166.    1---->   }
+  167.           } /* ilcm_ */
+  168.           
+  169.           int
+  170.           pxerbla(int *ictxt, char *srname, int *info) {
+  171.               /* Format strings */
+  172.               char fmt_9999[] = "{ %5d, %5d }:  On entry "
+  173.           	    "to %s() parameter number %4d had an illegal value"
+  174.           	    "\n";
+  175.           
+  176.               int npcol, mycol, nprow, myrow;
+  177.           
+  178.           /*  -- ScaLAPACK auxiliary routine (version 2.0) -- */
+  179.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+  180.           /*     and University of California, Berkeley. */
+  181.           /*     April 1, 1998 */
+  182.           
+  183.           /*  Purpose */
+  184.           
+  185.           /*  PXERBLA is an error handler for the ScaLAPACK routines.  It is called */
+  186.           /*  by a ScaLAPACK routine if an input parameter has an invalid value.  A */
+  187.           /*  message is printed. Installers may consider modifying this routine in */
+  188.           /*  order to call system-specific exception-handling facilities. */
+  189.           
+  190.           /*  Arguments */
+  191.           
+  192.           /*  ICTXT   (local input) INTEGER */
+  193.           /*          On entry,  ICTXT  specifies the BLACS context handle, indica- */
+  194.           /*          ting the global  context of the operation. The context itself */
+  195.           /*          is global, but the value of ICTXT is local. */
+  196.           
+  197.           /*  SRNAME  (global input) CHARACTER*(*) */
+  198.           /*          On entry, SRNAME specifies the name of the routine which cal- */
+  199.           /*          ling PXERBLA. */
+  200.           
+  201.           /*  INFO    (global input) INTEGER */
+  202.           /*          On entry, INFO  specifies the position of the invalid parame- */
+  203.           /*          ter in the parameter list of the calling routine. */
+  204.           
+  205.           /*  -- Written on April 1, 1998 by */
+  206.           /*     Antoine Petitet, University  of  Tennessee, Knoxville 37996, USA. */
+  207.           
+  208.  +            Cblacs_gridinfo(*ictxt, &nprow, &npcol, &myrow, &mycol);
+  209.           
+  210.               printf( fmt_9999, myrow, mycol, srname, *info );
+  211.  +            fflush( stdout );
+  212.               return 0;
+  213.           } /* pxerbla */
+  214.           
+  215.           int
+  216.           slboot_(void) {
+  217.               static int i__;
+  218.           
+  219.           
+  220.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+  221.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+  222.           /*     and University of California, Berkeley. */
+  223.           /*     May 1, 1997 */
+  224.           
+  225.           /*  Purpose */
+  226.           
+  227.           /*  SLBOOT (re)sets all timers to 0, and enables SLtimer. */
+  228.           
+  229.               sltimer00_1.disabled = 0;
+  230.    Vr2--<     for (i__ = 1; i__ <= 64; ++i__) {
+  231.    Vr2    	sltimer00_1.cpusec[i__ - 1] = 0.;
+  232.    Vr2    	sltimer00_1.wallsec[i__ - 1] = 0.;
+  233.    Vr2    	sltimer00_1.cpustart[i__ - 1] = -5.;
+  234.    Vr2    	sltimer00_1.wallstart[i__ - 1] = -5.;
+  235.    Vr2    /* L10: */
+  236.    Vr2-->     }
+  237.           
+  238.               return 0;
+  239.           } /* slboot_ */
+  240.           
+  241.           
+  242.           int
+  243.           sltimer_(int *i__) {
+  244.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+  245.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+  246.           /*     and University of California, Berkeley. */
+  247.           /*     May 1, 1997 */
+  248.           
+  249.           /*  Purpose */
+  250.           
+  251.           /*  SLtimer provides a "stopwatch" functionality cpu/wall timer */
+  252.           /*  (in seconds).  Up to 64 separate timers can be functioning at once. */
+  253.           /*  The first call starts the timer, and the second stops it.  This */
+  254.           /*  routine can be disenabled, so that calls to the timer are ignored. */
+  255.           /*  This feature can be used to make sure certain sections of code do */
+  256.           /*  not affect timings, even if they call routines which have SLtimer */
+  257.           /*  calls in them. */
+  258.           
+  259.           /*  Arguments */
+  260.           
+  261.           /*  I       (global input) INTEGER */
+  262.           /*          The timer to stop/start. */
+  263.           
+  264.           /*     If timing disabled, return */
+  265.           
+  266.             if (sltimer00_1.disabled) {
+  267.               return 0;
+  268.             }
+  269.           
+  270.             if (sltimer00_1.wallstart[*i__ - 1] == -5.) {
+  271.           
+  272.           /*        If timer has not been started, start it */
+  273.           
+  274.  +        	sltimer00_1.wallstart[*i__ - 1] = dwalltime00();
+  275.  +        	sltimer00_1.cpustart[*i__ - 1] = dcputime00();
+  276.           
+  277.               } else {
+  278.           
+  279.           /*        Stop timer and add interval to count */
+  280.           
+  281.  +        	sltimer00_1.cpusec[*i__ - 1] = sltimer00_1.cpusec[*i__ - 1] +
+  282.           		dcputime00() - sltimer00_1.cpustart[*i__ - 1];
+  283.  +        	sltimer00_1.wallsec[*i__ - 1] = sltimer00_1.wallsec[*i__ - 1] +
+  284.           		dwalltime00() - sltimer00_1.wallstart[*i__ - 1];
+  285.           	sltimer00_1.wallstart[*i__ - 1] = -5.;
+  286.           
+  287.               }
+  288.               return 0;
+  289.           } /* sltimer_ */
+  290.           
+  291.           int
+  292.           slcombine_(int *ictxt, char *scope, char *op, char * timetype, int *n, int *ibeg, double *times) {
+  293.               /* System generated locals */
+  294.               int i__1;
+  295.           
+  296.               /* Local variables */
+  297.               static int i__;
+  298.               static int tmpdis;
+  299.           
+  300.           
+  301.           /*  -- ScaLAPACK tools routine (version 1.7) -- */
+  302.           /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+  303.           /*     and University of California, Berkeley. */
+  304.           /*     May 1, 1997 */
+  305.           
+  306.           /*  Purpose */
+  307.           
+  308.           /*  SLCOMBINE takes the timing information stored on a scope of processes */
+  309.           /*  and combines them into the user's TIMES array. */
+  310.           
+  311.           /*  Arguments */
+  312.           
+  313.           /*  ICTXT    (local input) INTEGER */
+  314.           /*           The BLACS context handle. */
+  315.           
+  316.           /*  SCOPE    (global input) CHARACTER */
+  317.           /*           Controls what processes in grid participate in combine. */
+  318.           /*           Options are 'Rowwise', 'Columnwise', or 'All'. */
+  319.           
+  320.           /*  OP       (global input) CHARACTER */
+  321.           /*           Controls what combine should be done: */
+  322.           /*           = '>': get maximal time on any process (default), */
+  323.           /*           = '<': get minimal time on any process, */
+  324.           /*           = '+': get sum of times across processes. */
+  325.           
+  326.           /*  TIMETYPE (global input) CHARACTER */
+  327.           /*           Controls what time will be returned in TIMES: */
+  328.           /*           = 'W': wall clock time, */
+  329.           /*           = 'C': CPU time (default). */
+  330.           
+  331.           /*  N        (global input) INTEGER */
+  332.           /*           The number of timers to combine. */
+  333.           
+  334.           /*  IBEG     (global input) INTEGER */
+  335.           /*           The first timer to be combined. */
+  336.           
+  337.           /*  TIMES    (global output) DOUBLE PRECISION array, dimension (N) */
+  338.           /*           The requested timing information is returned in this array. */
+  339.           
+  340.           /*     Disable timer for combine operation */
+  341.           
+  342.               /* Parameter adjustments */
+  343.               --times;
+  344.           
+  345.               /* Function Body */
+  346.               tmpdis = sltimer00_1.disabled;
+  347.               sltimer00_1.disabled = 1;
+  348.           
+  349.           /*     Copy timer information into user's times array */
+  350.           
+  351.               if (*timetype == 'W') {
+  352.           
+  353.           /*        If walltime not available on this machine, fill in times */
+  354.           /*        with -1 flag, and return */
+  355.           
+  356.  +        	if (dwalltime00() == -1.) {
+  357.           	    i__1 = *n;
+  358.    A----< 	    for (i__ = 1; i__ <= i__1; ++i__) {
+  359.    A      		times[i__] = -1.;
+  360.    A      /* L10: */
+  361.    A----> 	    }
+  362.           	    return 0;
+  363.           	} else {
+  364.           	    i__1 = *n;
+  365.  + r4---< 	    for (i__ = 1; i__ <= i__1; ++i__) {
+  366.    r4     		times[i__] = sltimer00_1.wallsec[*ibeg + i__ - 2];
+  367.    r4     /* L20: */
+  368.    r4---> 	    }
+  369.           	}
+  370.               } else {
+  371.  +        	if (dcputime00() == -1.) {
+  372.           	    i__1 = *n;
+  373.    A----< 	    for (i__ = 1; i__ <= i__1; ++i__) {
+  374.    A      		times[i__] = -1.;
+  375.    A      /* L30: */
+  376.    A----> 	    }
+  377.           	    return 0;
+  378.           	} else {
+  379.           	    i__1 = *n;
+  380.  + r4---< 	    for (i__ = 1; i__ <= i__1; ++i__) {
+  381.    r4     		times[i__] = sltimer00_1.cpusec[*ibeg + i__ - 2];
+  382.    r4     /* L40: */
+  383.    r4---> 	    }
+  384.           	}
+  385.               }
+  386.           
+  387.           /*     Combine all nodes' information, restore disabled, and return */
+  388.           
+  389.               if (*(unsigned char *)op == '>') {
+  390.  +        	Cdgamx2d(*ictxt,scope," ",*n,c__1,&times[1],*n,&c_n1,&c_n1,c_n1,c_n1,c__0);
+  391.               } else if (*(unsigned char *)op == '<') {
+  392.  +        	Cdgamn2d(*ictxt,scope," ",*n,c__1,&times[1],*n,&c_n1,&c_n1,c_n1,c_n1,c__0);
+  393.               } else if (*(unsigned char *)op == '+') {
+  394.  +        	Cdgsum2d(*ictxt,scope," ",*n,c__1,&times[1],*n,c_n1,c__0);
+  395.               } else {
+  396.  +        	Cdgamx2d(*ictxt,scope," ",*n,c__1,&times[1],*n,&c_n1,&c_n1,c_n1,c_n1,c__0);
+  397.               }
+  398.           
+  399.               sltimer00_1.disabled = tmpdis;
+  400.           
+  401.               return 0;
+  402.           } /* slcombine_ */
+
+CC-6254 CC: VECTOR File = sclapack.c, Line = 157 
+  A loop was not vectorized because a recurrence was found on "ia" at line 164.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 208 
+  "Cblacs_gridinfo" (called from "pxerbla") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 211 
+  "fflush" (called from "pxerbla") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = sclapack.c, Line = 230 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = sclapack.c, Line = 230 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 274 
+  "dwalltime00" (called from "sltimer_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 275 
+  "dcputime00" (called from "sltimer_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 281 
+  "dcputime00" (called from "sltimer_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 283 
+  "dwalltime00" (called from "sltimer_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 356 
+  "dwalltime00" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = sclapack.c, Line = 358 
+  A loop was replaced by a library call.
+
+CC-6005 CC: SCALAR File = sclapack.c, Line = 365 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = sclapack.c, Line = 365 
+  A loop was not vectorized because a recurrence was found between "sltimer00_" and "times" at line 366.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 371 
+  "dcputime00" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = sclapack.c, Line = 373 
+  A loop was replaced by a library call.
+
+CC-6005 CC: SCALAR File = sclapack.c, Line = 380 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = sclapack.c, Line = 380 
+  A loop was not vectorized because a recurrence was found between "sltimer00_" and "times" at line 381.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 390 
+  "Cdgamx2d" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 392 
+  "Cdgamn2d" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 394 
+  "Cdgsum2d" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = sclapack.c, Line = 396 
+  "Cdgamx2d" (called from "slcombine_") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

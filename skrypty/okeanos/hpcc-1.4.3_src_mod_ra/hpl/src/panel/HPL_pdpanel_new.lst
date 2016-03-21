@@ -1,0 +1,236 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/panel/HPL_pdpanel_new.c
+Compiled : 2016-03-19  13:19:35
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/panel/HPL_pdpanel_new.o
+           -c ../../../src/panel/HPL_pdpanel_new.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/panel/HPL_pdpanel_new.c
+Date     : 03/19/2016  13:19:35
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifdef HPL_STDC_HEADERS
+   53.     void HPL_pdpanel_new
+   54.     (
+   55.        HPL_T_grid *                     GRID,
+   56.        HPL_T_palg *                     ALGO,
+   57.        const int                        M,
+   58.        const int                        N,
+   59.        const int                        JB,
+   60.        HPL_T_pmat *                     A,
+   61.        const int                        IA,
+   62.        const int                        JA,
+   63.        const int                        TAG,
+   64.        HPL_T_panel * *                  PANEL
+   65.     )
+   66.     #else
+   67.     void HPL_pdpanel_new
+   68.     ( GRID, ALGO, M, N, JB, A, IA, JA, TAG, PANEL )
+   69.        HPL_T_grid *                     GRID;
+   70.        HPL_T_palg *                     ALGO;
+   71.        const int                        M;
+   72.        const int                        N;
+   73.        const int                        JB;
+   74.        HPL_T_pmat *                     A;
+   75.        const int                        IA;
+   76.        const int                        JA;
+   77.        const int                        TAG;
+   78.        HPL_T_panel * *                  PANEL;
+   79.     #endif
+   80.     {
+   81.     /* 
+   82.      * Purpose
+   83.      * =======
+   84.      *
+   85.      * HPL_pdpanel_new creates and initializes a panel data structure.
+   86.      * 
+   87.      *
+   88.      * Arguments
+   89.      * =========
+   90.      *
+   91.      * GRID    (local input)                 HPL_T_grid *
+   92.      *         On entry,  GRID  points  to the data structure containing the
+   93.      *         process grid information.
+   94.      *
+   95.      * ALGO    (global input)                HPL_T_palg *
+   96.      *         On entry,  ALGO  points to  the data structure containing the
+   97.      *         algorithmic parameters.
+   98.      *
+   99.      * M       (local input)                 const int
+  100.      *         On entry, M specifies the global number of rows of the panel.
+  101.      *         M must be at least zero.
+  102.      *
+  103.      * N       (local input)                 const int
+  104.      *         On entry,  N  specifies  the  global number of columns of the
+  105.      *         panel and trailing submatrix. N must be at least zero.
+  106.      *
+  107.      * JB      (global input)                const int
+  108.      *         On entry, JB specifies is the number of columns of the panel.
+  109.      *         JB must be at least zero.
+  110.      *
+  111.      * A       (local input/output)          HPL_T_pmat *
+  112.      *         On entry, A points to the data structure containing the local
+  113.      *         array information.
+  114.      *
+  115.      * IA      (global input)                const int
+  116.      *         On entry,  IA  is  the global row index identifying the panel
+  117.      *         and trailing submatrix. IA must be at least zero.
+  118.      *
+  119.      * JA      (global input)                const int
+  120.      *         On entry, JA is the global column index identifying the panel
+  121.      *         and trailing submatrix. JA must be at least zero.
+  122.      *
+  123.      * TAG     (global input)                const int
+  124.      *         On entry, TAG is the row broadcast message id.
+  125.      *
+  126.      * PANEL   (local input/output)          HPL_T_panel * *
+  127.      *         On entry,  PANEL  points  to  the  address  of the panel data
+  128.      *         structure to create and initialize.
+  129.      *
+  130.      * ---------------------------------------------------------------------
+  131.      */ 
+  132.     /*
+  133.      * .. Local Variables ..
+  134.      */
+  135.        HPL_T_panel                * p = NULL;
+  136.     /* ..
+  137.      * .. Executable Statements ..
+  138.      */
+  139.     /*
+  140.      * Allocate the panel structure - Check for enough memory
+  141.      */
+  142.        if( !( p = (HPL_T_panel *)malloc( sizeof( HPL_T_panel ) ) ) )
+  143.        {
+  144.  +        HPL_pabort( __LINE__, "HPL_pdpanel_new", "Memory allocation failed" );
+  145.        }
+  146.     
+  147.  +     HPL_pdpanel_init( GRID, ALGO, M, N, JB, A, IA, JA, TAG, p );
+  148.        *PANEL = p;
+  149.     /*
+  150.      * End of HPL_pdpanel_new
+  151.      */
+  152.     }
+
+CC-3021 CC: IPA File = HPL_pdpanel_new.c, Line = 144 
+  "HPL_pabort" (called from "HPL_pdpanel_new") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanel_new.c, Line = 147 
+  "HPL_pdpanel_init" (called from "HPL_pdpanel_new") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,793 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../STREAM/stream.c
+Compiled : 2016-03-19  13:20:15
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../STREAM/stream.o -c ../../../../STREAM/stream.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../STREAM/stream.c
+Date     : 03/19/2016  13:20:16
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                     /*-----------------------------------------------------------------------*/
+    2.                     /* Program: Stream                                                       */
+    3.                     /* Revision: $Id$ */
+    4.                     /* Original code developed by John D. McCalpin                           */
+    5.                     /* Programmers: John D. McCalpin                                         */
+    6.                     /*              Joe R. Zagar                                             */
+    7.                     /*                                                                       */
+    8.                     /* This program measures memory transfer rates in GB/s for simple        */
+    9.                     /* computational kernels coded in C.                                     */
+   10.                     /*-----------------------------------------------------------------------*/
+   11.                     /* Copyright 1991-2003: John D. McCalpin                                 */
+   12.                     /*-----------------------------------------------------------------------*/
+   13.                     /* License:                                                              */
+   14.                     /*  1. You are free to use this program and/or to redistribute           */
+   15.                     /*     this program.                                                     */
+   16.                     /*  2. You are free to modify this program for your own use,             */
+   17.                     /*     including commercial use, subject to the publication              */
+   18.                     /*     restrictions in item 3.                                           */
+   19.                     /*  3. You are free to publish results obtained from running this        */
+   20.                     /*     program, or from works that you derive from this program,         */
+   21.                     /*     with the following limitations:                                   */
+   22.                     /*     3a. In order to be referred to as "STREAM benchmark results",     */
+   23.                     /*         published results must be in conformance to the STREAM        */
+   24.                     /*         Run Rules, (briefly reviewed below) published at              */
+   25.                     /*         http://www.cs.virginia.edu/stream/ref.html                    */
+   26.                     /*         and incorporated herein by reference.                         */
+   27.                     /*         As the copyright holder, John McCalpin retains the            */
+   28.                     /*         right to determine conformity with the Run Rules.             */
+   29.                     /*     3b. Results based on modified source code or on runs not in       */
+   30.                     /*         accordance with the STREAM Run Rules must be clearly          */
+   31.                     /*         labelled whenever they are published.  Examples of            */
+   32.                     /*         proper labelling include:                                     */
+   33.                     /*         "tuned STREAM benchmark results"                              */
+   34.                     /*         "based on a variant of the STREAM benchmark code"             */
+   35.                     /*         Other comparable, clear and reasonable labelling is           */
+   36.                     /*         acceptable.                                                   */
+   37.                     /*     3c. Submission of results to the STREAM benchmark web site        */
+   38.                     /*         is encouraged, but not required.                              */
+   39.                     /*  4. Use of this program or creation of derived works based on this    */
+   40.                     /*     program constitutes acceptance of these licensing restrictions.   */
+   41.                     /*  5. Absolutely no warranty is expressed or implied.                   */
+   42.                     /*-----------------------------------------------------------------------*/
+   43.                     #include <hpcc.h>
+   44.                     
+   45.                     #include <float.h>
+   46.                     #include <limits.h>
+   47.                     
+   48.                     #ifdef _OPENMP
+   49.                     #include <omp.h>
+   50.                     #endif
+   51.                     
+   52.                     #define TUNED 1
+   53.                     #define VERBOSE 1
+   54.                     
+   55.                     /* INSTRUCTIONS:
+   56.                      *
+   57.                      *       1) Stream requires a good bit of memory to run.  Adjust the
+   58.                      *          value of 'N' (below) to give a 'timing calibration' of
+   59.                      *          at least 20 clock-ticks.  This will provide rate estimates
+   60.                      *          that should be good to about 5% precision.
+   61.                      */
+   62.                     
+   63.                     static int VectorSize;
+   64.                     # define N 2000000
+   65.                     # define NTIMES 10
+   66.                     # define OFFSET 0
+   67.                     
+   68.                     /*
+   69.                      * 3) Compile the code with full optimization.  Many compilers
+   70.                      *    generate unreasonably bad code before the optimizer tightens
+   71.                      *    things up.  If the results are unreasonably good, on the
+   72.                      *    other hand, the optimizer might be too smart for me!
+   73.                      *
+   74.                      *         Try compiling with:
+   75.                      *               cc -O stream_omp.c -o stream_omp
+   76.                      *
+   77.                      *         This is known to work on Cray, SGI, IBM, and Sun machines.
+   78.                      *
+   79.                      *
+   80.                      * 4) Mail the results to mccalpin@cs.virginia.edu
+   81.                      *    Be sure to include:
+   82.                      *    a) computer hardware model number and software revision
+   83.                      *    b) the compiler flags
+   84.                      *    c) all of the output from the test case.
+   85.                      * Thanks!
+   86.                      *
+   87.                      */
+   88.                     
+   89.                     # define HLINE "-------------------------------------------------------------\n"
+   90.                     
+   91.                     static double *a, *b, *c;
+   92.                     
+   93.                     static double avgtime[4] = {0}, maxtime[4] = {0},
+   94.                       mintime[4] = {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX};
+   95.                     
+   96.                     static char *label[4] = {"Copy:      ", "Scale:     ",
+   97.                         "Add:       ", "Triad:     "};
+   98.                     
+   99.                     static double bytes[4] = {
+  100.                         2 * sizeof(double),
+  101.                         2 * sizeof(double),
+  102.                         3 * sizeof(double),
+  103.                         3 * sizeof(double)
+  104.                         };
+  105.                     
+  106.                     #define mysecond MPI_Wtime
+  107.                     #ifdef TUNED
+  108.                     extern void tuned_STREAM_Copy(void);
+  109.                     extern void tuned_STREAM_Scale(double scalar);
+  110.                     extern void tuned_STREAM_Add(void);
+  111.                     extern void tuned_STREAM_Triad(double scalar);
+  112.                     #endif
+  113.                     
+  114.                     static void
+  115.                     checkSTREAMresults (FILE *outFile, int doIO, int *failure)
+  116.                     {
+  117.                       double aj,bj,cj,scalar;
+  118.                       double asum,bsum,csum;
+  119.                       double epsilon;
+  120.                       int j,k;
+  121.                     
+  122.                         /* reproduce initialization */
+  123.                       aj = 1.0;
+  124.                       bj = 2.0;
+  125.                       cj = 0.0;
+  126.                         /* a[] is modified during timing check */
+  127.                       aj = 2.0E0 * aj;
+  128.                         /* now execute timing loop */
+  129.                       scalar = 3.0;
+  130.       D-----------<   for (k=0; k<NTIMES; k++)
+  131.       D                     {
+  132.       D                         cj = aj;
+  133.       D                         bj = scalar*cj;
+  134.       D                         cj = aj+bj;
+  135.       D                         aj = bj+scalar*cj;
+  136.       D----------->         }
+  137.                       aj = aj * (double) VectorSize;
+  138.                       bj = bj * (double) VectorSize;
+  139.                       cj = cj * (double) VectorSize;
+  140.                     
+  141.                       asum = 0.0;
+  142.                       bsum = 0.0;
+  143.                       csum = 0.0;
+  144.       Vr2---------<   for (j=0; j<VectorSize; j++) {
+  145.       Vr2               asum += a[j];
+  146.       Vr2               bsum += b[j];
+  147.       Vr2               csum += c[j];
+  148.       Vr2--------->   }
+  149.                     #ifdef VERBOSE
+  150.                             if (doIO) {
+  151.                               fprintf( outFile, "Results Comparison: \n");
+  152.                               fprintf( outFile, "        Expected  : %f %f %f \n",aj,bj,cj);
+  153.                               fprintf( outFile, "        Observed  : %f %f %f \n",asum,bsum,csum);
+  154.                             }
+  155.                     #endif
+  156.                     
+  157.                             epsilon = 1.e-8;
+  158.                     
+  159.                             *failure = 1;
+  160.                             if (fabs(aj-asum)/asum > epsilon) {
+  161.                               if (doIO) {
+  162.                                 fprintf( outFile, "Failed Validation on array a[]\n");
+  163.                                 fprintf( outFile, "        Expected  : %f \n",aj);
+  164.                                 fprintf( outFile, "        Observed  : %f \n",asum);
+  165.                               }
+  166.                             }
+  167.                             else if (fabs(bj-bsum)/bsum > epsilon) {
+  168.                               if (doIO) {
+  169.                                 fprintf( outFile, "Failed Validation on array b[]\n");
+  170.                                 fprintf( outFile, "        Expected  : %f \n",bj);
+  171.                                 fprintf( outFile, "        Observed  : %f \n",bsum);
+  172.                               }
+  173.                             }
+  174.                             else if (fabs(cj-csum)/csum > epsilon) {
+  175.                               if (doIO) {
+  176.                                 fprintf( outFile, "Failed Validation on array c[]\n");
+  177.                                 fprintf( outFile, "        Expected  : %f \n",cj);
+  178.                                 fprintf( outFile, "        Observed  : %f \n",csum);
+  179.                               }
+  180.                             }
+  181.                             else {
+  182.                               *failure = 0;
+  183.                               if (doIO) fprintf( outFile, "Solution Validates\n");
+  184.                      }
+  185.                     }
+  186.                     
+  187.                     # define M 20
+  188.                     
+  189.                     static int
+  190.                     checktick()
+  191.                         {
+  192.                         int  i, minDelta, Delta;
+  193.                         double t1, t2, timesfound[M];
+  194.                     
+  195.                     /*  Collect a sequence of M unique time values from the system. */
+  196.                     
+  197.  +    1-----------<     for (i = 0; i < M; i++) {
+  198.  +    1                   t1 = mysecond();
+  199.  +    1 2---------<       while( ((t2=mysecond()) - t1) < 1.0E-6 )
+  200.       1 2--------->         ;
+  201.       1                   timesfound[i] = t1 = t2;
+  202.       1----------->     }
+  203.                     
+  204.                     /*
+  205.                      * Determine the minimum difference between these M values.
+  206.                      * This result will be our estimate (in microseconds) for the
+  207.                      * clock granularity.
+  208.                      */
+  209.                     
+  210.                         minDelta = 1000000;
+  211.  +    r4----------<     for (i = 1; i < M; i++) {
+  212.       r4                  Delta = (int)( 1.0E6 * (timesfound[i]-timesfound[i-1]));
+  213.       r4                  minDelta = Mmin(minDelta, Mmax(Delta,0));
+  214.       r4---------->     }
+  215.                     
+  216.                        return(minDelta);
+  217.                         }
+  218.                     #undef M
+  219.                     
+  220.                     
+  221.                     
+  222.                     int
+  223.                     HPCC_Stream(HPCC_Params *params, int doIO, double *copyGBs, double *scaleGBs, double *addGBs,
+  224.                       double *triadGBs, int *failure) {
+  225.                         int   quantum;
+  226.                         int   BytesPerWord;
+  227.                         register int j, k;
+  228.                         double  scalar, t, times[4][NTIMES];
+  229.                         FILE *outFile;
+  230.                         double GiBs = 1073741824.0, curGBs;
+  231.                     
+  232.                         if (doIO) {
+  233.  +                        outFile = fopen( params->outFname, "a" );
+  234.                           if (! outFile) {
+  235.                             outFile = stderr;
+  236.                             fprintf( outFile, "Cannot open output file.\n" );
+  237.                             return 1;
+  238.                           }
+  239.                         }
+  240.                     
+  241.  +                      VectorSize = HPCC_LocalVectorSize( params, 3, sizeof(double), 0 ); /* Need 3 vectors */
+  242.                         params->StreamVectorSize = VectorSize;
+  243.                     
+  244.                         a = HPCC_XMALLOC( double, VectorSize );
+  245.                         b = HPCC_XMALLOC( double, VectorSize );
+  246.                         c = HPCC_XMALLOC( double, VectorSize );
+  247.                     
+  248.                         if (!a || !b || !c) {
+  249.                           if (c) HPCC_free(c);
+  250.                           if (b) HPCC_free(b);
+  251.                           if (a) HPCC_free(a);
+  252.                           if (doIO) {
+  253.                             fprintf( outFile, "Failed to allocate memory (%d).\n", VectorSize );
+  254.  +                          fflush( outFile );
+  255.  +                          fclose( outFile );
+  256.                           }
+  257.                           return 1;
+  258.                         }
+  259.                     
+  260.                         /* --- SETUP --- determine precision and check timing --- */
+  261.                     
+  262.                         if (doIO) {
+  263.                         fprintf( outFile, HLINE);
+  264.                         BytesPerWord = sizeof(double);
+  265.                         fprintf( outFile, "This system uses %d bytes per DOUBLE PRECISION word.\n",
+  266.                                  BytesPerWord);
+  267.                     
+  268.                         fprintf( outFile, HLINE);
+  269.                         fprintf( outFile, "Array size = %d, Offset = %d\n" , VectorSize, OFFSET);
+  270.                         fprintf( outFile, "Total memory required = %.4f GiB.\n",
+  271.                                  (3.0 * BytesPerWord) * ( (double) VectorSize / GiBs));
+  272.                         fprintf( outFile, "Each test is run %d times, but only\n", NTIMES);
+  273.                         fprintf( outFile, "the *best* time for each is used.\n");
+  274.                         }
+  275.                     
+  276.                     #ifdef _OPENMP
+  277.                         if (doIO) fprintf( outFile, HLINE);
+  278.                     #pragma omp parallel private(k)
+  279.  + M-<                  {
+  280.    M                #pragma omp single nowait
+  281.    M                      {
+  282.  + M                        k = omp_get_num_threads();
+  283.    M                        if (doIO) fprintf( outFile, "Number of Threads requested = %i\n",k);
+  284.    M                        params->StreamThreads = k;
+  285.    M                      }
+  286.    M                    }
+  287.    M                #endif
+  288.    M                
+  289.    M                    /* Get initial value for system clock. */
+  290.    M                #ifdef _OPENMP
+  291.    M                #pragma omp parallel for
+  292.    M                #endif
+  293.  + M  mVr2--------<     for (j=0; j<VectorSize; j++) {
+  294.    M  mVr2                a[j] = 1.0;
+  295.    M  mVr2                b[j] = 2.0;
+  296.    M  mVr2                c[j] = 0.0;
+  297.    M->mVr2-------->     }
+  298.                     
+  299.                         if (doIO) fprintf( outFile, HLINE);
+  300.                     
+  301.  +                      if  ( (quantum = checktick()) >= 1) {
+  302.                           if (doIO) fprintf( outFile, "Your clock granularity/precision appears to be "
+  303.                                              "%d microseconds.\n", quantum);
+  304.                         } else {
+  305.                           if (doIO) fprintf( outFile, "Your clock granularity appears to be "
+  306.                                              "less than one microsecond.\n");
+  307.                         }
+  308.                     
+  309.  +                      t = mysecond();
+  310.                     #ifdef _OPENMP
+  311.                     #pragma omp parallel for
+  312.                     #endif
+  313.       MmVr2-------<     for (j = 0; j < VectorSize; j++)
+  314.       MmVr2------->       a[j] = 2.0E0 * a[j];
+  315.  +                      t = 1.0E6 * (mysecond() - t);
+  316.                     
+  317.                         if (doIO) {
+  318.                         fprintf( outFile, "Each test below will take on the order"
+  319.                                  " of %d microseconds.\n", (int) t  );
+  320.                         fprintf( outFile, "   (= %d clock ticks)\n", (int) (t/quantum) );
+  321.                         fprintf( outFile, "Increase the size of the arrays if this shows that\n");
+  322.                         fprintf( outFile, "you are not getting at least 20 clock ticks per test.\n");
+  323.                     
+  324.                         fprintf( outFile, HLINE);
+  325.                     
+  326.                         fprintf( outFile, "WARNING -- The above is only a rough guideline.\n");
+  327.                         fprintf( outFile, "For best results, please be sure you know the\n");
+  328.                         fprintf( outFile, "precision of your system timer.\n");
+  329.                         fprintf( outFile, HLINE);
+  330.                         }
+  331.                     
+  332.                         /* --- MAIN LOOP --- repeat test cases NTIMES times --- */
+  333.                     
+  334.                         scalar = 3.0;
+  335.  +    1-----------<     for (k=0; k<NTIMES; k++)
+  336.       1                 {
+  337.  +    1                   times[0][k] = mysecond();
+  338.       1             #ifdef TUNED
+  339.       1 MmA I----<>         tuned_STREAM_Copy();
+  340.       1             #else
+  341.       1             #ifdef _OPENMP
+  342.       1             #pragma omp parallel for
+  343.       1             #endif
+  344.       1                     for (j=0; j<VectorSize; j++)
+  345.       1                       c[j] = a[j];
+  346.       1             #endif
+  347.  +    1                     times[0][k] = mysecond() - times[0][k];
+  348.       1             
+  349.  +    1                     times[1][k] = mysecond();
+  350.       1             #ifdef TUNED
+  351.       1 MmVr2 I--<>         tuned_STREAM_Scale(scalar);
+  352.       1             #else
+  353.       1             #ifdef _OPENMP
+  354.       1             #pragma omp parallel for
+  355.       1             #endif
+  356.       1                     for (j=0; j<VectorSize; j++)
+  357.       1                       b[j] = scalar*c[j];
+  358.       1             #endif
+  359.  +    1                     times[1][k] = mysecond() - times[1][k];
+  360.       1             
+  361.  +    1                     times[2][k] = mysecond();
+  362.       1             #ifdef TUNED
+  363.       1 MmVr2 I--<>         tuned_STREAM_Add();
+  364.       1             #else
+  365.       1             #ifdef _OPENMP
+  366.       1             #pragma omp parallel for
+  367.       1             #endif
+  368.       1                     for (j=0; j<VectorSize; j++)
+  369.       1                       c[j] = a[j]+b[j];
+  370.       1             #endif
+  371.  +    1                     times[2][k] = mysecond() - times[2][k];
+  372.       1             
+  373.  +    1                     times[3][k] = mysecond();
+  374.       1             #ifdef TUNED
+  375.       1 MmVr2 I--<>         tuned_STREAM_Triad(scalar);
+  376.       1             #else
+  377.       1             #ifdef _OPENMP
+  378.       1             #pragma omp parallel for
+  379.       1             #endif
+  380.       1                     for (j=0; j<VectorSize; j++)
+  381.       1                       a[j] = b[j]+scalar*c[j];
+  382.       1             #endif
+  383.  +    1                     times[3][k] = mysecond() - times[3][k];
+  384.       1----------->     }
+  385.                     
+  386.                         /* --- SUMMARY --- */
+  387.                     
+  388.       ir4---------<     for (k=1; k<NTIMES; k++) /* note -- skip first iteration */
+  389.       ir4               {
+  390.       ir4 iVps----<       for (j=0; j<4; j++)
+  391.       ir4 iVps            {
+  392.       ir4 iVps              avgtime[j] = avgtime[j] + times[j][k];
+  393.       ir4 iVps              mintime[j] = Mmin(mintime[j], times[j][k]);
+  394.       ir4 iVps              maxtime[j] = Mmax(maxtime[j], times[j][k]);
+  395.       ir4 iVps---->       }
+  396.       ir4--------->     }
+  397.                     
+  398.                         if (doIO)
+  399.                         fprintf( outFile, "Function      Rate (GB/s)   Avg time     Min time     Max time\n");
+  400.  +    F-----------<     for (j=0; j<4; j++) {
+  401.       F                   avgtime[j] /= (double)(NTIMES - 1); /* note -- skip first iteration */
+  402.       F             
+  403.       F                   /* make sure no division by zero */
+  404.       F                   curGBs = (mintime[j] > 0.0 ? 1.0 / mintime[j] : -1.0);
+  405.       F                   curGBs *= 1e-9 * bytes[j] * VectorSize;
+  406.       F                     if (doIO)
+  407.       F                       fprintf( outFile, "%s%11.4f  %11.4f  %11.4f  %11.4f\n", label[j],
+  408.       F                                curGBs,
+  409.       F                                avgtime[j],
+  410.       F                                mintime[j],
+  411.       F                                maxtime[j]);
+  412.       F                     switch (j) {
+  413.       F                       case 0: *copyGBs = curGBs; break;
+  414.       F                       case 1: *scaleGBs = curGBs; break;
+  415.       F                       case 2: *addGBs = curGBs; break;
+  416.       F                       case 3: *triadGBs = curGBs; break;
+  417.       F                     }
+  418.       F----------->     }
+  419.                         if (doIO) fprintf( outFile, HLINE);
+  420.                     
+  421.                         /* --- Check Results --- */
+  422.  +                      checkSTREAMresults( outFile, doIO, failure );
+  423.                         if (doIO) fprintf( outFile, HLINE);
+  424.                     
+  425.                         HPCC_free(c);
+  426.                         HPCC_free(b);
+  427.                         HPCC_free(a);
+  428.                     
+  429.                         if (doIO) {
+  430.  +                        fflush( outFile );
+  431.  +                        fclose( outFile );
+  432.                         }
+  433.                     
+  434.                         return 0;
+  435.                     }
+  436.                     
+  437.                     void tuned_STREAM_Copy()
+  438.                     {
+  439.                       int j;
+  440.                     #ifdef _OPENMP
+  441.                     #pragma omp parallel for
+  442.                     #endif
+  443.       MmA---------<         for (j=0; j<VectorSize; j++)
+  444.       MmA--------->             c[j] = a[j];
+  445.                     }
+  446.                     
+  447.                     void tuned_STREAM_Scale(double scalar)
+  448.                     {
+  449.                       int j;
+  450.                     #ifdef _OPENMP
+  451.                     #pragma omp parallel for
+  452.                     #endif
+  453.       MmVr2-------<   for (j=0; j<VectorSize; j++)
+  454.       MmVr2------->     b[j] = scalar*c[j];
+  455.                     }
+  456.                     
+  457.                     void tuned_STREAM_Add()
+  458.                     {
+  459.                       int j;
+  460.                     #ifdef _OPENMP
+  461.                     #pragma omp parallel for
+  462.                     #endif
+  463.       MmVr2-------<   for (j=0; j<VectorSize; j++)
+  464.       MmVr2------->     c[j] = a[j]+b[j];
+  465.                     }
+  466.                     
+  467.                     void tuned_STREAM_Triad(double scalar)
+  468.                     {
+  469.                       int j;
+  470.                     #ifdef _OPENMP
+  471.                     #pragma omp parallel for
+  472.                     #endif
+  473.       MmVr2-------<   for (j=0; j<VectorSize; j++)
+  474.       MmVr2------->     a[j] = b[j]+scalar*c[j];
+  475.                     }
+
+CC-6002 CC: SCALAR File = stream.c, Line = 130 
+  A loop was eliminated by optimization.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 144 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 144 
+  A loop was vectorized.
+
+CC-6287 CC: VECTOR File = stream.c, Line = 197 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 198.
+
+CC-3021 CC: IPA File = stream.c, Line = 198 
+  "MPI_Wtime" (called from "checktick") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = stream.c, Line = 199 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 199.
+
+CC-3021 CC: IPA File = stream.c, Line = 199 
+  "MPI_Wtime" (called from "checktick") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 199 
+  "MPI_Wtime" (called from "checktick") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 211 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = stream.c, Line = 211 
+  A loop was not vectorized because a recurrence was found on "minDelta" at line 213.
+
+CC-3021 CC: IPA File = stream.c, Line = 233 
+  "fopen" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 241 
+  "HPCC_LocalVectorSize" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 254 
+  "fflush" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 255 
+  "fclose" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6831 CC: THREAD File = stream.c, Line = 279 
+  An expanded multi-threaded region was created starting near line 279 and ending near line 297.
+
+CC-6824 CC: THREAD File = stream.c, Line = 279 
+  A region starting at line 279 and ending at line 286 was multi-threaded and merged with an expanded multi-thread region.
+
+CC-3021 CC: IPA File = stream.c, Line = 282 
+  "omp_get_num_threads" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 293 
+  A loop was unrolled 2 times.
+
+CC-6824 CC: THREAD File = stream.c, Line = 293 
+  A region starting at line 293 and ending at line 297 was multi-threaded and merged with an expanded multi-thread region.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 293 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 293 
+  A loop was partitioned.
+
+CC-3118 CC: IPA File = stream.c, Line = 301 
+  "checktick" (called from "HPCC_Stream") was not inlined because the call site will not flatten.  "MPI_Wtime" is missing.
+
+CC-3021 CC: IPA File = stream.c, Line = 309 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 313 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 313 
+  A region starting at line 313 and ending at line 314 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 313 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 313 
+  A loop was partitioned.
+
+CC-3021 CC: IPA File = stream.c, Line = 315 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = stream.c, Line = 335 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 337.
+
+CC-3021 CC: IPA File = stream.c, Line = 337 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = stream.c, Line = 339 
+  A loop was replaced by a library call.
+
+CC-6823 CC: THREAD File = stream.c, Line = 339 
+  A region starting at line 339 and ending at line 339 was multi-threaded.
+
+CC-6817 CC: THREAD File = stream.c, Line = 339 
+  A loop was partitioned.
+
+CC-3001 CC: IPA File = stream.c, Line = 339 
+  The call to tiny leaf routine "tuned_STREAM_Copy" was textually inlined.
+
+CC-3021 CC: IPA File = stream.c, Line = 347 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 349 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 351 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 351 
+  A region starting at line 351 and ending at line 351 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 351 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 351 
+  A loop was partitioned.
+
+CC-3001 CC: IPA File = stream.c, Line = 351 
+  The call to tiny leaf routine "tuned_STREAM_Scale" was textually inlined.
+
+CC-3021 CC: IPA File = stream.c, Line = 359 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 361 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 363 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 363 
+  A region starting at line 363 and ending at line 363 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 363 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 363 
+  A loop was partitioned.
+
+CC-3001 CC: IPA File = stream.c, Line = 363 
+  The call to tiny leaf routine "tuned_STREAM_Add" was textually inlined.
+
+CC-3021 CC: IPA File = stream.c, Line = 371 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 373 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 375 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 375 
+  A region starting at line 375 and ending at line 375 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 375 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 375 
+  A loop was partitioned.
+
+CC-3001 CC: IPA File = stream.c, Line = 375 
+  The call to tiny leaf routine "tuned_STREAM_Triad" was textually inlined.
+
+CC-3021 CC: IPA File = stream.c, Line = 383 
+  "MPI_Wtime" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6007 CC: SCALAR File = stream.c, Line = 388 
+  A loop was interchanged with the loop starting at line 390.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 388 
+  A loop was unrolled 4 times.
+
+CC-6208 CC: VECTOR File = stream.c, Line = 388 
+  A loop was vectorized as part of the loop starting at line 390.
+
+CC-6210 CC: VECTOR File = stream.c, Line = 390 
+  A loop was partially vectorized with a single vector iteration.
+
+CC-6287 CC: VECTOR File = stream.c, Line = 400 
+  A loop was not vectorized because it contains a call to function "fprintf" on line 407.
+
+CC-3182 CC: IPA File = stream.c, Line = 400 
+  Loop has been flattened.
+
+CC-3171 CC: IPA File = stream.c, Line = 422 
+  "checkSTREAMresults" (called from "HPCC_Stream") was not inlined because it is not in the body of a loop.
+
+CC-3021 CC: IPA File = stream.c, Line = 430 
+  "fflush" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = stream.c, Line = 431 
+  "fclose" (called from "HPCC_Stream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = stream.c, Line = 443 
+  A loop was replaced by a library call.
+
+CC-6823 CC: THREAD File = stream.c, Line = 443 
+  A region starting at line 443 and ending at line 444 was multi-threaded.
+
+CC-6817 CC: THREAD File = stream.c, Line = 443 
+  A loop was partitioned.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 453 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 453 
+  A region starting at line 453 and ending at line 454 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 453 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 453 
+  A loop was partitioned.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 463 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 463 
+  A region starting at line 463 and ending at line 464 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 463 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 463 
+  A loop was partitioned.
+
+CC-6005 CC: SCALAR File = stream.c, Line = 473 
+  A loop was unrolled 2 times.
+
+CC-6823 CC: THREAD File = stream.c, Line = 473 
+  A region starting at line 473 and ending at line 474 was multi-threaded.
+
+CC-6204 CC: VECTOR File = stream.c, Line = 473 
+  A loop was vectorized.
+
+CC-6817 CC: THREAD File = stream.c, Line = 473 
+  A loop was partitioned.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,308 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/tstfft.c
+Compiled : 2016-03-19  13:20:32
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/tstfft.o -c ../../../../FFT/tstfft.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/tstfft.c
+Date     : 03/19/2016  13:20:32
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.            /* tstfft.c
+    3.             */
+    4.            
+    5.            #include <hpcc.h>
+    6.            
+    7.            #include "hpccfft.h"
+    8.            
+    9.            static int
+   10.            TestFFT1(HPCC_Params *params, int doIO, FILE *outFile, double *UGflops, int *Un, int *Ufailure) {
+   11.              fftw_complex *in, *out;
+   12.              fftw_plan p;
+   13.              hpcc_fftw_plan ip;
+   14.              double Gflops = -1.0;
+   15.              double maxErr, tmp1, tmp2, tmp3, t0, t1, t2, t3;
+   16.              int i, n, flags, failure = 1;
+   17.  +           double deps = HPL_dlamch( HPL_MACH_EPS );
+   18.            
+   19.            #ifdef HPCC_FFT_235
+   20.              int f[3];
+   21.            
+   22.              /* Need 2 vectors for input and output and 1 vector of scratch spaces */
+   23.              n = HPCC_LocalVectorSize( params, 3, sizeof(fftw_complex), 0 );
+   24.            
+   25.              /* Adjust local size for factors */
+   26.              for ( ; HPCC_factor235( n, f ); n--)
+   27.                ; /* EMPTY */
+   28.            #else
+   29.              /* Need 2 vectors and vectors' sizes as power of 2 */
+   30.  +           n = HPCC_LocalVectorSize( params, 2, sizeof(fftw_complex), 1 );
+   31.            #endif
+   32.            
+   33.              /* need to use fftw_malloc() so that the returned pointers will be aligned properly for SSE
+   34.                 instructions on Intel/AMD systems */
+   35.              in  = (fftw_complex *)HPCC_fftw_malloc( (sizeof *in)  * n );
+   36.              out = (fftw_complex *)HPCC_fftw_malloc( (sizeof *out) * n );
+   37.            
+   38.              if (! in || ! out) goto comp_end;
+   39.            
+   40.              /* Make sure that `inout' and `work' are initialized in parallel if using
+   41.                 Open MP: this will ensure better placement of pages if first-touch policy
+   42.                 is used by a distrubuted shared memory machine. */
+   43.            #ifdef _OPENMP
+   44.            #pragma omp parallel for
+   45.  + Mmr8--<   for (i = 0; i < n; ++i) {
+   46.    Mmr8        c_re( in[i] ) = c_re( out[i] ) = 0.0;
+   47.    Mmr8        c_re( in[i] ) = c_im( out[i] ) = 0.0;
+   48.    Mmr8-->   }
+   49.            #endif
+   50.            
+   51.  +           t0 = -MPI_Wtime();
+   52.  +           HPCC_bcnrand( 2*n, 0, in );
+   53.  +           t0 += MPI_Wtime();
+   54.            
+   55.            #ifdef HPCC_FFTW_ESTIMATE
+   56.              flags = FFTW_ESTIMATE;
+   57.            #else
+   58.              flags = FFTW_MEASURE;
+   59.            #endif
+   60.            
+   61.  +           t1 = -MPI_Wtime();
+   62.  +           p = fftw_create_plan( n, FFTW_FORWARD, flags );
+   63.  +           t1 += MPI_Wtime();
+   64.            
+   65.              if (! p) goto comp_end;
+   66.            
+   67.  +           t2 = -MPI_Wtime();
+   68.  +           fftw_one( p, in, out );
+   69.  +           t2 += MPI_Wtime();
+   70.            
+   71.  +           fftw_destroy_plan(p);
+   72.            
+   73.  +           ip = HPCC_fftw_create_plan( n, FFTW_BACKWARD, FFTW_ESTIMATE );
+   74.            
+   75.              if (ip) {
+   76.  +             t3 = -MPI_Wtime();
+   77.  +             HPCC_fftw_one( ip, out, in );
+   78.  +             t3 += MPI_Wtime();
+   79.            
+   80.  +             HPCC_fftw_destroy_plan( ip );
+   81.              }
+   82.            
+   83.  +           HPCC_bcnrand( 2*(s64Int)n, 0, out ); /* regenerate data */
+   84.              maxErr = 0.0;
+   85.    Vpr3--<   for (i = 0; i < n; i++) {
+   86.    Vpr3        tmp1 = c_re( in[i] ) - c_re( out[i] );
+   87.    Vpr3        tmp2 = c_im( in[i] ) - c_im( out[i] );
+   88.    Vpr3        tmp3 = sqrt( tmp1*tmp1 + tmp2*tmp2 );
+   89.    Vpr3        maxErr = maxErr >= tmp3 ? maxErr : tmp3;
+   90.    Vpr3-->   }
+   91.            
+   92.              if (maxErr / log(n) / deps < params->test.thrsh) failure = 0;
+   93.            
+   94.              if (doIO) {
+   95.                fprintf( outFile, "Vector size: %d\n", n );
+   96.                fprintf( outFile, "Generation time: %9.3f\n", t0 );
+   97.                fprintf( outFile, "Tuning: %9.3f\n", t1 );
+   98.                fprintf( outFile, "Computing: %9.3f\n", t2 );
+   99.                fprintf( outFile, "Inverse FFT: %9.3f\n", t3 );
+  100.                fprintf( outFile, "max(|x-x0|): %9.3e\n", maxErr );
+  101.              }
+  102.            
+  103.              if (t2 > 0.0) Gflops = 1e-9 * (5.0 * n * log(n) / log(2.0)) / t2;
+  104.            
+  105.              comp_end:
+  106.            
+  107.              if (out) HPCC_fftw_free( out );
+  108.              if (in)  HPCC_fftw_free( in );
+  109.            
+  110.              *UGflops = Gflops;
+  111.              *Un = n;
+  112.              *Ufailure = failure;
+  113.            
+  114.              return 0;
+  115.            }
+  116.            
+  117.            int
+  118.            HPCC_TestFFT(HPCC_Params *params, int doIO, double *UGflops, int *Un, int *Ufailure) {
+  119.              int rv, n, failure = 1;
+  120.              double Gflops;
+  121.              FILE *outFile;
+  122.            
+  123.              if (doIO) {
+  124.  +             outFile = fopen( params->outFname, "a" );
+  125.                if (! outFile) {
+  126.                  outFile = stderr;
+  127.                  fprintf( outFile, "Cannot open output file.\n" );
+  128.                  return 1;
+  129.                }
+  130.              }
+  131.            
+  132.              n = 0;
+  133.              Gflops = -1.0;
+  134.  +           rv = TestFFT1( params, doIO, outFile, &Gflops, &n, &failure );
+  135.            
+  136.              if (doIO) {
+  137.  +             fflush( outFile );
+  138.  +             fclose( outFile );
+  139.              }
+  140.            
+  141.              if (UGflops) *UGflops = Gflops;
+  142.              if (Un) *Un = n;
+  143.              if (Ufailure) *Ufailure = failure;
+  144.            
+  145.              return rv;
+  146.            }
+
+CC-3021 CC: IPA File = tstfft.c, Line = 17 
+  "HPL_dlamch" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 30 
+  "HPCC_LocalVectorSize" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = tstfft.c, Line = 45 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = tstfft.c, Line = 45 
+  A loop was unrolled 8 times.
+
+CC-6823 CC: THREAD File = tstfft.c, Line = 45 
+  A region starting at line 45 and ending at line 48 was multi-threaded.
+
+CC-6817 CC: THREAD File = tstfft.c, Line = 45 
+  A loop was partitioned.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 51 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 52 
+  "HPCC_bcnrand" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 53 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 61 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 62 
+  "HPCC_fftw_create_plan" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 63 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 67 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 68 
+  "HPCC_fftw_one" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 69 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 71 
+  "HPCC_fftw_destroy_plan" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 73 
+  "HPCC_fftw_create_plan" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 76 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 77 
+  "HPCC_fftw_one" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 78 
+  "MPI_Wtime" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 80 
+  "HPCC_fftw_destroy_plan" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 83 
+  "HPCC_bcnrand" (called from "TestFFT1") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = tstfft.c, Line = 85 
+  A loop was unrolled 3 times.
+
+CC-6209 CC: VECTOR File = tstfft.c, Line = 85 
+  A loop was partially vectorized.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 124 
+  "fopen" (called from "HPCC_TestFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstfft.c, Line = 134 
+  "TestFFT1" (called from "HPCC_TestFFT") was not inlined because the call site will not flatten.  "HPCC_bcnrand" is missing.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 137 
+  "fflush" (called from "HPCC_TestFFT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstfft.c, Line = 138 
+  "fclose" (called from "HPCC_TestFFT") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

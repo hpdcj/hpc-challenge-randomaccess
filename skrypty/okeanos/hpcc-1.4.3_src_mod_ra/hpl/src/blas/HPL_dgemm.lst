@@ -1,0 +1,605 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dgemm.c
+Compiled : 2016-03-19  13:19:28
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/blas/HPL_dgemm.o -c ../../../src/blas/HPL_dgemm.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dgemm.c
+Date     : 03/19/2016  13:19:28
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifndef HPL_dgemm
+   53.     
+   54.     #ifdef HPL_CALL_VSIPL
+   55.     
+   56.     #ifdef HPL_STDC_HEADERS
+   57.     static void HPL_dgemmNN
+   58.     (
+   59.        const int                  M,
+   60.        const int                  N,
+   61.        const int                  K,
+   62.        const double               ALPHA,
+   63.        const double               * A,
+   64.        const int                  LDA,
+   65.        const double               * B,
+   66.        const int                  LDB,
+   67.        const double               BETA,
+   68.        double                     * C,
+   69.        const int                  LDC
+   70.     )
+   71.     #else
+   72.     static void HPL_dgemmNN( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC )
+   73.        const int                  K, LDA, LDB, LDC, M, N;
+   74.        const double               ALPHA, BETA;
+   75.        const double               * A, * B;
+   76.        double                     * C;
+   77.     #endif
+   78.     {
+   79.        register double            t0;
+   80.        int                        i, iail, iblj, icij, j, jal, jbj, jcj, l;
+   81.     
+   82.        for( j = 0, jbj = 0, jcj  = 0; j < N; j++, jbj += LDB, jcj += LDC )
+   83.        {
+   84.           HPL_dscal( M, BETA, C+jcj, 1 );
+   85.           for( l = 0, jal = 0, iblj = jbj; l < K; l++, jal += LDA, iblj += 1 )
+   86.           {
+   87.              t0 = ALPHA * B[iblj];
+   88.              for( i = 0, iail = jal, icij = jcj; i < M; i++, iail += 1, icij += 1 )
+   89.              { C[icij] += A[iail] * t0; }
+   90.           }
+   91.        }
+   92.     }
+   93.     
+   94.     #ifdef HPL_STDC_HEADERS
+   95.     static void HPL_dgemmNT
+   96.     (
+   97.        const int                  M,
+   98.        const int                  N,
+   99.        const int                  K,
+  100.        const double               ALPHA,
+  101.        const double               * A,
+  102.        const int                  LDA,
+  103.        const double               * B,
+  104.        const int                  LDB,
+  105.        const double               BETA,
+  106.        double                     * C,
+  107.        const int                  LDC
+  108.     )
+  109.     #else
+  110.     static void HPL_dgemmNT( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC )
+  111.        const int                  K, LDA, LDB, LDC, M, N;
+  112.        const double               ALPHA, BETA;
+  113.        const double               * A, * B;
+  114.        double                     * C;
+  115.     #endif
+  116.     {
+  117.        register double            t0;
+  118.        int                        i, iail, ibj, ibjl, icij, j, jal, jcj, l;
+  119.     
+  120.        for( j = 0, ibj  = 0, jcj  = 0; j < N; j++, ibj += 1, jcj += LDC )
+  121.        {
+  122.           HPL_dscal( M, BETA, C+jcj, 1 );
+  123.           for( l = 0, jal = 0, ibjl = ibj; l < K; l++, jal += LDA, ibjl += LDB )
+  124.           {
+  125.              t0 = ALPHA * B[ibjl];
+  126.              for( i = 0, iail = jal, icij = jcj; i < M; i++, iail += 1, icij += 1 )
+  127.              { C[icij] += A[iail] * t0; }
+  128.           }
+  129.        }
+  130.     }
+  131.     
+  132.     #ifdef HPL_STDC_HEADERS
+  133.     static void HPL_dgemmTN
+  134.     (
+  135.        const int                  M,
+  136.        const int                  N,
+  137.        const int                  K,
+  138.        const double               ALPHA,
+  139.        const double               * A,
+  140.        const int                  LDA,
+  141.        const double               * B,
+  142.        const int                  LDB,
+  143.        const double               BETA,
+  144.        double                     * C,
+  145.        const int                  LDC
+  146.     )
+  147.     #else
+  148.     static void HPL_dgemmTN( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC )
+  149.        const int                  K, LDA, LDB, LDC, M, N;
+  150.        const double               ALPHA, BETA;
+  151.        const double               * A, * B;
+  152.        double                     * C;
+  153.     #endif
+  154.     {
+  155.        register double            t0;
+  156.        int                        i, iai, iail, iblj, icij, j, jbj, jcj, l;
+  157.     
+  158.        for( j = 0, jbj = 0, jcj = 0; j < N; j++, jbj += LDB, jcj += LDC )
+  159.        {
+  160.           for( i = 0, icij = jcj, iai = 0; i < M; i++, icij += 1, iai += LDA )
+  161.           {
+  162.              t0 = HPL_rzero;
+  163.              for( l = 0, iail = iai, iblj = jbj; l < K; l++, iail += 1, iblj += 1 )
+  164.              { t0 += A[iail] * B[iblj]; }
+  165.              if( BETA == HPL_rzero ) C[icij]  = HPL_rzero;
+  166.              else                    C[icij] *= BETA;
+  167.              C[icij] += ALPHA * t0;
+  168.           }
+  169.        }
+  170.     }
+  171.     
+  172.     #ifdef HPL_STDC_HEADERS
+  173.     static void HPL_dgemmTT
+  174.     (
+  175.        const int                  M,
+  176.        const int                  N,
+  177.        const int                  K,
+  178.        const double               ALPHA,
+  179.        const double               * A,
+  180.        const int                  LDA,
+  181.        const double               * B,
+  182.        const int                  LDB,
+  183.        const double               BETA,
+  184.        double                     * C,
+  185.        const int                  LDC
+  186.     )
+  187.     #else
+  188.     static void HPL_dgemmTT( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC )
+  189.        const int                  K, LDA, LDB, LDC, M, N;
+  190.        const double               ALPHA, BETA;
+  191.        const double               * A, * B;
+  192.        double                     * C;
+  193.     #endif
+  194.     {
+  195.        register double            t0;
+  196.        int                        i, iali, ibj, ibjl, icij, j, jai, jcj, l;
+  197.     
+  198.        for( j = 0, ibj = 0, jcj  = 0; j < N; j++, ibj += 1, jcj += LDC )
+  199.        {
+  200.           for( i = 0, icij = jcj, jai = 0; i < M; i++, icij += 1, jai += LDA )
+  201.           {
+  202.              t0 = HPL_rzero;
+  203.              for( l = 0,      iali  = jai, ibjl  = ibj;
+  204.                   l < K; l++, iali += 1,   ibjl += LDB ) t0 += A[iali] * B[ibjl];
+  205.              if( BETA == HPL_rzero ) C[icij]  = HPL_rzero;
+  206.              else                    C[icij] *= BETA;
+  207.              C[icij] += ALPHA * t0;
+  208.           }
+  209.        }
+  210.     }
+  211.     
+  212.     #ifdef HPL_STDC_HEADERS
+  213.     static void HPL_dgemm0
+  214.     (
+  215.        const enum HPL_TRANS       TRANSA,
+  216.        const enum HPL_TRANS       TRANSB,
+  217.        const int                  M,
+  218.        const int                  N,
+  219.        const int                  K,
+  220.        const double               ALPHA,
+  221.        const double               * A,
+  222.        const int                  LDA,
+  223.        const double               * B,
+  224.        const int                  LDB,
+  225.        const double               BETA,
+  226.        double                     * C,
+  227.        const int                  LDC
+  228.     )
+  229.     #else
+  230.     static void HPL_dgemm0( TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
+  231.                             BETA, C, LDC )
+  232.        const enum HPL_TRANS       TRANSA, TRANSB;
+  233.        const int                  K, LDA, LDB, LDC, M, N;
+  234.        const double               ALPHA, BETA;
+  235.        const double               * A, * B;
+  236.        double                     * C;
+  237.     #endif
+  238.     {
+  239.        int                        i, j;
+  240.     
+  241.        if( ( M == 0 ) || ( N == 0 ) ||
+  242.            ( ( ( ALPHA == HPL_rzero ) || ( K == 0 ) ) &&
+  243.              ( BETA == HPL_rone ) ) ) return;
+  244.     
+  245.        if( ALPHA == HPL_rzero )
+  246.        {
+  247.           for( j = 0; j < N; j++ )
+  248.           {  for( i = 0; i < M; i++ ) *(C+i+j*LDC) = HPL_rzero; }
+  249.           return;
+  250.        }
+  251.     
+  252.        if( TRANSB == HplNoTrans )
+  253.        {
+  254.           if( TRANSA == HplNoTrans )
+  255.           { HPL_dgemmNN( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC ); }
+  256.           else
+  257.           { HPL_dgemmTN( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC ); }
+  258.        }
+  259.        else
+  260.        {
+  261.           if( TRANSA == HplNoTrans )
+  262.           { HPL_dgemmNT( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC ); }
+  263.           else
+  264.           { HPL_dgemmTT( M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC ); }
+  265.        }
+  266.     }
+  267.     
+  268.     #endif
+  269.     
+  270.     #ifdef HPL_STDC_HEADERS
+  271.     void HPL_dgemm
+  272.     (
+  273.        const enum HPL_ORDER             ORDER,
+  274.        const enum HPL_TRANS             TRANSA,
+  275.        const enum HPL_TRANS             TRANSB,
+  276.        const int                        M,
+  277.        const int                        N,
+  278.        const int                        K,
+  279.        const double                     ALPHA,
+  280.        const double *                   A,
+  281.        const int                        LDA,
+  282.        const double *                   B,
+  283.        const int                        LDB,
+  284.        const double                     BETA,
+  285.        double *                         C,
+  286.        const int                        LDC
+  287.     )
+  288.     #else
+  289.     void HPL_dgemm
+  290.     ( ORDER, TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA, C, LDC )
+  291.        const enum HPL_ORDER             ORDER;
+  292.        const enum HPL_TRANS             TRANSA;
+  293.        const enum HPL_TRANS             TRANSB;
+  294.        const int                        M;
+  295.        const int                        N;
+  296.        const int                        K;
+  297.        const double                     ALPHA;
+  298.        const double *                   A;
+  299.        const int                        LDA;
+  300.        const double *                   B;
+  301.        const int                        LDB;
+  302.        const double                     BETA;
+  303.        double *                         C;
+  304.        const int                        LDC;
+  305.     #endif
+  306.     {
+  307.     /* 
+  308.      * Purpose
+  309.      * =======
+  310.      *
+  311.      * HPL_dgemm performs one of the matrix-matrix operations
+  312.      *  
+  313.      *     C := alpha * op( A ) * op( B ) + beta * C
+  314.      *  
+  315.      *  where op( X ) is one of
+  316.      *  
+  317.      *     op( X ) = X   or   op( X ) = X^T.
+  318.      *  
+  319.      * Alpha and beta are scalars,  and A,  B and C are matrices, with op(A)
+  320.      * an m by k matrix, op(B) a k by n matrix and  C an m by n matrix.
+  321.      *
+  322.      * Arguments
+  323.      * =========
+  324.      *
+  325.      * ORDER   (local input)                 const enum HPL_ORDER
+  326.      *         On entry, ORDER  specifies the storage format of the operands
+  327.      *         as follows:                                                  
+  328.      *            ORDER = HplRowMajor,                                      
+  329.      *            ORDER = HplColumnMajor.                                   
+  330.      *
+  331.      * TRANSA  (local input)                 const enum HPL_TRANS
+  332.      *         On entry, TRANSA  specifies the form of  op(A)  to be used in
+  333.      *         the matrix-matrix operation follows:                         
+  334.      *            TRANSA==HplNoTrans    : op( A ) = A,                     
+  335.      *            TRANSA==HplTrans      : op( A ) = A^T,                   
+  336.      *            TRANSA==HplConjTrans  : op( A ) = A^T.                   
+  337.      *
+  338.      * TRANSB  (local input)                 const enum HPL_TRANS
+  339.      *         On entry, TRANSB  specifies the form of  op(B)  to be used in
+  340.      *         the matrix-matrix operation follows:                         
+  341.      *            TRANSB==HplNoTrans    : op( B ) = B,                     
+  342.      *            TRANSB==HplTrans      : op( B ) = B^T,                   
+  343.      *            TRANSB==HplConjTrans  : op( B ) = B^T.                   
+  344.      *
+  345.      * M       (local input)                 const int
+  346.      *         On entry,  M  specifies  the  number  of rows  of the  matrix
+  347.      *         op(A)  and  of  the  matrix  C.  M  must  be  at least  zero.
+  348.      *
+  349.      * N       (local input)                 const int
+  350.      *         On entry,  N  specifies  the number  of columns of the matrix
+  351.      *         op(B)  and  the number of columns of the matrix  C. N must be
+  352.      *         at least zero.
+  353.      *
+  354.      * K       (local input)                 const int
+  355.      *         On entry,  K  specifies  the  number of columns of the matrix
+  356.      *         op(A) and the number of rows of the matrix op(B).  K  must be
+  357.      *         be at least  zero.
+  358.      *
+  359.      * ALPHA   (local input)                 const double
+  360.      *         On entry, ALPHA specifies the scalar alpha.   When  ALPHA  is
+  361.      *         supplied  as  zero  then the elements of the matrices A and B
+  362.      *         need not be set on input.
+  363.      *
+  364.      * A       (local input)                 const double *
+  365.      *         On entry,  A  is an array of dimension (LDA,ka),  where ka is
+  366.      *         k  when   TRANSA==HplNoTrans,  and  is  m  otherwise.  Before
+  367.      *         entry  with  TRANSA==HplNoTrans, the  leading  m by k part of
+  368.      *         the array  A must contain the matrix A, otherwise the leading
+  369.      *         k  by  m  part of the array  A  must  contain the  matrix  A.
+  370.      *
+  371.      * LDA     (local input)                 const int
+  372.      *         On entry, LDA  specifies the first dimension of A as declared
+  373.      *         in the  calling (sub) program. When  TRANSA==HplNoTrans  then
+  374.      *         LDA must be at least max(1,m), otherwise LDA must be at least
+  375.      *         max(1,k).
+  376.      *
+  377.      * B       (local input)                 const double *
+  378.      *         On entry, B is an array of dimension (LDB,kb),  where  kb  is
+  379.      *         n   when  TRANSB==HplNoTrans, and  is  k  otherwise.   Before
+  380.      *         entry with TRANSB==HplNoTrans,  the  leading  k by n  part of
+  381.      *         the array  B must contain the matrix B, otherwise the leading
+  382.      *         n  by  k  part of the array  B  must  contain  the matrix  B.
+  383.      *
+  384.      * LDB     (local input)                 const int
+  385.      *         On entry, LDB  specifies the first dimension of B as declared
+  386.      *         in the  calling (sub) program. When  TRANSB==HplNoTrans  then
+  387.      *         LDB must be at least max(1,k), otherwise LDB must be at least
+  388.      *         max(1,n).
+  389.      *
+  390.      * BETA    (local input)                 const double
+  391.      *         On entry,  BETA  specifies the scalar  beta.   When  BETA  is
+  392.      *         supplied  as  zero  then  the  elements of the matrix C  need
+  393.      *         not be set on input.
+  394.      *
+  395.      * C       (local input/output)          double *
+  396.      *         On entry,  C  is an array of dimension (LDC,n). Before entry,
+  397.      *         the  leading m by n part  of  the  array  C  must contain the
+  398.      *         matrix C,  except when beta is zero, in which case C need not
+  399.      *         be set on entry. On exit, the array  C  is overwritten by the
+  400.      *         m by n  matrix ( alpha*op( A )*op( B ) + beta*C ).
+  401.      *
+  402.      * LDC     (local input)                 const int
+  403.      *         On entry, LDC  specifies the first dimension of C as declared
+  404.      *         in  the   calling  (sub)  program.   LDC  must  be  at  least
+  405.      *         max(1,m).
+  406.      *
+  407.      * ---------------------------------------------------------------------
+  408.      */ 
+  409.     #ifdef HPL_CALL_CBLAS
+  410.        cblas_dgemm( ORDER, TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB,
+  411.                     BETA, C, LDC );
+  412.     #endif
+  413.     #ifdef HPL_CALL_VSIPL
+  414.        if( ORDER == HplColumnMajor )
+  415.        {
+  416.           HPL_dgemm0( TRANSA, TRANSB, M, N, K, ALPHA, A, LDA, B, LDB, BETA,
+  417.                       C, LDC );
+  418.        }
+  419.        else
+  420.        {
+  421.           HPL_dgemm0( TRANSB, TRANSA, N, M, K, ALPHA, B, LDB, A, LDA, BETA,
+  422.                       C, LDC );
+  423.        }
+  424.     #endif
+  425.     #ifdef HPL_CALL_FBLAS
+  426.        double                    alpha = ALPHA, beta = BETA;
+  427.     #ifdef StringSunStyle
+  428.     #ifdef HPL_USE_F77_INTEGER_DEF
+  429.        F77_INTEGER               IONE = 1;
+  430.     #else
+  431.        int                       IONE = 1;
+  432.     #endif
+  433.     #endif
+  434.     #ifdef StringStructVal
+  435.        F77_CHAR                  ftransa;
+  436.        F77_CHAR                  ftransb;
+  437.     #endif
+  438.     #ifdef StringStructPtr
+  439.        F77_CHAR                  ftransa;
+  440.        F77_CHAR                  ftransb;
+  441.     #endif
+  442.     #ifdef StringCrayStyle
+  443.        F77_CHAR                  ftransa;
+  444.        F77_CHAR                  ftransb;
+  445.     #endif
+  446.     #ifdef HPL_USE_F77_INTEGER_DEF
+  447.        const F77_INTEGER         F77M   = M,   F77N   = N,   F77K = K,
+  448.                                  F77lda = LDA, F77ldb = LDB, F77ldc = LDC;
+  449.     #else
+  450.     #define F77M                 M
+  451.     #define F77N                 N
+  452.     #define F77K                 K
+  453.     #define F77lda               LDA
+  454.     #define F77ldb               LDB
+  455.     #define F77ldc               LDC
+  456.     #endif
+  457.        char                      ctransa, ctransb;
+  458.     
+  459.        if(      TRANSA == HplNoTrans ) ctransa = 'N';
+  460.        else if( TRANSA == HplTrans   ) ctransa = 'T';
+  461.        else                            ctransa = 'C';
+  462.      
+  463.        if(      TRANSB == HplNoTrans ) ctransb = 'N';
+  464.        else if( TRANSB == HplTrans   ) ctransb = 'T';
+  465.        else                            ctransb = 'C';
+  466.     
+  467.        if( ORDER == HplColumnMajor )
+  468.        {
+  469.     #ifdef StringSunStyle
+  470.  +        F77dgemm( &ctransa, &ctransb, &F77M, &F77N, &F77K, &alpha, A, &F77lda,
+  471.                     B, &F77ldb, &beta, C, &F77ldc, IONE, IONE );
+  472.     #endif
+  473.     #ifdef StringCrayStyle
+  474.           ftransa = HPL_C2F_CHAR( ctransa ); ftransb = HPL_C2F_CHAR( ctransb );
+  475.           F77dgemm( ftransa,  ftransb,  &F77M, &F77N, &F77K, &alpha, A, &F77lda,
+  476.                     B, &F77ldb, &beta, C, &F77ldc );
+  477.     #endif
+  478.     #ifdef StringStructVal
+  479.           ftransa.len = 1; ftransa.cp = &ctransa;
+  480.           ftransb.len = 1; ftransb.cp = &ctransb;
+  481.           F77dgemm( ftransa,  ftransb,  &F77M, &F77N, &F77K, &alpha, A, &F77lda,
+  482.                     B, &F77ldb, &beta, C, &F77ldc );
+  483.     #endif
+  484.     #ifdef StringStructPtr
+  485.           ftransa.len = 1; ftransa.cp = &ctransa;
+  486.           ftransb.len = 1; ftransb.cp = &ctransb;
+  487.           F77dgemm( &ftransa, &ftransb, &F77M, &F77N, &F77K, &alpha, A, &F77lda,
+  488.                     B, &F77ldb, &beta, C, &F77ldc );
+  489.     #endif
+  490.        }
+  491.        else
+  492.        {
+  493.     #ifdef StringSunStyle
+  494.  +        F77dgemm( &ctransb, &ctransa, &F77N, &F77M, &F77K, &alpha, B, &F77ldb,
+  495.                     A, &F77lda, &beta, C, &F77ldc, IONE, IONE );
+  496.     #endif
+  497.     #ifdef StringCrayStyle
+  498.           ftransa = HPL_C2F_CHAR( ctransa ); ftransb = HPL_C2F_CHAR( ctransb );
+  499.           F77dgemm( ftransb,  ftransa,  &F77N, &F77M, &F77K, &alpha, B, &F77ldb,
+  500.                     A, &F77lda, &beta, C, &F77ldc );
+  501.     #endif
+  502.     #ifdef StringStructVal
+  503.           ftransa.len = 1; ftransa.cp = &ctransa;
+  504.           ftransb.len = 1; ftransb.cp = &ctransb;
+  505.           F77dgemm( ftransb,  ftransa,  &F77N, &F77M, &F77K, &alpha, B, &F77ldb,
+  506.                     A, &F77lda, &beta, C, &F77ldc );
+  507.     #endif
+  508.     #ifdef StringStructPtr
+  509.           ftransa.len = 1; ftransa.cp = &ctransa;
+  510.           ftransb.len = 1; ftransb.cp = &ctransb;
+  511.           F77dgemm( &ftransb, &ftransa, &F77N, &F77M, &F77K, &alpha, B, &F77ldb,
+  512.                     A, &F77lda, &beta, C, &F77ldc );
+  513.     #endif
+  514.        }
+  515.     #endif
+  516.     /*
+  517.      * End of HPL_dgemm
+  518.      */
+  519.     }
+  520.     
+  521.     #endif
+
+CC-3021 CC: IPA File = HPL_dgemm.c, Line = 470 
+  "dgemm_" (called from "HPL_dgemm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_dgemm.c, Line = 494 
+  "dgemm_" (called from "HPL_dgemm") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

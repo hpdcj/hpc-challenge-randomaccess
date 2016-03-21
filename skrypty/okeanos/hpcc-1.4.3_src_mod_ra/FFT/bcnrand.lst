@@ -1,0 +1,407 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/bcnrand.c
+Compiled : 2016-03-19  13:20:24
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/bcnrand.o -c ../../../../FFT/bcnrand.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/bcnrand.c
+Date     : 03/19/2016  13:20:25
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.            /* bcnrand.c
+    3.            
+    4.            This is a version of bcnrand.f written using 64-bit integers (on 64-bit systems it's 'long',
+    5.            on 32-bit systems it's 'long long').
+    6.            
+    7.             */
+    8.            /*
+    9.            !   This routine generates a sequence of IEEE 64-bit floating-point pseudorandom
+   10.            !   numbers in the range (0, 1), based on the recently discovered class of
+   11.            !   normal numbers described in the paper "Random Generators and Normal Numbers"
+   12.            !   by DHB and Richard Crandall, Experimental Mathematics, vol 11, no 4 (2002),
+   13.            !   available at http://crd.lbl.gov/~dhbailey/dhbpapers/bcnormal-em.pdf.
+   14.            
+   15.            !   The sequence generated consists of consecutive 53-bit sections of the binary
+   16.            !   expansion of alpha_{2,3} = sum_k 1/((3^k)*2^(3^k))), which is known to be
+   17.            !   2-normal, normalized by 2^53 so as to be uniform in (0,1).  The parameter a
+   18.            !   is the starting index, or in other words the seed of the pseudorandom
+   19.            !   sequence.  To obtain the maximum period, a should be set to at least
+   20.            !   3^33 + 100 and must not exceed 2^53.  When a is set in this range, the period
+   21.            !   of the sequence generated by this code is 2x3^32 = 3.706e15.  Also, the
+   22.            !   sequence will not necessarily match the binary digits of alpha_{2,3} if more
+   23.            !   than this many elements are generated.
+   24.            
+   25.            !   The bcnrand routine facilitates simple parallelization.  For example, in
+   26.            !   an MPI program, suppose that kpr is the processor number and npr is the
+   27.            !   number of processors.  Then the line
+   28.            
+   29.            !   call bcnrand (n/npr, a + 53*n/npr*kpr, x)
+   30.            
+   31.            !   generates on each processor a section of length n/npr.  In this way, the
+   32.            !   npr processors collectively have the same n-long sequence (provided that
+   33.            !   n is divisible by npr) as is generated on a single processor system by
+   34.            !   means of the line
+   35.            
+   36.            !   call bcnrand (n, a, x)
+   37.            
+   38.            !   This code is designed for systems with IEEE 64-bit floating-point arithmetic.
+   39.            !   On IBM systems and others with a fused multiply-add instruction, see the
+   40.            !   !> comments below for changes that will improve performance. On IBM systems,
+   41.            !   use the compiler flag -qstrict.
+   42.            
+   43.            !   David H. Bailey    2004-05-12
+   44.            */
+   45.            
+   46.            #include "hpccfft.h"
+   47.            
+   48.            typedef u64Int_t Big[2];
+   49.            
+   50.            /* r = a * b */
+   51.            static void
+   52.            ddmuldd(u64Int_t a, u64Int_t b, Big r) {
+   53.              u64Int_t a0, a1, b0, b1, hb, acc, acc1;
+   54.            
+   55.              /* 'hb' should be 0xFFFFFFFF (first 32-bits set to one) */
+   56.              hb = 65535L;
+   57.              hb = (hb << 16) | hb;
+   58.            
+   59.              /* split 'a' and 'b' into two 32-bit quantities */
+   60.              a0 = a & hb;
+   61.              a1 = (a >> 32) & hb;
+   62.              b0 = b & hb;
+   63.              b1 = (b >> 32) & hb;
+   64.            
+   65.              acc = a0 * b0;
+   66.              r[0] = acc & hb;
+   67.              acc >>= 32;
+   68.              acc += a1 * b0;
+   69.              acc1 = acc >> 32;
+   70.              acc &= hb;
+   71.              acc += a0 * b1;
+   72.              r[0] += (acc & hb) << 32;
+   73.              acc >>= 32;
+   74.              acc += acc1;
+   75.              acc += a1 * b1;
+   76.              r[1] = acc;
+   77.            }
+   78.            
+   79.            /* r = a - b */
+   80.            static void
+   81.            ddsub(Big a, Big b, Big r) {
+   82.              u64Int_t mx = 0;
+   83.              mx = ~mx;
+   84.            
+   85.              r[1] = a[1] - b[1];
+   86.              if (a[0] >= b[0])
+   87.                r[0] = a[0] - b[0];
+   88.              else {
+   89.                r[1] -= 1;
+   90.                r[0] = mx - b[0] + 1 + a[0];
+   91.              }
+   92.            }
+   93.            
+   94.            /* q = d / v; reminder Ur */
+   95.            static void
+   96.            dddiv(Big d, u64Int_t v, Big q, u64Int_t *Ur) {
+   97.              u64Int_t r1, r0, v1, v0, msb = 1, mx = 0, one = 1;
+   98.              int i;
+   99.            
+  100.              msb <<= 63;
+  101.              mx = ~mx;
+  102.              q[0] = q[1] = 0;
+  103.            
+  104.              if (v <= d[1]) {
+  105.                q[1] = d[1] / v;
+  106.                r1 = d[1] % v;
+  107.              } else {
+  108.                r1 = d[1];
+  109.                q[1] = 0;
+  110.              }
+  111.              r0 = d[0];
+  112.            
+  113.  + 1-----<   while (r1) {
+  114.    1           v1 = 0;
+  115.    1           v0 = v;
+  116.    1       
+  117.  + 1 2---<     for (i = 0; v1 <= r1; i++) {
+  118.    1 2           v1 <<= 1;
+  119.    1 2           if (msb & v0) v1 |= 1;
+  120.    1 2           v0 <<= 1;
+  121.    1 2--->     }
+  122.  + 1 2---<     do {
+  123.    1 2         i--;
+  124.    1 2         v0 >>= 1;
+  125.    1 2         v0 &= mx;
+  126.    1 2         if (1 & v1) v0 |= msb;
+  127.    1 2         v1 >>= 1;
+  128.    1 2--->     } while (v1 == r1 && v0 > r0); /* make sure (v1,v0) is not too big */
+  129.    1       
+  130.    1           q[0] += one << i;
+  131.    1           r1 -= v1;
+  132.    1           if (r0 >= v0)
+  133.    1             r0 -= v0;
+  134.    1           else {
+  135.    1             r0 += mx - v0 + 1;
+  136.    1             r1 -= 1;
+  137.    1           }
+  138.    1       
+  139.    1----->   }
+  140.            
+  141.              q[0] += r0 / v;
+  142.              r0 %= v;
+  143.            
+  144.              if (Ur) *Ur = r0;
+  145.            }
+  146.            
+  147.            /*
+  148.            !   expm2 = 2^p mod am.  p2 is a table with powers of 2, i.e., p2(i) = 2^i.
+  149.            !   This routine uses a left-to-right binary exponentiation scheme.
+  150.            */
+  151.            static u64Int_t
+  152.            expm2(u64Int_t p, u64Int_t am) {
+  153.              u64Int_t p2, p1, pt1, r;
+  154.              Big ddm, dd1, dd2;
+  155.              int i;
+  156.            
+  157.  + 1-----<   for (p2 = i = 1; i < 54; i++) {
+  158.    1           p2 <<= 1;
+  159.    1           if (p2 > p) break;
+  160.    1----->   }
+  161.            
+  162.              p1 = p;
+  163.              pt1 = p2 >> 1;
+  164.              r = 1;
+  165.              ddm[0] = am;
+  166.              ddm[1] = 0;
+  167.            
+  168.  + F-----<   while (1) {
+  169.    F           if (p1 >= pt1) {
+  170.    F             /* r = mod(2.0 * r, am) */
+  171.    F  I          ddmuldd( 2, r, dd1 );
+  172.    F             if (dd1[0] > am) {
+  173.    F  I    	ddsub(dd1, ddm, dd2);
+  174.    F       	dd1[0] = dd2[0];
+  175.    F       	dd1[1] = dd2[1];
+  176.    F             }
+  177.    F             r = dd1[0];
+  178.    F             p1 = p1 - pt1;
+  179.    F           }
+  180.    F       
+  181.    F           pt1 /= 2;
+  182.    F           if (pt1 >= 1) {
+  183.    F             /* r = mod(r * r, am) */
+  184.    F  I          ddmuldd( r, r, dd1 );
+  185.  + F  I-->       dddiv( dd1, am, dd2, &r );
+  186.    F             continue;
+  187.    F           }
+  188.    F           break;
+  189.    F----->   }
+  190.            
+  191.              return r;
+  192.            }
+  193.            
+  194.            /*
+  195.              Let minA = 3^33 + 100
+  196.              If `a' is smaller than `minA' then `a' is incremented by `minA' this value.
+  197.              In this way, you can seed the generator with small integers and the requirements
+  198.              will be fullfilled internally.
+  199.             */
+  200.            int
+  201.            HPCC_bcnrand(u64Int_t n, u64Int_t a, void *vx) {
+  202.              u64Int_t d1, d2, d3, t53, p3i, ui, minA;
+  203.              s64Int_t sd1, sp3i;
+  204.              Big dd1, dd2;
+  205.              int i;
+  206.              double rcp, two64, v, *x = (double *)vx;
+  207.            
+  208.              /* minA = 3.d0 ** 33 + 100.d0 */
+  209.              minA = 20709114;
+  210.              minA <<= 28;
+  211.              minA += 106609639;
+  212.            
+  213.              /* make sure `a' is big enough */
+  214.              if (a < minA) a += minA;
+  215.            
+  216.              t53 = 1;
+  217.              t53 <<= 53;
+  218.            
+  219.              d1 = 1;
+  220.  + 1-----<   for (i = 0; i < 53; i++) {
+  221.    1           d1 *= 3;
+  222.    1           if (d1 > a) break;
+  223.    1----->   }
+  224.            
+  225.              /* two64 = 2 ** 64 */
+  226.              two64 = 2.0;
+  227.  + r4----<   for (i = 0; i < 6; i++)
+  228.    r4---->     two64 *= two64;
+  229.            
+  230.              p3i = d1 / 3;
+  231.              sp3i = (s64Int_t)p3i;
+  232.              rcp = 1.0 / p3i;
+  233.            
+  234.              /*
+  235.            !   Calculate starting element.  This code performs the following:
+  236.            !   d1 = [int[p3i/2] * 2^(a-p3i)] mod p3i.
+  237.              */
+  238.              /* d1 = (p3i/2 * (2 ** (a-p3i))) % p3i */
+  239.  +           d2 = expm2( a - p3i, p3i );
+  240.              d3 = p3i / 2;
+  241.  +           ddmuldd( d2, d3, dd1 );
+  242.  +           dddiv( dd1, p3i, dd2, &d1 );
+  243.            
+  244.              x[0] = d1 * rcp;
+  245.  + F-----<   for (ui = 1; ui < n; ui++) {
+  246.    F           /* dd1 = d1 * t53 */
+  247.    F           dd1[1] = (d1 >> 11);
+  248.    F           dd1[0] = (d1 << 53);
+  249.    F       
+  250.    F           /* Approximate `dd1/p3i' (the result should be off by 1) */
+  251.    F           v = ((two64 * (double)dd1[1]) + (double)dd1[0]) * rcp;
+  252.    F       
+  253.    F  I        ddmuldd( (u64Int_t)v, p3i, dd2 );
+  254.    F       
+  255.    F           /* The value of `dd1-dd2' should between `-p3i' and 'p3i',
+  256.    F            hence upper halves of `dd1' and `dd2' can be ignored */
+  257.    F           sd1 = (s64Int_t)(dd1[0] - dd2[0]);
+  258.    F       
+  259.    F           /* Check the above approximation */
+  260.    F           if (sd1 < 0) sd1 += sp3i;
+  261.    F           if (sd1 > sp3i) sd1 -= sp3i;
+  262.    F       
+  263.    F           /* d1 = (d1 * t53) % p3i */
+  264.    F           d1 = (u64Int_t)sd1;
+  265.    F           x[ui] = d1 * rcp;
+  266.    F----->   }
+  267.            
+  268.              return 0;
+  269.            }
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 113 
+  A loop was not vectorized because a recurrence was found on "r1" at line 131.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 117 
+  A loop was not vectorized because a recurrence was found on "v1" at line 118.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 122 
+  A loop was not vectorized because a recurrence was found on "v0" at line 125.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 157 
+  A loop was not vectorized because a recurrence was found on "p2" at line 158.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 168 
+  A loop was not vectorized because a recurrence was found on "dd1" at line 171.
+
+CC-3182 CC: IPA File = bcnrand.c, Line = 168 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = bcnrand.c, Line = 171 
+  The call to leaf routine "ddmuldd" was textually inlined.
+
+CC-3001 CC: IPA File = bcnrand.c, Line = 173 
+  The call to tiny leaf routine "ddsub" was textually inlined.
+
+CC-3001 CC: IPA File = bcnrand.c, Line = 184 
+  The call to leaf routine "ddmuldd" was textually inlined.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 185 
+  A loop was not vectorized because a recurrence was found on "v1" at line 185.
+
+CC-3001 CC: IPA File = bcnrand.c, Line = 185 
+  The call to leaf routine "dddiv" was textually inlined.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 220 
+  A loop was not vectorized because a recurrence was found on "d1" at line 221.
+
+CC-6005 CC: SCALAR File = bcnrand.c, Line = 227 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 227 
+  A loop was not vectorized because a recurrence was found on "two64" at line 228.
+
+CC-3171 CC: IPA File = bcnrand.c, Line = 239 
+  "expm2" (called from "HPCC_bcnrand") was not inlined because it is not in the body of a loop.
+
+CC-3005 CC: IPA File = bcnrand.c, Line = 241 
+  "ddmuldd" (called from "HPCC_bcnrand") was not inlined because the type of argument 3 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = bcnrand.c, Line = 242 
+  "dddiv" (called from "HPCC_bcnrand") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6254 CC: VECTOR File = bcnrand.c, Line = 245 
+  A loop was not vectorized because a recurrence was found on "d1" at line 264.
+
+CC-3182 CC: IPA File = bcnrand.c, Line = 245 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = bcnrand.c, Line = 253 
+  The call to leaf routine "ddmuldd" was textually inlined.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

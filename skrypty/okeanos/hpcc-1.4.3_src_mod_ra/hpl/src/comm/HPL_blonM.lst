@@ -1,0 +1,583 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_blonM.c
+Compiled : 2016-03-19  13:19:30
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/comm/HPL_blonM.o -c ../../../src/comm/HPL_blonM.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_blonM.c
+Date     : 03/19/2016  13:19:30
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          /* 
+    2.           * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.           *    HPL - 2.0 - September 10, 2008                          
+    4.           *    Antoine P. Petitet                                                
+    5.           *    University of Tennessee, Knoxville                                
+    6.           *    Innovative Computing Laboratory                                 
+    7.           *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.           *                                                                      
+    9.           * -- Copyright notice and Licensing terms:                             
+   10.           *                                                                      
+   11.           * Redistribution  and  use in  source and binary forms, with or without
+   12.           * modification, are  permitted provided  that the following  conditions
+   13.           * are met:                                                             
+   14.           *                                                                      
+   15.           * 1. Redistributions  of  source  code  must retain the above copyright
+   16.           * notice, this list of conditions and the following disclaimer.        
+   17.           *                                                                      
+   18.           * 2. Redistributions in binary form must reproduce  the above copyright
+   19.           * notice, this list of conditions,  and the following disclaimer in the
+   20.           * documentation and/or other materials provided with the distribution. 
+   21.           *                                                                      
+   22.           * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.           * software must display the following acknowledgement:                 
+   24.           * This  product  includes  software  developed  at  the  University  of
+   25.           * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.           *                                                                      
+   27.           * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.           * names  of  its  contributors  may  not  be used to endorse or promote
+   29.           * products  derived   from   this  software  without  specific  written
+   30.           * permission.                                                          
+   31.           *                                                                      
+   32.           * -- Disclaimer:                                                       
+   33.           *                                                                      
+   34.           * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.           * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.           * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.           * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.           * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.           * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.           * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.           * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.           * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.           * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.           * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.           * ---------------------------------------------------------------------
+   46.           */ 
+   47.          /*
+   48.           * Include files
+   49.           */
+   50.          #include "hpl.h"
+   51.          
+   52.          #ifdef HPL_NO_MPI_DATATYPE  /* The user insists to not use MPI types */
+   53.          #ifndef HPL_COPY_L       /* and also want to avoid the copy of L ... */
+   54.          #define HPL_COPY_L   /* well, sorry, can not do that: force the copy */
+   55.          #endif
+   56.          #endif
+   57.          
+   58.          #define   I_SEND    0
+   59.          #define   I_RECV    1
+   60.          
+   61.          #ifdef HPL_STDC_HEADERS
+   62.          int HPL_binit_blonM
+   63.          (
+   64.             HPL_T_panel *              PANEL
+   65.          )
+   66.          #else
+   67.          int HPL_binit_blonM( PANEL )
+   68.             HPL_T_panel *              PANEL;
+   69.          #endif
+   70.          {
+   71.          /* ..
+   72.           * .. Executable Statements ..
+   73.           */
+   74.             if( PANEL == NULL )           { return( HPL_SUCCESS ); }
+   75.             if( PANEL->grid->npcol <= 1 ) { return( HPL_SUCCESS ); }
+   76.          #ifdef HPL_USE_MPI_DATATYPE
+   77.          #ifdef HPL_COPY_L
+   78.          /*
+   79.           * Copy the panel into a contiguous buffer
+   80.           */
+   81.             HPL_copyL( PANEL );
+   82.          #endif
+   83.          #else
+   84.          /*
+   85.           * Force the copy of the panel into a contiguous buffer
+   86.           */
+   87.             HPL_copyL( PANEL );
+   88.          #endif
+   89.             return( HPL_SUCCESS );
+   90.          }
+   91.           
+   92.          #ifdef HPL_USE_MPI_DATATYPE
+   93.           
+   94.          #define   _M_BUFF_S1        PANEL->buffers[I_SEND]
+   95.          #define   _M_COUNT_S1       PANEL->counts[I_SEND]
+   96.          #define   _M_TYPE_S1        PANEL->dtypes[I_SEND]
+   97.           
+   98.          #define   _M_BUFF_S2        PANEL->buffers[I_SEND]
+   99.          #define   _M_COUNT_S2       PANEL->counts[I_SEND]
+  100.          #define   _M_TYPE_S2        PANEL->dtypes[I_SEND]
+  101.           
+  102.          #define   _M_BUFF_R1        PANEL->buffers[I_RECV]
+  103.          #define   _M_COUNT_R1       PANEL->counts[I_RECV]
+  104.          #define   _M_TYPE_R1        PANEL->dtypes[I_RECV]
+  105.          
+  106.          #define   _M_BUFF_R2        PANEL->buffers[I_RECV]
+  107.          #define   _M_COUNT_R2       PANEL->counts[I_RECV]
+  108.          #define   _M_TYPE_R2        PANEL->dtypes[I_RECV]
+  109.           
+  110.          #define   _M_ROLL_BUFF_S    PANEL->buffers[I_SEND]
+  111.          #define   _M_ROLL_COUNT_S   PANEL->counts[I_SEND]
+  112.          #define   _M_ROLL_TYPE_S    PANEL->dtypes[I_SEND]
+  113.          
+  114.          #define   _M_ROLL_BUFF_R    PANEL->buffers[I_RECV]
+  115.          #define   _M_ROLL_COUNT_R   PANEL->counts[I_RECV]
+  116.          #define   _M_ROLL_TYPE_R    PANEL->dtypes[I_RECV]
+  117.          
+  118.          #else
+  119.          
+  120.          #define   _M_BUFF_S1        (void *)(PANEL->L2)
+  121.          #define   _M_COUNT_S1       PANEL->len
+  122.          #define   _M_TYPE_S1        MPI_DOUBLE
+  123.          
+  124.          #define   _M_BUFF_S2        (void *)(PANEL->L2 + ibuf)
+  125.          #define   _M_COUNT_S2       lbuf
+  126.          #define   _M_TYPE_S2        MPI_DOUBLE
+  127.           
+  128.          #define   _M_BUFF_R1        (void *)(PANEL->L2)
+  129.          #define   _M_COUNT_R1       PANEL->len
+  130.          #define   _M_TYPE_R1        MPI_DOUBLE
+  131.           
+  132.          #define   _M_BUFF_R2        (void *)(PANEL->L2 + ibuf)
+  133.          #define   _M_COUNT_R2       lbuf
+  134.          #define   _M_TYPE_R2        MPI_DOUBLE
+  135.           
+  136.          #define   _M_ROLL_BUFF_S    (void *)(PANEL->L2 + ibufS)
+  137.          #define   _M_ROLL_COUNT_S   lbufS
+  138.          #define   _M_ROLL_TYPE_S    MPI_DOUBLE
+  139.          #define   _M_ROLL_BUFF_R    (void *)(PANEL->L2 + ibufR)
+  140.          #define   _M_ROLL_COUNT_R   lbufR
+  141.          #define   _M_ROLL_TYPE_R    MPI_DOUBLE
+  142.          
+  143.          #endif
+  144.          
+  145.          #ifdef HPL_STDC_HEADERS
+  146.          int HPL_bcast_blonM
+  147.          (
+  148.             HPL_T_panel                * PANEL,
+  149.             int                        * IFLAG
+  150.          )
+  151.          #else
+  152.          int HPL_bcast_blonM( PANEL, IFLAG )
+  153.             HPL_T_panel                * PANEL;
+  154.             int                        * IFLAG;
+  155.          #endif
+  156.          { 
+  157.          /*
+  158.           * .. Local Variables ..
+  159.           */
+  160.             MPI_Comm                   comm;
+  161.             int                        COUNT, count, go=1, ierr=MPI_SUCCESS, ibuf,
+  162.                                        ibufR, ibufS, dummy=0, indx, ip2=1, k, l,
+  163.                                        lbuf, lbufR, lbufS, mask=1, msgid, mydist,
+  164.                                        mydist2, next, npm1, npm2, partner, prev,
+  165.                                        rank, root, size;
+  166.          /* ..
+  167.           * .. Executable Statements ..
+  168.           */
+  169.             if( PANEL == NULL ) { *IFLAG = HPL_SUCCESS; return( HPL_SUCCESS ); }
+  170.             if( ( size = PANEL->grid->npcol ) <= 1 )
+  171.             {                     *IFLAG = HPL_SUCCESS; return( HPL_SUCCESS ); }
+  172.          /*
+  173.           * Cast phase:  root process  sends to its right neighbor,  then spread
+  174.           * the panel on the other npcol - 2 processes.  If  I  am  not the root 
+  175.           * process, probe for message received.  If the message is there,  then
+  176.           * receive it. If I am just after the root process, return.  Otherwise,
+  177.           * keep spreading on those npcol - 2 processes.  Otherwise,  inform the
+  178.           * caller that the panel has still not been received.
+  179.           */
+  180.             comm = PANEL->grid->row_comm; rank  = PANEL->grid->mycol;
+  181.             root = PANEL->pcol;           msgid = PANEL->msgid;
+  182.             prev = MModSub1( rank, size );
+  183.           
+  184.             if( rank == root )
+  185.             {
+  186.          #ifdef HPL_USE_MPI_DATATYPE
+  187.                if( ierr == MPI_SUCCESS )
+  188.  +                ierr =   HPL_packL( PANEL, 0, PANEL->len, I_SEND );
+  189.          #endif
+  190.                if( ierr == MPI_SUCCESS )
+  191.  +                ierr =   MPI_Ssend( _M_BUFF_S1, _M_COUNT_S1, _M_TYPE_S1,
+  192.                                       MModAdd1( rank, size ), msgid, comm );
+  193.          #ifdef HPL_USE_MPI_DATATYPE
+  194.                if( ierr == MPI_SUCCESS )
+  195.  +                ierr =   MPI_Type_free( &PANEL->dtypes[I_SEND] );
+  196.          #endif
+  197.             }
+  198.             else if( prev == root )
+  199.             {
+  200.          /*
+  201.           * This probing mechanism causes problems when lookhead is on. Too many
+  202.           * messages are exchanged  in this virtual topology  causing  a hang on
+  203.           * some machines. It is currently disabled until a better understanding
+  204.           * is acquired.
+  205.           *
+  206.           *    ierr = MPI_Iprobe( root, msgid, comm, &go, &PANEL->status[0] );
+  207.           */
+  208.                if( ierr == MPI_SUCCESS )
+  209.                {                                  /* if panel is here, proceed */
+  210.                   if( go != 0 )
+  211.                   {
+  212.          #ifdef HPL_USE_MPI_DATATYPE
+  213.  +                   ierr =      HPL_packL( PANEL, 0, PANEL->len, I_RECV );
+  214.          #endif
+  215.                      if( ierr == MPI_SUCCESS )
+  216.                         ierr =   MPI_Recv( _M_BUFF_R1, _M_COUNT_R1, _M_TYPE_R1,
+  217.                                            root, msgid, comm, &PANEL->status[0] );
+  218.          #ifdef HPL_USE_MPI_DATATYPE
+  219.                      if( ierr == MPI_SUCCESS )
+  220.  +                      ierr =   MPI_Type_free( &PANEL->dtypes[I_RECV] );
+  221.          #endif
+  222.                   }
+  223.                   else { *IFLAG = HPL_KEEP_TESTING; return( HPL_KEEP_TESTING ); }
+  224.                }
+  225.             }
+  226.          /*
+  227.           * if I am just after the root, exit now. The message receive  completed
+  228.           * successfully, this guy is done. If there are only 2 processes in each 
+  229.           * row of processes, we are done as well.
+  230.           */
+  231.             if( ( prev == root ) || ( size == 2 ) )
+  232.             {
+  233.                *IFLAG = ( ierr == MPI_SUCCESS ? HPL_SUCCESS : HPL_FAILURE );
+  234.                return( *IFLAG );
+  235.             }
+  236.          /*
+  237.           * Otherwise, proceed with broadcast -  Spread  the panel across process
+  238.           * columns
+  239.           */
+  240.             npm2 = ( npm1 = size - 1 ) - 1; COUNT = PANEL->len;
+  241.          
+  242.  + 1--<>    k = npm2; while( k > 1 ) { k >>= 1; ip2 <<= 1; mask <<= 1; mask++; }
+  243.             if( rank == root ) mydist2 = ( mydist = 0 );
+  244.             else   mydist2 = ( mydist  = MModSub( rank, root, size ) - 1 );
+  245.          
+  246.             indx = ip2; count = COUNT / npm1; count = Mmax( count, 1 );
+  247.           
+  248.  + 1---<    do
+  249.    1        {
+  250.    1           mask ^= ip2;
+  251.    1     
+  252.    1           if( ( mydist & mask ) == 0 )
+  253.    1           {
+  254.    1              lbuf = COUNT - ( ibuf = indx * count );
+  255.    1              if( indx + ip2 < npm1 ) { l = ip2 * count; lbuf = Mmin( lbuf, l ); }
+  256.    1     
+  257.    1              partner = mydist ^ ip2;
+  258.    1     
+  259.    1              if( ( mydist & ip2 ) != 0 )
+  260.    1              {
+  261.    1                 partner = MModAdd( root, partner, size );
+  262.    1                 if( partner != root ) partner = MModAdd1( partner, size );  
+  263.    1     /*
+  264.    1      * This probing mechanism causes problems when lookhead is on. Too many
+  265.    1      * messages are exchanged  in this virtual topology  causing  a hang on
+  266.    1      * some machines. It is currently disabled until a better understanding
+  267.    1      * is acquired.
+  268.    1      */
+  269.    1     #if 0
+  270.    1                 ierr = MPI_Iprobe( partner, msgid, comm, &go, &PANEL->status[0] );
+  271.    1       
+  272.    1                 if( ierr == MPI_SUCCESS )
+  273.    1                 {        /* if panel is not here, return and keep testing */
+  274.    1                    if( go == 0 )
+  275.    1                    { *IFLAG = HPL_KEEP_TESTING; return( HPL_KEEP_TESTING ); }
+  276.    1                 }
+  277.    1     #endif
+  278.    1                 if( lbuf > 0 )
+  279.    1                 {
+  280.    1     #ifdef HPL_USE_MPI_DATATYPE
+  281.    1                    if( ierr == MPI_SUCCESS )
+  282.  + 1                       ierr =   HPL_packL( PANEL, ibuf, lbuf, I_RECV );
+  283.    1     #endif
+  284.    1                    if( ierr == MPI_SUCCESS )
+  285.    1                       ierr =   MPI_Recv( _M_BUFF_R2, _M_COUNT_R2, _M_TYPE_R2,
+  286.    1                                          partner, msgid, comm, &PANEL->status[0] );
+  287.    1     #ifdef HPL_USE_MPI_DATATYPE
+  288.    1                    if( ierr == MPI_SUCCESS )
+  289.  + 1                       ierr =   MPI_Type_free( &PANEL->dtypes[I_RECV] );
+  290.    1     #endif
+  291.    1                 }
+  292.    1                 else       /* Recv message of length zero to enable probe */
+  293.    1                 {
+  294.    1                    if( ierr == MPI_SUCCESS )
+  295.    1                       ierr = MPI_Recv( (void *)(&dummy), 0, MPI_BYTE, partner,
+  296.    1                                        msgid, comm, &PANEL->status[0] );
+  297.    1                 }
+  298.    1              }
+  299.    1              else if( partner < npm1 )
+  300.    1              {
+  301.    1                 partner = MModAdd( root, partner, size );
+  302.    1                 if( partner != root ) partner = MModAdd1( partner, size );  
+  303.    1     
+  304.    1                 if( lbuf > 0 )
+  305.    1                 {
+  306.    1     #ifdef HPL_USE_MPI_DATATYPE
+  307.    1                    if( ierr == MPI_SUCCESS )
+  308.  + 1                       ierr =   HPL_packL( PANEL, ibuf, lbuf, I_SEND );
+  309.    1     #endif
+  310.    1                    if( ierr == MPI_SUCCESS )
+  311.  + 1                       ierr =   MPI_Ssend( _M_BUFF_S2, _M_COUNT_S2, _M_TYPE_S2,
+  312.    1                                           partner, msgid, comm );
+  313.    1     #ifdef HPL_USE_MPI_DATATYPE
+  314.    1                    if( ierr == MPI_SUCCESS )
+  315.  + 1                       ierr =   MPI_Type_free( &PANEL->dtypes[I_SEND] );
+  316.    1     #endif
+  317.    1                 }
+  318.    1                 else       /* Recv message of length zero to enable probe */
+  319.    1                 {
+  320.    1                    if( ierr == MPI_SUCCESS )
+  321.  + 1                       ierr =   MPI_Ssend( (void *)(&dummy), 0, MPI_BYTE,
+  322.    1                                           partner, msgid, comm );
+  323.    1                 }
+  324.    1              }
+  325.    1           }
+  326.    1      
+  327.    1           if( mydist2 < ip2 ) {  ip2 >>= 1; indx -= ip2; }
+  328.    1           else { mydist2 -= ip2; ip2 >>= 1; indx += ip2; }
+  329.    1     
+  330.    1--->    } while( ip2 > 0 );
+  331.          /*
+  332.           * Roll the pieces
+  333.           */
+  334.             prev = MModSub1( rank, size );
+  335.             if( MModSub1( prev, size ) == root ) prev = root;
+  336.             next = MModAdd1( rank, size );
+  337.             if( rank == root ) next = MModAdd1( next, size );
+  338.          
+  339.  + 1---<    for( k = 0; k < npm2; k++ )
+  340.    1        {
+  341.    1           l = ( k >> 1 );
+  342.    1     /*
+  343.    1      * Who is sending to who and how much
+  344.    1      */
+  345.    1           if( ( ( mydist + k ) & 1 ) != 0 )
+  346.    1           {
+  347.    1              ibufS = ( indx = MModAdd( mydist, l,   npm1 ) ) * count;
+  348.    1              lbufS = ( indx == npm2 ? COUNT : ibufS + count );
+  349.    1              lbufS = Mmin( COUNT, lbufS ) - ibufS; lbufS = Mmax( 0, lbufS );
+  350.    1     
+  351.    1              ibufR = ( indx = MModSub( mydist, l+1, npm1 ) ) * count;
+  352.    1              lbufR = ( indx == npm2 ? COUNT : ibufR + count );
+  353.    1              lbufR = Mmin( COUNT, lbufR ) - ibufR; lbufR = Mmax( 0, lbufR );
+  354.    1     
+  355.    1              partner = prev;
+  356.    1           }
+  357.    1           else
+  358.    1           {
+  359.    1              ibufS = ( indx = MModSub( mydist, l,   npm1 ) ) * count;
+  360.    1              lbufS = ( indx == npm2 ? COUNT : ibufS + count );
+  361.    1              lbufS = Mmin( COUNT, lbufS ) - ibufS; lbufS = Mmax( 0, lbufS );
+  362.    1     
+  363.    1              ibufR = ( indx = MModAdd( mydist, l+1, npm1 ) ) * count;
+  364.    1              lbufR = ( indx == npm2 ? COUNT : ibufR + count );
+  365.    1              lbufR = Mmin( COUNT, lbufR ) - ibufR; lbufR = Mmax( 0, lbufR );
+  366.    1     
+  367.    1              partner = next;
+  368.    1           }
+  369.    1     /*
+  370.    1      * Exchange the messages
+  371.    1      */
+  372.    1           if( lbufS > 0 )
+  373.    1           {
+  374.    1     #ifdef HPL_USE_MPI_DATATYPE
+  375.    1              if( ierr == MPI_SUCCESS )
+  376.  + 1                 ierr =   HPL_packL( PANEL, ibufS, lbufS, I_SEND );
+  377.    1     #endif
+  378.    1              if( ierr == MPI_SUCCESS )
+  379.  + 1                 ierr =   MPI_Issend( _M_ROLL_BUFF_S, _M_ROLL_COUNT_S,
+  380.    1                                      _M_ROLL_TYPE_S, partner, msgid, comm,
+  381.    1                                      &PANEL->request[0] );
+  382.    1           }
+  383.    1           else
+  384.    1           {
+  385.    1              if( ierr == MPI_SUCCESS )
+  386.  + 1                 ierr =   MPI_Issend( (void *)(&dummy), 0, MPI_BYTE, partner,
+  387.    1                                      msgid, comm, &PANEL->request[0] );
+  388.    1           }
+  389.    1      
+  390.    1           if(  lbufR > 0 )
+  391.    1           {
+  392.    1     #ifdef HPL_USE_MPI_DATATYPE
+  393.    1              if( ierr == MPI_SUCCESS )
+  394.  + 1                 ierr =   HPL_packL( PANEL, ibufR, lbufR, I_RECV );
+  395.    1     #endif
+  396.    1              if( ierr == MPI_SUCCESS )
+  397.    1                 ierr =   MPI_Recv( _M_ROLL_BUFF_R, _M_ROLL_COUNT_R,
+  398.    1                                    _M_ROLL_TYPE_R, partner, msgid, comm,
+  399.    1                                    &PANEL->status[0] );
+  400.    1     #ifdef HPL_USE_MPI_DATATYPE
+  401.    1              if( ierr == MPI_SUCCESS )
+  402.  + 1                 ierr =   MPI_Type_free( &PANEL->dtypes[I_RECV] );
+  403.    1     #endif
+  404.    1           }
+  405.    1           else
+  406.    1           {
+  407.    1              if( ierr == MPI_SUCCESS )
+  408.    1                 ierr =   MPI_Recv( (void *)(&dummy), 0, MPI_BYTE, partner,
+  409.    1                                    msgid, comm, &PANEL->status[0] );
+  410.    1           }
+  411.    1      
+  412.    1           if( ierr == MPI_SUCCESS )
+  413.    1              ierr =   MPI_Wait ( &PANEL->request[0], &PANEL->status[0] );
+  414.    1     #ifdef HPL_USE_MPI_DATATYPE
+  415.    1           if( ( lbufS > 0 ) && ( ierr == MPI_SUCCESS ) )
+  416.  + 1              ierr =   MPI_Type_free( &PANEL->dtypes[I_SEND] );
+  417.    1     #endif
+  418.    1--->    }
+  419.          /*
+  420.           * If the message was received and being forwarded,  return HPL_SUCCESS.
+  421.           * If an error occured in an MPI call, return HPL_FAILURE.
+  422.           */
+  423.             *IFLAG = ( ierr == MPI_SUCCESS ? HPL_SUCCESS : HPL_FAILURE );
+  424.          
+  425.             return( *IFLAG );
+  426.          }
+  427.          
+  428.          #ifdef HPL_STDC_HEADERS
+  429.          int HPL_bwait_blonM
+  430.          (
+  431.             HPL_T_panel *              PANEL
+  432.          )
+  433.          #else
+  434.          int HPL_bwait_blonM( PANEL )
+  435.             HPL_T_panel *              PANEL;
+  436.          #endif
+  437.          {
+  438.          /* ..
+  439.           * .. Executable Statements ..
+  440.           */
+  441.             if( PANEL == NULL )           { return( HPL_SUCCESS ); }
+  442.             if( PANEL->grid->npcol <= 1 ) { return( HPL_SUCCESS ); }
+  443.          
+  444.             return( HPL_SUCCESS );
+  445.          }
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 188 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 191 
+  "MPI_Ssend" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 195 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 213 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 220 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_blonM.c, Line = 242 
+  A loop was not vectorized because a recurrence was found on "ip2" at line 242.
+
+CC-6287 CC: VECTOR File = HPL_blonM.c, Line = 248 
+  A loop was not vectorized because it contains a call to function "HPL_packL" on line 282.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 282 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 289 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 308 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 311 
+  "MPI_Ssend" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 315 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 321 
+  "MPI_Ssend" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_blonM.c, Line = 339 
+  A loop was not vectorized because it contains a call to function "HPL_packL" on line 376.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 376 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 379 
+  "MPI_Issend" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 386 
+  "MPI_Issend" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 394 
+  "HPL_packL" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 402 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_blonM.c, Line = 416 
+  "MPI_Type_free" (called from "HPL_bcast_blonM") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

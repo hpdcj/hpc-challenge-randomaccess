@@ -1,0 +1,1171 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/auxil/HPL_dlamch.c
+Compiled : 2016-03-19  13:19:26
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/auxil/HPL_dlamch.o
+           -c ../../../src/auxil/HPL_dlamch.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -h list=m -D LONG_IS_64BITS
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/auxil/HPL_dlamch.c
+Date     : 03/19/2016  13:19:26
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.             /* 
+    2.              * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.              *    HPL - 2.0 - September 10, 2008                          
+    4.              *    Antoine P. Petitet                                                
+    5.              *    University of Tennessee, Knoxville                                
+    6.              *    Innovative Computing Laboratory                                 
+    7.              *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.              *                                                                      
+    9.              * -- Copyright notice and Licensing terms:                             
+   10.              *                                                                      
+   11.              * Redistribution  and  use in  source and binary forms, with or without
+   12.              * modification, are  permitted provided  that the following  conditions
+   13.              * are met:                                                             
+   14.              *                                                                      
+   15.              * 1. Redistributions  of  source  code  must retain the above copyright
+   16.              * notice, this list of conditions and the following disclaimer.        
+   17.              *                                                                      
+   18.              * 2. Redistributions in binary form must reproduce  the above copyright
+   19.              * notice, this list of conditions,  and the following disclaimer in the
+   20.              * documentation and/or other materials provided with the distribution. 
+   21.              *                                                                      
+   22.              * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.              * software must display the following acknowledgement:                 
+   24.              * This  product  includes  software  developed  at  the  University  of
+   25.              * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.              *                                                                      
+   27.              * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.              * names  of  its  contributors  may  not  be used to endorse or promote
+   29.              * products  derived   from   this  software  without  specific  written
+   30.              * permission.                                                          
+   31.              *                                                                      
+   32.              * -- Disclaimer:                                                       
+   33.              *                                                                      
+   34.              * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.              * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.              * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.              * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.              * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.              * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.              * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.              * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.              * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.              * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.              * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.              * ---------------------------------------------------------------------
+   46.              */ 
+   47.             /*
+   48.              * Include files
+   49.              */
+   50.             #include "hpl.h"
+   51.             /*
+   52.              * ---------------------------------------------------------------------
+   53.              * Static function prototypes
+   54.              * ---------------------------------------------------------------------
+   55.              */
+   56.             static void     HPL_dlamc1
+   57.             STDC_ARGS(
+   58.             (  int *,           int *,           int *,           int * ) );
+   59.             static void     HPL_dlamc2
+   60.             STDC_ARGS(
+   61.             (  int *,           int *,           int *,           double *,
+   62.                int *,           double *,        int *,           double * ) );
+   63.             static double   HPL_dlamc3
+   64.             STDC_ARGS(
+   65.             (  const double,    const double ) );
+   66.             static void     HPL_dlamc4
+   67.             STDC_ARGS(
+   68.             (  int *,           const double,    const int ) );
+   69.             static void     HPL_dlamc5
+   70.             STDC_ARGS(
+   71.             (  const int,       const int,       const int,       const int,
+   72.                int *,           double * ) );
+   73.             static double   HPL_dipow
+   74.             STDC_ARGS(
+   75.             (  const double,    const int ) );
+   76.             
+   77.             #ifdef HPL_STDC_HEADERS
+   78.             double HPL_dlamch
+   79.             (
+   80.                const HPL_T_MACH                 CMACH
+   81.             )
+   82.             #else
+   83.             double HPL_dlamch
+   84.             ( CMACH )
+   85.                const HPL_T_MACH                 CMACH;
+   86.             #endif
+   87.             {
+   88.             /* 
+   89.              * Purpose
+   90.              * =======
+   91.              *
+   92.              * HPL_dlamch determines  machine-specific  arithmetic constants such as
+   93.              * the relative machine precision  (eps),  the safe minimum (sfmin) such
+   94.              * that 1 / sfmin does not overflow, the base of the machine (base), the
+   95.              * precision (prec), the  number of (base) digits  in the  mantissa (t),
+   96.              * whether rounding occurs in addition (rnd=1.0 and 0.0 otherwise),  the
+   97.              * minimum exponent before  (gradual)  underflow (emin),  the  underflow
+   98.              * threshold (rmin) base**(emin-1), the largest exponent before overflow
+   99.              * (emax), the overflow threshold (rmax) (base**emax)*(1-eps).
+  100.              *
+  101.              * Notes
+  102.              * =====
+  103.              * 
+  104.              * This function has been manually translated from the Fortran 77 LAPACK
+  105.              * auxiliary function dlamch.f  (version 2.0 -- 1992), that  was  itself
+  106.              * based on the function ENVRON  by Malcolm and incorporated suggestions
+  107.              * by Gentleman and Marovich. See                                       
+  108.              *  
+  109.              * Malcolm M. A.,  Algorithms  to  reveal  properties  of floating-point
+  110.              * arithmetic.,  Comms. of the ACM, 15, 949-951 (1972).                 
+  111.              *  
+  112.              * Gentleman W. M. and Marovich S. B.,  More  on algorithms  that reveal
+  113.              * properties of  floating point arithmetic units.,  Comms. of  the ACM,
+  114.              * 17, 276-277 (1974).
+  115.              * 
+  116.              * Arguments
+  117.              * =========
+  118.              *
+  119.              * CMACH   (local input)                 const HPL_T_MACH
+  120.              *         Specifies the value to be returned by HPL_dlamch             
+  121.              *            = HPL_MACH_EPS,   HPL_dlamch := eps (default)             
+  122.              *            = HPL_MACH_SFMIN, HPL_dlamch := sfmin                     
+  123.              *            = HPL_MACH_BASE,  HPL_dlamch := base                      
+  124.              *            = HPL_MACH_PREC,  HPL_dlamch := eps*base                  
+  125.              *            = HPL_MACH_MLEN,  HPL_dlamch := t                         
+  126.              *            = HPL_MACH_RND,   HPL_dlamch := rnd                       
+  127.              *            = HPL_MACH_EMIN,  HPL_dlamch := emin                      
+  128.              *            = HPL_MACH_RMIN,  HPL_dlamch := rmin                      
+  129.              *            = HPL_MACH_EMAX,  HPL_dlamch := emax                      
+  130.              *            = HPL_MACH_RMAX,  HPL_dlamch := rmax                      
+  131.              *          
+  132.              *         where                                                        
+  133.              *          
+  134.              *            eps   = relative machine precision,                       
+  135.              *            sfmin = safe minimum,                                     
+  136.              *            base  = base of the machine,                              
+  137.              *            prec  = eps*base,                                         
+  138.              *            t     = number of digits in the mantissa,                 
+  139.              *            rnd   = 1.0 if rounding occurs in addition,               
+  140.              *            emin  = minimum exponent before underflow,                
+  141.              *            rmin  = underflow threshold,                              
+  142.              *            emax  = largest exponent before overflow,                 
+  143.              *            rmax  = overflow threshold.
+  144.              *
+  145.              * ---------------------------------------------------------------------
+  146.              */ 
+  147.             /*
+  148.              * .. Local Variables ..
+  149.              */
+  150.                static double              eps, sfmin, base, t, rnd, emin, rmin, emax,
+  151.                                           rmax, prec;
+  152.                double                     small;
+  153.                static int                 first=1;
+  154.                int                        beta=0, imax=0, imin=0, it=0, lrnd=0;
+  155.             /* ..
+  156.              * .. Executable Statements ..
+  157.              */
+  158.                if( first != 0 )
+  159.                {
+  160.                   first = 0;
+  161.  +                HPL_dlamc2( &beta, &it, &lrnd, &eps, &imin, &rmin, &imax, &rmax );
+  162.                   base  = (double)(beta);  t     = (double)(it);
+  163.                   if( lrnd != 0 )
+  164.    D I---->       { rnd = HPL_rone;  eps = HPL_dipow( base, 1 - it ) / HPL_rtwo; }
+  165.                   else
+  166.    D I---->       { rnd = HPL_rzero; eps = HPL_dipow( base, 1 - it );            }
+  167.                   prec  = eps * base;  emin  = (double)(imin); emax  = (double)(imax);
+  168.                   sfmin = rmin;        small = HPL_rone / rmax;
+  169.             /*
+  170.              * Use  SMALL  plus a bit,  to avoid the possibility of rounding causing
+  171.              * overflow when computing  1/sfmin.
+  172.              */
+  173.                   if( small >= sfmin ) sfmin = small * ( HPL_rone + eps );
+  174.                }
+  175.             
+  176.                if( CMACH == HPL_MACH_EPS   ) return( eps   );
+  177.                if( CMACH == HPL_MACH_SFMIN ) return( sfmin );
+  178.                if( CMACH == HPL_MACH_BASE  ) return( base  );
+  179.                if( CMACH == HPL_MACH_PREC  ) return( prec  );
+  180.                if( CMACH == HPL_MACH_MLEN  ) return( t     );
+  181.                if( CMACH == HPL_MACH_RND   ) return( rnd   );
+  182.                if( CMACH == HPL_MACH_EMIN  ) return( emin  );
+  183.                if( CMACH == HPL_MACH_RMIN  ) return( rmin  );
+  184.                if( CMACH == HPL_MACH_EMAX  ) return( emax  );
+  185.                if( CMACH == HPL_MACH_RMAX  ) return( rmax  );
+  186.             
+  187.                return( eps );
+  188.             /*
+  189.              * End of HPL_dlamch
+  190.              */
+  191.             }
+  192.             
+  193.             #ifdef HPL_STDC_HEADERS
+  194.             static void HPL_dlamc1
+  195.             (
+  196.                int                        * BETA,
+  197.                int                        * T,
+  198.                int                        * RND,
+  199.                int                        * IEEE1
+  200.             )
+  201.             #else
+  202.             static void HPL_dlamc1
+  203.             ( BETA, T, RND, IEEE1 )
+  204.             /*
+  205.              * .. Scalar Arguments ..
+  206.              */
+  207.                int                        * BETA, * IEEE1, * RND, * T;
+  208.             #endif
+  209.             {
+  210.             /*
+  211.              * Purpose
+  212.              * =======
+  213.              *
+  214.              * HPL_dlamc1  determines  the machine parameters given by BETA, T, RND,
+  215.              * and IEEE1.
+  216.              *
+  217.              * Notes
+  218.              * =====
+  219.              *
+  220.              * This function has been manually translated from the Fortran 77 LAPACK
+  221.              * auxiliary function dlamc1.f  (version 2.0 -- 1992), that  was  itself
+  222.              * based on the function ENVRON  by Malcolm and incorporated suggestions
+  223.              * by Gentleman and Marovich. See
+  224.              *
+  225.              * Malcolm M. A.,  Algorithms  to  reveal  properties  of floating-point
+  226.              * arithmetic.,  Comms. of the ACM, 15, 949-951 (1972).
+  227.              *
+  228.              * Gentleman W. M. and Marovich S. B.,  More  on algorithms  that reveal
+  229.              * properties of  floating point arithmetic units.,  Comms. of  the ACM,
+  230.              * 17, 276-277 (1974).
+  231.              *
+  232.              * Arguments
+  233.              * =========
+  234.              *
+  235.              * BETA    (local output)              int *
+  236.              *         The base of the machine.
+  237.              *
+  238.              * T       (local output)              int *
+  239.              *         The number of ( BETA ) digits in the mantissa.
+  240.              *
+  241.              * RND     (local output)              int *
+  242.              *         Specifies whether proper rounding (RND=1) or chopping (RND=0)
+  243.              *         occurs in addition.  This may not be a  reliable guide to the
+  244.              *         way in which the machine performs its arithmetic.
+  245.              *
+  246.              * IEEE1   (local output)              int *
+  247.              *         Specifies  whether  rounding  appears  to be done in the IEEE
+  248.              *         `round to nearest' style (IEEE1=1), (IEEE1=0) otherwise.
+  249.              *
+  250.              * ---------------------------------------------------------------------
+  251.              */
+  252.             /*
+  253.              * .. Local Variables ..
+  254.              */
+  255.                double                     a, b, c, f, one, qtr, savec, t1, t2;
+  256.                static int                 first=1, lbeta, lieee1, lrnd, lt;
+  257.             /* ..
+  258.              * .. Executable Statements ..
+  259.              */
+  260.                if( first != 0 )
+  261.                {
+  262.                   first = 0; one = HPL_rone;
+  263.             /*
+  264.              * lbeta, lieee1, lt and lrnd are the local values of BETA, IEEE1, T and
+  265.              * RND. Throughout this routine we use the function HPL_dlamc3 to ensure
+  266.              * that relevant values are stored and not held in registers, or are not
+  267.              * affected by optimizers.
+  268.              *
+  269.              * Compute  a = 2.0**m  with the  smallest  positive integer m such that
+  270.              * fl( a + 1.0 ) == a.
+  271.              */
+  272.                   a = HPL_rone; c = HPL_rone;
+  273.  + F------<       do
+  274.    F  I           { a *= HPL_rtwo; c = HPL_dlamc3( a, one ); c = HPL_dlamc3( c, -a ); }
+  275.    F------>       while( c == HPL_rone );
+  276.             /*
+  277.              * Now compute b = 2.0**m with the smallest positive integer m such that
+  278.              * fl( a + b ) > a.
+  279.              */
+  280.     I             b = HPL_rone; c = HPL_dlamc3( a, b );
+  281.  + F I---<>       while( c == a ) { b *= HPL_rtwo; c = HPL_dlamc3( a, b ); }
+  282.             /*
+  283.              * Now compute the base.  a and c  are  neighbouring floating point num-
+  284.              * bers in the interval ( BETA**T, BETA**( T + 1 ) ) and so their diffe-
+  285.              * rence is BETA.  Adding 0.25 to c is to ensure that it is truncated to
+  286.              * BETA and not (BETA-1).
+  287.              */
+  288.                   qtr = one / 4.0; savec = c;
+  289.     I             c   = HPL_dlamc3( c, -a ); lbeta = (int)(c+qtr);
+  290.             /*
+  291.              * Now  determine  whether  rounding or chopping occurs, by adding a bit
+  292.              * less than BETA/2 and a bit more than BETA/2 to a.
+  293.              */
+  294.                   b = (double)(lbeta);
+  295.     I             f = HPL_dlamc3( b / HPL_rtwo, -b / 100.0 ); c = HPL_dlamc3( f, a );
+  296.                   if( c == a ) { lrnd = 1; } else { lrnd = 0; }
+  297.     I             f = HPL_dlamc3( b / HPL_rtwo,  b / 100.0 ); c = HPL_dlamc3( f, a );
+  298.                   if( ( lrnd != 0 ) && ( c == a ) ) lrnd = 0;
+  299.             /*
+  300.              * Try  and decide whether rounding is done in the  IEEE  round to nea-
+  301.              * rest style.  b/2 is half a unit in the last place of the two numbers
+  302.              * a  and savec. Furthermore, a is even, i.e. has last bit zero, and sa-
+  303.              * vec is odd.  Thus adding b/2 to a should not change a, but adding b/2
+  304.              * to savec should change savec.
+  305.              */
+  306.     I             t1 = HPL_dlamc3( b / HPL_rtwo, a );
+  307.     I             t2 = HPL_dlamc3( b / HPL_rtwo, savec );
+  308.                   if ( ( t1 == a ) && ( t2 > savec ) && ( lrnd != 0 ) ) lieee1 = 1;
+  309.                   else                                                  lieee1 = 0;
+  310.             /*
+  311.              * Now find the mantissa, T. It should be the integer part of log to the
+  312.              * base BETA of a, however it is safer to determine T by powering. So we
+  313.              * find T as the smallest positive integer for which fl( beta**t + 1.0 )
+  314.              * is equal to 1.0.
+  315.              */
+  316.                   lt = 0; a = HPL_rone; c = HPL_rone;
+  317.             
+  318.  + F------<       do
+  319.    F              {
+  320.    F                 lt++; a *= (double)(lbeta);
+  321.    F  I              c = HPL_dlamc3( a, one ); c = HPL_dlamc3( c,  -a );
+  322.    F------>       } while( c == HPL_rone );
+  323.                }
+  324.             
+  325.                *BETA  = lbeta; *T = lt; *RND = lrnd; *IEEE1 = lieee1;
+  326.             } 
+  327.             
+  328.             #ifdef HPL_STDC_HEADERS
+  329.             static void HPL_dlamc2
+  330.             (
+  331.                int                        * BETA, 
+  332.                int                        * T,
+  333.                int                        * RND,
+  334.                double                     * EPS,
+  335.                int                        * EMIN,
+  336.                double                     * RMIN,
+  337.                int                        * EMAX,
+  338.                double                     * RMAX
+  339.             )
+  340.             #else
+  341.             static void HPL_dlamc2( BETA, T, RND, EPS, EMIN, RMIN, EMAX, RMAX )
+  342.             /*
+  343.              * .. Scalar Arguments ..
+  344.              */
+  345.                int                        * BETA, * EMAX, * EMIN, * RND, * T;
+  346.                double                     * EPS, * RMAX, * RMIN;
+  347.             #endif
+  348.             {
+  349.             /*
+  350.              * Purpose
+  351.              * =======
+  352.              *
+  353.              * HPL_dlamc2  determines the machine  parameters specified in its argu-
+  354.              * ment list.
+  355.              *
+  356.              * Notes
+  357.              * =====
+  358.              *
+  359.              * This function has been manually translated from the Fortran 77 LAPACK
+  360.              * auxiliary function  dlamc2.f (version 2.0 -- 1992), that  was  itself
+  361.              * based on a function PARANOIA  by  W. Kahan of the University of Cali-
+  362.              * fornia at Berkeley for the computation of the  relative machine epsi-
+  363.              * lon eps.
+  364.              *
+  365.              * Arguments
+  366.              * =========
+  367.              *
+  368.              * BETA    (local output)              int *
+  369.              *         The base of the machine.
+  370.              *
+  371.              * T       (local output)              int *
+  372.              *         The number of ( BETA ) digits in the mantissa.
+  373.              *
+  374.              * RND     (local output)              int *
+  375.              *         Specifies whether proper rounding (RND=1) or chopping (RND=0)
+  376.              *         occurs in addition. This may not be a reliable  guide to  the
+  377.              *         way in which the machine performs its arithmetic.
+  378.              *
+  379.              * EPS     (local output)              double *
+  380.              *         The smallest positive number such that fl( 1.0 - EPS ) < 1.0,
+  381.              *         where fl denotes the computed value.
+  382.              *
+  383.              * EMIN    (local output)              int *
+  384.              *         The minimum exponent before (gradual) underflow occurs.
+  385.              *
+  386.              * RMIN    (local output)              double *
+  387.              *         The smallest  normalized  number  for  the  machine, given by
+  388.              *         BASE**( EMIN - 1 ), where  BASE  is the floating  point value
+  389.              *         of BETA.
+  390.              *
+  391.              * EMAX    (local output)              int *
+  392.              *         The maximum exponent before overflow occurs.
+  393.              *
+  394.              * RMAX    (local output)              double *
+  395.              *         The  largest  positive  number  for  the  machine,  given  by
+  396.              *         BASE**EMAX * ( 1 - EPS ), where  BASE  is the floating  point
+  397.              *         value of BETA.
+  398.              *
+  399.              * ---------------------------------------------------------------------
+  400.              */
+  401.             /*
+  402.              * .. Local Variables ..
+  403.              */
+  404.                static double              leps, lrmax, lrmin;
+  405.                double                     a, b, c, half, one, rbase, sixth, small,
+  406.                                           third, two, zero;
+  407.                static int                 first=1, iwarn=0, lbeta=0, lemax, lemin,
+  408.                                           lt=0;
+  409.                int                        gnmin=0, gpmin=0, i, ieee, lieee1=0,
+  410.                                           lrnd=0, ngnmin=0, ngpmin=0;
+  411.             /* ..
+  412.              * .. Executable Statements ..
+  413.              */
+  414.                if( first != 0 )
+  415.                {
+  416.                   first = 0; zero = HPL_rzero; one = HPL_rone; two = HPL_rtwo;
+  417.             /*
+  418.              * lbeta, lt, lrnd, leps, lemin and lrmin are the local values of  BETA,
+  419.              * T, RND, EPS, EMIN and RMIN.
+  420.              *
+  421.              * Throughout this routine we use the function HPL_dlamc3 to ensure that
+  422.              * relevant values are stored and not held in registers,  or are not af-
+  423.              * fected by optimizers.
+  424.              *
+  425.              * HPL_dlamc1 returns the parameters  lbeta, lt, lrnd and lieee1.
+  426.              */
+  427.  +                HPL_dlamc1( &lbeta, &lt, &lrnd, &lieee1 );
+  428.             /*
+  429.              * Start to find eps.
+  430.              */
+  431.    D I---->       b = (double)(lbeta); a = HPL_dipow( b, -lt ); leps = a;
+  432.             /*
+  433.              * Try some tricks to see whether or not this is the correct  EPS.
+  434.              */
+  435.                   b     = two / 3.0; 
+  436.                   half  = one / HPL_rtwo;
+  437.     I             sixth = HPL_dlamc3( b, -half );
+  438.     I             third = HPL_dlamc3( sixth, sixth );
+  439.     I             b     = HPL_dlamc3( third, -half );
+  440.     I             b     = HPL_dlamc3( b, sixth );
+  441.                   b     = Mabs( b ); if( b < leps ) b = leps;
+  442.             
+  443.                   leps = HPL_rone;
+  444.             
+  445.  + F------<       while( ( leps > b ) && ( b > zero ) )
+  446.    F              {
+  447.    F                 leps = b;
+  448.    F D I-->          c = HPL_dlamc3( half * leps,
+  449.    F                                 HPL_dipow( two, 5 ) * HPL_dipow( leps, 2 ) );
+  450.    F  I              c = HPL_dlamc3( half, -c ); b = HPL_dlamc3( half, c );
+  451.    F  I              c = HPL_dlamc3( half, -b ); b = HPL_dlamc3( half, c );
+  452.    F------>       }
+  453.                   if( a < leps ) leps = a;
+  454.             /*
+  455.              * Computation of EPS complete.
+  456.              *
+  457.              * Now find  EMIN.  Let a = + or - 1, and + or - (1 + BASE**(-3)).  Keep
+  458.              * dividing a by BETA until (gradual) underflow occurs. This is detected
+  459.              * when we cannot recover the previous a.
+  460.              */
+  461.                   rbase = one / (double)(lbeta); small = one;
+  462.  + DF I--<>       for( i = 0; i < 3; i++ ) small = HPL_dlamc3( small * rbase, zero );
+  463.     I             a = HPL_dlamc3( one, small );
+  464.  +                HPL_dlamc4( &ngpmin, one, lbeta ); HPL_dlamc4( &ngnmin, -one, lbeta );
+  465.  +                HPL_dlamc4( &gpmin,    a, lbeta ); HPL_dlamc4( &gnmin,    -a, lbeta );
+  466.             
+  467.                   ieee = 0;
+  468.             
+  469.                   if( ( ngpmin == ngnmin ) && ( gpmin == gnmin ) )
+  470.                   {
+  471.                      if( ngpmin == gpmin )
+  472.                      {
+  473.             /*
+  474.              * Non twos-complement machines, no gradual underflow; e.g.,  VAX )
+  475.              */
+  476.                         lemin = ngpmin;
+  477.                      }
+  478.                      else if( ( gpmin-ngpmin ) == 3 )
+  479.                      {
+  480.             /*
+  481.              * Non twos-complement machines with gradual underflow; e.g., IEEE stan-
+  482.              * dard followers
+  483.              */
+  484.                         lemin = ngpmin - 1 + lt; ieee = 1;
+  485.                      }
+  486.                      else
+  487.                      {
+  488.             /*
+  489.              * A guess; no known machine
+  490.              */
+  491.                         lemin = Mmin( ngpmin, gpmin );
+  492.                         iwarn = 1;
+  493.                      }
+  494.                   }
+  495.                   else if( ( ngpmin == gpmin ) && ( ngnmin == gnmin ) )
+  496.                   {
+  497.                      if( Mabs( ngpmin-ngnmin ) == 1 )
+  498.                      {
+  499.             /*
+  500.              * Twos-complement machines, no gradual underflow; e.g., CYBER 205
+  501.              */
+  502.                         lemin = Mmax( ngpmin, ngnmin );
+  503.                      }
+  504.                      else
+  505.                      {
+  506.             /*
+  507.              * A guess; no known machine
+  508.              */
+  509.                         lemin = Mmin( ngpmin, ngnmin );
+  510.                         iwarn = 1;
+  511.                      }
+  512.                   }
+  513.                   else if( ( Mabs( ngpmin-ngnmin ) == 1 ) && ( gpmin == gnmin ) )
+  514.                   {
+  515.                      if( ( gpmin - Mmin( ngpmin, ngnmin ) ) == 3 )
+  516.                      {
+  517.             /*
+  518.              * Twos-complement machines with gradual underflow; no known machine
+  519.              */
+  520.                         lemin = Mmax( ngpmin, ngnmin ) - 1 + lt;
+  521.                      }
+  522.                      else
+  523.                      {
+  524.             /*
+  525.              * A guess; no known machine
+  526.              */
+  527.                         lemin = Mmin( ngpmin, ngnmin );
+  528.                         iwarn = 1;
+  529.                      }
+  530.                   }
+  531.                   else
+  532.                   {
+  533.             /*
+  534.              * A guess; no known machine
+  535.              */
+  536.                      lemin = Mmin( ngpmin, ngnmin ); lemin = Mmin( lemin, gpmin );
+  537.                      lemin = Mmin( lemin, gnmin ); iwarn = 1;
+  538.                   }
+  539.             /*
+  540.              * Comment out this if block if EMIN is ok
+  541.              */
+  542.                   if( iwarn != 0 )
+  543.                   {
+  544.                      first = 1;
+  545.  +                   HPL_fprintf( stderr, "\n %s %8d\n%s\n%s\n%s\n",
+  546.             "WARNING. The value EMIN may be incorrect:- EMIN =", lemin,
+  547.             "If, after inspection, the value EMIN looks acceptable, please comment ",
+  548.             "out the  if  block  as marked within the code of routine  HPL_dlamc2, ",
+  549.             "otherwise supply EMIN explicitly." );
+  550.                   }
+  551.             /*
+  552.              * Assume IEEE arithmetic if we found denormalised  numbers above, or if
+  553.              * arithmetic seems to round in the  IEEE style,  determined  in routine
+  554.              * HPL_dlamc1.  A true  IEEE  machine should have both things true; how-
+  555.              * ever, faulty machines may have one or the other.
+  556.              */
+  557.                   if( ( ieee != 0 ) || ( lieee1 != 0 ) ) ieee = 1;
+  558.                   else                                   ieee = 0;
+  559.             /*
+  560.              * Compute  RMIN by successive division by  BETA. We could compute  RMIN
+  561.              * as BASE**( EMIN - 1 ), but some machines underflow during this compu-
+  562.              * tation.
+  563.              */
+  564.                   lrmin = HPL_rone;
+  565.  + DF-----<       for( i = 0; i < 1 - lemin; i++ )
+  566.    DF I--->          lrmin = HPL_dlamc3( lrmin*rbase, zero );
+  567.             /*
+  568.              * Finally, call HPL_dlamc5 to compute emax and rmax.
+  569.              */
+  570.  +                HPL_dlamc5( lbeta, lt, lemin, ieee, &lemax, &lrmax );
+  571.                }
+  572.                *BETA = lbeta; *T    = lt;    *RND  = lrnd;  *EPS  = leps;
+  573.                *EMIN = lemin; *RMIN = lrmin; *EMAX = lemax; *RMAX = lrmax;
+  574.             } 
+  575.             
+  576.             #ifdef HPL_STDC_HEADERS
+  577.             static double HPL_dlamc3( const double A, const double B )
+  578.             #else
+  579.             static double HPL_dlamc3( A, B )
+  580.             /*
+  581.              * .. Scalar Arguments ..
+  582.              */
+  583.                const double               A, B;
+  584.             #endif
+  585.             {
+  586.             /*
+  587.              * Purpose
+  588.              * =======
+  589.              *
+  590.              * HPL_dlamc3  is intended to force a and b  to be stored prior to doing
+  591.              * the addition of  a  and  b,  for  use  in situations where optimizers
+  592.              * might hold one of these in a register.
+  593.              *
+  594.              * Notes
+  595.              * =====
+  596.              *
+  597.              * This function has been manually translated from the Fortran 77 LAPACK
+  598.              * auxiliary function dlamc3.f (version 2.0 -- 1992).
+  599.              *
+  600.              * Arguments
+  601.              * =========
+  602.              *
+  603.              * A, B    (local input)               double
+  604.              *         The values a and b.
+  605.              *
+  606.              * ---------------------------------------------------------------------
+  607.              */
+  608.             /* ..
+  609.              * .. Executable Statements ..
+  610.              */
+  611.                return( A + B );
+  612.             } 
+  613.             
+  614.             #ifdef HPL_STDC_HEADERS
+  615.             static void HPL_dlamc4
+  616.             (
+  617.                int                        * EMIN,
+  618.                const double               START,
+  619.                const int                  BASE
+  620.             )
+  621.             #else
+  622.             static void HPL_dlamc4( EMIN, START, BASE )
+  623.             /*
+  624.              * .. Scalar Arguments ..
+  625.              */
+  626.                int                        * EMIN;
+  627.                const int                  BASE;
+  628.                const double               START;
+  629.             #endif
+  630.             {
+  631.             /*
+  632.              * Purpose
+  633.              * =======
+  634.              *
+  635.              * HPL_dlamc4 is a service function for HPL_dlamc2.
+  636.              *
+  637.              * Notes
+  638.              * =====
+  639.              *
+  640.              * This function has been manually translated from the Fortran 77 LAPACK
+  641.              * auxiliary function dlamc4.f (version 2.0 -- 1992).
+  642.              *
+  643.              * Arguments
+  644.              * =========
+  645.              *
+  646.              * EMIN    (local output)              int *
+  647.              *         The minimum exponent before  (gradual) underflow, computed by
+  648.              *         setting A = START and dividing  by  BASE until the previous A
+  649.              *         can not be recovered.
+  650.              *
+  651.              * START   (local input)               double
+  652.              *         The starting point for determining EMIN.
+  653.              *
+  654.              * BASE    (local input)               int
+  655.              *         The base of the machine.
+  656.              *
+  657.              * ---------------------------------------------------------------------
+  658.              */
+  659.             /*
+  660.              * .. Local Variables ..
+  661.              */
+  662.                double                     a, b1, b2, c1, c2, d1, d2, one, rbase, zero;
+  663.                int                        i;
+  664.             /* ..
+  665.              * .. Executable Statements ..
+  666.              */
+  667.                a     = START; one = HPL_rone; rbase = one / (double)(BASE);
+  668.                zero  = HPL_rzero;
+  669.     I          *EMIN = 1; b1 = HPL_dlamc3( a * rbase, zero ); c1 = c2 = d1 = d2 = a;
+  670.             
+  671.  + F------<    do
+  672.    F           {
+  673.    F              (*EMIN)--; a = b1;
+  674.    F  I           b1 = HPL_dlamc3( a /  BASE,  zero );
+  675.    F  I           c1 = HPL_dlamc3( b1 *  BASE, zero );
+  676.    F D---<>       d1 = zero; for( i = 0; i < BASE; i++ ) d1 = d1 + b1;
+  677.    F  I           b2 = HPL_dlamc3( a * rbase,  zero );
+  678.    F  I           c2 = HPL_dlamc3( b2 / rbase, zero );
+  679.    F D---<>       d2 = zero; for( i = 0; i < BASE; i++ ) d2 = d2 + b2;
+  680.    F------>    } while( ( c1 == a ) && ( c2 == a ) &&  ( d1 == a ) && ( d2 == a ) );
+  681.             } 
+  682.             
+  683.             #ifdef HPL_STDC_HEADERS
+  684.             static void HPL_dlamc5
+  685.             (
+  686.                const int                  BETA,
+  687.                const int                  P, 
+  688.                const int                  EMIN,
+  689.                const int                  IEEE,
+  690.                int                        * EMAX,
+  691.                double                     * RMAX
+  692.             )
+  693.             #else
+  694.             static void HPL_dlamc5( BETA, P, EMIN, IEEE, EMAX, RMAX )
+  695.             /*
+  696.              * .. Scalar Arguments ..
+  697.              */
+  698.                const int                  BETA, EMIN, IEEE, P; 
+  699.                int                        * EMAX;
+  700.                double                     * RMAX;
+  701.             #endif
+  702.             {
+  703.             /*
+  704.              * Purpose
+  705.              * =======
+  706.              *
+  707.              * HPL_dlamc5  attempts  to compute RMAX, the largest machine  floating-
+  708.              * point number, without overflow.  It assumes that EMAX + abs(EMIN) sum
+  709.              * approximately to a power of 2.  It will fail  on machines where  this
+  710.              * assumption does not hold, for example, the  Cyber 205 (EMIN = -28625,
+  711.              * EMAX = 28718).  It will also fail if  the value supplied for  EMIN is
+  712.              * too large (i.e. too close to zero), probably with overflow.
+  713.              *
+  714.              * Notes
+  715.              * =====
+  716.              *
+  717.              * This function has been manually translated from the Fortran 77 LAPACK
+  718.              * auxiliary function dlamc5.f (version 2.0 -- 1992).
+  719.              *
+  720.              * Arguments
+  721.              * =========
+  722.              *
+  723.              * BETA    (local input)               int
+  724.              *         The base of floating-point arithmetic.
+  725.              *
+  726.              * P       (local input)               int
+  727.              *         The number of base BETA digits in the mantissa of a floating-
+  728.              *         point value.
+  729.              *
+  730.              * EMIN    (local input)               int
+  731.              *         The minimum exponent before (gradual) underflow.
+  732.              *
+  733.              * IEEE    (local input)               int
+  734.              *         A logical flag specifying whether or not  the arithmetic sys-
+  735.              *         tem is thought to comply with the IEEE standard.
+  736.              *
+  737.              * EMAX    (local output)              int *
+  738.              *         The largest exponent before overflow.
+  739.              *
+  740.              * RMAX    (local output)              double *
+  741.              *         The largest machine floating-point number.
+  742.              *
+  743.              * ---------------------------------------------------------------------
+  744.              */ 
+  745.             /*
+  746.              * .. Local Variables ..
+  747.              */
+  748.                double                     oldy=HPL_rzero, recbas, y, z;
+  749.                int                        exbits=1, expsum, i, lexp=1, nbits, try_,
+  750.                                           uexp;
+  751.             /* ..
+  752.              * .. Executable Statements ..
+  753.              */
+  754.             /*
+  755.              * First compute  lexp  and  uexp, two powers of 2 that bound abs(EMIN).
+  756.              * We then assume that  EMAX + abs( EMIN ) will sum approximately to the
+  757.              * bound that  is closest to abs( EMIN ). (EMAX  is the  exponent of the
+  758.              * required number RMAX).
+  759.              */
+  760.  +          l_10:
+  761.                try_ = (int)( (unsigned int)(lexp) << 1 );
+  762.                if( try_ <= ( -EMIN ) ) { lexp = try_; exbits++; goto l_10; }
+  763.             
+  764.                if( lexp == -EMIN ) { uexp = lexp; } else { uexp = try_; exbits++; }
+  765.             /*
+  766.              * Now -lexp is less than or equal to EMIN, and -uexp is greater than or
+  767.              * equal to EMIN. exbits is the number of bits needed to store the expo-
+  768.              * nent.
+  769.              */
+  770.                if( ( uexp+EMIN ) > ( -lexp-EMIN ) )
+  771.                { expsum = (int)( (unsigned int)(lexp) << 1 ); }
+  772.                else
+  773.                { expsum = (int)( (unsigned int)(uexp) << 1 ); }
+  774.             /*
+  775.              * expsum is the exponent range, approximately equal to EMAX - EMIN + 1.
+  776.              */
+  777.                *EMAX = expsum + EMIN - 1;
+  778.             /*
+  779.              * nbits  is  the total number of bits needed to store a  floating-point
+  780.              * number.
+  781.              */
+  782.                nbits = 1 + exbits + P;
+  783.             
+  784.                if( ( nbits % 2 == 1 ) && ( BETA == 2 ) )
+  785.                {
+  786.             /*
+  787.              * Either there are an odd number of bits used to store a floating-point
+  788.              * number, which is unlikely, or some bits are not used in the represen-
+  789.              * tation of numbers,  which is possible,  (e.g. Cray machines)  or  the
+  790.              * mantissa has an implicit bit, (e.g. IEEE machines, Dec Vax machines),
+  791.              * which is perhaps the most likely. We have to assume the last alterna-
+  792.              * tive.  If this is true,  then we need to reduce  EMAX  by one because
+  793.              * there must be some way of representing zero  in an  implicit-bit sys-
+  794.              * tem. On machines like Cray we are reducing EMAX by one unnecessarily.
+  795.              */
+  796.                   (*EMAX)--;
+  797.                }
+  798.             
+  799.                if( IEEE != 0 )
+  800.                {
+  801.             /*
+  802.              * Assume we are on an IEEE  machine which reserves one exponent for in-
+  803.              * finity and NaN.
+  804.              */
+  805.                   (*EMAX)--;
+  806.                }
+  807.             /*
+  808.              * Now create RMAX, the largest machine number, which should be equal to
+  809.              * (1.0 - BETA**(-P)) * BETA**EMAX . First compute 1.0-BETA**(-P), being
+  810.              * careful that the result is less than 1.0.
+  811.              */
+  812.                recbas = HPL_rone / (double)(BETA);
+  813.                z      = (double)(BETA) - HPL_rone;
+  814.                y      = HPL_rzero;
+  815.             
+  816.  + F------<    for( i = 0; i < P; i++ )
+  817.  + F  I-->>    { z *= recbas; if( y < HPL_rone ) oldy = y; y = HPL_dlamc3( y, z ); }
+  818.             
+  819.                if( y >= HPL_rone ) y = oldy;
+  820.             /*
+  821.              * Now multiply by BETA**EMAX to get RMAX.
+  822.              */
+  823.  + DF I--<>    for( i = 0; i < *EMAX; i++ ) y = HPL_dlamc3( y * BETA, HPL_rzero );
+  824.             
+  825.                *RMAX = y;
+  826.             /*
+  827.              * End of HPL_dlamch
+  828.              */
+  829.             } 
+  830.             
+  831.             #ifdef HPL_STDC_HEADERS
+  832.             static double HPL_dipow
+  833.             (
+  834.                const double               X,
+  835.                const int                  N
+  836.             )
+  837.             #else
+  838.             static double HPL_dipow( X, N )
+  839.             /*
+  840.              * .. Scalar Arguments ..
+  841.              */
+  842.                const int                  N;
+  843.                const double               X;
+  844.             #endif
+  845.             {
+  846.             /*
+  847.              * Purpose
+  848.              * =======
+  849.              *
+  850.              * HPL_dipow computes the integer n-th power of a real scalar x.
+  851.              *
+  852.              * Arguments
+  853.              * =========
+  854.              *
+  855.              * X       (local input)               const double
+  856.              *         The real scalar x.
+  857.              *
+  858.              * N       (local input)               const int
+  859.              *         The integer power to raise x to.
+  860.              *
+  861.              * ---------------------------------------------------------------------
+  862.              */
+  863.             /*
+  864.              * .. Local Variables ..
+  865.              */
+  866.                double                     r, y=HPL_rone;
+  867.                int                        k, n;
+  868.             /* ..
+  869.              * .. Executable Statements ..
+  870.              */
+  871.                if( X == HPL_rzero ) return( HPL_rzero );
+  872.                if( N < 0 ) { n = -N; r = HPL_rone / X; } else { n = N; r = X; }
+  873.    D-----<>    for( k = 0; k < n; k++ ) y *= r; 
+  874.             
+  875.                return( y );
+  876.             }
+
+CC-3118 CC: IPA File = HPL_dlamch.c, Line = 161 
+  "HPL_dlamc2" (called from "HPL_dlamch") was not inlined because the call site will not flatten.  "HPL_fprintf" is missing.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 164 
+  A loop was eliminated by optimization.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 164 
+  The call to tiny leaf routine "HPL_dipow" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 166 
+  A loop was eliminated by optimization.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 166 
+  The call to tiny leaf routine "HPL_dipow" was textually inlined.
+
+CC-6254 CC: VECTOR File = HPL_dlamch.c, Line = 273 
+  A loop was not vectorized because a recurrence was found on "a" at line 274.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 273 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 274 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 274 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 280 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6254 CC: VECTOR File = HPL_dlamch.c, Line = 281 
+  A loop was not vectorized because a recurrence was found on "b" at line 281.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 281 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 281 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 289 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 295 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 295 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 297 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 297 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 306 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 307 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6254 CC: VECTOR File = HPL_dlamch.c, Line = 318 
+  A loop was not vectorized because a recurrence was found on "a" at line 320.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 318 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 321 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 321 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 427 
+  "HPL_dlamc1" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 431 
+  A loop was eliminated by optimization.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 431 
+  The call to tiny leaf routine "HPL_dipow" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 437 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 438 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 439 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 440 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6289 CC: VECTOR File = HPL_dlamch.c, Line = 445 
+  A loop was not vectorized because a recurrence was found on "b" between lines 447 and 451.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 445 
+  Loop has been flattened.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 448 
+  A loop was eliminated by optimization.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 448 
+  The call to tiny leaf routine "HPL_dipow" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 448 
+  The call to tiny leaf routine "HPL_dipow" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 448 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 450 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 450 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 451 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 451 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 462 
+  A loop was eliminated by optimization.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 462 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 462 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 463 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 464 
+  "HPL_dlamc4" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 464 
+  "HPL_dlamc4" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 465 
+  "HPL_dlamc4" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 465 
+  "HPL_dlamc4" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-3021 CC: IPA File = HPL_dlamch.c, Line = 545 
+  "HPL_fprintf" (called from "HPL_dlamc2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 565 
+  A loop was eliminated by optimization.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 565 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 566 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3171 CC: IPA File = HPL_dlamch.c, Line = 570 
+  "HPL_dlamc5" (called from "HPL_dlamc2") was not inlined because it is not in the body of a loop.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 669 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6289 CC: VECTOR File = HPL_dlamch.c, Line = 671 
+  A loop was not vectorized because a recurrence was found on "b1" between lines 673 and 674.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 671 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 674 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 675 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 676 
+  A loop was eliminated by optimization.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 677 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 678 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 679 
+  A loop was eliminated by optimization.
+
+CC-6254 CC: VECTOR File = HPL_dlamch.c, Line = 760 
+  A loop was not vectorized because a recurrence was found on "lexp" at line 762.
+
+CC-6254 CC: VECTOR File = HPL_dlamch.c, Line = 816 
+  A loop was not vectorized because a recurrence was found on "y" at line 817.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 816 
+  Loop has been flattened.
+
+CC-6009 CC: SCALAR File = HPL_dlamch.c, Line = 817 
+  A floating point expression involving an induction variable was strength reduced by optimization.  This may cause numerical
+  differences.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 817 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 823 
+  A loop was eliminated by optimization.
+
+CC-3182 CC: IPA File = HPL_dlamch.c, Line = 823 
+  Loop has been flattened.
+
+CC-3001 CC: IPA File = HPL_dlamch.c, Line = 823 
+  The call to tiny leaf routine "HPL_dlamc3" was textually inlined.
+
+CC-6002 CC: SCALAR File = HPL_dlamch.c, Line = 873 
+  A loop was eliminated by optimization.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

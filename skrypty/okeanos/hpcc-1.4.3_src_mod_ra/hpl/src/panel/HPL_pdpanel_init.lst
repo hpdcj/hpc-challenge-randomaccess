@@ -1,0 +1,447 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/panel/HPL_pdpanel_init.c
+Compiled : 2016-03-19  13:19:35
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/panel/HPL_pdpanel_init.o
+           -c ../../../src/panel/HPL_pdpanel_init.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/panel/HPL_pdpanel_init.c
+Date     : 03/19/2016  13:19:36
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifdef HPL_NO_MPI_DATATYPE  /* The user insists to not use MPI types */
+   53.     #ifndef HPL_COPY_L       /* and also want to avoid the copy of L ... */
+   54.     #define HPL_COPY_L   /* well, sorry, can not do that: force the copy */
+   55.     #endif
+   56.     #endif
+   57.     
+   58.     #ifdef HPL_STDC_HEADERS
+   59.     void HPL_pdpanel_init
+   60.     (
+   61.        HPL_T_grid *                     GRID,
+   62.        HPL_T_palg *                     ALGO,
+   63.        const int                        M,
+   64.        const int                        N,
+   65.        const int                        JB,
+   66.        HPL_T_pmat *                     A,
+   67.        const int                        IA,
+   68.        const int                        JA,
+   69.        const int                        TAG,
+   70.        HPL_T_panel *                    PANEL
+   71.     )
+   72.     #else
+   73.     void HPL_pdpanel_init
+   74.     ( GRID, ALGO, M, N, JB, A, IA, JA, TAG, PANEL )
+   75.        HPL_T_grid *                     GRID;
+   76.        HPL_T_palg *                     ALGO;
+   77.        const int                        M;
+   78.        const int                        N;
+   79.        const int                        JB;
+   80.        HPL_T_pmat *                     A;
+   81.        const int                        IA;
+   82.        const int                        JA;
+   83.        const int                        TAG;
+   84.        HPL_T_panel *                    PANEL;
+   85.     #endif
+   86.     {
+   87.     /* 
+   88.      * Purpose
+   89.      * =======
+   90.      *
+   91.      * HPL_pdpanel_init initializes a panel data structure.
+   92.      * 
+   93.      *
+   94.      * Arguments
+   95.      * =========
+   96.      *
+   97.      * GRID    (local input)                 HPL_T_grid *
+   98.      *         On entry,  GRID  points  to the data structure containing the
+   99.      *         process grid information.
+  100.      *
+  101.      * ALGO    (global input)                HPL_T_palg *
+  102.      *         On entry,  ALGO  points to  the data structure containing the
+  103.      *         algorithmic parameters.
+  104.      *
+  105.      * M       (local input)                 const int
+  106.      *         On entry, M specifies the global number of rows of the panel.
+  107.      *         M must be at least zero.
+  108.      *
+  109.      * N       (local input)                 const int
+  110.      *         On entry,  N  specifies  the  global number of columns of the
+  111.      *         panel and trailing submatrix. N must be at least zero.
+  112.      *
+  113.      * JB      (global input)                const int
+  114.      *         On entry, JB specifies is the number of columns of the panel.
+  115.      *         JB must be at least zero.
+  116.      *
+  117.      * A       (local input/output)          HPL_T_pmat *
+  118.      *         On entry, A points to the data structure containing the local
+  119.      *         array information.
+  120.      *
+  121.      * IA      (global input)                const int
+  122.      *         On entry,  IA  is  the global row index identifying the panel
+  123.      *         and trailing submatrix. IA must be at least zero.
+  124.      *
+  125.      * JA      (global input)                const int
+  126.      *         On entry, JA is the global column index identifying the panel
+  127.      *         and trailing submatrix. JA must be at least zero.
+  128.      *
+  129.      * TAG     (global input)                const int
+  130.      *         On entry, TAG is the row broadcast message id.
+  131.      *
+  132.      * PANEL   (local input/output)          HPL_T_panel *
+  133.      *         On entry,  PANEL  points to the data structure containing the
+  134.      *         panel information.
+  135.      *
+  136.      * ---------------------------------------------------------------------
+  137.      */ 
+  138.     /*
+  139.      * .. Local Variables ..
+  140.      */
+  141.        size_t                     dalign;
+  142.        int                        icurcol, icurrow, ii, itmp1, jj, lwork,
+  143.                                   ml2, mp, mycol, myrow, nb, npcol, nprow,
+  144.                                   nq, nu;
+  145.     /* ..
+  146.      * .. Executable Statements ..
+  147.      */
+  148.        PANEL->grid    = GRID;                  /* ptr to the process grid */
+  149.        PANEL->algo    = ALGO;               /* ptr to the algo parameters */
+  150.        PANEL->pmat    = A;                 /* ptr to the local array info */
+  151.     
+  152.        myrow = GRID->myrow; mycol = GRID->mycol;
+  153.        nprow = GRID->nprow; npcol = GRID->npcol; nb = A->nb;
+  154.     
+  155.  +     HPL_infog2l( IA, JA, nb, nb, nb, nb, 0, 0, myrow, mycol,
+  156.                     nprow, npcol, &ii, &jj, &icurrow, &icurcol );
+  157.  +     mp = HPL_numrocI( M, IA, nb, nb, myrow, 0, nprow );
+  158.  +     nq = HPL_numrocI( N, JA, nb, nb, mycol, 0, npcol );
+  159.                                              /* ptr to trailing part of A */
+  160.        PANEL->A       = Mptr( (double *)(A->A), ii, jj, A->ld );
+  161.     /*
+  162.      * Workspace pointers are initialized to NULL.
+  163.      */
+  164.        PANEL->WORK    = NULL; PANEL->L2      = NULL; PANEL->L1      = NULL;
+  165.        PANEL->DPIV    = NULL; PANEL->DINFO   = NULL; PANEL->U       = NULL;
+  166.        PANEL->IWORK   = NULL;
+  167.     /*
+  168.      * Local lengths, indexes process coordinates
+  169.      */
+  170.        PANEL->nb      = nb;               /* distribution blocking factor */
+  171.        PANEL->jb      = JB;                                /* panel width */
+  172.        PANEL->m       = M;      /* global # of rows of trailing part of A */
+  173.        PANEL->n       = N;      /* global # of cols of trailing part of A */
+  174.        PANEL->ia      = IA;     /* global row index of trailing part of A */
+  175.        PANEL->ja      = JA;     /* global col index of trailing part of A */
+  176.        PANEL->mp      = mp;      /* local # of rows of trailing part of A */
+  177.        PANEL->nq      = nq;      /* local # of cols of trailing part of A */
+  178.        PANEL->ii      = ii;      /* local row index of trailing part of A */
+  179.        PANEL->jj      = jj;      /* local col index of trailing part of A */
+  180.        PANEL->lda     = A->ld;            /* local leading dim of array A */
+  181.        PANEL->prow    = icurrow; /* proc row owning 1st row of trailing A */
+  182.        PANEL->pcol    = icurcol; /* proc col owning 1st col of trailing A */
+  183.        PANEL->msgid   = TAG;     /* message id to be used for panel bcast */
+  184.     /*
+  185.      * Initialize  ldl2 and len to temporary dummy values and Update tag for
+  186.      * next panel
+  187.      */
+  188.        PANEL->ldl2    = 0;               /* local leading dim of array L2 */
+  189.        PANEL->len     = 0;           /* length of the buffer to broadcast */
+  190.     /*
+  191.      * Figure out the exact amount of workspace  needed by the factorization
+  192.      * and the update - Allocate that space - Finish the panel data structu-
+  193.      * re initialization.
+  194.      *
+  195.      * L1:    JB x JB in all processes
+  196.      * DPIV:  JB      in all processes
+  197.      * DINFO: 1       in all processes
+  198.      *
+  199.      * We make sure that those three arrays are contiguous in memory for the
+  200.      * later panel broadcast.  We  also  choose  to put this amount of space 
+  201.      * right  after  L2 (when it exist) so that one can receive a contiguous
+  202.      * buffer.
+  203.      */
+  204.        dalign = ALGO->align * sizeof( double );
+  205.     
+  206.        if( npcol == 1 )                             /* P x 1 process grid */
+  207.        {                                     /* space for L1, DPIV, DINFO */
+  208.           lwork = ALGO->align + ( PANEL->len = JB * JB + JB + 1 );
+  209.           if( nprow > 1 )                                 /* space for U */
+  210.           { nu = nq - JB; lwork += JB * Mmax( 0, nu ); }
+  211.     
+  212.           if( !( PANEL->WORK = (void *)malloc( (size_t)(lwork) * 
+  213.                                                sizeof( double ) ) ) )
+  214.           {
+  215.  +           HPL_pabort( __LINE__, "HPL_pdpanel_init",
+  216.                          "Memory allocation failed" );
+  217.           }
+  218.     /*
+  219.      * Initialize the pointers of the panel structure  -  Always re-use A in
+  220.      * the only process column
+  221.      */
+  222.           PANEL->L2    = PANEL->A + ( myrow == icurrow ? JB : 0 );
+  223.           PANEL->ldl2  = A->ld;
+  224.  +        PANEL->L1    = (double *)HPL_PTR( PANEL->WORK, dalign );
+  225.           PANEL->DPIV  = PANEL->L1    + JB * JB;
+  226.           PANEL->DINFO = PANEL->DPIV + JB;       *(PANEL->DINFO) = 0.0;
+  227.           PANEL->U     = ( nprow > 1 ? PANEL->DINFO + 1: NULL );
+  228.        }
+  229.        else
+  230.        {                                        /* space for L2, L1, DPIV */
+  231.           ml2 = ( myrow == icurrow ? mp - JB : mp ); ml2 = Mmax( 0, ml2 );
+  232.           PANEL->len = ml2*JB + ( itmp1 = JB*JB + JB + 1 );
+  233.     #ifdef HPL_COPY_L
+  234.           lwork = ALGO->align + PANEL->len;
+  235.     #else
+  236.           lwork = ALGO->align + ( mycol == icurcol ? itmp1 : PANEL->len );
+  237.     #endif
+  238.           if( nprow > 1 )                                 /* space for U */
+  239.           { 
+  240.              nu = ( mycol == icurcol ? nq - JB : nq );
+  241.              lwork += JB * Mmax( 0, nu );
+  242.           }
+  243.     
+  244.           if( !( PANEL->WORK = (void *)malloc( (size_t)(lwork) *
+  245.                                                sizeof( double ) ) ) )
+  246.           {
+  247.  +           HPL_pabort( __LINE__, "HPL_pdpanel_init",
+  248.                          "Memory allocation failed" );
+  249.           }
+  250.     /*
+  251.      * Initialize the pointers of the panel structure - Re-use A in the cur-
+  252.      * rent process column when HPL_COPY_L is not defined.
+  253.      */
+  254.     #ifdef HPL_COPY_L
+  255.           PANEL->L2    = (double *)HPL_PTR( PANEL->WORK, dalign );
+  256.           PANEL->ldl2  = Mmax( 1, ml2 );
+  257.           PANEL->L1    = PANEL->L2 + ml2 * JB;
+  258.     #else
+  259.           if( mycol == icurcol )
+  260.           {
+  261.              PANEL->L2   = PANEL->A + ( myrow == icurrow ? JB : 0 );
+  262.              PANEL->ldl2 = A->ld;
+  263.              PANEL->L1   = (double *)HPL_PTR( PANEL->WORK, dalign );
+  264.           }
+  265.           else
+  266.           {
+  267.              PANEL->L2   = (double *)HPL_PTR( PANEL->WORK, dalign );
+  268.              PANEL->ldl2 = Mmax( 1, ml2 );
+  269.              PANEL->L1   = PANEL->L2 + ml2 * JB;
+  270.           } 
+  271.     #endif
+  272.           PANEL->DPIV  = PANEL->L1   + JB * JB;
+  273.           PANEL->DINFO = PANEL->DPIV + JB;     *(PANEL->DINFO) = 0.0;
+  274.           PANEL->U     = ( nprow > 1 ? PANEL->DINFO + 1 : NULL );
+  275.        }
+  276.     #ifdef HPL_CALL_VSIPL
+  277.        PANEL->Ablock  = A->block;
+  278.     /*
+  279.      * Create blocks and bind them to the data pointers
+  280.      */
+  281.        PANEL->L1block = vsip_blockbind_d( (vsip_scalar_d *)(PANEL->L1),
+  282.                                           (vsip_length)(JB*JB), VSIP_MEM_NONE );
+  283.        PANEL->L2block = vsip_blockbind_d( (vsip_scalar_d *)(PANEL->L2),
+  284.                                           (vsip_length)(PANEL->ldl2*JB),
+  285.                                           VSIP_MEM_NONE );
+  286.        if( nprow > 1 )
+  287.        { 
+  288.           nu = ( mycol == icurcol ? nq - JB : nq );
+  289.           PANEL->Ublock = vsip_blockbind_d( (vsip_scalar_d *)(PANEL->U),
+  290.                                             (vsip_length)(JB * Mmax( 0, nu )),
+  291.                                             VSIP_MEM_NONE );
+  292.        }
+  293.        else { PANEL->Ublock = A->block; }
+  294.     #endif
+  295.     /*
+  296.      * If nprow is 1, we just allocate an array of JB integers for the swap.
+  297.      * When nprow > 1, we allocate the space for the index arrays immediate-
+  298.      * ly. The exact size of this array depends on the swapping routine that
+  299.      * will be used, so we allocate the maximum:
+  300.      *
+  301.      *    IWORK[0] is of size at most 1      +
+  302.      *    IPL      is of size at most 1      +
+  303.      *    IPID     is of size at most 4 * JB +
+  304.      *
+  305.      *    For HPL_pdlaswp00:
+  306.      *       lindxA   is of size at most 2 * JB +
+  307.      *       lindxAU  is of size at most 2 * JB +
+  308.      *       llen     is of size at most NPROW  +
+  309.      *       llen_sv  is of size at most NPROW.
+  310.      *
+  311.      *    For HPL_pdlaswp01:
+  312.      *       ipA      is of size ar most 1      +
+  313.      *       lindxA   is of size at most 2 * JB +
+  314.      *       lindxAU  is of size at most 2 * JB +
+  315.      *       iplen    is of size at most NPROW  + 1 +
+  316.      *       ipmap    is of size at most NPROW  +
+  317.      *       ipmapm1  is of size at most NPROW  +
+  318.      *       permU    is of size at most JB     +
+  319.      *       iwork    is of size at most MAX( 2*JB, NPROW+1 ).
+  320.      *
+  321.      * that is  3 + 8*JB + MAX(2*NPROW, 3*NPROW+1+JB+MAX(2*JB,NPROW+1))
+  322.      *       =  4 + 9*JB + 3*NPROW + MAX( 2*JB, NPROW+1 ).
+  323.      *
+  324.      * We use the fist entry of this to work array  to indicate  whether the
+  325.      * the  local  index arrays have already been computed,  and if yes,  by
+  326.      * which function:
+  327.      *    IWORK[0] = -1: no index arrays have been computed so far;
+  328.      *    IWORK[0] =  0: HPL_pdlaswp00 already computed those arrays;
+  329.      *    IWORK[0] =  1: HPL_pdlaswp01 already computed those arrays;
+  330.      * This allows to save some redundant and useless computations.
+  331.      */
+  332.        if( nprow == 1 ) { lwork = JB; }
+  333.        else             
+  334.        {
+  335.           itmp1 = (JB << 1); lwork = nprow + 1; itmp1 = Mmax( itmp1, lwork );
+  336.           lwork = 4 + (9 * JB) + (3 * nprow) + itmp1;
+  337.        }
+  338.     
+  339.        PANEL->IWORK = (int *)malloc( (size_t)(lwork) * sizeof( int ) );
+  340.     
+  341.        if( PANEL->IWORK == NULL )
+  342.  +     { HPL_pabort( __LINE__, "HPL_pdpanel_init", "Memory allocation failed" ); }
+  343.                            /* Initialize the first entry of the workarray */
+  344.        *(PANEL->IWORK) = -1;
+  345.     /*
+  346.      * End of HPL_pdpanel_init
+  347.      */
+  348.     }
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 155 
+  "HPL_infog2l" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 157 
+  "HPL_numrocI" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 158 
+  "HPL_numrocI" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 215 
+  "HPL_pabort" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+CC-7703 CC: OPTIMIZATION File = HPL_pdpanel_init.c, Line = 224 
+  Optimization curtailed due to an assignment of a non-pointer to a pointer.
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 247 
+  "HPL_pabort" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanel_init.c, Line = 342 
+  "HPL_pabort" (called from "HPL_pdpanel_init") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

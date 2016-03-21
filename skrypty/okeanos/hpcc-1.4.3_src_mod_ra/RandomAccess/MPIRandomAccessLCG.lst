@@ -1,0 +1,1293 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/MPIRandomAccessLCG.c
+Compiled : 2016-03-19  13:20:14
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/MPIRandomAccessLCG.o
+           -c ../../../../RandomAccess/MPIRandomAccessLCG.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/MPIRandomAccessLCG.c
+Date     : 03/19/2016  13:20:14
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.              /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.              
+    3.              /*
+    4.               * This code has been contributed by the DARPA HPCS program.  Contact
+    5.               * David Koester <dkoester@mitre.org> or Bob Lucas <rflucas@isi.edu>
+    6.               * if you have questions.
+    7.               *
+    8.               *
+    9.               * GUPS (Giga UPdates per Second) is a measurement that profiles the memory
+   10.               * architecture of a system and is a measure of performance similar to MFLOPS.
+   11.               * The HPCS HPCchallenge RandomAccess benchmark is intended to exercise the
+   12.               * GUPS capability of a system, much like the LINPACK benchmark is intended to
+   13.               * exercise the MFLOPS capability of a computer.  In each case, we would
+   14.               * expect these benchmarks to achieve close to the "peak" capability of the
+   15.               * memory system. The extent of the similarities between RandomAccess and
+   16.               * LINPACK are limited to both benchmarks attempting to calculate a peak system
+   17.               * capability.
+   18.               *
+   19.               * GUPS is calculated by identifying the number of memory locations that can be
+   20.               * randomly updated in one second, divided by 1 billion (1e9). The term "randomly"
+   21.               * means that there is little relationship between one address to be updated and
+   22.               * the next, except that they occur in the space of one half the total system
+   23.               * memory.  An update is a read-modify-write operation on a table of 64-bit words.
+   24.               * An address is generated, the value at that address read from memory, modified
+   25.               * by an integer operation (add, and, or, xor) with a literal value, and that
+   26.               * new value is written back to memory.
+   27.               *
+   28.               * We are interested in knowing the GUPS performance of both entire systems and
+   29.               * system subcomponents --- e.g., the GUPS rating of a distributed memory
+   30.               * multiprocessor the GUPS rating of an SMP node, and the GUPS rating of a
+   31.               * single processor.  While there is typically a scaling of FLOPS with processor
+   32.               * count, a similar phenomenon may not always occur for GUPS.
+   33.               *
+   34.               * Select the memory size to be the power of two such that 2^n <= 1/2 of the
+   35.               * total memory.  Each CPU operates on its own address stream, and the single
+   36.               * table may be distributed among nodes. The distribution of memory to nodes
+   37.               * is left to the implementer.  A uniform data distribution may help balance
+   38.               * the workload, while non-uniform data distributions may simplify the
+   39.               * calculations that identify processor location by eliminating the requirement
+   40.               * for integer divides. A small (less than 1%) percentage of missed updates
+   41.               * are permitted.
+   42.               *
+   43.               * When implementing a benchmark that measures GUPS on a distributed memory
+   44.               * multiprocessor system, it may be required to define constraints as to how
+   45.               * far in the random address stream each node is permitted to "look ahead".
+   46.               * Likewise, it may be required to define a constraint as to the number of
+   47.               * update messages that can be stored before processing to permit multi-level
+   48.               * parallelism for those systems that support such a paradigm.  The limits on
+   49.               * "look ahead" and "stored updates" are being implemented to assure that the
+   50.               * benchmark meets the intent to profile memory architecture and not induce
+   51.               * significant artificial data locality. For the purpose of measuring GUPS,
+   52.               * we will stipulate that each process is permitted to look ahead no more than
+   53.               * 1024 random address stream samples with the same number of update messages
+   54.               * stored before processing.
+   55.               *
+   56.               * The supplied MPI-1 code generates the input stream {A} on all processors
+   57.               * and the global table has been distributed as uniformly as possible to
+   58.               * balance the workload and minimize any Amdahl fraction.  This code does not
+   59.               * exploit "look-ahead".  Addresses are sent to the appropriate processor
+   60.               * where the table entry resides as soon as each address is calculated.
+   61.               * Updates are performed as addresses are received.  Each message is limited
+   62.               * to a single 64 bit long integer containing element ai from {A}.
+   63.               * Local offsets for T[ ] are extracted by the destination processor.
+   64.               *
+   65.               * If the number of processors is equal to a power of two, then the global
+   66.               * table can be distributed equally over the processors.  In addition, the
+   67.               * processor number can be determined from that portion of the input stream
+   68.               * that identifies the address into the global table by masking off log2(p)
+   69.               * bits in the address.
+   70.               *
+   71.               * If the number of processors is not equal to a power of two, then the global
+   72.               * table cannot be equally distributed between processors.  In the MPI-1
+   73.               * implementation provided, there has been an attempt to minimize the differences
+   74.               * in workloads and the largest difference in elements of T[ ] is one.  The
+   75.               * number of values in the input stream generated by each processor will be
+   76.               * related to the number of global table entries on each processor.
+   77.               *
+   78.               * The MPI-1 version of RandomAccess treats the potential instance where the
+   79.               * number of processors is a power of two as a special case, because of the
+   80.               * significant simplifications possible because processor location and local
+   81.               * offset can be determined by applying masks to the input stream values.
+   82.               * The non power of two case uses an integer division to determine the processor
+   83.               * location.  The integer division will be more costly in terms of machine
+   84.               * cycles to perform than the bit masking operations
+   85.               *
+   86.               * For additional information on the GUPS metric, the HPCchallenge RandomAccess
+   87.               * Benchmark,and the rules to run RandomAccess or modify it to optimize
+   88.               * performance -- see http://icl.cs.utk.edu/hpcc/
+   89.               *
+   90.               */
+   91.              
+   92.              /* Jan 2005
+   93.               *
+   94.               * This code has been modified to allow local bucket sorting of updates.
+   95.               * The total maximum number of updates in the local buckets of a process
+   96.               * is currently defined in "RandomAccess.h" as MAX_TOTAL_PENDING_UPDATES.
+   97.               * When the total maximum number of updates is reached, the process selects
+   98.               * the bucket (or destination process) with the largest number of
+   99.               * updates and sends out all the updates in that bucket. See buckets.c
+  100.               * for details about the buckets' implementation.
+  101.               *
+  102.               * This code also supports posting multiple MPI receive descriptors (based
+  103.               * on a contribution by David Addison).
+  104.               *
+  105.               * In addition, this implementation provides an option for limiting
+  106.               * the execution time of the benchmark to a specified time bound
+  107.               * (see time_bound.c). The time bound is currently defined in
+  108.               * time_bound.h, but it should be a benchmark parameter. By default
+  109.               * the benchmark will execute the recommended number of updates,
+  110.               * that is, four times the global table size.
+  111.               */
+  112.              
+  113.              
+  114.              #include <hpcc.h>
+  115.              
+  116.              #include "RandomAccess.h"
+  117.              #include "buckets.h"
+  118.              #include "time_bound.h"
+  119.              
+  120.              #ifndef LONG_IS_64BITS
+  121.              static void
+  122.              Sum64(void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) {
+  123.                int i, n = *len; s64Int *invec64 = (s64Int *)invec, *inoutvec64 = (s64Int *)inoutvec;
+  124.                for (i = n; i; i--, invec64++, inoutvec64++) *inoutvec64 += *invec64;
+  125.              }
+  126.              
+  127.              static void
+  128.              MinInt64(void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) {
+  129.                int i, n = *len; s64Int *invec64 = (s64Int *)invec, *inoutvec64 = (s64Int *)inoutvec, min_val;
+  130.                if (datatype)
+  131.                  for (i = n; i; i--, invec64++, inoutvec64++) {
+  132.                    min_val = inoutvec64[0];
+  133.                    *inoutvec64 = *inoutvec64 > *invec64 ? *invec64 : *inoutvec64;
+  134.                  }
+  135.              }
+  136.              #endif
+  137.              
+  138.              #ifdef HPCC_RA_STDALG
+  139.              void
+  140.              HPCC_AnyNodesMPIRandomAccessUpdate_LCG(HPCC_RandomAccess_tabparams_t tparams) {
+  141.                s64Int i, j;
+  142.                int proc_count;
+  143.              
+  144.                s64Int SendCnt;
+  145.                u64Int Ran;
+  146.                s64Int WhichPe;
+  147.                u64Int GlobalOffset, LocalOffset;
+  148.                int NumberReceiving = tparams.NumProcs - 1;
+  149.              #ifdef USE_MULTIPLE_RECV
+  150.                int index, NumRecvs;
+  151.                MPI_Request inreq[MAX_RECV]  = { MPI_REQUEST_NULL };
+  152.                MPI_Request outreq = MPI_REQUEST_NULL;
+  153.              #else
+  154.                MPI_Request inreq, outreq = MPI_REQUEST_NULL;
+  155.              #endif
+  156.                u64Int inmsg;
+  157.                int bufferBase;
+  158.              
+  159.                MPI_Status status;
+  160.                int have_done;
+  161.              
+  162.                int pe;
+  163.                int pendingUpdates;
+  164.                int maxPendingUpdates;
+  165.                int localBufferSize;
+  166.                int peUpdates;
+  167.                int recvUpdates;
+  168.                Bucket_Ptr Buckets;
+  169.              
+  170.                pendingUpdates = 0;
+  171.                maxPendingUpdates = MAX_TOTAL_PENDING_UPDATES;
+  172.                localBufferSize = LOCAL_BUFFER_SIZE;
+  173.  +             Buckets = HPCC_InitBuckets(tparams.NumProcs, maxPendingUpdates);
+  174.              
+  175.                /* Perform updates to main table.  The scalar equivalent is:
+  176.                 *
+  177.                 *     u64Int Ran;
+  178.                 *     Ran = 1;
+  179.                 *     for (i=0; i<NUPDATE; i++) {
+  180.                 *       Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  181.                 *       Table[Ran >> (64 - LOG2_TABSIZE)] ^= Ran;
+  182.                 *     }
+  183.                 */
+  184.              
+  185.                SendCnt = tparams.ProcNumUpdates; /* SendCnt = (4 * LocalTableSize); */
+  186.  +             Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+  187.              
+  188.                i = 0;
+  189.              
+  190.              #ifdef USE_MULTIPLE_RECV
+  191.                NumRecvs = (tparams.NumProcs > 4) ? (Mmin(4,MAX_RECV)) : 1;
+  192.  + 1-------<   for (j = 0; j < NumRecvs; j++)
+  193.    1             MPI_Irecv(&LocalRecvBuffer[j*LOCAL_BUFFER_SIZE], localBufferSize,
+  194.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  195.    1------->               &inreq[j]);
+  196.              #else
+  197.                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  198.                          MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  199.              #endif
+  200.              
+  201.  + 1-------<   while (i < SendCnt) {
+  202.    1         
+  203.    1             /* receive messages */
+  204.  + 1 2-----<     do {
+  205.    1 2       #ifdef USE_MULTIPLE_RECV
+  206.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  207.    1 2       #else
+  208.    1 2             MPI_Test(&inreq, &have_done, &status);
+  209.    1 2       #endif
+  210.    1 2             if (have_done) {
+  211.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  212.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  213.    1 2       #ifdef USE_MULTIPLE_RECV
+  214.    1 2                 bufferBase = index*LOCAL_BUFFER_SIZE;
+  215.    1 2       #else
+  216.    1 2                 bufferBase = 0;
+  217.    1 2       #endif
+  218.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  219.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  220.    1 2 r4                LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  221.    1 2 r4                HPCC_Table[LocalOffset] ^= inmsg;
+  222.    1 2 r4-->           }
+  223.    1 2       
+  224.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  225.    1 2                 /* we got a done message.  Thanks for playing... */
+  226.    1 2                 NumberReceiving--;
+  227.    1 2               } else {
+  228.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  229.    1 2               }
+  230.    1 2       #ifdef USE_MULTIPLE_RECV
+  231.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  232.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  233.    1 2                         &inreq[index]);
+  234.    1 2       #else
+  235.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  236.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  237.    1 2       #endif
+  238.    1 2             }
+  239.    1 2----->     } while (have_done && NumberReceiving > 0);
+  240.    1         
+  241.    1         
+  242.    1             if (pendingUpdates < maxPendingUpdates) {
+  243.    1               Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  244.    1               GlobalOffset = Ran >> (64 - tparams.logTableSize);
+  245.    1               if ( GlobalOffset < tparams.Top)
+  246.    1                 WhichPe = ( GlobalOffset / (tparams.MinLocalTableSize + 1) );
+  247.    1               else
+  248.    1                 WhichPe = ( (GlobalOffset - tparams.Remainder) / tparams.MinLocalTableSize );
+  249.    1         
+  250.    1               if (WhichPe == tparams.MyProc) {
+  251.    1                 LocalOffset = (Ran >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  252.    1                 HPCC_Table[LocalOffset] ^= Ran;
+  253.    1               }
+  254.    1               else {
+  255.  + 1                 HPCC_InsertUpdate(Ran, WhichPe, Buckets);
+  256.    1                 pendingUpdates++;
+  257.    1               }
+  258.    1               i++;
+  259.    1             }
+  260.    1         
+  261.    1             else {
+  262.  + 1               MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  263.    1               if (have_done) {
+  264.    1                 outreq = MPI_REQUEST_NULL;
+  265.  + 1                 pe = HPCC_GetUpdates(Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  266.    1                 MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  267.    1                           MPI_COMM_WORLD, &outreq);
+  268.    1                 pendingUpdates -= peUpdates;
+  269.    1               }
+  270.    1             }
+  271.    1         
+  272.    1------->   }
+  273.              
+  274.                /* send remaining updates in buckets */
+  275.  + 1-------<   while (pendingUpdates > 0) {
+  276.    1         
+  277.    1             /* receive messages */
+  278.  + 1 2-----<     do {
+  279.    1 2       #ifdef USE_MULTIPLE_RECV
+  280.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  281.    1 2       #else
+  282.    1 2             MPI_Test(&inreq, &have_done, &status);
+  283.    1 2       #endif
+  284.    1 2             if (have_done) {
+  285.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  286.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  287.    1 2       #ifdef USE_MULTIPLE_RECV
+  288.    1 2                 bufferBase = index*LOCAL_BUFFER_SIZE;
+  289.    1 2       #else
+  290.    1 2                 bufferBase = 0;
+  291.    1 2       #endif
+  292.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  293.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  294.    1 2 r4                LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  295.    1 2 r4                HPCC_Table[LocalOffset] ^= inmsg;
+  296.    1 2 r4-->           }
+  297.    1 2       
+  298.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  299.    1 2                 /* we got a done message.  Thanks for playing... */
+  300.    1 2                 NumberReceiving--;
+  301.    1 2               } else {
+  302.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  303.    1 2               }
+  304.    1 2       #ifdef USE_MULTIPLE_RECV
+  305.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  306.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  307.    1 2                         &inreq[index]);
+  308.    1 2       #else
+  309.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  310.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  311.    1 2       #endif
+  312.    1 2             }
+  313.    1 2----->     } while (have_done && NumberReceiving > 0);
+  314.    1         
+  315.    1         
+  316.  + 1             MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  317.    1             if (have_done) {
+  318.    1               outreq = MPI_REQUEST_NULL;
+  319.  + 1               pe = HPCC_GetUpdates(Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  320.    1               MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  321.    1                         MPI_COMM_WORLD, &outreq);
+  322.    1               pendingUpdates -= peUpdates;
+  323.    1             }
+  324.    1         
+  325.    1------->   }
+  326.              
+  327.                /* send our done messages */
+  328.  + 1-------<   for (proc_count = 0 ; proc_count < tparams.NumProcs ; ++proc_count) {
+  329.    1             if (proc_count == tparams.MyProc) { tparams.finish_req[tparams.MyProc] = MPI_REQUEST_NULL; continue; }
+  330.    1             /* send garbage - who cares, no one will look at it */
+  331.    1             MPI_Isend(&Ran, 0, tparams.dtype64, proc_count, FINISHED_TAG,
+  332.    1                       MPI_COMM_WORLD, tparams.finish_req + proc_count);
+  333.    1------->   }
+  334.              
+  335.                /* Finish everyone else up... */
+  336.  + 1-------<   while (NumberReceiving > 0) {
+  337.    1         #ifdef USE_MULTIPLE_RECV
+  338.  + 1             MPI_Waitany(NumRecvs, inreq, &index, &status);
+  339.    1         #else
+  340.    1             MPI_Wait(&inreq, &status);
+  341.    1         #endif
+  342.    1             if (status.MPI_TAG == UPDATE_TAG) {
+  343.  + 1               MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  344.    1         #ifdef USE_MULTIPLE_RECV
+  345.    1               bufferBase = index * LOCAL_BUFFER_SIZE;
+  346.    1         #else
+  347.    1               bufferBase = 0;
+  348.    1         #endif
+  349.  + 1 r4----<       for (j=0; j < recvUpdates; j ++) {
+  350.    1 r4              inmsg = LocalRecvBuffer[bufferBase+j];
+  351.    1 r4              LocalOffset = (inmsg >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  352.    1 r4              HPCC_Table[LocalOffset] ^= inmsg;
+  353.    1 r4---->       }
+  354.    1         
+  355.    1             } else if (status.MPI_TAG == FINISHED_TAG) {
+  356.    1               /* we got a done message.  Thanks for playing... */
+  357.    1               NumberReceiving--;
+  358.    1             } else {
+  359.  + 1               MPI_Abort( MPI_COMM_WORLD, -1 );
+  360.    1             }
+  361.    1         #ifdef USE_MULTIPLE_RECV
+  362.    1             MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  363.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  364.    1                       &inreq[index]);
+  365.    1         #else
+  366.    1             MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  367.    1                       MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  368.    1         #endif
+  369.    1------->   }
+  370.              
+  371.                MPI_Waitall( tparams.NumProcs, tparams.finish_req, tparams.finish_statuses);
+  372.              
+  373.                /* Be nice and clean up after ourselves */
+  374.  +             HPCC_FreeBuckets(Buckets, tparams.NumProcs);
+  375.              #ifdef USE_MULTIPLE_RECV
+  376.  + 1-------<   for (j = 0; j < NumRecvs; j++) {
+  377.  + 1             MPI_Cancel(&inreq[j]);
+  378.    1             MPI_Wait(&inreq[j], MPI_STATUS_IGNORE);
+  379.    1------->   }
+  380.              #else
+  381.                MPI_Cancel(&inreq);
+  382.                MPI_Wait(&inreq, MPI_STATUS_IGNORE);
+  383.              #endif
+  384.                MPI_Wait(&outreq, MPI_STATUS_IGNORE);
+  385.              
+  386.                /* end multiprocessor code */
+  387.              }
+  388.              
+  389.              void
+  390.              HPCC_Power2NodesMPIRandomAccessUpdate_LCG(HPCC_RandomAccess_tabparams_t tparams) {
+  391.                s64Int i, j;
+  392.                int proc_count;
+  393.              
+  394.                s64Int SendCnt;
+  395.                u64Int Ran;
+  396.                s64Int WhichPe;
+  397.                u64Int LocalOffset;
+  398.                int logLocalTableSize = tparams.logTableSize - tparams.logNumProcs;
+  399.                int NumberReceiving = tparams.NumProcs - 1;
+  400.              #ifdef USE_MULTIPLE_RECV
+  401.                int index, NumRecvs;
+  402.                MPI_Request inreq[MAX_RECV]  = { MPI_REQUEST_NULL };
+  403.                MPI_Request outreq = MPI_REQUEST_NULL;
+  404.              #else
+  405.                MPI_Request inreq, outreq = MPI_REQUEST_NULL;
+  406.              #endif
+  407.                u64Int inmsg;
+  408.                int bufferBase;
+  409.              
+  410.                MPI_Status status;
+  411.                int have_done;
+  412.              
+  413.                int pe;
+  414.                int pendingUpdates;
+  415.                int maxPendingUpdates;
+  416.                int localBufferSize;
+  417.                int peUpdates;
+  418.                int recvUpdates;
+  419.                Bucket_Ptr Buckets;
+  420.              
+  421.                pendingUpdates = 0;
+  422.                maxPendingUpdates = MAX_TOTAL_PENDING_UPDATES;
+  423.                localBufferSize = LOCAL_BUFFER_SIZE;
+  424.  +             Buckets = HPCC_InitBuckets(tparams.NumProcs, maxPendingUpdates);
+  425.              
+  426.                /* Perform updates to main table.  The scalar equivalent is:
+  427.                 *
+  428.                 *     u64Int Ran;
+  429.                 *     Ran = 1;
+  430.                 *     for (i=0; i<NUPDATE; i++) {
+  431.                 *       Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  432.                 *       Table[Ran >> (64 - LOG2_TABSIZE)] ^= Ran;
+  433.                 *     }
+  434.                 */
+  435.              
+  436.                SendCnt = tparams.ProcNumUpdates; /*  SendCnt = (4 * LocalTableSize); */
+  437.  +             Ran = HPCC_starts_LCG(4 * tparams.GlobalStartMyProc);
+  438.              
+  439.                i = 0;
+  440.              
+  441.              #ifdef USE_MULTIPLE_RECV
+  442.                NumRecvs = (tparams.NumProcs > 4) ? (Mmin(4,MAX_RECV)) : 1;
+  443.  + 1-------<   for (j = 0; j < NumRecvs; j++)
+  444.    1             MPI_Irecv(&LocalRecvBuffer[j*LOCAL_BUFFER_SIZE], localBufferSize,
+  445.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  446.    1------->               &inreq[j]);
+  447.              #else
+  448.                MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  449.                          MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  450.              #endif
+  451.              
+  452.  + 1-------<   while (i < SendCnt) {
+  453.    1         
+  454.    1             /* receive messages */
+  455.  + 1 2-----<     do {
+  456.    1 2       #ifdef USE_MULTIPLE_RECV
+  457.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  458.    1 2       #else
+  459.    1 2             MPI_Test(&inreq, &have_done, &status);
+  460.    1 2       #endif
+  461.    1 2             if (have_done) {
+  462.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  463.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  464.    1 2       #ifdef USE_MULTIPLE_RECV
+  465.    1 2                 bufferBase = index * LOCAL_BUFFER_SIZE;
+  466.    1 2       #else
+  467.    1 2                 bufferBase = 0;
+  468.    1 2       #endif
+  469.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  470.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  471.    1 2 r4                HPCC_Table[(inmsg >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize-1)] ^= inmsg;
+  472.    1 2 r4-->           }
+  473.    1 2       
+  474.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  475.    1 2                 /* we got a done message.  Thanks for playing... */
+  476.    1 2                 NumberReceiving--;
+  477.    1 2               } else {
+  478.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  479.    1 2               }
+  480.    1 2       #ifdef USE_MULTIPLE_RECV
+  481.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  482.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  483.    1 2                         &inreq[index]);
+  484.    1 2       #else
+  485.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  486.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  487.    1 2       #endif
+  488.    1 2             }
+  489.    1 2----->     } while (have_done && NumberReceiving > 0);
+  490.    1         
+  491.    1         
+  492.    1             if (pendingUpdates < maxPendingUpdates) {
+  493.    1               Ran = LCG_MUL64 * Ran + LCG_ADD64;
+  494.    1               WhichPe = (Ran >> (64 - tparams.logTableSize + logLocalTableSize)) & (tparams.NumProcs - 1);
+  495.    1               if (WhichPe == tparams.MyProc) {
+  496.    1                 LocalOffset = (Ran >> (64 - tparams.logTableSize)) - tparams.GlobalStartMyProc;
+  497.    1                 HPCC_Table[LocalOffset] ^= Ran;
+  498.    1               }
+  499.    1               else {
+  500.  + 1                 HPCC_InsertUpdate(Ran, WhichPe, Buckets);
+  501.    1                 pendingUpdates++;
+  502.    1               }
+  503.    1               i++;
+  504.    1             }
+  505.    1         
+  506.    1             else {
+  507.  + 1               MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  508.    1               if (have_done) {
+  509.    1                 outreq = MPI_REQUEST_NULL;
+  510.  + 1                 pe = HPCC_GetUpdates(Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  511.    1                 MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  512.    1                           MPI_COMM_WORLD, &outreq);
+  513.    1                 pendingUpdates -= peUpdates;
+  514.    1               }
+  515.    1             }
+  516.    1         
+  517.    1------->   }
+  518.              
+  519.              
+  520.                /* send remaining updates in buckets */
+  521.  + 1-------<   while (pendingUpdates > 0) {
+  522.    1         
+  523.    1             /* receive messages */
+  524.  + 1 2-----<     do {
+  525.    1 2       #ifdef USE_MULTIPLE_RECV
+  526.  + 1 2             MPI_Testany(NumRecvs, inreq, &index, &have_done, &status);
+  527.    1 2       #else
+  528.    1 2             MPI_Test(&inreq, &have_done, &status);
+  529.    1 2       #endif
+  530.    1 2             if (have_done) {
+  531.    1 2               if (status.MPI_TAG == UPDATE_TAG) {
+  532.  + 1 2                 MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  533.    1 2       #ifdef USE_MULTIPLE_RECV
+  534.    1 2                 bufferBase = index * LOCAL_BUFFER_SIZE;
+  535.    1 2       #else
+  536.    1 2                 bufferBase = 0;
+  537.    1 2       #endif
+  538.  + 1 2 r4--<           for (j=0; j < recvUpdates; j ++) {
+  539.    1 2 r4                inmsg = LocalRecvBuffer[bufferBase+j];
+  540.    1 2 r4                HPCC_Table[(inmsg >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize-1)] ^= inmsg;
+  541.    1 2 r4-->           }
+  542.    1 2               } else if (status.MPI_TAG == FINISHED_TAG) {
+  543.    1 2                 /* we got a done message.  Thanks for playing... */
+  544.    1 2                 NumberReceiving--;
+  545.    1 2               } else {
+  546.  + 1 2                 MPI_Abort( MPI_COMM_WORLD, -1 );
+  547.    1 2               }
+  548.    1 2       #ifdef USE_MULTIPLE_RECV
+  549.    1 2               MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  550.    1 2                         tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  551.    1 2                         &inreq[index]);
+  552.    1 2       #else
+  553.    1 2               MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  554.    1 2                         MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  555.    1 2       #endif
+  556.    1 2             }
+  557.    1 2----->     } while (have_done && NumberReceiving > 0);
+  558.    1         
+  559.    1         
+  560.  + 1             MPI_Test(&outreq, &have_done, MPI_STATUS_IGNORE);
+  561.    1             if (have_done) {
+  562.    1               outreq = MPI_REQUEST_NULL;
+  563.  + 1               pe = HPCC_GetUpdates(Buckets, LocalSendBuffer, localBufferSize, &peUpdates);
+  564.    1               MPI_Isend(&LocalSendBuffer, peUpdates, tparams.dtype64, (int)pe, UPDATE_TAG,
+  565.    1                         MPI_COMM_WORLD, &outreq);
+  566.    1               pendingUpdates -= peUpdates;
+  567.    1             }
+  568.    1         
+  569.    1------->   }
+  570.              
+  571.                /* send our done messages */
+  572.  + 1-------<   for (proc_count = 0 ; proc_count < tparams.NumProcs ; ++proc_count) {
+  573.    1             if (proc_count == tparams.MyProc) { tparams.finish_req[tparams.MyProc] = MPI_REQUEST_NULL; continue; }
+  574.    1             /* send garbage - who cares, no one will look at it */
+  575.    1             MPI_Isend(&Ran, 0, tparams.dtype64, proc_count, FINISHED_TAG,
+  576.    1                       MPI_COMM_WORLD, tparams.finish_req + proc_count);
+  577.    1------->   }
+  578.              
+  579.                /* Finish everyone else up... */
+  580.  + 1-------<   while (NumberReceiving > 0) {
+  581.    1         #ifdef USE_MULTIPLE_RECV
+  582.  + 1             MPI_Waitany(NumRecvs, inreq, &index, &status);
+  583.    1         #else
+  584.    1             MPI_Wait(&inreq, &status);
+  585.    1         #endif
+  586.    1             if (status.MPI_TAG == UPDATE_TAG) {
+  587.  + 1               MPI_Get_count(&status, tparams.dtype64, &recvUpdates);
+  588.    1         #ifdef USE_MULTIPLE_RECV
+  589.    1               bufferBase = index * LOCAL_BUFFER_SIZE;
+  590.    1         #else
+  591.    1               bufferBase = 0;
+  592.    1         #endif
+  593.  + 1 r4----<       for (j=0; j < recvUpdates; j ++) {
+  594.    1 r4              inmsg = LocalRecvBuffer[bufferBase+j];
+  595.    1 r4              HPCC_Table[(inmsg >> (64 - tparams.logTableSize)) & (tparams.LocalTableSize-1)] ^= inmsg;
+  596.    1 r4---->       }
+  597.    1         
+  598.    1             } else if (status.MPI_TAG == FINISHED_TAG) {
+  599.    1               /* we got a done message.  Thanks for playing... */
+  600.    1               NumberReceiving--;
+  601.    1             } else {
+  602.  + 1               MPI_Abort( MPI_COMM_WORLD, -1 );
+  603.    1             }
+  604.    1         #ifdef USE_MULTIPLE_RECV
+  605.    1             MPI_Irecv(&LocalRecvBuffer[index*LOCAL_BUFFER_SIZE], localBufferSize,
+  606.    1                       tparams.dtype64, MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD,
+  607.    1                       &inreq[index]);
+  608.    1         #else
+  609.    1             MPI_Irecv(&LocalRecvBuffer, localBufferSize, tparams.dtype64,
+  610.    1                       MPI_ANY_SOURCE, MPI_ANY_TAG, MPI_COMM_WORLD, &inreq);
+  611.    1         #endif
+  612.    1------->   }
+  613.              
+  614.                MPI_Waitall( tparams.NumProcs, tparams.finish_req, tparams.finish_statuses);
+  615.              
+  616.                /* Be nice and clean up after ourselves */
+  617.  +             HPCC_FreeBuckets(Buckets, tparams.NumProcs);
+  618.              #ifdef USE_MULTIPLE_RECV
+  619.  + 1-------<   for (j = 0; j < NumRecvs; j++) {
+  620.  + 1             MPI_Cancel(&inreq[j]);
+  621.    1             MPI_Wait(&inreq[j], MPI_STATUS_IGNORE);
+  622.    1------->   }
+  623.              #else
+  624.                MPI_Cancel(&inreq);
+  625.                MPI_Wait(&inreq, MPI_STATUS_IGNORE);
+  626.              #endif
+  627.                MPI_Wait(&outreq, MPI_STATUS_IGNORE);
+  628.              
+  629.                /* end multiprocessor code */
+  630.              }
+  631.              #endif
+  632.              
+  633.              int
+  634.              HPCC_MPIRandomAccess_LCG(HPCC_Params *params) {
+  635.                s64Int i;
+  636.                s64Int NumErrors, GlbNumErrors;
+  637.              
+  638.                double CPUTime;               /* CPU  time to update table */
+  639.                double RealTime;              /* Real time to update table */
+  640.              
+  641.                double TotalMem;
+  642.                int sAbort, rAbort;
+  643.                int PowerofTwo;
+  644.              
+  645.                double timeBound = -1;  /* OPTIONAL time bound for execution time */
+  646.                u64Int NumUpdates_Default; /* Number of updates to table (suggested: 4x number of table entries) */
+  647.                u64Int NumUpdates;  /* actual number of updates to table - may be smaller than
+  648.                                     * NumUpdates_Default due to execution time bounds */
+  649.              
+  650.              #ifdef RA_TIME_BOUND
+  651.                s64Int localProcNumUpdates, GlbNumUpdates;  /* for reduction */
+  652.              #ifndef LONG_IS_64BITS
+  653.                MPI_Op min_int64;
+  654.              #endif
+  655.              #endif
+  656.              
+  657.                FILE *outFile = NULL;
+  658.                double *GUPs;
+  659.              
+  660.                HPCC_RandomAccess_tabparams_t tparams;
+  661.              
+  662.              #ifdef LONG_IS_64BITS
+  663.                tparams.dtype64 = MPI_LONG;
+  664.              #else
+  665.                MPI_Op sum64;
+  666.                tparams.dtype64 = MPI_LONG_LONG_INT;
+  667.              #endif
+  668.              
+  669.                GUPs = &params->MPIRandomAccess_LCG_GUPs;
+  670.              
+  671.  +             MPI_Comm_size( MPI_COMM_WORLD, &tparams.NumProcs );
+  672.  +             MPI_Comm_rank( MPI_COMM_WORLD, &tparams.MyProc );
+  673.              
+  674.                if (0 == tparams.MyProc) {
+  675.  +               outFile = fopen( params->outFname, "a" );
+  676.                  if (! outFile) outFile = stderr;
+  677.                }
+  678.              
+  679.                TotalMem = params->HPLMaxProcMem; /* max single node memory */
+  680.                TotalMem *= tparams.NumProcs;     /* max memory in tparams.NumProcs nodes */
+  681.                TotalMem /= sizeof(u64Int);
+  682.              
+  683.                /* calculate TableSize --- the size of update array (must be a power of 2) */
+  684.  + 1-------<   for (TotalMem *= 0.5, tparams.logTableSize = 0, tparams.TableSize = 1;
+  685.    1                TotalMem >= 1.0;
+  686.    1                TotalMem *= 0.5, tparams.logTableSize++, tparams.TableSize <<= 1)
+  687.    1------->     ; /* EMPTY */
+  688.              
+  689.              
+  690.                /* determine whether the number of processors is a power of 2 */
+  691.  + 1-------<   for (i = 1, tparams.logNumProcs = 0; ; tparams.logNumProcs++, i <<= 1) {
+  692.    1             if (i == tparams.NumProcs) {
+  693.    1               PowerofTwo = HPCC_TRUE;
+  694.    1               tparams.Remainder = 0;
+  695.    1               tparams.Top = 0;
+  696.    1               tparams.MinLocalTableSize = (tparams.TableSize / tparams.NumProcs);
+  697.    1               tparams.LocalTableSize = tparams.MinLocalTableSize;
+  698.    1               tparams.GlobalStartMyProc = (tparams.MinLocalTableSize * tparams.MyProc);
+  699.    1               break;
+  700.    1         
+  701.    1             /* number of processes is not a power 2 (too many shifts may introduce negative values or 0) */
+  702.    1         
+  703.    1             }
+  704.    1             else if (i > tparams.NumProcs || i <= 0) {
+  705.    1               PowerofTwo = HPCC_FALSE;
+  706.    1               /* Minimum local table size --- some processors have an additional entry */
+  707.    1               tparams.MinLocalTableSize = (tparams.TableSize / tparams.NumProcs);
+  708.    1               /* Number of processors with (LocalTableSize + 1) entries */
+  709.    1               tparams.Remainder = tparams.TableSize  - (tparams.MinLocalTableSize * tparams.NumProcs);
+  710.    1               /* Number of table entries in top of Table */
+  711.    1               tparams.Top = (tparams.MinLocalTableSize + 1) * tparams.Remainder;
+  712.    1               /* Local table size */
+  713.    1               if (tparams.MyProc < tparams.Remainder) {
+  714.    1                   tparams.LocalTableSize = (tparams.MinLocalTableSize + 1);
+  715.    1                   tparams.GlobalStartMyProc = ( (tparams.MinLocalTableSize + 1) * tparams.MyProc);
+  716.    1                 }
+  717.    1                 else {
+  718.    1                   tparams.LocalTableSize = tparams.MinLocalTableSize;
+  719.    1                   tparams.GlobalStartMyProc = ( (tparams.MinLocalTableSize * tparams.MyProc) + tparams.Remainder );
+  720.    1                 }
+  721.    1               break;
+  722.    1         
+  723.    1             } /* end else if */
+  724.    1------->   } /* end for i */
+  725.              
+  726.                sAbort = 0;
+  727.                tparams.finish_statuses = XMALLOC( MPI_Status, tparams.NumProcs );
+  728.                tparams.finish_req = XMALLOC( MPI_Request, tparams.NumProcs );
+  729.                HPCC_Table = HPCC_XMALLOC( u64Int, tparams.LocalTableSize );
+  730.              
+  731.                if (! tparams.finish_statuses || ! tparams.finish_req || ! HPCC_Table) sAbort = 1;
+  732.              
+  733.  +             MPI_Allreduce( &sAbort, &rAbort, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+  734.                if (rAbort > 0) {
+  735.                  if (tparams.MyProc == 0) fprintf(outFile, "Failed to allocate memory for the main table.\n");
+  736.                  /* check all allocations in case there are new added and their order changes */
+  737.                  if (tparams.finish_statuses) free( tparams.finish_statuses );
+  738.                  if (tparams.finish_req) free( tparams.finish_req );
+  739.                  if (HPCC_Table) HPCC_free( HPCC_Table );
+  740.              
+  741.                  goto failed_table;
+  742.                }
+  743.              
+  744.                params->MPIRandomAccess_LCG_N = (s64Int)tparams.TableSize;
+  745.              
+  746.                /* Default number of global updates to table: 4x number of table entries */
+  747.                NumUpdates_Default = 4 * tparams.TableSize;
+  748.                tparams.ProcNumUpdates = 4*tparams.LocalTableSize;
+  749.                NumUpdates = NumUpdates_Default;
+  750.              
+  751.                /* The time bound is only accurate for standard RandomAccess algorithm. */
+  752.              #ifdef HPCC_RA_STDALG
+  753.              #ifdef RA_TIME_BOUND
+  754.                /* estimate number of updates such that execution time does not exceed time bound */
+  755.                /* time_bound should be a parameter */
+  756.                /* max run time in seconds */
+  757.  +             MPI_Allreduce( &params->HPLrdata.time, &timeBound, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD );
+  758.                timeBound = Mmax( 0.25 * timeBound, (double)TIME_BOUND );
+  759.                if (PowerofTwo) {
+  760.  +               HPCC_Power2NodesTimeLCG( tparams, timeBound, (u64Int *)&localProcNumUpdates );
+  761.                } else {
+  762.  +               HPCC_AnyNodesTimeLCG( tparams, timeBound, (u64Int *)&localProcNumUpdates );
+  763.                }
+  764.                /* be conservative: get the smallest number of updates among all procs */
+  765.              #ifdef LONG_IS_64BITS
+  766.  +             MPI_Allreduce( &localProcNumUpdates, &GlbNumUpdates, 1, MPI_LONG, MPI_MIN, MPI_COMM_WORLD );
+  767.              #else
+  768.                MPI_Op_create( MinInt64, 1, &min_int64 );
+  769.                MPI_Allreduce( &localProcNumUpdates, &GlbNumUpdates, 1, tparams.dtype64, min_int64, MPI_COMM_WORLD );
+  770.                MPI_Op_free( &min_int64 );
+  771.              #endif
+  772.                tparams.ProcNumUpdates = Mmin(GlbNumUpdates, (4*tparams.LocalTableSize));
+  773.                /* works for both PowerofTwo and AnyNodes */
+  774.                NumUpdates = Mmin((tparams.ProcNumUpdates*tparams.NumProcs), (s64Int)NumUpdates_Default);
+  775.              #endif
+  776.              #endif
+  777.              
+  778.                if (tparams.MyProc == 0) {
+  779.                  fprintf( outFile, "Running on %d processors%s\n", tparams.NumProcs, PowerofTwo ? " (PowerofTwo)" : "");
+  780.                  fprintf( outFile, "Total Main table size = 2^" FSTR64 " = " FSTR64 " words\n",
+  781.                           tparams.logTableSize, tparams.TableSize );
+  782.                  if (PowerofTwo)
+  783.                      fprintf( outFile, "PE Main table size = 2^" FSTR64 " = " FSTR64 " words/PE\n",
+  784.                               (tparams.logTableSize - tparams.logNumProcs), tparams.TableSize/tparams.NumProcs );
+  785.                    else
+  786.                      fprintf( outFile, "PE Main table size = (2^" FSTR64 ")/%d  = " FSTR64 " words/PE MAX\n",
+  787.                               tparams.logTableSize, tparams.NumProcs, tparams.LocalTableSize);
+  788.              
+  789.                  fprintf( outFile, "Default number of updates (RECOMMENDED) = " FSTR64 "\n", NumUpdates_Default);
+  790.              #ifdef RA_TIME_BOUND
+  791.                  fprintf( outFile, "Number of updates EXECUTED = " FSTR64 " (for a TIME BOUND of %.2f secs)\n",
+  792.                           NumUpdates, timeBound);
+  793.              #endif
+  794.                  params->MPIRandomAccess_LCG_ExeUpdates = NumUpdates;
+  795.                  params->MPIRandomAccess_LCG_TimeBound = timeBound;
+  796.                }
+  797.              
+  798.                /* Initialize main table */
+  799.  + 1-------<   for (i=0; i<tparams.LocalTableSize; i++)
+  800.    1------->     HPCC_Table[i] = i + tparams.GlobalStartMyProc;
+  801.              
+  802.  +             MPI_Barrier( MPI_COMM_WORLD );
+  803.              
+  804.  +             CPUTime = -CPUSEC();
+  805.  +             RealTime = -RTSEC();
+  806.              
+  807.                if (PowerofTwo) {
+  808.  +               HPCC_Power2NodesMPIRandomAccessUpdate_LCG( tparams );
+  809.                } else {
+  810.  +               HPCC_AnyNodesMPIRandomAccessUpdate_LCG( tparams );
+  811.                }
+  812.              
+  813.              
+  814.  +             MPI_Barrier( MPI_COMM_WORLD );
+  815.              
+  816.                /* End timed section */
+  817.  +             CPUTime += CPUSEC();
+  818.  +             RealTime += RTSEC();
+  819.              
+  820.                /* Print timing results */
+  821.                if (tparams.MyProc == 0){
+  822.                  params->MPIRandomAccess_LCG_time = RealTime;
+  823.                  *GUPs = 1e-9*NumUpdates / RealTime;
+  824.                  fprintf( outFile, "CPU time used = %.6f seconds\n", CPUTime );
+  825.                  fprintf( outFile, "Real time used = %.6f seconds\n", RealTime );
+  826.                  fprintf( outFile, "%.9f Billion(10^9) Updates    per second [GUP/s]\n",
+  827.                           *GUPs );
+  828.                  fprintf( outFile, "%.9f Billion(10^9) Updates/PE per second [GUP/s]\n",
+  829.                           *GUPs / tparams.NumProcs );
+  830.                  /* No longer reporting per CPU number */
+  831.                  /* *GUPs /= NumProcs; */
+  832.                }
+  833.                /* distribute result to all nodes */
+  834.  +             MPI_Bcast( GUPs, 1, MPI_INT, 0, MPI_COMM_WORLD );
+  835.              
+  836.              
+  837.                /* Verification phase */
+  838.              
+  839.                /* Begin timing here */
+  840.  +             CPUTime = -CPUSEC();
+  841.  +             RealTime = -RTSEC();
+  842.              
+  843.                if (PowerofTwo) {
+  844.  +               HPCC_Power2NodesMPIRandomAccessCheck_LCG( tparams, &NumErrors );
+  845.                }
+  846.                else {
+  847.  +               HPCC_AnyNodesMPIRandomAccessCheck_LCG( tparams, &NumErrors );
+  848.                }
+  849.              
+  850.              
+  851.              #ifdef LONG_IS_64BITS
+  852.  +             MPI_Reduce( &NumErrors, &GlbNumErrors, 1, MPI_LONG, MPI_SUM, 0, MPI_COMM_WORLD );
+  853.              #else
+  854.                /* MPI 1.1 standard (obsolete at this point) doesn't define MPI_SUM
+  855.                  to work on `long long':
+  856.                  http://www.mpi-forum.org/docs/mpi-11-html/node78.html and
+  857.                  therefore LAM 6.5.6 chooses not to implement it (even though there
+  858.                  is code for it in LAM and for other reductions work OK,
+  859.                  e.g. MPI_MAX). MPICH 1.2.5 doesn't complain about MPI_SUM but it
+  860.                  doesn't have MPI_UNSIGNED_LONG_LONG (but has MPI_LONG_LONG_INT):
+  861.                  http://www.mpi-forum.org/docs/mpi-20-html/node84.htm So I need to
+  862.                  create a trivial summation operation. */
+  863.                MPI_Op_create( Sum64, 1, &sum64 );
+  864.                MPI_Reduce( &NumErrors, &GlbNumErrors, 1, tparams.dtype64, sum64, 0, MPI_COMM_WORLD );
+  865.                MPI_Op_free( &sum64 );
+  866.              #endif
+  867.              
+  868.                /* End timed section */
+  869.  +             CPUTime += CPUSEC();
+  870.  +             RealTime += RTSEC();
+  871.              
+  872.                if(tparams.MyProc == 0){
+  873.                  params->MPIRandomAccess_LCG_CheckTime = RealTime;
+  874.                  fprintf( outFile, "Verification:  CPU time used = %.6f seconds\n", CPUTime);
+  875.                  fprintf( outFile, "Verification:  Real time used = %.6f seconds\n", RealTime);
+  876.                  fprintf( outFile, "Found " FSTR64 " errors in " FSTR64 " locations (%s).\n",
+  877.                           GlbNumErrors, tparams.TableSize, (GlbNumErrors <= 0.01*tparams.TableSize) ?
+  878.                           "passed" : "failed");
+  879.                  if (GlbNumErrors > 0.01*tparams.TableSize) params->Failure = 1;
+  880.                  params->MPIRandomAccess_LCG_Errors = (s64Int)GlbNumErrors;
+  881.                  params->MPIRandomAccess_LCG_ErrorsFraction = (double)GlbNumErrors / (double)tparams.TableSize;
+  882.                  params->MPIRandomAccess_LCG_Algorithm = HPCC_RA_ALGORITHM;
+  883.                }
+  884.                /* End verification phase */
+  885.              
+  886.              
+  887.                /* Deallocate memory (in reverse order of allocation which should
+  888.                   help fragmentation) */
+  889.              
+  890.                HPCC_free( HPCC_Table );
+  891.                free( tparams.finish_req );
+  892.                free( tparams.finish_statuses );
+  893.              
+  894.                failed_table:
+  895.              
+  896.  +             if (0 == tparams.MyProc) if (outFile != stderr) fclose( outFile );
+  897.              
+  898.  +             MPI_Barrier( MPI_COMM_WORLD );
+  899.              
+  900.                return 0;
+  901.              }
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 173 
+  "HPCC_InitBuckets" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 186 
+  "HPCC_starts_LCG" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 192 
+  A loop was not vectorized because it contains a call to function "MPI_Irecv" on line 193.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 204 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 206.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 206 
+  "MPI_Testany" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 212 
+  "MPI_Get_count" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 218 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 218 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 219 and "HPCC_Table" at line 221.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 228 
+  "MPI_Abort" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 255 
+  "HPCC_InsertUpdate" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 262 
+  "MPI_Test" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 265 
+  "HPCC_GetUpdates" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 278 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 280.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 280 
+  "MPI_Testany" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 286 
+  "MPI_Get_count" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 292 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 292 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 293 and "HPCC_Table" at line 295.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 302 
+  "MPI_Abort" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 316 
+  "MPI_Test" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 319 
+  "HPCC_GetUpdates" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 328 
+  A loop was not vectorized because it contains a call to function "MPI_Isend" on line 331.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 336 
+  A loop was not vectorized because it contains a call to function "MPI_Waitany" on line 338.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 338 
+  "MPI_Waitany" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 343 
+  "MPI_Get_count" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 349 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 349 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 350 and "HPCC_Table" at line 352.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 359 
+  "MPI_Abort" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 374 
+  "HPCC_FreeBuckets" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 376 
+  A loop was not vectorized because it contains a call to function "MPI_Cancel" on line 377.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 377 
+  "MPI_Cancel" (called from "HPCC_AnyNodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 424 
+  "HPCC_InitBuckets" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 437 
+  "HPCC_starts_LCG" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 443 
+  A loop was not vectorized because it contains a call to function "MPI_Irecv" on line 444.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 455 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 457.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 457 
+  "MPI_Testany" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 463 
+  "MPI_Get_count" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 469 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 469 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 470 and "HPCC_Table" at line 471.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 478 
+  "MPI_Abort" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 500 
+  "HPCC_InsertUpdate" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 507 
+  "MPI_Test" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 510 
+  "HPCC_GetUpdates" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 524 
+  A loop was not vectorized because it contains a call to function "MPI_Testany" on line 526.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 526 
+  "MPI_Testany" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 532 
+  "MPI_Get_count" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 538 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 538 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 539 and "HPCC_Table" at line 540.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 546 
+  "MPI_Abort" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 560 
+  "MPI_Test" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 563 
+  "HPCC_GetUpdates" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 572 
+  A loop was not vectorized because it contains a call to function "MPI_Isend" on line 575.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 580 
+  A loop was not vectorized because it contains a call to function "MPI_Waitany" on line 582.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 582 
+  "MPI_Waitany" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 587 
+  "MPI_Get_count" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6005 CC: SCALAR File = MPIRandomAccessLCG.c, Line = 593 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 593 
+  A loop was not vectorized because a recurrence was found between "LocalRecvBuffer" at line 594 and "HPCC_Table" at line 595.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 602 
+  "MPI_Abort" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 617 
+  "HPCC_FreeBuckets" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to
+  locate the routine.
+
+CC-6287 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 619 
+  A loop was not vectorized because it contains a call to function "MPI_Cancel" on line 620.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 620 
+  "MPI_Cancel" (called from "HPCC_Power2NodesMPIRandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate
+  the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 671 
+  "MPI_Comm_size" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 672 
+  "MPI_Comm_rank" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 675 
+  "fopen" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 684 
+  A loop was not vectorized because a recurrence was found on "TotalMem" at line 686.
+
+CC-6254 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 691 
+  A loop was not vectorized because a recurrence was found on "i" at line 691.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 733 
+  "MPI_Allreduce" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 757 
+  "MPI_Allreduce" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 760 
+  "HPCC_Power2NodesTimeLCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 762 
+  "HPCC_AnyNodesTimeLCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 766 
+  "MPI_Allreduce" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = MPIRandomAccessLCG.c, Line = 799 
+  A loop was not vectorized because a recurrence was found between "tparams" and "HPCC_Table" at line 800.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 802 
+  "MPI_Barrier" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 804 
+  "HPL_timer_cputime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 805 
+  "MPI_Wtime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = MPIRandomAccessLCG.c, Line = 808 
+  "HPCC_Power2NodesMPIRandomAccessUpdate_LCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the call site will
+  not flatten.  "MPI_Cancel" is missing.
+
+CC-3118 CC: IPA File = MPIRandomAccessLCG.c, Line = 810 
+  "HPCC_AnyNodesMPIRandomAccessUpdate_LCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the call site will not
+  flatten.  "MPI_Cancel" is missing.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 814 
+  "MPI_Barrier" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 817 
+  "HPL_timer_cputime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 818 
+  "MPI_Wtime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 834 
+  "MPI_Bcast" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 840 
+  "HPL_timer_cputime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 841 
+  "MPI_Wtime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 844 
+  "HPCC_Power2NodesMPIRandomAccessCheck_LCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was
+  unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 847 
+  "HPCC_AnyNodesMPIRandomAccessCheck_LCG" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable
+  to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 852 
+  "MPI_Reduce" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 869 
+  "HPL_timer_cputime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 870 
+  "MPI_Wtime" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 896 
+  "fclose" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = MPIRandomAccessLCG.c, Line = 898 
+  "MPI_Barrier" (called from "HPCC_MPIRandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

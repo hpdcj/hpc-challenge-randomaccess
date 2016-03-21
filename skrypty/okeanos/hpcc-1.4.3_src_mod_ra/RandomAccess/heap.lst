@@ -1,0 +1,305 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/heap.c
+Compiled : 2016-03-19  13:20:09
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/heap.o
+           -c ../../../../RandomAccess/heap.c -I ../../../../include
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/heap.c
+Date     : 03/19/2016  13:20:09
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* heap.c
+    2.          * Maintains a heap of records such that the key of each node is
+    3.          * larger or equal than those of its children
+    4.          *
+    5.          * The heap is used to maintain an ordering for the local buckets
+    6.          * (one bucket for each destination PE) that have pending updates.
+    7.          * The bucket with the largest number of pending updates is
+    8.          * always at the root of the heap.
+    9.          */
+   10.         
+   11.         #include <stdlib.h>
+   12.         #include <stdio.h>
+   13.         #include "heap.h"
+   14.         #include "pool.h"
+   15.         
+   16.         static Heap_Record_Ptr *heap; /* heap of records */
+   17.         static int heapNodes;         /* number of records in heap */
+   18.         static int *IndexToHeapNode;  /* aux array that keeps mapping from record's indices to heap nodes */
+   19.         static POOL *Heap_Pool;       /* memory for heap records */
+   20.         
+   21.         #define LEFT(x)     (((x) << 1) + 1)
+   22.         #define RIGHT(x)    (((x) << 1) + 2)
+   23.         #define PARENT(x)   (((x)-1) >> 1)
+   24.         #define MAP_INDEX_TO_HEAP_NODE(node) (IndexToHeapNode[heap[(node)]->index] = (node))
+   25.         
+   26.         
+   27.         void HPCC_ra_Heap_Init (int size)
+   28.         {
+   29.           int i;
+   30.         
+   31.           heap = (Heap_Record_Ptr *) malloc (size * sizeof (Heap_Record_Ptr));
+   32.           heapNodes = 0;
+   33.         
+   34.           IndexToHeapNode = (int *) malloc (size * sizeof (int));
+   35.    A--<   for (i = 0; i < size; i ++) {
+   36.    A        IndexToHeapNode[i] = NOT_A_NODE;
+   37.    A-->   }
+   38.         
+   39.           /* initialize memory pool for heap nodes */
+   40.  +        Heap_Pool = HPCC_PoolInit (size, sizeof(Heap_Record));
+   41.         
+   42.         }
+   43.         
+   44.         
+   45.         void HPCC_ra_Heap_Insert (int index, int key)
+   46.         {
+   47.         
+   48.           Heap_Record_Ptr newNode;
+   49.           int node, parent;
+   50.         
+   51.  +        newNode = (Heap_Record*) HPCC_PoolGetObj(Heap_Pool);
+   52.           newNode->index  = index;
+   53.           newNode->key = key;
+   54.         
+   55.           node = heapNodes;
+   56.           parent = PARENT(node);
+   57.           heapNodes ++;
+   58.  + 1--<   while (node != 0 && key > heap[parent]->key) {
+   59.    1        heap[node] = heap[parent];
+   60.    1        MAP_INDEX_TO_HEAP_NODE(node);
+   61.    1        node = parent;
+   62.    1        parent = PARENT(node);
+   63.    1-->   }
+   64.         
+   65.           heap[node] = newNode;
+   66.           IndexToHeapNode[index] = node;
+   67.         
+   68.         }
+   69.         
+   70.         void HPCC_ra_Heap_IncrementKey (int index)
+   71.         {
+   72.         
+   73.           int node;
+   74.         
+   75.           int parent;
+   76.           int child;
+   77.           int done;
+   78.           Heap_Record_Ptr tmp;
+   79.         
+   80.           node = IndexToHeapNode[index];
+   81.           if (node != NOT_A_NODE) {
+   82.             heap[node]->key = heap[node]->key + 1;
+   83.         
+   84.             /* _ra_Heapify (node); */
+   85.             done = 0;
+   86.             child = node;
+   87.  + 1--<     while (!done && child > 0) {
+   88.    1          parent = PARENT(child);
+   89.    1          if (parent >= 0 && heap[parent]->key < heap[child]->key) {
+   90.    1    	tmp = heap[child];
+   91.    1    	heap[child] = heap[parent];
+   92.    1    	MAP_INDEX_TO_HEAP_NODE(child);
+   93.    1    	heap[parent] = tmp;
+   94.    1    	MAP_INDEX_TO_HEAP_NODE(parent);
+   95.    1    	child = parent;
+   96.    1          }
+   97.    1          else done = 1;
+   98.    1-->     }
+   99.             /* end  _ra_Heapify (node); */
+  100.         
+  101.           }
+  102.         
+  103.         }
+  104.         
+  105.         
+  106.         void HPCC_ra_Heap_ExtractMax (int *index, int *key)
+  107.         {
+  108.           Heap_Record_Ptr nodePtr;
+  109.           int parent, child;
+  110.         
+  111.           nodePtr = heap[HEAP_ROOT];
+  112.           *index = nodePtr->index;
+  113.           *key = nodePtr->key;
+  114.  +        HPCC_PoolReturnObj(Heap_Pool, nodePtr);
+  115.         
+  116.           heapNodes --;
+  117.           nodePtr = heap[heapNodes];
+  118.           parent = HEAP_ROOT;
+  119.           child = LEFT(parent);
+  120.  + 1--<   while (child <= heapNodes) {
+  121.    1        if (child < heapNodes && heap[child]->key < heap[child+1]->key)
+  122.    1          child ++;
+  123.    1        if (nodePtr->key >= heap[child]->key)
+  124.    1          break;
+  125.    1        heap[parent] = heap[child];
+  126.    1        MAP_INDEX_TO_HEAP_NODE(parent);
+  127.    1        parent = child;
+  128.    1        child  = LEFT(child);
+  129.    1-->   }
+  130.         
+  131.           heap[parent] = nodePtr;
+  132.           MAP_INDEX_TO_HEAP_NODE(parent);
+  133.         }
+  134.         
+  135.         void HPCC_ra_Heapify(int node)
+  136.         {
+  137.           /* assumes that the key of a given node can only be increased */
+  138.         
+  139.           int parent;
+  140.           int child;
+  141.           int done;
+  142.           Heap_Record_Ptr tmp;
+  143.         
+  144.           done = 0;
+  145.           child = node;
+  146.  + 1--<   while (!done && child > 0) {
+  147.    1        parent = PARENT(child);
+  148.    1        if (parent >= 0 && heap[parent]->key < heap[child]->key) {
+  149.    1          tmp = heap[child];
+  150.    1          heap[child] = heap[parent];
+  151.    1          MAP_INDEX_TO_HEAP_NODE(child);
+  152.    1          heap[parent] = tmp;
+  153.    1          MAP_INDEX_TO_HEAP_NODE(parent);
+  154.    1          child = parent;
+  155.    1        }
+  156.    1        else done = 1;
+  157.    1-->   }
+  158.         }
+  159.         
+  160.         
+  161.         void HPCC_ra_Heapify_r(int node)
+  162.         {
+  163.           /* assumes that the key of a given entry can only be increased */
+  164.         
+  165.           int parent;
+  166.           int child;
+  167.           Heap_Record_Ptr tmp;
+  168.         
+  169.           if (node > 0) {
+  170.             child = node;
+  171.             parent = PARENT(child);
+  172.             if (parent >= 0 && heap[parent]->key < heap[child]->key) {
+  173.               tmp = heap[child];
+  174.               heap[child] = heap[parent];
+  175.               MAP_INDEX_TO_HEAP_NODE(child);
+  176.               heap[parent] = tmp;
+  177.               MAP_INDEX_TO_HEAP_NODE(parent);
+  178.               child = parent;
+  179.  +            HPCC_ra_Heapify(child);
+  180.             }
+  181.           }
+  182.         }
+  183.         
+  184.         
+  185.         void HPCC_ra_Heap_Free() {
+  186.         
+  187.  +        HPCC_PoolFree(Heap_Pool);
+  188.         
+  189.           free(Heap_Pool);
+  190.         
+  191.           free(IndexToHeapNode);
+  192.         
+  193.           free(heap);
+  194.         
+  195.         }
+
+CC-6202 CC: VECTOR File = heap.c, Line = 35 
+  A loop was replaced by a library call.
+
+CC-3021 CC: IPA File = heap.c, Line = 40 
+  "HPCC_PoolInit" (called from "HPCC_ra_Heap_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = heap.c, Line = 51 
+  "HPCC_PoolGetObj" (called from "HPCC_ra_Heap_Insert") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = heap.c, Line = 58 
+  A loop was not vectorized because a recurrence was found between "heap" and "IndexToHeapNode" at line 60.
+
+CC-6290 CC: VECTOR File = heap.c, Line = 87 
+  A loop was not vectorized because a recurrence was found between "heap" and "IndexToHeapNode" at line 92.
+
+CC-3021 CC: IPA File = heap.c, Line = 114 
+  "HPCC_PoolReturnObj" (called from "HPCC_ra_Heap_ExtractMax") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-6290 CC: VECTOR File = heap.c, Line = 120 
+  A loop was not vectorized because a recurrence was found between "heap" and "IndexToHeapNode" at line 126.
+
+CC-6290 CC: VECTOR File = heap.c, Line = 146 
+  A loop was not vectorized because a recurrence was found between "heap" and "IndexToHeapNode" at line 151.
+
+CC-3171 CC: IPA File = heap.c, Line = 179 
+  "HPCC_ra_Heapify" (called from "HPCC_ra_Heapify_r") was not inlined because it is not in the body of a loop.
+
+CC-3021 CC: IPA File = heap.c, Line = 187 
+  "HPCC_PoolFree" (called from "HPCC_ra_Heap_Free") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

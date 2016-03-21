@@ -1,0 +1,761 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/pzfft1d.c
+Compiled : 2016-03-19  13:20:31
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/pzfft1d.o -c ../../../../FFT/pzfft1d.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/pzfft1d.c
+Date     : 03/19/2016  13:20:31
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                    /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.                    /*
+    3.                    C
+    4.                    C     FFTE: A FAST FOURIER TRANSFORM PACKAGE
+    5.                    C
+    6.                    C     (C) COPYRIGHT SOFTWARE, 2000-2004, ALL RIGHTS RESERVED
+    7.                    C                BY
+    8.                    C         DAISUKE TAKAHASHI
+    9.                    C         GRADUATE SCHOOL OF SYSTEMS AND INFORMATION ENGINEERING
+   10.                    C         UNIVERSITY OF TSUKUBA
+   11.                    C         1-1-1 TENNODAI, TSUKUBA, IBARAKI 305-8573, JAPAN
+   12.                    C         E-MAIL: daisuke@cs.tsukuba.ac.jp
+   13.                    C
+   14.                    C
+   15.                    C     PARALLEL 1-D COMPLEX FFT ROUTINE
+   16.                    C
+   17.                    C     FORTRAN77 + MPI SOURCE PROGRAM
+   18.                    C
+   19.                    C     CALL PZFFT1D(A,B,W,N,ICOMM,ME,NPU,IOPT)
+   20.                    C
+   21.                    C     W((N/NPU)*3/2) IS SINE/COSINE TABLE (COMPLEX*16)
+   22.                    C     N IS THE LENGTH OF THE TRANSFORMS (INTEGER*8)
+   23.                    C       -----------------------------------
+   24.                    C         N = (2**IP) * (3**IQ) * (5**IR)
+   25.                    C       -----------------------------------
+   26.                    C     ICOMM IS THE COMMUNICATOR (INTEGER*4)
+   27.                    C     ME IS THE RANK (INTEGER*4)
+   28.                    C     NPU IS THE NUMBER OF PROCESSORS (INTEGER*4)
+   29.                    C     IOPT = 0 FOR INITIALIZING THE COEFFICIENTS (INTEGER*4)
+   30.                    C     IOPT = -1 FOR FORWARD TRANSFORM WHERE
+   31.                    C              A(N/NPU) IS COMPLEX INPUT VECTOR (COMPLEX*16)
+   32.                    C!HPF$ DISTRIBUTE A(BLOCK)
+   33.                    C              B(N/NPU) IS COMPLEX OUTPUT VECTOR (COMPLEX*16)
+   34.                    C!HPF$ DISTRIBUTE B(BLOCK)
+   35.                    C     IOPT = +1 FOR INVERSE TRANSFORM WHERE
+   36.                    C              A(N/NPU) IS COMPLEX INPUT VECTOR (COMPLEX*16)
+   37.                    C!HPF$ DISTRIBUTE A(BLOCK)
+   38.                    C              B(N/NPU) IS COMPLEX OUTPUT VECTOR (COMPLEX*16)
+   39.                    C!HPF$ DISTRIBUTE B(BLOCK)
+   40.                    C     IOPT = -2 FOR FORWARD TRANSFORM WHERE
+   41.                    C              A(N/NPU) IS COMPLEX INPUT VECTOR (COMPLEX*16)
+   42.                    C!HPF$ DISTRIBUTE A(BLOCK)
+   43.                    C              B(N/NPU) IS COMPLEX OUTPUT VECTOR (COMPLEX*16)
+   44.                    C!HPF$ DISTRIBUTE B(CYCLIC)
+   45.                    C     IOPT = +2 FOR INVERSE TRANSFORM WHERE
+   46.                    C              A(N/NPU) IS COMPLEX INPUT VECTOR (COMPLEX*16)
+   47.                    C!HPF$ DISTRIBUTE A(CYCLIC)
+   48.                    C              B(N/NPU) IS COMPLEX OUTPUT VECTOR (COMPLEX*16)
+   49.                    C!HPF$ DISTRIBUTE B(BLOCK)
+   50.                    C
+   51.                    C     WRITTEN BY DAISUKE TAKAHASHI
+   52.                    C
+   53.                    */
+   54.                    
+   55.                    #include "hpccfft.h"
+   56.                    #include "wrapmpifftw.h"
+   57.                    
+   58.                    static void
+   59.                    ztrans(fftw_complex *a, fftw_complex *b, int n1, int n2) {
+   60.                      int ii, jj, i, j;
+   61.                      int tmin1, tmin2;
+   62.                      int lda, ldb;
+   63.                    
+   64.                      lda = n1;
+   65.                      ldb = n2;
+   66.                    
+   67.                    #ifdef _OPENMP
+   68.                    #pragma omp parallel for private(i,j,jj,tmin1,tmin2)
+   69.                    #endif
+   70.  + Mm------------<   for (ii = 0; ii < n1; ii += FFTE_NBLK)
+   71.  + Mm 2----------<     for (jj = 0; jj < n2; jj += FFTE_NBLK) {
+   72.    Mm 2            
+   73.    Mm 2                  V3MIN( tmin1, ii + FFTE_NBLK, n1 );
+   74.  + Mm 2 3--------<       for (i = ii; i < tmin1; ++i) {
+   75.    Mm 2 3          
+   76.    Mm 2 3                  V3MIN( tmin2, jj + FFTE_NBLK, n2 );
+   77.  + Mm 2 3 r4-----<         for (j = jj; j < tmin2; ++j) {
+   78.    Mm 2 3 r4                 c_assgn( ARR2D( b, j, i, ldb ), ARR2D( a, i, j, lda ) );
+   79.    Mm 2 3 r4----->         }
+   80.    Mm 2 3-------->       }
+   81.    Mm 2--------->>     }
+   82.                    }	/* ztrans */
+   83.                    
+   84.                    static void
+   85.                    pztrans(fftw_complex *a, fftw_complex *b, s64Int_t nn, hpcc_fftw_mpi_plan p, int npu) {
+   86.                      int i, nn2;
+   87.                    
+   88.                      nn2 = nn / npu;
+   89.                    
+   90.                      if (1 == npu)
+   91.  + r8------------<     for (i = 0; i < nn2; ++i) {
+   92.    r8                    c_assgn( b[i], a[i] );
+   93.    r8------------>     }
+   94.                      else
+   95.  +                     MPI_Alltoall( a, nn2, p->cmplx, b, nn2, p->cmplx, p->comm );
+   96.                    }	/* pztrans */
+   97.                    
+   98.                    static void
+   99.                    pzfft1d0(fftw_complex *a, fftw_complex *a2, fftw_complex *apxyz, fftw_complex *axyzp, fftw_complex *b,
+  100.                      fftw_complex *bxyzp, fftw_complex *bzyx, fftw_complex *cy, fftw_complex *cz, fftw_complex *d,
+  101.                      fftw_complex *wx, fftw_complex *wy, fftw_complex *wz, fftw_complex *ww, fftw_complex *www,
+  102.                      int nx, int ny, int nz, hpcc_fftw_mpi_plan p, int npu, const int *lnx, const int *lny, const int *lnz) {
+  103.                    
+  104.                      int i, j, k, l, ii, jj, kk;
+  105.                      int tmin1, tmin2, tmin3;
+  106.                      int nnx, nnz;
+  107.                      s64Int_t nn;
+  108.                      int ldcz, lda2_1, lda2_2, ldaxyzp1, ldaxyzp2, ldaxyzp3, ldbxyzp1, ldbxyzp2, ldbxyzp3, ldww, ldcy;
+  109.                      int ldwww1, ldwww2, ldwww3, ldapxyz1, ldapxyz2, ldapxyz3, ldbzyx1, ldbzyx2, lda1, lda2;
+  110.                      fftw_complex ztmp1, ztmp2, ztmp3;
+  111.                    
+  112.                      ldcz = nz + FFTE_NP;
+  113.                      lda2_1 = nx / npu;
+  114.                      lda2_2 = ny;
+  115.                      ldaxyzp1 = nx / npu;
+  116.                      ldaxyzp2 = ny;
+  117.                      ldaxyzp3 = nz / npu;
+  118.                      ldbxyzp1 = nx / npu;
+  119.                      ldbxyzp2 = ny;
+  120.                      ldbxyzp3 = nz / npu;
+  121.                      ldww = ny;
+  122.                      ldcy = ny + FFTE_NP;
+  123.                      ldwww1 = npu;
+  124.                      ldwww2 = nx / npu;
+  125.                      ldwww3 = ny;
+  126.                      ldapxyz1 = npu;
+  127.                      ldapxyz2 = nx / npu;
+  128.                      ldapxyz3 = ny;
+  129.                      ldbzyx1 = nz / npu;
+  130.                      ldbzyx2 = ny;
+  131.                      lda1 = nx;
+  132.                      lda2 = ny;
+  133.                    
+  134.                      nnx = nx / npu;
+  135.                      nnz = nz / npu;
+  136.                      nn = (s64Int_t)nx * ny * nz / npu;
+  137.                    
+  138.                    #ifdef _OPENMP
+  139.                    #pragma omp for private(i,k,l,ii,kk,tmin1,tmin2)
+  140.                    #endif
+  141.  + m-------------<   for (j = 0; j < ny; ++j) {
+  142.  + m 2-----------<     for (ii = 0; ii < nnx; ii += FFTE_NBLK) {
+  143.  + m 2 3---------<       for (kk = 0; kk < nz; kk += FFTE_NBLK) {
+  144.    m 2 3           
+  145.    m 2 3                   V3MIN( tmin1, ii + FFTE_NBLK, nnx );
+  146.  + m 2 3 4-------<         for (i = ii; i < tmin1; ++i) {
+  147.    m 2 3 4         
+  148.    m 2 3 4                   V3MIN( tmin2, kk + FFTE_NBLK, nz );
+  149.  + m 2 3 4 r4----<           for (k = kk; k < tmin2; ++k) {
+  150.    m 2 3 4 r4                  c_assgn( ARR2D( cz, k, i-ii, ldcz ), ARR3D( a2, i, j, k, lda2_1, lda2_2 ) );
+  151.    m 2 3 4 r4---->           }
+  152.    m 2 3 4------->         }
+  153.    m 2 3--------->       }
+  154.    m 2             
+  155.    m 2                   V3MIN( tmin2, ii + FFTE_NBLK, nnx );
+  156.  + m 2 3---------<       for (i = ii; i < tmin2; ++i)
+  157.  + m 2 3 -------->         HPCC_fft235( PTR2D( cz, 0, i-ii, ldcz ), d, wz, nz, lnz );
+  158.    m 2             
+  159.  + m 2 3---------<       for (l = 0; l < npu; ++l) {
+  160.  + m 2 3 4-------<         for (k = 0; k < nnz; ++k) {
+  161.    m 2 3 4         
+  162.    m 2 3 4                   /* reusing tmin2 from above */
+  163.  + m 2 3 4 r4----<           for (i = ii; i < tmin2; ++i) {
+  164.    m 2 3 4 r4                  c_assgn( ARR4D( axyzp, i, j, k, l, ldaxyzp1, ldaxyzp2, ldaxyzp3 ),
+  165.    m 2 3 4 r4                           ARR2D( cz, l + k*npu, i-ii, ldcz ) );
+  166.    m 2 3 4 r4---->           }
+  167.    m 2 3 4------->         }
+  168.    m 2 3--------->       }
+  169.    m 2----------->     }
+  170.    m------------->   }
+  171.                    
+  172.                    #ifdef _OPENMP
+  173.                    #pragma omp single
+  174.                      {
+  175.                    #endif
+  176.  +                   p->timings[3] = MPI_Wtime();
+  177.                    
+  178.  +                   pztrans( a, b, nn, p, npu );
+  179.                    
+  180.  +                   p->timings[4] = MPI_Wtime();
+  181.                    #ifdef _OPENMP
+  182.                      }
+  183.                    #endif
+  184.                    
+  185.                    #ifdef _OPENMP
+  186.                    #pragma omp for private(i,j,l,ii,jj,kk,tmin1,tmin2)
+  187.                    #endif
+  188.  + m-------------<   for (k = 0; k < nnz; ++k) {
+  189.  + m 2-----------<     for (l = 0; l < npu; ++l) {
+  190.  + m 2 3---------<       for (ii = 0; ii < nnx; ii += FFTE_NBLK) {
+  191.  + m 2 3 4-------<         for (jj = 0; jj < ny; jj += FFTE_NBLK) {
+  192.    m 2 3 4         
+  193.    m 2 3 4                   V3MIN( tmin1, ii + FFTE_NBLK, nnx );
+  194.  + m 2 3 4 5-----<           for (i = ii; i < tmin1; ++i) {
+  195.    m 2 3 4 5       
+  196.    m 2 3 4 5                   V3MIN( tmin2, jj + FFTE_NBLK, ny );
+  197.  + m 2 3 4 5 r4--<             for (j = jj; j < tmin2; ++j) {
+  198.    m 2 3 4 5 r4                  c_assgn( ztmp1, ARR4D( bxyzp, i, j, k, l, ldbxyzp1, ldbxyzp2, ldbxyzp3 ) );
+  199.    m 2 3 4 5 r4                  c_assgn( ztmp2, ARR2D( ww, j, k, ldww ) );
+  200.    m 2 3 4 5 r4                  c_mul3v(ztmp3, ztmp1, ztmp2);
+  201.    m 2 3 4 5 r4                  c_assgn( ARR2D( cy, j, i-ii, ldcy ), ztmp3 );
+  202.    m 2 3 4 5 r4-->             }
+  203.    m 2 3 4 5----->           }
+  204.    m 2 3 4------->         }
+  205.    m 2 3           
+  206.    m 2 3                   V3MIN( tmin1, ii + FFTE_NBLK, nnx );
+  207.  + m 2 3 4-------<         for (i = ii; i < tmin1; ++i)
+  208.  + m 2 3 4 ------>           HPCC_fft235( PTR2D( cy, 0, i-ii, ldcy ), d, wy, ny, lny );
+  209.    m 2 3           
+  210.  + m 2 3 4-------<         for (j = 0; j < ny; ++j) {
+  211.    m 2 3 4                 V3MIN( tmin1, ii + FFTE_NBLK, nnx );
+  212.  + m 2 3 4 r2----<           for (i = ii; i < tmin1; ++i) {
+  213.    m 2 3 4 r2                  c_assgn( ztmp1, ARR2D( cy, j, i-ii, ldcy ) );
+  214.    m 2 3 4 r2                  c_assgn( ztmp2, ARR4D( www, l, i, j, k, ldwww1, ldwww2, ldwww3 ) );
+  215.    m 2 3 4 r2                  c_mul3v(ztmp3, ztmp1, ztmp2);
+  216.    m 2 3 4 r2                  c_assgn( ARR4D( apxyz, l, i, j, k, ldapxyz1, ldapxyz2, ldapxyz3 ), ztmp3 );
+  217.    m 2 3 4 r2---->           }
+  218.    m 2 3 4------->         }
+  219.    m 2 3--------->       }
+  220.    m 2----------->     }
+  221.    m               
+  222.  + m 2-----------<     for (j = 0; j < ny; ++j)
+  223.  + m 2 ---------->       HPCC_fft235( PTR3D( a, 0, j, k, lda1, lda2 ), d, wx, nx, lnx );
+  224.    m------------->   }
+  225.                    
+  226.                    #ifdef _OPENMP
+  227.                    #pragma omp for private(i,j,k,jj,kk,tmin1,tmin2,tmin3)
+  228.                    #endif
+  229.  + m-------------<   for (ii = 0; ii < nx; ii += FFTE_NBLK) {
+  230.  + m 2-----------<     for (jj = 0; jj < ny; jj += FFTE_NBLK) {
+  231.  + m 2 3---------<       for (kk = 0; kk < nnz; kk += FFTE_NBLK) {
+  232.    m 2 3           
+  233.    m 2 3                   V3MIN( tmin1, ii + FFTE_NBLK, nx );
+  234.  + m 2 3 4-------<         for (i = ii; i < tmin1; ++i) {
+  235.    m 2 3 4         
+  236.    m 2 3 4                   V3MIN( tmin2, jj + FFTE_NBLK, ny );
+  237.  + m 2 3 4 5-----<           for (j = jj; j < tmin2; ++j) {
+  238.    m 2 3 4 5       
+  239.    m 2 3 4 5                   V3MIN( tmin3, kk + FFTE_NBLK, nnz );
+  240.  + m 2 3 4 5 r4--<             for (k = kk; k < tmin3; ++k) {
+  241.    m 2 3 4 5 r4                  c_assgn( ARR3D( bzyx, k, j, i, ldbzyx1, ldbzyx2 ), ARR3D( a, i, j, k, lda1, lda2 ) );
+  242.    m 2 3 4 5 r4-->             }
+  243.    m 2 3 4 5----->           }
+  244.    m 2 3 4------->         }
+  245.    m 2 3--------->       }
+  246.    m 2----------->     }
+  247.    m------------->   }
+  248.                    }	/* pzfft1d0 */
+  249.                    
+  250.                    static void
+  251.                    psettbl2(fftw_complex *w, int ny, int nz, int me, int npu) {
+  252.                      int j, k;
+  253.                      int ldw;
+  254.                      double pi2, px;
+  255.                      int tmin1;
+  256.                    
+  257.                      ldw = ny;
+  258.                    
+  259.                      pi2 = 8.0 * atan(1.0);
+  260.                      px = -pi2 / ((double)ny * nz);
+  261.                    
+  262.                      tmin1 = nz / npu;
+  263.                    #ifdef _OPENMP
+  264.                    #pragma omp parallel for private(j)
+  265.                    #endif
+  266.  + Mm------------<   for (k = 0; k < tmin1; ++k)
+  267.  + Mm r5---------<     for (j = 0; j < ny; ++j) {
+  268.  + Mm r5                 c_re( ARR2D( w, j, k, ldw ) ) = cos(px * j * (me + (double)k * npu));
+  269.    Mm r5                 c_im( ARR2D( w, j, k, ldw ) ) = sin(px * j * (me + (double)k * npu));
+  270.    Mm r5-------->>     }
+  271.                    }	/* psettbl2 */
+  272.                    
+  273.                    static void
+  274.                    psettbl3(fftw_complex *w, int nx, int ny, int nz, int me, int npu) {
+  275.                      int i, j, k;
+  276.                      int ldw1, ldw2;
+  277.                      int tmin1;
+  278.                      double pi2, px;
+  279.                    
+  280.                      ldw1 = nx;
+  281.                      ldw2 = ny;
+  282.                    
+  283.                      pi2 = 8.0 * atan(1.0);
+  284.                      px = -pi2 / ((double)nx * ny * nz);
+  285.                    
+  286.                      tmin1 = nz / npu;
+  287.                    #ifdef _OPENMP
+  288.                    #pragma omp parallel for private(i,j)
+  289.                    #endif
+  290.  + Mm------------<   for (k = 0; k < tmin1; ++k)
+  291.  + Mm 2----------<     for (j = 0; j < ny; ++j)
+  292.  + Mm 2 r5-------<       for (i = 0; i < nx; ++i) {
+  293.  + Mm 2 r5                 c_re( ARR3D( w, i, j, k, ldw1, ldw2 ) ) = cos( px * i * (me + (double)k * npu + (double)j * nz));
+  294.    Mm 2 r5                 c_im( ARR3D( w, i, j, k, ldw1, ldw2 ) ) = sin( px * i * (me + (double)k * npu + (double)j * nz));
+  295.    Mm 2 r5----->>>       }
+  296.                    }	/* psettbl3 */
+  297.                    
+  298.                    int
+  299.                    HPCC_pzfft1d(s64Int_t n, fftw_complex *a, fftw_complex *b, fftw_complex *w, int me, int npu, int iopt,
+  300.                      hpcc_fftw_mpi_plan p) {
+  301.                    
+  302.                      int ip[3], lnx[3], lny[3], lnz[3], lnpu[3];
+  303.                      s64Int_t nn;
+  304.                      int i, inn, nn2, nd, nx, ny, nz;
+  305.                      fftw_complex *wx, *wy, *wz, *c;
+  306.                      double dn;
+  307.                    
+  308.  +                   p->timings[0] = MPI_Wtime();
+  309.                    
+  310.                      wx = p->wx;
+  311.                      wy = p->wy;
+  312.                      wz = p->wz;
+  313.                      c = p->c;
+  314.                    
+  315.                      nn = n / npu; inn = (int)nn;
+  316.                      nn2 = nn / npu;
+  317.                    
+  318.  +                   HPCC_factor235( npu, lnpu );
+  319.  +                   HPCC_factor235_8( n, ip );
+  320.                    
+  321.  + w-------------<   for (i = 0; i < 3; ++i) {
+  322.    w                   EMAX( lnz[i], lnpu[i], (ip[i]+1)/3 );
+  323.    w                   EMAX( lnx[i], lnpu[i], (ip[i]-lnz[i]+1)/2 );
+  324.    w                   lny[i] = ip[i] - lnx[i] - lnz[i];
+  325.    w------------->   }
+  326.                    
+  327.  +                   nx = HPCC_ipow( 2, lnx[0] ) * HPCC_ipow( 3, lnx[1] ) * HPCC_ipow( 5, lnx[2] );
+  328.  +                   ny = HPCC_ipow( 2, lny[0] ) * HPCC_ipow( 3, lny[1] ) * HPCC_ipow( 5, lny[2] );
+  329.  +                   nz = HPCC_ipow( 2, lnz[0] ) * HPCC_ipow( 3, lnz[1] ) * HPCC_ipow( 5, lnz[2] );
+  330.                    
+  331.                      if (0 == iopt) {
+  332.  +                     HPCC_settbl( wx, nx );
+  333.  +                     HPCC_settbl( wy, ny );
+  334.  +                     HPCC_settbl( wz, nz );
+  335.  +                     psettbl2( w, ny, nz, me, npu );
+  336.  +                     psettbl3( w + ny * (nz / npu), nx, ny, nz, me, npu );
+  337.                        return 0;
+  338.                      }
+  339.                    
+  340.                      if (1 == iopt || 2 == iopt) {
+  341.  + r8------------<     for (i = 0; i < inn; ++i) {
+  342.    r8                    c_im( a[i] ) = -c_im( a[i] );
+  343.    r8------------>     }
+  344.                      }
+  345.                    
+  346.  +                   p->timings[1] = MPI_Wtime();
+  347.                    
+  348.                      if (-1 == iopt || 1 == iopt || -2 == iopt) {
+  349.  +                     ztrans( a, b, npu, nn2 );
+  350.  +                     pztrans( b, a, nn, p, npu );
+  351.                      }
+  352.                    
+  353.  +                   p->timings[2] = MPI_Wtime();
+  354.                    
+  355.                      nd = ((ny > nz ? ny : nz) + FFTE_NP) * FFTE_NBLK + FFTE_NP;
+  356.                    
+  357.                    #ifdef _OPENMP
+  358.                    #pragma omp parallel private(c,i)
+  359.    M-------------<    {
+  360.  + M                   i = omp_get_thread_num();
+  361.    M                   c = p->c + i*p->c_size;
+  362.    M               #endif
+  363.    M               
+  364.  + M                 pzfft1d0( a, a, a, a, b, b, b, c, c, c + nd, wx, wy, wz, w, w + ny*(nz/npu), nx, ny, nz, p, npu, lnx, lny, lnz );
+  365.    M               
+  366.    M               #ifdef _OPENMP
+  367.    M------------->    }
+  368.                    #endif
+  369.                    
+  370.  +                   p->timings[5] = MPI_Wtime();
+  371.                    
+  372.                      if (-1 == iopt || 1 == iopt || 2 == iopt) {
+  373.  +                     pztrans( b, a, nn, p, npu );
+  374.  +                     ztrans( a, b, nn2, npu );
+  375.                      }
+  376.                    
+  377.  +                   p->timings[6] = MPI_Wtime();
+  378.                    
+  379.                      if (1 == iopt || 2 == iopt) {
+  380.                        dn = 1.0 / n;
+  381.  + r8------------<     for (i = 0; i < inn; ++i) {
+  382.    r8                    c_re( b[i] ) *= dn;
+  383.    r8                    c_im( b[i] ) *= -dn;
+  384.    r8------------>     }
+  385.                      }
+  386.                    
+  387.  +                   p->timings[7] = MPI_Wtime();
+  388.                    
+  389.                      return 0;
+  390.                    }	/* HPCC_pzfft1d */
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 70 
+  A loop was not vectorized because a recurrence was found between "a" and "b" at line 78.
+
+CC-6823 CC: THREAD File = pzfft1d.c, Line = 70 
+  A region starting at line 70 and ending at line 81 was multi-threaded.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 70 
+  A loop was partitioned.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 71 
+  A loop was not vectorized because a recurrence was found between "a" and "b" at line 78.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 74 
+  A loop was not vectorized because a recurrence was found between "a" and "b" at line 78.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 77 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 77 
+  A loop was not vectorized because a recurrence was found between "a" and "b" at line 78.
+
+CC-6332 CC: VECTOR File = pzfft1d.c, Line = 91 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 91 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 95 
+  "MPI_Alltoall" (called from "pztrans") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 141 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 157.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 141 
+  A loop was partitioned.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 142 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 157.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 143 
+  A loop was not vectorized because a recurrence was found between "a2" and "cz" at line 150.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 146 
+  A loop was not vectorized because a recurrence was found between "a2" and "cz" at line 150.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 149 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 149 
+  A loop was not vectorized because a recurrence was found between "a2" and "cz" at line 150.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 156 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 157.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 157 
+  "HPCC_fft235" (called from "pzfft1d0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 159 
+  A loop was not vectorized because a recurrence was found between "cz" and "axyzp" at line 164.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 160 
+  A loop was not vectorized because a recurrence was found between "cz" and "axyzp" at line 164.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 163 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 163 
+  A loop was not vectorized because a recurrence was found between "cz" and "axyzp" at line 164.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 176 
+  "MPI_Wtime" (called from "pzfft1d0") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = pzfft1d.c, Line = 178 
+  "pztrans" (called from "pzfft1d0") was not inlined because the call site will not flatten.  "MPI_Alltoall" is missing.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 180 
+  "MPI_Wtime" (called from "pzfft1d0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 188 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 208.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 188 
+  A loop was partitioned.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 189 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 208.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 190 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 208.
+
+CC-6291 CC: VECTOR File = pzfft1d.c, Line = 191 
+  A loop was not vectorized because a recurrence was found between "bxyzp" at line 198 and "cy" at line 201.
+
+CC-6291 CC: VECTOR File = pzfft1d.c, Line = 194 
+  A loop was not vectorized because a recurrence was found between "bxyzp" at line 198 and "cy" at line 201.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 197 
+  A loop was unrolled 4 times.
+
+CC-6291 CC: VECTOR File = pzfft1d.c, Line = 197 
+  A loop was not vectorized because a recurrence was found between "bxyzp" at line 198 and "cy" at line 201.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 207 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 208.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 208 
+  "HPCC_fft235" (called from "pzfft1d0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6291 CC: VECTOR File = pzfft1d.c, Line = 210 
+  A loop was not vectorized because a recurrence was found between "cy" at line 213 and "apxyz" at line 216.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 212 
+  A loop was unrolled 2 times.
+
+CC-6291 CC: VECTOR File = pzfft1d.c, Line = 212 
+  A loop was not vectorized because a recurrence was found between "cy" at line 213 and "apxyz" at line 216.
+
+CC-6287 CC: VECTOR File = pzfft1d.c, Line = 222 
+  A loop was not vectorized because it contains a call to function "HPCC_fft235" on line 223.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 223 
+  "HPCC_fft235" (called from "pzfft1d0") was not inlined because the compiler was unable to locate the routine.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 229 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 229 
+  A loop was partitioned.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 230 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 231 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 234 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 237 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 240 
+  A loop was unrolled 4 times.
+
+CC-6290 CC: VECTOR File = pzfft1d.c, Line = 240 
+  A loop was not vectorized because a recurrence was found between "a" and "bzyx" at line 241.
+
+CC-6294 CC: VECTOR File = pzfft1d.c, Line = 266 
+  A loop was not vectorized because a better candidate was found at line 267.
+
+CC-6823 CC: THREAD File = pzfft1d.c, Line = 266 
+  A region starting at line 266 and ending at line 270 was multi-threaded.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 266 
+  A loop was partitioned.
+
+CC-6332 CC: VECTOR File = pzfft1d.c, Line = 267 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 267 
+  A loop was unrolled 5 times.
+
+CC-6009 CC: SCALAR File = pzfft1d.c, Line = 268 
+  A floating point expression involving an induction variable was strength reduced by optimization.  This may cause numerical
+  differences.
+
+CC-6294 CC: VECTOR File = pzfft1d.c, Line = 290 
+  A loop was not vectorized because a better candidate was found at line 292.
+
+CC-6823 CC: THREAD File = pzfft1d.c, Line = 290 
+  A region starting at line 290 and ending at line 295 was multi-threaded.
+
+CC-6817 CC: THREAD File = pzfft1d.c, Line = 290 
+  A loop was partitioned.
+
+CC-6294 CC: VECTOR File = pzfft1d.c, Line = 291 
+  A loop was not vectorized because a better candidate was found at line 292.
+
+CC-6332 CC: VECTOR File = pzfft1d.c, Line = 292 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 292 
+  A loop was unrolled 5 times.
+
+CC-6009 CC: SCALAR File = pzfft1d.c, Line = 293 
+  A floating point expression involving an induction variable was strength reduced by optimization.  This may cause numerical
+  differences.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 308 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 318 
+  "HPCC_factor235" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 319 
+  "HPCC_factor235_8" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = pzfft1d.c, Line = 321 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = pzfft1d.c, Line = 321 
+  A loop was unwound.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 327 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 327 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 327 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 328 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 328 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 328 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 329 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 329 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 329 
+  "HPCC_ipow" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 332 
+  "HPCC_settbl" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 333 
+  "HPCC_settbl" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 334 
+  "HPCC_settbl" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3171 CC: IPA File = pzfft1d.c, Line = 335 
+  "psettbl2" (called from "HPCC_pzfft1d") was not inlined because it is not in the body of a loop.
+
+CC-3005 CC: IPA File = pzfft1d.c, Line = 336 
+  "psettbl3" (called from "HPCC_pzfft1d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6332 CC: VECTOR File = pzfft1d.c, Line = 341 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 341 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 346 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3171 CC: IPA File = pzfft1d.c, Line = 349 
+  "ztrans" (called from "HPCC_pzfft1d") was not inlined because it is not in the body of a loop.
+
+CC-3118 CC: IPA File = pzfft1d.c, Line = 350 
+  "pztrans" (called from "HPCC_pzfft1d") was not inlined because the call site will not flatten.  "MPI_Alltoall" is missing.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 353 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-6823 CC: THREAD File = pzfft1d.c, Line = 359 
+  A region starting at line 359 and ending at line 367 was multi-threaded.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 360 
+  "omp_get_thread_num" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = pzfft1d.c, Line = 364 
+  "pzfft1d0" (called from "HPCC_pzfft1d") was not inlined because the type of argument 10 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 370 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = pzfft1d.c, Line = 373 
+  "pztrans" (called from "HPCC_pzfft1d") was not inlined because the call site will not flatten.  "MPI_Alltoall" is missing.
+
+CC-3171 CC: IPA File = pzfft1d.c, Line = 374 
+  "ztrans" (called from "HPCC_pzfft1d") was not inlined because it is not in the body of a loop.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 377 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = pzfft1d.c, Line = 381 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = pzfft1d.c, Line = 381 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = pzfft1d.c, Line = 387 
+  "MPI_Wtime" (called from "HPCC_pzfft1d") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

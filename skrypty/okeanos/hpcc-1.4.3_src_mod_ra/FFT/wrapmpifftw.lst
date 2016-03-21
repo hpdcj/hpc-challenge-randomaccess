@@ -1,0 +1,319 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/wrapmpifftw.c
+Compiled : 2016-03-19  13:20:33
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../FFT/wrapmpifftw.o -c ../../../../FFT/wrapmpifftw.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../FFT/wrapmpifftw.c
+Date     : 03/19/2016  13:20:33
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          
+    2.          #include <stdio.h>
+    3.          #include <stdlib.h>
+    4.          
+    5.          #include <hpccmema.h>
+    6.          
+    7.          #include "hpccfft.h"
+    8.          #include "wrapmpifftw.h"
+    9.          
+   10.          #define    Mmax3( a_, b_, c_ )      ( (a_) > (b_) ?  ((a_) > (c_) ? (a_) : (c_)) : ((b_) > (c_) ? (b_) : (c_)) )
+   11.          
+   12.          static int
+   13.          GetNXYZ(s64Int_t n, int npu) {
+   14.            int ip[3], lnx[3], lny[3], lnz[3], lnpu[3];
+   15.            int i, nx, ny, nz, nxyz;
+   16.          
+   17.  +         HPCC_factor235( npu, lnpu );
+   18.  +         HPCC_factor235_8( n, ip );
+   19.          
+   20.  + w---<   for (i = 0; i < 3; ++i) {
+   21.    w         EMAX( lnz[i], lnpu[i], (ip[i]+1)/3 );
+   22.    w         EMAX( lnx[i], lnpu[i], (ip[i]-lnz[i]+1)/2 );
+   23.    w         lny[i] = ip[i] - lnx[i] - lnz[i];
+   24.    w--->   }
+   25.          
+   26.  +         nx = HPCC_ipow( 2, lnx[0] ) * HPCC_ipow( 3, lnx[1] ) * HPCC_ipow( 5, lnx[2] );
+   27.  +         ny = HPCC_ipow( 2, lny[0] ) * HPCC_ipow( 3, lny[1] ) * HPCC_ipow( 5, lny[2] );
+   28.  +         nz = HPCC_ipow( 2, lnz[0] ) * HPCC_ipow( 3, lnz[1] ) * HPCC_ipow( 5, lnz[2] );
+   29.          
+   30.            nxyz = Mmax3( nx, ny, nz );
+   31.          
+   32.            return nxyz;
+   33.          }
+   34.          
+   35.          hpcc_fftw_mpi_plan
+   36.          HPCC_fftw_mpi_create_plan(MPI_Comm comm, s64Int_t n, fftw_direction dir, int flags) {
+   37.            hpcc_fftw_mpi_plan p;
+   38.            fftw_complex *a = NULL, *b = NULL;
+   39.            int nxyz;
+   40.            int rank, size;
+   41.          
+   42.  +         MPI_Comm_size( comm, &size );
+   43.  +         MPI_Comm_rank( comm, &rank );
+   44.          
+   45.            p = (hpcc_fftw_mpi_plan)fftw_malloc( sizeof *p );
+   46.            if (! p) return p;
+   47.          
+   48.  +         nxyz = GetNXYZ( n, size );
+   49.          
+   50.            p->wx = (fftw_complex *)HPCC_fftw_malloc( (nxyz/2 + FFTE_NP) * (sizeof *p->wx) );
+   51.            p->wy = (fftw_complex *)HPCC_fftw_malloc( (nxyz/2 + FFTE_NP) * (sizeof *p->wy) );
+   52.            p->wz = (fftw_complex *)HPCC_fftw_malloc( (nxyz/2 + FFTE_NP) * (sizeof *p->wz) );
+   53.            p->work = (fftw_complex *)HPCC_fftw_malloc( n / size * 3 / 2 * (sizeof *p->work) );
+   54.          
+   55.            p->c_size = (nxyz+FFTE_NP) * (FFTE_NBLK + 1) + FFTE_NP;
+   56.          #ifdef _OPENMP
+   57.          #pragma omp parallel
+   58.    M---<   {
+   59.    M     #pragma omp single
+   60.    M         {
+   61.    M           int i;
+   62.  + M           i = omp_get_num_threads();
+   63.    M           p->c = (fftw_complex *)HPCC_fftw_malloc( p->c_size * (sizeof *p->c) * i );
+   64.    M         }
+   65.    M--->   }
+   66.          #else
+   67.            p->c = (fftw_complex *)HPCC_fftw_malloc( p->c_size * (sizeof *p->c) );
+   68.          #endif
+   69.          
+   70.            if (! p->wx || ! p->wy || ! p->wz || ! p->work || ! p->c) {
+   71.              if (p->c) HPCC_fftw_free( p->c );
+   72.              if (p->work) HPCC_fftw_free( p->work );
+   73.              if (p->wz) HPCC_fftw_free( p->wz );
+   74.              if (p->wy) HPCC_fftw_free( p->wy );
+   75.              if (p->wx) HPCC_fftw_free( p->wx );
+   76.              fftw_free( p );
+   77.              return NULL;
+   78.            }
+   79.          
+   80.            p->n = n;
+   81.            p->comm = comm;
+   82.            p->dir = dir;
+   83.            p->flags = flags;
+   84.          
+   85.  +         MPI_Type_contiguous( 2, MPI_DOUBLE, &p->cmplx );
+   86.  +         MPI_Type_commit( &p->cmplx );
+   87.          
+   88.            if (FFTW_FORWARD == p->dir)
+   89.              p->timings = HPCC_fft_timings_forward;
+   90.            else
+   91.              p->timings = HPCC_fft_timings_backward;
+   92.          
+   93.  +         HPCC_pzfft1d( n, a, b, p->work, rank, size, 0, p );
+   94.          
+   95.            return p;
+   96.          }
+   97.          
+   98.          void
+   99.          HPCC_fftw_mpi_destroy_plan(hpcc_fftw_mpi_plan p) {
+  100.            if (!p) return;
+  101.          
+  102.  +         MPI_Type_free( &p->cmplx );
+  103.          
+  104.            HPCC_fftw_free( p->work );
+  105.            HPCC_fftw_free( p->c );
+  106.            HPCC_fftw_free( p->wz );
+  107.            HPCC_fftw_free( p->wy );
+  108.            HPCC_fftw_free( p->wx );
+  109.            fftw_free( p );
+  110.          }
+  111.          
+  112.          void
+  113.          HPCC_fftw_mpi(hpcc_fftw_mpi_plan p, int n_fields, fftw_complex *local_data, fftw_complex *work){
+  114.            int rank, size;
+  115.            s64Int_t n;
+  116.            int i, ln;
+  117.          
+  118.  +         MPI_Comm_size( p->comm, &size );
+  119.  +         MPI_Comm_rank( p->comm, &rank );
+  120.          
+  121.            n = p->n;
+  122.          
+  123.            if (FFTW_FORWARD == p->dir)
+  124.  +           HPCC_pzfft1d( n, local_data, work, p->work, rank, size, -1, p );
+  125.            else
+  126.  +           HPCC_pzfft1d( n, local_data, work, p->work, rank, size, +1, p );
+  127.          
+  128.            ln = n / size;
+  129.  + r8--<   for (i = 0; i < ln; ++i) {
+  130.    r8        c_assgn( local_data[i], work[i] );
+  131.    r8-->   }
+  132.          }
+  133.          
+  134.          void
+  135.          HPCC_fftw_mpi_local_sizes(hpcc_fftw_mpi_plan p, s64Int_t *local_n, s64Int_t *local_start,
+  136.            s64Int_t *local_n_after_transform, s64Int_t *local_start_after_transform, s64Int_t *total_local_size) {
+  137.            int rank, size;
+  138.            s64Int_t n;
+  139.  +         MPI_Comm_size( p->comm, &size );
+  140.  +         MPI_Comm_rank( p->comm, &rank );
+  141.            n = p->n;
+  142.            if (local_n) *local_n = n / size;
+  143.            if (local_start) *local_start = n / size * rank;
+  144.            if (local_n_after_transform) *local_n_after_transform = n / size;
+  145.            if (local_start_after_transform) *local_start_after_transform = n / size * rank;
+  146.            if (total_local_size) *total_local_size = n / size;
+  147.          }
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 17 
+  "HPCC_factor235" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 18 
+  "HPCC_factor235_8" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = wrapmpifftw.c, Line = 20 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = wrapmpifftw.c, Line = 20 
+  A loop was unwound.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 26 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 26 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 26 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 27 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 27 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 27 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 28 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 28 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 28 
+  "HPCC_ipow" (called from "GetNXYZ") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 42 
+  "MPI_Comm_size" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 43 
+  "MPI_Comm_rank" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = wrapmpifftw.c, Line = 48 
+  "GetNXYZ" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the call site will not flatten.  "HPCC_ipow" is
+  missing.
+
+CC-6823 CC: THREAD File = wrapmpifftw.c, Line = 58 
+  A region starting at line 58 and ending at line 65 was multi-threaded.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 62 
+  "omp_get_num_threads" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 85 
+  "MPI_Type_contiguous" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 86 
+  "MPI_Type_commit" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the
+  routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 93 
+  "HPCC_pzfft1d" (called from "HPCC_fftw_mpi_create_plan") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 102 
+  "MPI_Type_free" (called from "HPCC_fftw_mpi_destroy_plan") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 118 
+  "MPI_Comm_size" (called from "HPCC_fftw_mpi") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 119 
+  "MPI_Comm_rank" (called from "HPCC_fftw_mpi") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 124 
+  "HPCC_pzfft1d" (called from "HPCC_fftw_mpi") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 126 
+  "HPCC_pzfft1d" (called from "HPCC_fftw_mpi") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = wrapmpifftw.c, Line = 129 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = wrapmpifftw.c, Line = 129 
+  A loop was unrolled 8 times.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 139 
+  "MPI_Comm_size" (called from "HPCC_fftw_mpi_local_sizes") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = wrapmpifftw.c, Line = 140 
+  "MPI_Comm_rank" (called from "HPCC_fftw_mpi_local_sizes") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

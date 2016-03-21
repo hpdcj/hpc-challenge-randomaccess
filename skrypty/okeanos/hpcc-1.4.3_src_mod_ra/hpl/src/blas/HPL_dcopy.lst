@@ -1,0 +1,249 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dcopy.c
+Compiled : 2016-03-19  13:19:26
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/blas/HPL_dcopy.o -c ../../../src/blas/HPL_dcopy.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dcopy.c
+Date     : 03/19/2016  13:19:27
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifndef HPL_dcopy
+   53.     
+   54.     #ifdef HPL_STDC_HEADERS
+   55.     void HPL_dcopy
+   56.     (
+   57.        const int                        N,
+   58.        const double *                   X,
+   59.        const int                        INCX,
+   60.        double *                         Y,
+   61.        const int                        INCY
+   62.     )
+   63.     #else
+   64.     void HPL_dcopy
+   65.     ( N, X, INCX, Y, INCY )
+   66.        const int                        N;
+   67.        const double *                   X;
+   68.        const int                        INCX;
+   69.        double *                         Y;
+   70.        const int                        INCY;
+   71.     #endif
+   72.     {
+   73.     /* 
+   74.      * Purpose
+   75.      * =======
+   76.      *
+   77.      * HPL_dcopy copies the vector x into the vector y.
+   78.      * 
+   79.      *
+   80.      * Arguments
+   81.      * =========
+   82.      *
+   83.      * N       (local input)                 const int
+   84.      *         On entry, N specifies the length of the vectors  x  and  y. N
+   85.      *         must be at least zero.
+   86.      *
+   87.      * X       (local input)                 const double *
+   88.      *         On entry,  X  is an incremented array of dimension  at  least
+   89.      *         ( 1 + ( n - 1 ) * abs( INCX ) )  that  contains the vector x.
+   90.      *
+   91.      * INCX    (local input)                 const int
+   92.      *         On entry, INCX specifies the increment for the elements of X.
+   93.      *         INCX must not be zero.
+   94.      *
+   95.      * Y       (local input/output)          double *
+   96.      *         On entry,  Y  is an incremented array of dimension  at  least
+   97.      *         ( 1 + ( n - 1 ) * abs( INCY ) )  that  contains the vector y.
+   98.      *         On exit, the entries of the incremented array  Y  are updated
+   99.      *         with the entries of the incremented array X.
+  100.      *
+  101.      * INCY    (local input)                 const int
+  102.      *         On entry, INCY specifies the increment for the elements of Y.
+  103.      *         INCY must not be zero.
+  104.      *
+  105.      * ---------------------------------------------------------------------
+  106.      */ 
+  107.     #ifdef HPL_CALL_CBLAS
+  108.        cblas_dcopy( N, X, INCX, Y, INCY );
+  109.     #endif
+  110.     #ifdef HPL_CALL_VSIPL
+  111.        register double           x0, x1, x2, x3, x4, x5, x6, x7;
+  112.        const double              * StX;
+  113.        register int              i;
+  114.        int                       nu;
+  115.        const int                 incX2 = 2 * INCX, incY2 = 2 * INCY,
+  116.                                  incX3 = 3 * INCX, incY3 = 3 * INCY,
+  117.                                  incX4 = 4 * INCX, incY4 = 4 * INCY,
+  118.                                  incX5 = 5 * INCX, incY5 = 5 * INCY,
+  119.                                  incX6 = 6 * INCX, incY6 = 6 * INCY,
+  120.                                  incX7 = 7 * INCX, incY7 = 7 * INCY,
+  121.                                  incX8 = 8 * INCX, incY8 = 8 * INCY;
+  122.     
+  123.        if( N > 0 )
+  124.        {
+  125.           if( ( nu = ( N >> 3 ) << 3 ) != 0 )
+  126.           {
+  127.              StX = X + nu * INCX;
+  128.      
+  129.              do
+  130.              {
+  131.                 x0 = (*X);     x4 = X[incX4]; x1 = X[INCX ]; x5 = X[incX5];
+  132.                 x2 = X[incX2]; x6 = X[incX6]; x3 = X[incX3]; x7 = X[incX7];
+  133.      
+  134.                 *Y       = x0; Y[incY4] = x4; Y[INCY ] = x1; Y[incY5] = x5;
+  135.                 Y[incY2] = x2; Y[incY6] = x6; Y[incY3] = x3; Y[incY7] = x7;
+  136.      
+  137.                 X  += incX8;
+  138.                 Y  += incY8;
+  139.      
+  140.              } while( X != StX );
+  141.           }
+  142.      
+  143.           for( i = N - nu; i != 0; i-- )
+  144.           {
+  145.              x0  = (*X);
+  146.              *Y  = x0;
+  147.      
+  148.              X  += INCX;
+  149.              Y  += INCY;
+  150.           }
+  151.        }
+  152.     #endif
+  153.     #ifdef HPL_CALL_FBLAS
+  154.     #ifdef HPL_USE_F77_INTEGER_DEF
+  155.        const F77_INTEGER         F77N = N, F77incx = INCX, F77incy = INCY;
+  156.     #else
+  157.     #define F77N                 N
+  158.     #define F77incx              INCX
+  159.     #define F77incy              INCY
+  160.     #endif
+  161.  +     F77dcopy( &F77N, X, &F77incx, Y, &F77incy );
+  162.     #endif
+  163.     /*
+  164.      * End of HPL_dcopy
+  165.      */
+  166.     }
+  167.      
+  168.     #endif
+
+CC-3021 CC: IPA File = HPL_dcopy.c, Line = 161 
+  "dcopy_" (called from "HPL_dcopy") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

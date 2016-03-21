@@ -1,0 +1,601 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dtrsv.c
+Compiled : 2016-03-19  13:19:28
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/blas/HPL_dtrsv.o -c ../../../src/blas/HPL_dtrsv.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/blas/HPL_dtrsv.c
+Date     : 03/19/2016  13:19:28
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifndef HPL_dtrsv
+   53.     
+   54.     #ifdef HPL_CALL_VSIPL
+   55.     
+   56.     #ifdef HPL_STDC_HEADERS
+   57.     static void HPL_dtrsvLNN
+   58.     (
+   59.        const int                  N,
+   60.        const double               * A,
+   61.        const int                  LDA,
+   62.        double                     * X,
+   63.        const int                  INCX
+   64.     )
+   65.     #else
+   66.     static void HPL_dtrsvLNN( N, A, LDA, X, INCX )
+   67.        const int                  INCX, LDA, N;
+   68.        const double               * A;
+   69.        double                     * X;
+   70.     #endif
+   71.     {
+   72.        int                        i, iaij, ix, j, jaj, jx, ldap1 = LDA + 1;
+   73.        register double            t0;
+   74.     
+   75.        for( j = 0, jaj = 0, jx  = 0; j < N; j++, jaj += ldap1, jx += INCX )
+   76.        {
+   77.           X[jx] /= A[jaj]; t0 = X[jx];
+   78.           for( i = j+1,    iaij  = jaj+1, ix  = jx + INCX;
+   79.                i < N; i++, iaij += 1,     ix += INCX ) { X[ix] -= t0 * A[iaij]; }
+   80.        }
+   81.     }
+   82.     
+   83.     #ifdef HPL_STDC_HEADERS
+   84.     static void HPL_dtrsvLNU
+   85.     (
+   86.        const int                  N,
+   87.        const double               * A,
+   88.        const int                  LDA,
+   89.        double                     * X,
+   90.        const int                  INCX
+   91.     )
+   92.     #else
+   93.     static void HPL_dtrsvLNU( N, A, LDA, X, INCX )
+   94.        const int                  INCX, LDA, N;
+   95.        const double               * A;
+   96.        double                     * X;
+   97.     #endif
+   98.     {
+   99.        int                        i, iaij, ix, j, jaj, jx, ldap1 = LDA + 1;
+  100.        register double            t0;
+  101.     
+  102.        for( j = 0, jaj = 0, jx = 0; j < N; j++, jaj += ldap1, jx += INCX )
+  103.        {
+  104.           t0 = X[jx];
+  105.           for( i = j+1,    iaij  = jaj+1, ix  = jx + INCX;
+  106.                i < N; i++, iaij += 1,     ix += INCX ) { X[ix] -= t0 * A[iaij]; }
+  107.        }
+  108.     }
+  109.     
+  110.     #ifdef HPL_STDC_HEADERS
+  111.     static void HPL_dtrsvLTN
+  112.     (
+  113.        const int                  N,
+  114.        const double               * A,
+  115.        const int                  LDA,
+  116.        double                     * X,
+  117.        const int                  INCX
+  118.     )
+  119.     #else
+  120.     static void HPL_dtrsvLTN( N, A, LDA, X, INCX )
+  121.        const int                  INCX, LDA, N;
+  122.        const double               * A;
+  123.        double                     * X;
+  124.     #endif
+  125.     {
+  126.        int                        i, iaij, ix, j, jaj, jx, ldap1 = LDA + 1;
+  127.        register double            t0;
+  128.     
+  129.        for( j = N-1,     jaj  = (N-1)*(ldap1), jx  = (N-1)*INCX;
+  130.             j >= 0; j--, jaj -= ldap1,         jx -= INCX )
+  131.        {
+  132.           t0 = X[jx];
+  133.           for( i = j+1,    iaij  = 1+jaj, ix  = jx + INCX;
+  134.                i < N; i++, iaij += 1,     ix += INCX ) { t0 -= A[iaij] * X[ix]; }
+  135.           t0 /= A[jaj]; X[jx] = t0;
+  136.        }
+  137.     }
+  138.     
+  139.     #ifdef HPL_STDC_HEADERS
+  140.     static void HPL_dtrsvLTU
+  141.     (
+  142.        const int                  N,
+  143.        const double               * A,
+  144.        const int                  LDA,
+  145.        double                     * X,
+  146.        const int                  INCX
+  147.     )
+  148.     #else
+  149.     static void HPL_dtrsvLTU( N, A, LDA, X, INCX )
+  150.        const int                  INCX, LDA, N;
+  151.        const double               * A;
+  152.        double                     * X;
+  153.     #endif
+  154.     {
+  155.        int                        i, iaij, ix, j, jaj, jx, ldap1 = LDA + 1;
+  156.        register double            t0;
+  157.     
+  158.        for( j = N-1,     jaj  = (N-1)*(ldap1), jx  = (N-1)*INCX;
+  159.             j >= 0; j--, jaj -= ldap1,         jx -= INCX )
+  160.        {
+  161.           t0 = X[jx];
+  162.           for( i = j+1,    iaij  = 1+jaj, ix  = jx + INCX;
+  163.                i < N; i++, iaij += 1,     ix += INCX ) { t0 -= A[iaij] * X[ix]; }
+  164.           X[jx] = t0;
+  165.        }
+  166.     }
+  167.     
+  168.     
+  169.     #ifdef HPL_STDC_HEADERS
+  170.     static void HPL_dtrsvUNN
+  171.     (
+  172.        const int                  N,
+  173.        const double               * A,
+  174.        const int                  LDA,
+  175.        double                     * X,
+  176.        const int                  INCX
+  177.     )
+  178.     #else
+  179.     static void HPL_dtrsvUNN( N, A, LDA, X, INCX )
+  180.        const int                  INCX, LDA, N;
+  181.        const double               * A;
+  182.        double                     * X;
+  183.     #endif
+  184.     {
+  185.        int                        i, iaij, ix, j, jaj, jx;
+  186.        register double            t0;
+  187.     
+  188.        for( j = N-1,     jaj  = (N-1)*LDA, jx  = (N-1)*INCX;
+  189.             j >= 0; j--, jaj -= LDA,       jx -= INCX )
+  190.        {
+  191.           X[jx] /= A[j+jaj]; t0 = X[jx];
+  192.           for( i = 0, iaij = jaj, ix = 0; i < j; i++, iaij += 1, ix += INCX )
+  193.           { X[ix] -= t0 * A[iaij]; }
+  194.        }
+  195.     }
+  196.     
+  197.     
+  198.     #ifdef HPL_STDC_HEADERS
+  199.     static void HPL_dtrsvUNU
+  200.     (
+  201.        const int                  N,
+  202.        const double               * A,
+  203.        const int                  LDA,
+  204.        double                     * X,
+  205.        const int                  INCX
+  206.     )
+  207.     #else
+  208.     static void HPL_dtrsvUNU( N, A, LDA, X, INCX )
+  209.        const int                  INCX, LDA, N;
+  210.        const double               * A;
+  211.        double                     * X;
+  212.     #endif
+  213.     {
+  214.        int                        i, iaij, ix, j, jaj, jx;
+  215.        register double            t0;
+  216.     
+  217.        for( j = N-1,     jaj  = (N-1)*LDA, jx  = (N-1)*INCX;
+  218.             j >= 0; j--, jaj -= LDA,       jx -= INCX )
+  219.        {
+  220.           t0 = X[jx];
+  221.           for( i = 0, iaij = jaj, ix = 0; i < j; i++, iaij += 1, ix += INCX )
+  222.           { X[ix] -= t0 * A[iaij]; }
+  223.        }
+  224.     }
+  225.     
+  226.     
+  227.     #ifdef HPL_STDC_HEADERS
+  228.     static void HPL_dtrsvUTN
+  229.     (
+  230.        const int                  N,
+  231.        const double               * A,
+  232.        const int                  LDA,
+  233.        double                     * X,
+  234.        const int                  INCX
+  235.     )
+  236.     #else
+  237.     static void HPL_dtrsvUTN( N, A, LDA, X, INCX )
+  238.        const int                  INCX, LDA, N;
+  239.        const double               * A;
+  240.        double                     * X;
+  241.     #endif
+  242.     {
+  243.        int                        i, iaij, ix, j, jaj, jx;
+  244.        register double            t0;
+  245.     
+  246.        for( j = 0, jaj = 0,jx = 0; j < N; j++, jaj += LDA, jx += INCX )
+  247.        {
+  248.           t0 = X[jx];
+  249.           for( i = 0, iaij = jaj, ix = 0; i < j; i++, iaij += 1, ix += INCX )
+  250.           { t0 -= A[iaij] * X[ix]; }
+  251.           t0 /= A[iaij]; X[jx] = t0;
+  252.        }
+  253.     }
+  254.     
+  255.     #ifdef HPL_STDC_HEADERS
+  256.     static void HPL_dtrsvUTU
+  257.     (
+  258.        const int                  N,
+  259.        const double               * A,
+  260.        const int                  LDA,
+  261.        double                     * X,
+  262.        const int                  INCX
+  263.     )
+  264.     #else
+  265.     static void HPL_dtrsvUTU( N, A, LDA, X, INCX )
+  266.        const int                  INCX, LDA, N;
+  267.        const double               * A;
+  268.        double                     * X;
+  269.     #endif
+  270.     {
+  271.        int                        i, iaij, ix, j, jaj, jx;
+  272.        register double            t0;
+  273.     
+  274.        for( j = 0, jaj = 0, jx = 0; j < N; j++, jaj += LDA, jx += INCX )
+  275.        {
+  276.           t0 = X[jx];
+  277.           for( i = 0, iaij = jaj, ix = 0; i < j; i++, iaij += 1, ix += INCX )
+  278.           { t0 -= A[iaij] * X[ix]; }
+  279.           X[jx] = t0;
+  280.        }
+  281.     }
+  282.     
+  283.     #ifdef HPL_STDC_HEADERS
+  284.     static void HPL_dtrsv0
+  285.     (
+  286.        const enum HPL_UPLO        UPLO,
+  287.        const enum HPL_TRANS       TRANS,
+  288.        const enum HPL_DIAG        DIAG,
+  289.        const int                  N,
+  290.        const double               * A,
+  291.        const int                  LDA,
+  292.        double                     * X,
+  293.        const int                  INCX
+  294.     ) 
+  295.     #else
+  296.     static void HPL_dtrsv0( UPLO, TRANS, DIAG, N, A, LDA, X, INCX )
+  297.        const enum HPL_UPLO        UPLO;
+  298.        const enum HPL_TRANS       TRANS;
+  299.        const enum HPL_DIAG        DIAG;
+  300.        const int                  INCX, LDA, N;
+  301.        const double               * A;
+  302.        double                     * X;
+  303.     #endif
+  304.     {
+  305.        if( N == 0 ) return;
+  306.      
+  307.        if( UPLO == HplUpper )
+  308.        {
+  309.           if( TRANS == HplNoTrans )
+  310.           {
+  311.              if( DIAG == HplNonUnit ) { HPL_dtrsvUNN( N,    A, LDA, X, INCX ); }
+  312.              else                     { HPL_dtrsvUNU( N,    A, LDA, X, INCX ); }
+  313.           }
+  314.           else
+  315.           {
+  316.              if( DIAG == HplNonUnit ) { HPL_dtrsvUTN( N,    A, LDA, X, INCX ); }
+  317.              else                     { HPL_dtrsvUTU( N,    A, LDA, X, INCX ); }
+  318.           }
+  319.        }
+  320.        else
+  321.        {
+  322.           if( TRANS == HplNoTrans )
+  323.           {
+  324.              if( DIAG == HplNonUnit ) { HPL_dtrsvLNN( N,    A, LDA, X, INCX ); }
+  325.              else                     { HPL_dtrsvLNU( N,    A, LDA, X, INCX ); }
+  326.           }
+  327.           else
+  328.           {
+  329.              if( DIAG == HplNonUnit ) { HPL_dtrsvLTN( N,    A, LDA, X, INCX ); }
+  330.              else                     { HPL_dtrsvLTU( N,    A, LDA, X, INCX ); }
+  331.           }
+  332.        }
+  333.     }
+  334.     
+  335.     #endif
+  336.     
+  337.     #ifdef HPL_STDC_HEADERS
+  338.     void HPL_dtrsv
+  339.     (
+  340.        const enum HPL_ORDER             ORDER,
+  341.        const enum HPL_UPLO              UPLO,
+  342.        const enum HPL_TRANS             TRANS,
+  343.        const enum HPL_DIAG              DIAG,
+  344.        const int                        N,
+  345.        const double *                   A,
+  346.        const int                        LDA,
+  347.        double *                         X,
+  348.        const int                        INCX
+  349.     )
+  350.     #else
+  351.     void HPL_dtrsv
+  352.     ( ORDER, UPLO, TRANS, DIAG, N, A, LDA, X, INCX )
+  353.        const enum HPL_ORDER             ORDER;
+  354.        const enum HPL_UPLO              UPLO;
+  355.        const enum HPL_TRANS             TRANS;
+  356.        const enum HPL_DIAG              DIAG;
+  357.        const int                        N;
+  358.        const double *                   A;
+  359.        const int                        LDA;
+  360.        double *                         X;
+  361.        const int                        INCX;
+  362.     #endif
+  363.     {
+  364.     /* 
+  365.      * Purpose
+  366.      * =======
+  367.      *
+  368.      * HPL_dtrsv solves one of the systems of equations
+  369.      *  
+  370.      *     A * x = b,   or   A^T * x = b,
+  371.      *  
+  372.      * where b and x are n-element vectors and  A  is an n by n non-unit, or
+  373.      * unit, upper or lower triangular matrix.
+  374.      *  
+  375.      * No test for  singularity  or  near-singularity  is included  in  this
+  376.      * routine. Such tests must be performed before calling this routine.
+  377.      *
+  378.      * Arguments
+  379.      * =========
+  380.      *
+  381.      * ORDER   (local input)                 const enum HPL_ORDER
+  382.      *         On entry, ORDER  specifies the storage format of the operands
+  383.      *         as follows:                                                  
+  384.      *            ORDER = HplRowMajor,                                      
+  385.      *            ORDER = HplColumnMajor.                                   
+  386.      *
+  387.      * UPLO    (local input)                 const enum HPL_UPLO
+  388.      *         On  entry,   UPLO   specifies  whether  the  upper  or  lower
+  389.      *         triangular  part  of the array  A  is to be referenced.  When
+  390.      *         UPLO==HplUpper, only  the upper triangular part of A is to be
+  391.      *         referenced, otherwise only the lower triangular part of A is 
+  392.      *         to be referenced. 
+  393.      *
+  394.      * TRANS   (local input)                 const enum HPL_TRANS
+  395.      *         On entry,  TRANS  specifies  the equations  to  be  solved as
+  396.      *         follows:
+  397.      *            TRANS==HplNoTrans     A   * x = b,
+  398.      *            TRANS==HplTrans       A^T * x = b.
+  399.      *
+  400.      * DIAG    (local input)                 const enum HPL_DIAG
+  401.      *         On entry,  DIAG  specifies  whether  A  is unit triangular or
+  402.      *         not. When DIAG==HplUnit,  A is assumed to be unit triangular,
+  403.      *         and otherwise, A is not assumed to be unit triangular.
+  404.      *
+  405.      * N       (local input)                 const int
+  406.      *         On entry, N specifies the order of the matrix A. N must be at
+  407.      *         least zero.
+  408.      *
+  409.      * A       (local input)                 const double *
+  410.      *         On entry,  A  points  to an array of size equal to or greater
+  411.      *         than LDA * n. Before entry with  UPLO==HplUpper,  the leading
+  412.      *         n by n upper triangular  part of the array A must contain the
+  413.      *         upper triangular  matrix and the  strictly  lower  triangular
+  414.      *         part of A is not referenced.  When  UPLO==HplLower  on entry,
+  415.      *         the  leading n by n lower triangular part of the array A must
+  416.      *         contain the lower triangular matrix  and  the  strictly upper
+  417.      *         triangular part of A is not referenced.
+  418.      *          
+  419.      *         Note  that  when  DIAG==HplUnit,  the diagonal elements of  A
+  420.      *         not referenced  either,  but are assumed to be unity.
+  421.      *
+  422.      * LDA     (local input)                 const int
+  423.      *         On entry,  LDA  specifies  the  leading  dimension  of  A  as
+  424.      *         declared  in  the  calling  (sub) program.  LDA  must  be  at
+  425.      *         least MAX(1,n).
+  426.      *
+  427.      * X       (local input/output)          double *
+  428.      *         On entry,  X  is an incremented array of dimension  at  least
+  429.      *         ( 1 + ( n - 1 ) * abs( INCX ) )  that  contains the vector x.
+  430.      *         Before entry,  the  incremented array  X  must contain  the n
+  431.      *         element right-hand side vector b. On exit,  X  is overwritten
+  432.      *         with the solution vector x.
+  433.      *
+  434.      * INCX    (local input)                 const int
+  435.      *         On entry, INCX specifies the increment for the elements of X.
+  436.      *         INCX must not be zero.
+  437.      *
+  438.      * ---------------------------------------------------------------------
+  439.      */ 
+  440.     #ifdef HPL_CALL_CBLAS
+  441.        cblas_dtrsv( ORDER, UPLO, TRANS, DIAG, N, A, LDA, X, INCX );
+  442.     #endif
+  443.     #ifdef HPL_CALL_VSIPL
+  444.        if( ORDER == HplColumnMajor )
+  445.        {
+  446.           HPL_dtrsv0( UPLO, TRANS, DIAG, N, A, LDA, X, INCX );
+  447.        }
+  448.        else
+  449.        {
+  450.           HPL_dtrsv0( ( UPLO  == HplUpper   ? HplLower : HplUpper   ),
+  451.                       ( TRANS == HplNoTrans ? HplTrans : HplNoTrans ),
+  452.                       DIAG, N, A, LDA, X, INCX );
+  453.        }
+  454.     #endif
+  455.     #ifdef HPL_CALL_FBLAS
+  456.     #ifdef StringSunStyle
+  457.     #ifdef HPL_USE_F77_INTEGER_DEF
+  458.        F77_INTEGER               IONE = 1;
+  459.     #else
+  460.        int                       IONE = 1;
+  461.     #endif
+  462.     #endif
+  463.     #ifdef StringStructVal
+  464.        F77_CHAR                  fuplo, ftran, fdiag;
+  465.     #endif
+  466.     #ifdef StringStructPtr
+  467.        F77_CHAR                  fuplo, ftran, fdiag;
+  468.     #endif
+  469.     #ifdef StringCrayStyle
+  470.        F77_CHAR                  fuplo, ftran, fdiag;
+  471.     #endif
+  472.      
+  473.     #ifdef HPL_USE_F77_INTEGER_DEF 
+  474.        const F77_INTEGER         F77N = N, F77lda = LDA, F77incx = INCX;
+  475.     #else
+  476.     #define F77N              N
+  477.     #define F77lda            LDA
+  478.     #define F77incx           INCX
+  479.     #endif
+  480.        char                      cuplo, ctran, cdiag;
+  481.     
+  482.        if( ORDER == HplColumnMajor )
+  483.        {
+  484.           cuplo = ( UPLO  == HplUpper   ? 'U' : 'L' );
+  485.           ctran = ( TRANS == HplNoTrans ? 'N' : 'T' );
+  486.        }
+  487.        else
+  488.        {
+  489.           cuplo = ( UPLO  == HplUpper   ? 'L' : 'U' );
+  490.           ctran = ( TRANS == HplNoTrans ? 'T' : 'N' );
+  491.        }
+  492.        cdiag = ( DIAG == HplNonUnit ? 'N' : 'U' );
+  493.     
+  494.     #ifdef StringSunStyle
+  495.  +     F77dtrsv( &cuplo, &ctran, &cdiag, &F77N, A, &F77lda, X, &F77incx,
+  496.                  IONE, IONE, IONE );
+  497.     #endif
+  498.     #ifdef StringCrayStyle
+  499.        ftran = HPL_C2F_CHAR( ctran ); fdiag = HPL_C2F_CHAR( cdiag );
+  500.        fuplo = HPL_C2F_CHAR( cuplo );
+  501.        F77dtrsv( fuplo,  ftran,  fdiag,  &F77N, A, &F77lda, X, &F77incx );
+  502.     #endif
+  503.     #ifdef StringStructVal
+  504.        fuplo.len = 1; fuplo.cp = &cuplo; ftran.len = 1; ftran.cp = &ctran;
+  505.        fdiag.len = 1; fdiag.cp = &cdiag;
+  506.        F77dtrsv( fuplo,  ftran,  fdiag,  &F77N, A, &F77lda, X, &F77incx );
+  507.     #endif
+  508.     #ifdef StringStructPtr
+  509.        fuplo.len = 1; fuplo.cp = &cuplo; ftran.len = 1; ftran.cp = &ctran;
+  510.        fdiag.len = 1; fdiag.cp = &cdiag;
+  511.        F77dtrsv( &fuplo, &ftran, &fdiag, &F77N, A, &F77lda, X, &F77incx );
+  512.     #endif
+  513.     
+  514.     #endif
+  515.     /*
+  516.      * End of HPL_dtrsv
+  517.      */
+  518.     }
+  519.     
+  520.     #endif
+
+CC-3021 CC: IPA File = HPL_dtrsv.c, Line = 495 
+  "dtrsv_" (called from "HPL_dtrsv") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,181 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdmatcmp.c
+Compiled : 2016-03-19  13:20:18
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/pdmatcmp.o -c ../../../../PTRANS/pdmatcmp.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdmatcmp.c
+Date     : 03/19/2016  13:20:18
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.         /*
+    3.         pdmatcmp.c
+    4.         */
+    5.         
+    6.         #include <hpcc.h>
+    7.         
+    8.         #include "cblacslt.h"
+    9.         
+   10.         /*
+   11.         Purpose
+   12.         
+   13.         PDMATCMP : Parallel Real Double precision MATrix CoMPare.
+   14.                    Finds ERROR = MAX(||A(i,j) - ACOPY(i,j)||) / MAX(|A(i,j)|)
+   15.                    locally.  Then, returns the global maximum from the local
+   16.                    values.
+   17.         
+   18.         Arguments
+   19.         
+   20.         M         (input) INTEGER
+   21.                   Number of rows of the local matrices A and B. M  >= 0.
+   22.         
+   23.         N         (input) INTEGER
+   24.                   Number of columns of the local matrices A and B. N >= 0.
+   25.         
+   26.         A         (input/output) DOUBLE PRECISION, dimension ( LDA, N )
+   27.                   The pointer to the local matrix A.
+   28.         
+   29.         LDA       (input) INTEGER
+   30.                   Leading Dimension of A.  LDA >= M
+   31.         
+   32.         ACOPY     (output) DOUBLE PRECISION, dimension ( LDB, N )
+   33.                   The pointer to the local matrix ACOPY.
+   34.         
+   35.         LDB       (input) INTEGER
+   36.                   Leading Dimension of B.  LDB >= M.
+   37.         
+   38.         ERROR     (output) DOUBLE PRECISION
+   39.                   ERROR = MAX(|A(i,j) - ACOPY(i,j)|) / MAX(|A(i,j)|) (unscaled residual)
+   40.         */
+   41.         int
+   42.         pdmatcmp(int *ictxt, int *m_, int *n_, double *a, int *lda_, double *aCopy, int *ldc_,
+   43.           double *error) {
+   44.           int ctxt = *ictxt, m = *m_, n = *n_;
+   45.           long lda = *lda_, ldc = *ldc_;
+   46.           int j, info, ix; double v, aMax, vals[2];
+   47.         
+   48.           info = 0;
+   49.           aMax = *error = 0.0;
+   50.         
+   51.           if      (m < 0) info = 1;
+   52.           else if (n < 0) info = 2;
+   53.           else if (lda < m) info = 4;
+   54.           else if (ldc < m) info = 6;
+   55.           if (info != 0) {
+   56.  +          pxerbla( ictxt, "pdmatcmp", &info );
+   57.             return 0;
+   58.           }
+   59.         
+   60.  + 1--<   for (j = 0; j < n; j++) {
+   61.    1        /* the largest absolute value in column */
+   62.  + 1        ix = HPL_idamax( m, a + j * lda, 1 );
+   63.    1        v = fabs( a[ix + j * lda] );
+   64.    1        if (aMax < v) aMax = v;
+   65.    1    
+   66.    1        /* difference of two columns */
+   67.  + 1        HPL_daxpy( m, -1.0, a + j * lda, 1, aCopy + j * ldc, 1 );
+   68.    1    
+   69.    1        /* the largest absolute value in column */
+   70.  + 1        ix = HPL_idamax( m, aCopy + j * ldc, 1 );
+   71.    1        v = fabs( aCopy[ix + j * ldc] );
+   72.    1        if (*error < v) *error = v;
+   73.    1-->   }
+   74.         
+   75.           /* calculate max of error and max-of-a over all processes */
+   76.           vals[0] = *error;
+   77.           vals[1] = aMax;
+   78.  +        Cdgamx2d( ctxt, "All", " ", 2,1, vals, 2, &j, &j, -1, -1, -1 );
+   79.           *error = vals[0];
+   80.           aMax  = vals[1];
+   81.         
+   82.           *error /= aMax; /* calculate unscaled residual */
+   83.         
+   84.           return 0;
+   85.         }
+
+CC-3021 CC: IPA File = pdmatcmp.c, Line = 56 
+  "pxerbla" (called from "pdmatcmp") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdmatcmp.c, Line = 60 
+  A loop was not vectorized because it contains a call to function "HPL_idamax" on line 62.
+
+CC-3021 CC: IPA File = pdmatcmp.c, Line = 62 
+  "HPL_idamax" (called from "pdmatcmp") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatcmp.c, Line = 67 
+  "HPL_daxpy" (called from "pdmatcmp") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatcmp.c, Line = 70 
+  "HPL_idamax" (called from "pdmatcmp") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatcmp.c, Line = 78 
+  "Cdgamx2d" (called from "pdmatcmp") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

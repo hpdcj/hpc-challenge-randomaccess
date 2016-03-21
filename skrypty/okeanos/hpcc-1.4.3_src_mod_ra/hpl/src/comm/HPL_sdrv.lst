@@ -1,0 +1,301 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_sdrv.c
+Compiled : 2016-03-19  13:19:32
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/comm/HPL_sdrv.o -c ../../../src/comm/HPL_sdrv.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_sdrv.c
+Date     : 03/19/2016  13:19:32
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     There are no optimizations or loops to mark
+
+
+    1.    /* 
+    2.     * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.     *    HPL - 2.0 - September 10, 2008                          
+    4.     *    Antoine P. Petitet                                                
+    5.     *    University of Tennessee, Knoxville                                
+    6.     *    Innovative Computing Laboratory                                 
+    7.     *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.     *                                                                      
+    9.     * -- Copyright notice and Licensing terms:                             
+   10.     *                                                                      
+   11.     * Redistribution  and  use in  source and binary forms, with or without
+   12.     * modification, are  permitted provided  that the following  conditions
+   13.     * are met:                                                             
+   14.     *                                                                      
+   15.     * 1. Redistributions  of  source  code  must retain the above copyright
+   16.     * notice, this list of conditions and the following disclaimer.        
+   17.     *                                                                      
+   18.     * 2. Redistributions in binary form must reproduce  the above copyright
+   19.     * notice, this list of conditions,  and the following disclaimer in the
+   20.     * documentation and/or other materials provided with the distribution. 
+   21.     *                                                                      
+   22.     * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.     * software must display the following acknowledgement:                 
+   24.     * This  product  includes  software  developed  at  the  University  of
+   25.     * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.     *                                                                      
+   27.     * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.     * names  of  its  contributors  may  not  be used to endorse or promote
+   29.     * products  derived   from   this  software  without  specific  written
+   30.     * permission.                                                          
+   31.     *                                                                      
+   32.     * -- Disclaimer:                                                       
+   33.     *                                                                      
+   34.     * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.     * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.     * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.     * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.     * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.     * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.     * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.     * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.     * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.     * ---------------------------------------------------------------------
+   46.     */ 
+   47.    /*
+   48.     * Include files
+   49.     */
+   50.    #include "hpl.h"
+   51.    /*
+   52.     * Do not use  MPI user-defined data types no matter what.  This routine
+   53.     * is used for small contiguous messages.
+   54.     */
+   55.    #ifdef HPL_USE_MPI_DATATYPE
+   56.    #undef HPL_USE_MPI_DATATYPE
+   57.    #endif
+   58.    
+   59.    #ifdef HPL_STDC_HEADERS
+   60.    int HPL_sdrv
+   61.    (
+   62.       double *                         SBUF,
+   63.       int                              SCOUNT,
+   64.       int                              STAG,
+   65.       double *                         RBUF,
+   66.       int                              RCOUNT,
+   67.       int                              RTAG,
+   68.       int                              PARTNER,
+   69.       MPI_Comm                         COMM
+   70.    )
+   71.    #else
+   72.    int HPL_sdrv
+   73.    ( SBUF, SCOUNT, STAG, RBUF, RCOUNT, RTAG, PARTNER, COMM )
+   74.       double *                         SBUF;
+   75.       int                              SCOUNT;
+   76.       int                              STAG;
+   77.       double *                         RBUF;
+   78.       int                              RCOUNT;
+   79.       int                              RTAG;
+   80.       int                              PARTNER;
+   81.       MPI_Comm                         COMM;
+   82.    #endif
+   83.    {
+   84.    /* 
+   85.     * Purpose
+   86.     * =======
+   87.     *
+   88.     * HPL_sdrv is a simple wrapper around MPI_Sendrecv. Its main purpose is
+   89.     * to allow for some experimentation and tuning of this simple function.
+   90.     * Messages  of  length  less than  or  equal to zero  are not sent  nor
+   91.     * received.  Successful completion  is  indicated by the returned error
+   92.     * code HPL_SUCCESS.
+   93.     *
+   94.     * Arguments
+   95.     * =========
+   96.     *
+   97.     * SBUF    (local input)                 double *
+   98.     *         On entry, SBUF specifies the starting address of buffer to be
+   99.     *         sent.
+  100.     *
+  101.     * SCOUNT  (local input)                 int
+  102.     *         On entry,  SCOUNT  specifies  the number  of double precision
+  103.     *         entries in SBUF. SCOUNT must be at least zero.
+  104.     *
+  105.     * STAG    (local input)                 int
+  106.     *         On entry,  STAG  specifies the message tag to be used for the
+  107.     *         sending communication operation.
+  108.     *
+  109.     * RBUF    (local output)                double *
+  110.     *         On entry, RBUF specifies the starting address of buffer to be
+  111.     *         received.
+  112.     *
+  113.     * RCOUNT  (local input)                 int
+  114.     *         On entry,  RCOUNT  specifies  the number  of double precision
+  115.     *         entries in RBUF. RCOUNT must be at least zero.
+  116.     *
+  117.     * RTAG    (local input)                 int
+  118.     *         On entry,  RTAG  specifies the message tag to be used for the
+  119.     *         receiving communication operation.
+  120.     *
+  121.     * PARTNER (local input)                 int
+  122.     *         On entry,  PARTNER  specifies  the rank of the  collaborative
+  123.     *         process in the communication space defined by COMM.
+  124.     *
+  125.     * COMM    (local input)                 MPI_Comm
+  126.     *         The MPI communicator identifying the communication space.
+  127.     *
+  128.     * ---------------------------------------------------------------------
+  129.     */ 
+  130.    /*
+  131.     * .. Local Variables ..
+  132.     */
+  133.    #ifdef HPL_USE_MPI_DATATYPE
+  134.       MPI_Datatype               type[2];
+  135.    #endif
+  136.       MPI_Request                request;
+  137.       MPI_Status                 status;
+  138.       int                        ierr;
+  139.    /* ..
+  140.     * .. Executable Statements ..
+  141.     */
+  142.       if( RCOUNT > 0 )
+  143.       {
+  144.          if( SCOUNT > 0 )
+  145.          {
+  146.    #ifdef HPL_USE_MPI_DATATYPE
+  147.    /*
+  148.     * Post asynchronous receive
+  149.     */
+  150.             ierr =      MPI_Type_contiguous( RCOUNT, MPI_DOUBLE, &type[0] );
+  151.             if( ierr == MPI_SUCCESS )
+  152.                ierr =   MPI_Type_commit( &type[0] );
+  153.             if( ierr == MPI_SUCCESS )
+  154.                ierr =   MPI_Irecv( (void *)(RBUF), 1, type[0], PARTNER,
+  155.                                    RTAG, COMM, &request );
+  156.    /*
+  157.     * Blocking send
+  158.     */
+  159.             if( ierr == MPI_SUCCESS )
+  160.                ierr =   MPI_Type_contiguous( SCOUNT, MPI_DOUBLE, &type[1] );
+  161.             if( ierr == MPI_SUCCESS )
+  162.                ierr =   MPI_Type_commit( &type[1] );
+  163.             if( ierr == MPI_SUCCESS )
+  164.                ierr =   MPI_Send( (void *)(SBUF), 1, type[1], PARTNER,
+  165.                                   STAG, COMM );
+  166.             if( ierr == MPI_SUCCESS )
+  167.                ierr =   MPI_Type_free( &type[1] );
+  168.    /*
+  169.     * Wait for the receive to complete
+  170.     */
+  171.             if( ierr == MPI_SUCCESS )
+  172.                ierr =   MPI_Wait( &request, &status );
+  173.             if( ierr == MPI_SUCCESS )
+  174.                ierr =   MPI_Type_free( &type[0] );
+  175.    #else
+  176.    /*
+  177.     * Post asynchronous receive
+  178.     */
+  179.             ierr =      MPI_Irecv( (void *)(RBUF), RCOUNT, MPI_DOUBLE,
+  180.                                    PARTNER, RTAG, COMM, &request );
+  181.    /*
+  182.     * Blocking send
+  183.     */
+  184.             if( ierr == MPI_SUCCESS )
+  185.                ierr =   MPI_Send( (void *)(SBUF), SCOUNT, MPI_DOUBLE,
+  186.                                   PARTNER, STAG, COMM );
+  187.    /*
+  188.     * Wait for the receive to complete
+  189.     */
+  190.             if( ierr == MPI_SUCCESS )
+  191.                ierr =   MPI_Wait( &request, &status );
+  192.    #endif
+  193.          }
+  194.          else
+  195.          {
+  196.    /*
+  197.     * Blocking receive
+  198.     */
+  199.    #ifdef HPL_USE_MPI_DATATYPE
+  200.             ierr =      MPI_Type_contiguous( RCOUNT, MPI_DOUBLE, &type[0] );
+  201.             if( ierr == MPI_SUCCESS )
+  202.                ierr =   MPI_Type_commit( &type[0] );
+  203.             if( ierr == MPI_SUCCESS )
+  204.                ierr =   MPI_Recv( (void *)(RBUF), 1, type[0], PARTNER, RTAG,
+  205.                                   COMM, &status );
+  206.             if( ierr == MPI_SUCCESS )
+  207.                ierr =   MPI_Type_free( &type[0] );
+  208.    #else
+  209.             ierr =      MPI_Recv( (void *)(RBUF), RCOUNT, MPI_DOUBLE,
+  210.                                   PARTNER, RTAG, COMM, &status );
+  211.    #endif
+  212.          }
+  213.       }
+  214.       else if( SCOUNT > 0 )
+  215.       {
+  216.    /*
+  217.     * Blocking send
+  218.     */
+  219.    #ifdef HPL_USE_MPI_DATATYPE
+  220.          ierr =      MPI_Type_contiguous( SCOUNT, MPI_DOUBLE, &type[1] );
+  221.          if( ierr == MPI_SUCCESS )
+  222.             ierr =   MPI_Type_commit( &type[1] );
+  223.          if( ierr == MPI_SUCCESS )
+  224.             ierr =   MPI_Send( (void *)(SBUF), 1, type[1], PARTNER, STAG,
+  225.                              COMM );
+  226.          if( ierr == MPI_SUCCESS )
+  227.             ierr =   MPI_Type_free( &type[1] ) );
+  228.    #else
+  229.          ierr =      MPI_Send( (void *)(SBUF), SCOUNT, MPI_DOUBLE, PARTNER,
+  230.                                STAG, COMM );
+  231.    #endif
+  232.       }
+  233.       else { ierr = MPI_SUCCESS; }
+  234.    
+  235.       return( ( ierr == MPI_SUCCESS ? HPL_SUCCESS : HPL_FAILURE ) );
+  236.    /*
+  237.     * End of HPL_sdrv
+  238.     */
+  239.    }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

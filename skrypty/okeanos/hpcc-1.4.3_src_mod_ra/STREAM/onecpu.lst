@@ -1,0 +1,329 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../STREAM/onecpu.c
+Compiled : 2016-03-19  13:20:15
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../STREAM/onecpu.o -c ../../../../STREAM/onecpu.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../STREAM/onecpu.c
+Date     : 03/19/2016  13:20:15
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.         
+    3.         
+    4.         #include <hpcc.h>
+    5.         
+    6.         int
+    7.         HPCC_StarStream(HPCC_Params *params) {
+    8.           int myRank, commSize;
+    9.           int rv, errCount, failure = 0, failureAll = 0;
+   10.           double copyLocalGBs, copyMinGBs, copyMaxGBs, copyAvgGBs;
+   11.           double scaleLocalGBs, scaleMinGBs, scaleMaxGBs, scaleAvgGBs;
+   12.           double addLocalGBs, addMinGBs, addMaxGBs, addAvgGBs;
+   13.           double triadLocalGBs, triadMinGBs, triadMaxGBs, triadAvgGBs;
+   14.           FILE *outputFile;
+   15.           MPI_Comm comm = MPI_COMM_WORLD;
+   16.         
+   17.           copyLocalGBs = copyMinGBs = copyMaxGBs = copyAvgGBs =
+   18.           scaleLocalGBs = scaleMinGBs = scaleMaxGBs = scaleAvgGBs =
+   19.           addLocalGBs = addMinGBs = addMaxGBs = addAvgGBs =
+   20.           triadLocalGBs = triadMinGBs = triadMaxGBs = triadAvgGBs = 0.0;
+   21.         
+   22.  +        MPI_Comm_size( comm, &commSize );
+   23.  +        MPI_Comm_rank( comm, &myRank );
+   24.         
+   25.  +        rv = HPCC_Stream( params, 0 == myRank, &copyLocalGBs, &scaleLocalGBs, &addLocalGBs, &triadLocalGBs,
+   26.                        &failure );
+   27.  +        MPI_Reduce( &rv, &errCount, 1, MPI_INT, MPI_SUM, 0, comm );
+   28.  +        MPI_Allreduce( &failure, &failureAll, 1, MPI_INT, MPI_MAX, comm );
+   29.           if (failureAll) params->Failure = 1;
+   30.         
+   31.  +        MPI_Reduce( &copyLocalGBs, &copyMinGBs, 1, MPI_DOUBLE, MPI_MIN, 0, comm );
+   32.  +        MPI_Reduce( &copyLocalGBs, &copyAvgGBs, 1, MPI_DOUBLE, MPI_SUM, 0, comm );
+   33.  +        MPI_Reduce( &copyLocalGBs, &copyMaxGBs, 1, MPI_DOUBLE, MPI_MAX, 0, comm );
+   34.           copyAvgGBs /= commSize;
+   35.  +        MPI_Reduce( &scaleLocalGBs, &scaleMinGBs, 1, MPI_DOUBLE, MPI_MIN, 0, comm );
+   36.  +        MPI_Reduce( &scaleLocalGBs, &scaleAvgGBs, 1, MPI_DOUBLE, MPI_SUM, 0, comm );
+   37.  +        MPI_Reduce( &scaleLocalGBs, &scaleMaxGBs, 1, MPI_DOUBLE, MPI_MAX, 0, comm );
+   38.           scaleAvgGBs /= commSize;
+   39.  +        MPI_Reduce( &addLocalGBs, &addMinGBs, 1, MPI_DOUBLE, MPI_MIN, 0, comm );
+   40.  +        MPI_Reduce( &addLocalGBs, &addAvgGBs, 1, MPI_DOUBLE, MPI_SUM, 0, comm );
+   41.  +        MPI_Reduce( &addLocalGBs, &addMaxGBs, 1, MPI_DOUBLE, MPI_MAX, 0, comm );
+   42.           addAvgGBs /= commSize;
+   43.  +        MPI_Reduce( &triadLocalGBs, &triadMinGBs, 1, MPI_DOUBLE, MPI_MIN, 0, comm );
+   44.  +        MPI_Reduce( &triadLocalGBs, &triadAvgGBs, 1, MPI_DOUBLE, MPI_SUM, 0, comm );
+   45.  +        MPI_Reduce( &triadLocalGBs, &triadMaxGBs, 1, MPI_DOUBLE, MPI_MAX, 0, comm );
+   46.           triadAvgGBs /= commSize;
+   47.         
+   48.  +        MPI_Bcast( &copyAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamCopyGBs = copyAvgGBs;
+   49.  +        MPI_Bcast( &scaleAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamScaleGBs = scaleAvgGBs;
+   50.  +        MPI_Bcast( &addAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamAddGBs = addAvgGBs;
+   51.  +        MPI_Bcast( &triadAvgGBs, 1, MPI_DOUBLE, 0, comm ); params->StarStreamTriadGBs = triadAvgGBs;
+   52.         
+   53.  +        BEGIN_IO( myRank, params->outFname, outputFile);
+   54.           fprintf( outputFile, "Node(s) with error %d\n", errCount );
+   55.           fprintf( outputFile, "Minimum Copy GB/s %.6f\n", copyMinGBs );
+   56.           fprintf( outputFile, "Average Copy GB/s %.6f\n", copyAvgGBs );
+   57.           fprintf( outputFile, "Maximum Copy GB/s %.6f\n", copyMaxGBs );
+   58.           fprintf( outputFile, "Minimum Scale GB/s %.6f\n", scaleMinGBs );
+   59.           fprintf( outputFile, "Average Scale GB/s %.6f\n", scaleAvgGBs );
+   60.           fprintf( outputFile, "Maximum Scale GB/s %.6f\n", scaleMaxGBs );
+   61.           fprintf( outputFile, "Minimum Add GB/s %.6f\n", addMinGBs );
+   62.           fprintf( outputFile, "Average Add GB/s %.6f\n", addAvgGBs );
+   63.           fprintf( outputFile, "Maximum Add GB/s %.6f\n", addMaxGBs );
+   64.           fprintf( outputFile, "Minimum Triad GB/s %.6f\n", triadMinGBs );
+   65.           fprintf( outputFile, "Average Triad GB/s %.6f\n", triadAvgGBs );
+   66.           fprintf( outputFile, "Maximum Triad GB/s %.6f\n", triadMaxGBs );
+   67.  +        END_IO( myRank, outputFile );
+   68.         
+   69.           return 0;
+   70.         }
+   71.         
+   72.         int
+   73.         HPCC_SingleStream(HPCC_Params *params) {
+   74.           int myRank, commSize;
+   75.           int rv, errCount, rank, failure = 0;
+   76.           double copyLocalGBs, scaleLocalGBs, addLocalGBs, triadLocalGBs;
+   77.           double scl = 1.0 / RAND_MAX;
+   78.           FILE *outputFile;
+   79.           MPI_Comm comm = MPI_COMM_WORLD;
+   80.         
+   81.           copyLocalGBs = scaleLocalGBs = addLocalGBs = triadLocalGBs = 0.0;
+   82.         
+   83.  +        MPI_Comm_size( comm, &commSize );
+   84.  +        MPI_Comm_rank( comm, &myRank );
+   85.         
+   86.  +        srand(time(NULL));
+   87.           scl *= commSize;
+   88.         
+   89.           /* select a node at random, but not node 0 (unless there is just one node) */
+   90.           if (1 == commSize)
+   91.             rank = 0;
+   92.           else
+   93.  + 1--<     for (rank = 0; ; rank = (int)(scl * rand())) {
+   94.    1          if (rank > 0 && rank < commSize) break;
+   95.    1-->     }
+   96.         
+   97.  +        MPI_Bcast( &rank, 1, MPI_INT, 0, comm ); /* broadcast the rank selected on node 0 */
+   98.         
+   99.           if (myRank == rank) /* if this node has been selected */
+  100.  +          rv = HPCC_Stream( params, 0 == myRank, &copyLocalGBs, &scaleLocalGBs, &addLocalGBs,
+  101.                          &triadLocalGBs, &failure );
+  102.         
+  103.  +        MPI_Bcast( &rv, 1, MPI_INT, rank, comm ); /* broadcast error code */
+  104.  +        MPI_Bcast( &failure, 1, MPI_INT, rank, comm ); /* broadcast failure indication */
+  105.           if (failure) params->Failure = 1;
+  106.         
+  107.           /* broadcast results */
+  108.  +        MPI_Bcast( &copyLocalGBs, 1, MPI_DOUBLE, rank, comm );
+  109.  +        MPI_Bcast( &scaleLocalGBs, 1, MPI_DOUBLE, rank, comm );
+  110.  +        MPI_Bcast( &addLocalGBs, 1, MPI_DOUBLE, rank, comm );
+  111.  +        MPI_Bcast( &triadLocalGBs, 1, MPI_DOUBLE, rank, comm );
+  112.           errCount = rv;
+  113.           params->SingleStreamCopyGBs = copyLocalGBs;
+  114.           params->SingleStreamScaleGBs = scaleLocalGBs;
+  115.           params->SingleStreamAddGBs = addLocalGBs;
+  116.           params->SingleStreamTriadGBs = triadLocalGBs;
+  117.         
+  118.  +        BEGIN_IO( myRank, params->outFname, outputFile);
+  119.           fprintf( outputFile, "Node(s) with error %d\n", errCount );
+  120.           fprintf( outputFile, "Node selected %d\n", rank );
+  121.           fprintf( outputFile, "Single STREAM Copy GB/s %.6f\n", copyLocalGBs );
+  122.           fprintf( outputFile, "Single STREAM Scale GB/s %.6f\n", scaleLocalGBs );
+  123.           fprintf( outputFile, "Single STREAM Add GB/s %.6f\n", addLocalGBs );
+  124.           fprintf( outputFile, "Single STREAM Triad GB/s %.6f\n", triadLocalGBs );
+  125.  +        END_IO( myRank, outputFile );
+  126.         
+  127.           return 0;
+  128.         }
+
+CC-3021 CC: IPA File = onecpu.c, Line = 22 
+  "MPI_Comm_size" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 23 
+  "MPI_Comm_rank" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 25 
+  "HPCC_Stream" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 27 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 28 
+  "MPI_Allreduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 31 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 32 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 33 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 35 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 36 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 37 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 39 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 40 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 41 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 43 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 44 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 45 
+  "MPI_Reduce" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 48 
+  "MPI_Bcast" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 49 
+  "MPI_Bcast" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 50 
+  "MPI_Bcast" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 51 
+  "MPI_Bcast" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 53 
+  "fopen" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 67 
+  "fflush" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 67 
+  "fclose" (called from "HPCC_StarStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 83 
+  "MPI_Comm_size" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 84 
+  "MPI_Comm_rank" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 86 
+  "time" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 86 
+  "srand" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = onecpu.c, Line = 93 
+  A loop was not vectorized because it contains a call to function "rand" on line 93.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 93 
+  "rand" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 97 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 100 
+  "HPCC_Stream" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 103 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 104 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 108 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 109 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 110 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 111 
+  "MPI_Bcast" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 118 
+  "fopen" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 125 
+  "fflush" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = onecpu.c, Line = 125 
+  "fclose" (called from "HPCC_SingleStream") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,341 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/core_single_cpu_lcg.c
+Compiled : 2016-03-19  13:20:09
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../RandomAccess/core_single_cpu_lcg.o
+           -c ../../../../RandomAccess/core_single_cpu_lcg.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../RandomAccess/core_single_cpu_lcg.c
+Date     : 03/19/2016  13:20:09
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                  /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.                  
+    3.                  /*
+    4.                   * This code has been contributed by the DARPA HPCS program.  Contact
+    5.                   * David Koester <dkoester@mitre.org> or Bob Lucas <rflucas@isi.edu>
+    6.                   * if you have questions.
+    7.                   *
+    8.                   * GUPS (Giga UPdates per Second) is a measurement that profiles the memory
+    9.                   * architecture of a system and is a measure of performance similar to MFLOPS.
+   10.                   * The HPCS HPCchallenge RandomAccess benchmark is intended to exercise the
+   11.                   * GUPS capability of a system, much like the LINPACK benchmark is intended to
+   12.                   * exercise the MFLOPS capability of a computer.  In each case, we would
+   13.                   * expect these benchmarks to achieve close to the "peak" capability of the
+   14.                   * memory system. The extent of the similarities between RandomAccess and
+   15.                   * LINPACK are limited to both benchmarks attempting to calculate a peak system
+   16.                   * capability.
+   17.                   *
+   18.                   * GUPS is calculated by identifying the number of memory locations that can be
+   19.                   * randomly updated in one second, divided by 1 billion (1e9). The term "randomly"
+   20.                   * means that there is little relationship between one address to be updated and
+   21.                   * the next, except that they occur in the space of one half the total system
+   22.                   * memory.  An update is a read-modify-write operation on a table of 64-bit words.
+   23.                   * An address is generated, the value at that address read from memory, modified
+   24.                   * by an integer operation (add, and, or, xor) with a literal value, and that
+   25.                   * new value is written back to memory.
+   26.                   *
+   27.                   * We are interested in knowing the GUPS performance of both entire systems and
+   28.                   * system subcomponents --- e.g., the GUPS rating of a distributed memory
+   29.                   * multiprocessor the GUPS rating of an SMP node, and the GUPS rating of a
+   30.                   * single processor.  While there is typically a scaling of FLOPS with processor
+   31.                   * count, a similar phenomenon may not always occur for GUPS.
+   32.                   *
+   33.                   * For additional information on the GUPS metric, the HPCchallenge RandomAccess
+   34.                   * Benchmark,and the rules to run RandomAccess or modify it to optimize
+   35.                   * performance -- see http://icl.cs.utk.edu/hpcc/
+   36.                   *
+   37.                   */
+   38.                  
+   39.                  /*
+   40.                   * This file contains the computational core of the single cpu version
+   41.                   * of GUPS.  The inner loop should easily be vectorized by compilers
+   42.                   * with such support.
+   43.                   *
+   44.                   * This core is used by both the single_cpu and star_single_cpu tests.
+   45.                   */
+   46.                  
+   47.                  #include <hpcc.h>
+   48.                  #include "RandomAccess.h"
+   49.                  
+   50.                  /* Number of updates to table (suggested: 4x number of table entries) */
+   51.                  #define NUPDATE (4 * TableSize)
+   52.                  
+   53.                  static void
+   54.                  RandomAccessUpdate_LCG(u64Int TableSize, u64Int *Table) {
+   55.                    u64Int i;
+   56.                    u64Int ran[128];              /* Current random numbers */
+   57.                    int j, logTableSize;
+   58.                  
+   59.                    /* Perform updates to main table.  The scalar equivalent is:
+   60.                     *
+   61.                     *     u64Int ran;
+   62.                     *     ran = 1;
+   63.                     *     for (i=0; i<NUPDATE; i++) {
+   64.                     *       ran = LCG_MUL64 * ran + LCG_ADD64;
+   65.                     *       table[ran >> (64 - logTableSize)] ^= ran;
+   66.                     *     }
+   67.                     */
+   68.  +    1--------<   for (j=0; j<128; j++)
+   69.  +    1 ------->     ran[j] = HPCC_starts_LCG((NUPDATE/128) * j);
+   70.                  
+   71.                    logTableSize = 0;
+   72.  +    1--------<   for (i = 1; i < TableSize; i <<= 1)
+   73.       1-------->     logTableSize += 1;
+   74.                  
+   75.  + M-<1--------<   for (i=0; i<NUPDATE/128; i++) {
+   76.    M  1          /* #pragma ivdep */
+   77.    M  1          #ifdef _OPENMP
+   78.    M  1          #pragma omp parallel for
+   79.    M  1          #endif
+   80.  + M  1 mVpr2--<     for (j=0; j<128; j++) {
+   81.    M  1 mVpr2          ran[j] = LCG_MUL64 * ran[j] + LCG_ADD64;
+   82.    M  1 mVpr2          Table[ran[j] >> (64 - logTableSize)] ^= ran[j];
+   83.    M->1 mVpr2-->     }
+   84.       1-------->   }
+   85.                  }
+   86.                  
+   87.                  int
+   88.                  HPCC_RandomAccess_LCG(HPCC_Params *params, int doIO, double *GUPs, int *failure) {
+   89.                    u64Int i;
+   90.                    u64Int temp;
+   91.                    double cputime;               /* CPU time to update table */
+   92.                    double realtime;              /* Real time to update table */
+   93.                    double totalMem;
+   94.                    u64Int *Table;
+   95.                    u64Int logTableSize, TableSize;
+   96.                    FILE *outFile = NULL;
+   97.                  
+   98.                    if (doIO) {
+   99.  +                   outFile = fopen( params->outFname, "a" );
+  100.                      if (! outFile) {
+  101.                        outFile = stderr;
+  102.                        fprintf( outFile, "Cannot open output file.\n" );
+  103.                        return 1;
+  104.                      }
+  105.                    }
+  106.                  
+  107.                    /* calculate local memory per node for the update table */
+  108.                    totalMem = params->HPLMaxProcMem;
+  109.                    totalMem /= sizeof(u64Int);
+  110.                  
+  111.                    /* calculate the size of update array (must be a power of 2) */
+  112.  +    1--------<   for (totalMem *= 0.5, logTableSize = 0, TableSize = 1;
+  113.       1                 totalMem >= 1.0;
+  114.       1                 totalMem *= 0.5, logTableSize++, TableSize <<= 1)
+  115.       1-------->     ; /* EMPTY */
+  116.                  
+  117.                    Table = HPCC_XMALLOC( u64Int, TableSize );
+  118.                    if (! Table) {
+  119.                      if (doIO) {
+  120.                        fprintf( outFile, "Failed to allocate memory for the update table (" FSTR64 ").\n", TableSize);
+  121.  +                     fclose( outFile );
+  122.                      }
+  123.                      return 1;
+  124.                    }
+  125.                    params->RandomAccess_LCG_N = (s64Int)TableSize;
+  126.                  
+  127.                    /* Print parameters for run */
+  128.                    if (doIO) {
+  129.                    fprintf( outFile, "Main table size   = 2^" FSTR64 " = " FSTR64 " words\n", logTableSize,TableSize);
+  130.                    fprintf( outFile, "Number of updates = " FSTR64 "\n", NUPDATE);
+  131.                    }
+  132.                  
+  133.                    /* Initialize main table */
+  134.       Vr2-----<>   for (i=0; i<TableSize; i++) Table[i] = i;
+  135.                  
+  136.                    /* Begin timing here */
+  137.  +                 cputime = -CPUSEC();
+  138.  +                 realtime = -RTSEC();
+  139.                  
+  140.  +                 RandomAccessUpdate_LCG( TableSize, Table );
+  141.                  
+  142.                    /* End timed section */
+  143.  +                 cputime += CPUSEC();
+  144.  +                 realtime += RTSEC();
+  145.                  
+  146.                    /* make sure no division by zero */
+  147.                    *GUPs = (realtime > 0.0 ? 1.0 / realtime : -1.0);
+  148.                    *GUPs *= 1e-9*NUPDATE;
+  149.                    /* Print timing results */
+  150.                    if (doIO) {
+  151.                    fprintf( outFile, "CPU time used  = %.6f seconds\n", cputime);
+  152.                    fprintf( outFile, "Real time used = %.6f seconds\n", realtime);
+  153.                    fprintf( outFile, "%.9f Billion(10^9) Updates    per second [GUP/s]\n", *GUPs );
+  154.                    }
+  155.                  
+  156.                    /* Verification of results (in serial or "safe" mode; optional) */
+  157.                    temp = 0x1;
+  158.  +    r4-------<   for (i=0; i<NUPDATE; i++) {
+  159.       r4             temp = LCG_MUL64 * temp + LCG_ADD64;
+  160.       r4             Table[temp >> (64 - (int)logTableSize)] ^= temp;
+  161.       r4------->   }
+  162.                  
+  163.                    temp = 0;
+  164.       Vr2------<   for (i=0; i<TableSize; i++)
+  165.       Vr2            if (Table[i] != i)
+  166.       Vr2------>       temp++;
+  167.                  
+  168.                    if (doIO) {
+  169.                    fprintf( outFile, "Found " FSTR64 " errors in " FSTR64 " locations (%s).\n",
+  170.                             temp, TableSize, (temp <= 0.01*TableSize) ? "passed" : "failed");
+  171.                    }
+  172.                    if (temp <= 0.01*TableSize) *failure = 0;
+  173.                    else *failure = 1;
+  174.                  
+  175.                    HPCC_free( Table );
+  176.                  
+  177.                    if (doIO) {
+  178.  +                   fflush( outFile );
+  179.  +                   fclose( outFile );
+  180.                    }
+  181.                  
+  182.                    return 0;
+  183.                  }
+
+CC-6287 CC: VECTOR File = core_single_cpu_lcg.c, Line = 68 
+  A loop was not vectorized because it contains a call to function "HPCC_starts_LCG" on line 69.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 69 
+  "HPCC_starts_LCG" (called from "RandomAccessUpdate_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = core_single_cpu_lcg.c, Line = 72 
+  A loop was not vectorized because a recurrence was found on "i" at line 72.
+
+CC-6831 CC: THREAD File = core_single_cpu_lcg.c, Line = 75 
+  An expanded multi-threaded region was created starting near line 75 and ending near line 83.
+
+CC-6821 CC: THREAD File = core_single_cpu_lcg.c, Line = 75 
+  A loop will be redundantly executed.
+
+CC-6254 CC: VECTOR File = core_single_cpu_lcg.c, Line = 75 
+  A loop was not vectorized because a recurrence was found on "ran" at line 81.
+
+CC-6005 CC: SCALAR File = core_single_cpu_lcg.c, Line = 80 
+  A loop was unrolled 2 times.
+
+CC-6824 CC: THREAD File = core_single_cpu_lcg.c, Line = 80 
+  A region starting at line 80 and ending at line 83 was multi-threaded and merged with an expanded multi-thread region.
+
+CC-6209 CC: VECTOR File = core_single_cpu_lcg.c, Line = 80 
+  A loop was partially vectorized.
+
+CC-6817 CC: THREAD File = core_single_cpu_lcg.c, Line = 80 
+  A loop was partitioned.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 99 
+  "fopen" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = core_single_cpu_lcg.c, Line = 112 
+  A loop was not vectorized because a recurrence was found on "totalMem" at line 114.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 121 
+  "fclose" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = core_single_cpu_lcg.c, Line = 134 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = core_single_cpu_lcg.c, Line = 134 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 137 
+  "HPL_timer_cputime" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 138 
+  "MPI_Wtime" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = core_single_cpu_lcg.c, Line = 140 
+  "RandomAccessUpdate_LCG" (called from "HPCC_RandomAccess_LCG") was not inlined because the call site will not flatten. 
+  "HPCC_starts_LCG" is missing.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 143 
+  "HPL_timer_cputime" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 144 
+  "MPI_Wtime" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = core_single_cpu_lcg.c, Line = 158 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = core_single_cpu_lcg.c, Line = 158 
+  A loop was not vectorized because a recurrence was found on "temp" at line 159.
+
+CC-6005 CC: SCALAR File = core_single_cpu_lcg.c, Line = 164 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = core_single_cpu_lcg.c, Line = 164 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 178 
+  "fflush" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = core_single_cpu_lcg.c, Line = 179 
+  "fclose" (called from "HPCC_RandomAccess_LCG") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,350 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_packL.c
+Compiled : 2016-03-19  13:19:30
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/comm/HPL_packL.o -c ../../../src/comm/HPL_packL.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/comm/HPL_packL.c
+Date     : 03/19/2016  13:19:31
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* 
+    2.             * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.             *    HPL - 2.0 - September 10, 2008                          
+    4.             *    Antoine P. Petitet                                                
+    5.             *    University of Tennessee, Knoxville                                
+    6.             *    Innovative Computing Laboratory                                 
+    7.             *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.             *                                                                      
+    9.             * -- Copyright notice and Licensing terms:                             
+   10.             *                                                                      
+   11.             * Redistribution  and  use in  source and binary forms, with or without
+   12.             * modification, are  permitted provided  that the following  conditions
+   13.             * are met:                                                             
+   14.             *                                                                      
+   15.             * 1. Redistributions  of  source  code  must retain the above copyright
+   16.             * notice, this list of conditions and the following disclaimer.        
+   17.             *                                                                      
+   18.             * 2. Redistributions in binary form must reproduce  the above copyright
+   19.             * notice, this list of conditions,  and the following disclaimer in the
+   20.             * documentation and/or other materials provided with the distribution. 
+   21.             *                                                                      
+   22.             * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.             * software must display the following acknowledgement:                 
+   24.             * This  product  includes  software  developed  at  the  University  of
+   25.             * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.             *                                                                      
+   27.             * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.             * names  of  its  contributors  may  not  be used to endorse or promote
+   29.             * products  derived   from   this  software  without  specific  written
+   30.             * permission.                                                          
+   31.             *                                                                      
+   32.             * -- Disclaimer:                                                       
+   33.             *                                                                      
+   34.             * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.             * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.             * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.             * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.             * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.             * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.             * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.             * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.             * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.             * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.             * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.             * ---------------------------------------------------------------------
+   46.             */ 
+   47.            /*
+   48.             * Include files
+   49.             */
+   50.            #include "hpl.h"
+   51.            
+   52.            #ifdef HPL_STDC_HEADERS
+   53.            int HPL_packL
+   54.            (
+   55.               HPL_T_panel *                    PANEL,
+   56.               const int                        INDEX,
+   57.               const int                        LEN,
+   58.               const int                        IBUF
+   59.            )
+   60.            #else
+   61.            int HPL_packL
+   62.            ( PANEL, INDEX, LEN, IBUF )
+   63.               HPL_T_panel *                    PANEL;
+   64.               const int                        INDEX;
+   65.               const int                        LEN;
+   66.               const int                        IBUF;
+   67.            #endif
+   68.            {
+   69.            /* 
+   70.             * Purpose
+   71.             * =======
+   72.             *
+   73.             * HPL_packL forms  the MPI data type for the panel to be broadcast.
+   74.             * Successful  completion  is  indicated  by  the  returned  error  code
+   75.             * MPI_SUCCESS.
+   76.             *
+   77.             * Arguments
+   78.             * =========
+   79.             *
+   80.             * PANEL   (input/output)                HPL_T_panel *
+   81.             *         On entry,  PANEL  points to the  current panel data structure
+   82.             *         being broadcast.
+   83.             *
+   84.             * INDEX   (input)                       const int
+   85.             *         On entry,  INDEX  points  to  the  first entry of the  packed
+   86.             *         buffer being broadcast.
+   87.             *
+   88.             * LEN     (input)                       const int
+   89.             *         On entry, LEN is the length of the packed buffer.
+   90.             *
+   91.             * IBUF    (input)                       const int
+   92.             *         On entry, IBUF  specifies the panel buffer/count/type entries
+   93.             *         that should be initialized.
+   94.             *
+   95.             * ---------------------------------------------------------------------
+   96.             */ 
+   97.            #ifdef HPL_USE_MPI_DATATYPE
+   98.            /*
+   99.             * .. Local Variables ..
+  100.             */
+  101.            #ifndef HPL_COPY_L
+  102.               MPI_Datatype               * type = NULL;
+  103.               void                       * * * bufs = NULL;
+  104.               double                     * A;
+  105.               int                        * blen = NULL;
+  106.               MPI_Aint                   * disp = NULL;
+  107.               int                        curr, i, i1, ibuf, ierr=MPI_SUCCESS, j1,
+  108.                                          jb, jbm, jbp1, lda, len, m, m1, nbufs;
+  109.            #else
+  110.               int                        ierr;
+  111.            #endif
+  112.            /* ..
+  113.             * .. Executable Statements ..
+  114.             */
+  115.            #ifdef HPL_COPY_L
+  116.            /*
+  117.             * Panel + L1 + DPIV  have been copied into a contiguous buffer - Create
+  118.             * and commit a contiguous data type
+  119.             */
+  120.               PANEL->buffers[IBUF] = (void *)(PANEL->L2 + INDEX);
+  121.               PANEL->counts [IBUF] = 1;
+  122.            
+  123.               ierr =      MPI_Type_contiguous( LEN, MPI_DOUBLE, &PANEL->dtypes[IBUF] );
+  124.               if( ierr == MPI_SUCCESS )
+  125.                  ierr =   MPI_Type_commit( &PANEL->dtypes[IBUF] );
+  126.            
+  127.               return( ierr );
+  128.            #else
+  129.            /*
+  130.             * Panel is not contiguous (because of LDA and also L1 + DPIV) -  Create
+  131.             * and commit a struct data type
+  132.             */
+  133.               jbp1 = ( jb = PANEL->jb ) + 1;
+  134.            /*
+  135.             * Temporaries to create the type struct.
+  136.             */
+  137.               bufs = (void     * * *)malloc( jbp1 * sizeof( void * *     ) );
+  138.               blen = (int          *)malloc( jbp1 * sizeof( int          ) );
+  139.               disp = (MPI_Aint     *)malloc( jbp1 * sizeof( MPI_Aint     ) );
+  140.               type = (MPI_Datatype *)malloc( jbp1 * sizeof( MPI_Datatype ) );
+  141.             
+  142.               if( ( bufs != NULL ) && ( blen != NULL ) &&
+  143.                   ( disp != NULL ) && ( type != NULL ) )
+  144.               {
+  145.                  m = PANEL->mp; curr = (int)( PANEL->grid->myrow == PANEL->prow );
+  146.                  if( curr != 0 ) m -= jb;
+  147.             
+  148.                  len = LEN; ibuf = INDEX; nbufs = 0; jbm = jb * m;
+  149.             
+  150.                  if( ( m > 0 ) && ( ibuf < jbm ) )
+  151.                  {
+  152.            /*
+  153.             * Retrieve proper pointers depending on process row and column
+  154.             */
+  155.                     if( PANEL->grid->mycol == PANEL->pcol )
+  156.                     {
+  157.                        lda = PANEL->lda;
+  158.                        if( curr != 0 ) { A = Mptr( PANEL->A, jb, -jb, lda ); }
+  159.                        else            { A = Mptr( PANEL->A,  0, -jb, lda ); }
+  160.                     }
+  161.                     else { lda = PANEL->ldl2; A = PANEL->L2; }
+  162.            /*
+  163.             * Pack the first (partial) column of L
+  164.             */
+  165.                     m1 = m - ( i1 = ibuf - ( j1 = ibuf / m ) * m );
+  166.                     m1 = Mmin( len, m1 );
+  167.             
+  168.                     bufs[nbufs] = (void **)(Mptr( A, i1, j1, lda ));
+  169.                     type[nbufs] = MPI_DOUBLE;
+  170.                     blen[nbufs] = m1;
+  171.                     if( ierr == MPI_SUCCESS )
+  172.  +                     ierr =   MPI_Address( bufs[nbufs], &disp[nbufs] );
+  173.             
+  174.                     nbufs++; len -= m1; j1++; ibuf += m1;
+  175.            /*
+  176.             * Pack the remaining columns of L
+  177.             */
+  178.  + 1-----<          while( ( len > 0 ) && ( j1 < jb ) )
+  179.    1                {
+  180.    1                   m1 = Mmin( len, m );
+  181.    1        
+  182.    1                   bufs[nbufs] = (void**)(Mptr( A, 0, j1, lda ));
+  183.    1                   type[nbufs] = MPI_DOUBLE;
+  184.    1                   blen[nbufs] = m1;
+  185.    1                   if( ierr == MPI_SUCCESS )
+  186.  + 1                      ierr =   MPI_Address( bufs[nbufs], &disp[nbufs] );
+  187.    1        
+  188.    1                   nbufs++; len -= m1; j1++; ibuf += m1;
+  189.    1----->          }
+  190.                  }
+  191.            /*
+  192.             * Pack L1, DPIV, DINFO
+  193.             */
+  194.                  if( len > 0 )
+  195.                  {                                            /* L1, DPIV, DINFO */
+  196.                     bufs[nbufs] = (void **)(PANEL->L1 + ibuf - jbm);
+  197.                     type[nbufs] = MPI_DOUBLE;
+  198.                     blen[nbufs] = len;
+  199.                     if( ierr == MPI_SUCCESS )
+  200.  +                     ierr =   MPI_Address( bufs[nbufs], &disp[nbufs] );
+  201.                     nbufs++;
+  202.                  }
+  203.             
+  204.    Vr2--<>       for( i = 1; i < nbufs; i++ ) disp[i] -= disp[0]; disp[0] = 0;
+  205.             
+  206.                  PANEL->buffers[IBUF] = (void ***)(bufs[0]); PANEL->counts [IBUF] = 1;
+  207.            /*
+  208.             * construct the struct type 
+  209.             */
+  210.                  if( ierr == MPI_SUCCESS )
+  211.  +                  ierr =   MPI_Type_struct( nbufs, blen, disp, type,
+  212.                                               &PANEL->dtypes[IBUF] );
+  213.            /*
+  214.             * release temporaries
+  215.             */
+  216.                  if( bufs ) free( bufs );
+  217.                  if( blen ) free( blen );
+  218.                  if( disp ) free( disp );
+  219.                  if( type ) free( type );
+  220.            /*
+  221.             * commit the type 
+  222.             */
+  223.                  if( ierr == MPI_SUCCESS )
+  224.  +                  ierr =   MPI_Type_commit( &PANEL->dtypes[IBUF] );
+  225.            
+  226.                  return( ierr );
+  227.               }
+  228.               else
+  229.               {
+  230.            /*
+  231.             * Memory allocation failed -> abort
+  232.             */
+  233.  +               HPL_pabort( __LINE__, "HPL_packL", "Memory allocation failed" );
+  234.                  return( MPI_SUCCESS );    /* never executed (hopefully ...) */
+  235.               }
+  236.            #endif
+  237.            #else
+  238.                      /* HPL_USE_MPI_DATATYPE not defined - Oops, there is a bug
+  239.                         somewhere, so, just in case  and until I find it ... */
+  240.               return( MPI_SUCCESS );   
+  241.            #endif
+  242.            /*
+  243.             * End of HPL_packL
+  244.             */
+  245.            }
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 172 
+  "MPI_Address" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_packL.c, Line = 178 
+  A loop was not vectorized because it contains a call to function "MPI_Address" on line 186.
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 186 
+  "MPI_Address" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 200 
+  "MPI_Address" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_packL.c, Line = 204 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = HPL_packL.c, Line = 204 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 211 
+  "MPI_Type_struct" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 224 
+  "MPI_Type_commit" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_packL.c, Line = 233 
+  "HPL_pabort" (called from "HPL_packL") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

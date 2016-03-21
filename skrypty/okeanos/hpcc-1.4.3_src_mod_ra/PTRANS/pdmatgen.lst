@@ -1,0 +1,959 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdmatgen.c
+Compiled : 2016-03-19  13:20:16
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/pdmatgen.o -c ../../../../PTRANS/pdmatgen.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdmatgen.c
+Date     : 03/19/2016  13:20:17
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.               /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.               
+    3.               #include <hpcc.h>
+    4.               
+    5.               int
+    6.               pdmatgen(int *ictxt, char *aform, char *diag, int *m, int *n, int *mb, int *nb, double *aMat,
+    7.                 int *lda, int *iarow, int *iacol, int *iseed, int *iroff, int *irnum, int *icoff, int *icnum,
+    8.                 int * myrow, int *mycol, int *nprow, int *npcol, double alpha) {
+    9.                 /* System generated locals */
+   10.                 long a_dim1, a_offset;
+   11.                 int i__1, i__2, i__3, i__4;
+   12.                 double d__1, d_tmp;
+   13.               
+   14.                   /* Local variables */
+   15.                   static int i__, j, ic, ik, jk, ir, mp, nq, ia1[2], ia2[2], ia3[2],
+   16.               	    ia4[2], ia5[2], ib1[2], ib2[2], ib3[2], ic1[2], ic2[2], ic3[2],
+   17.               	    ic4[2], ic5[2], iadd[2], mend, nend, moff, noff;
+   18.                   static int herm;
+   19.                   static int info, npmb, nqnb;
+   20.                   static int tran;
+   21.                   static int mult[2];
+   22.                   static int symm;
+   23.                   static int iran1[2], iran2[2], iran3[2], iran4[2], itmp1[2], itmp2[2],
+   24.               	     jump1, jump2, jump3, jump4, jump5, jump6, jump7, itmp3[2];
+   25.                   static int ioffc, jseed[2];
+   26.                   static int ioffr, mrcol, maxmn, mrrow;
+   27.               
+   28.               /*  -- ScaLAPACK routine (version 1.0) -- */
+   29.               /*     University of Tennessee, Knoxville, Oak Ridge National Laboratory, */
+   30.               /*     and University of California, Berkeley. */
+   31.               /*     February 28, 1995 */
+   32.               
+   33.               /*  Purpose */
+   34.               
+   35.               /*  PDMATGEN : Parallel Real Double precision MATrix GENerator. */
+   36.               /*  Generate (or regenerate) a distributed matrix A (or sub-matrix of A). */
+   37.               
+   38.               /*  Arguments */
+   39.               
+   40.               /*  ICTXT   (global input) INTEGER */
+   41.               /*          The BLACS context handle, indicating the global context of */
+   42.               /*          the operation. The context itself is global. */
+   43.               
+   44.               /*  AFORM   (global input) CHARACTER*1 */
+   45.               /*          if AFORM = 'S' : A is returned is a symmetric matrix. */
+   46.               /*          if AFORM = 'H' : A is returned is a Hermitian matrix. */
+   47.               /*          if AFORM = 'T' : A is overwritten with the transpose of */
+   48.               /*                           what would normally be generated. */
+   49.               /*          if AFORM = 'C' : A is overwritten with the conjugate trans- */
+   50.               /*                           pose of what would normally be generated. */
+   51.               /*          otherwise a random matrix is generated. */
+   52.               
+   53.               /*  DIAG    (global input) CHARACTER*1 */
+   54.               /*          if DIAG = 'D' : A is diagonally dominant. */
+   55.               
+   56.               /*  M       (global input) INTEGER */
+   57.               /*          The number of rows in the generated distributed matrix. */
+   58.               
+   59.               /*  N       (global input) INTEGER */
+   60.               /*          The number of columns in the generated distributed */
+   61.               /*          matrix. */
+   62.               
+   63.               /*  MB      (global input) INTEGER */
+   64.               /*          The row blocking factor of the distributed matrix A. */
+   65.               
+   66.               /*  NB      (global input) INTEGER */
+   67.               /*          The column blocking factor of the distributed matrix A. */
+   68.               
+   69.               /*  A       (local output) DOUBLE PRECISION, pointer into the local */
+   70.               /*          memory to an array of dimension ( LDA, * ) containing the */
+   71.               /*          local pieces of the distributed matrix. */
+   72.               
+   73.               /*  LDA     (local input) INTEGER */
+   74.               /*          The leading dimension of the array containing the local */
+   75.               /*          pieces of the distributed matrix A. */
+   76.               
+   77.               /*  IAROW   (global input) INTEGER */
+   78.               /*          The row processor coordinate which holds the first block */
+   79.               /*          of the distributed matrix A. */
+   80.               
+   81.               /*  IACOL   (global input) INTEGER */
+   82.               /*          The column processor coordinate which holds the first */
+   83.               /*          block of the distributed matrix A. */
+   84.               
+   85.               /*  ISEED   (global input) INTEGER */
+   86.               /*          The seed number to generate the distributed matrix A. */
+   87.               
+   88.               /*  IROFF   (local input) INTEGER */
+   89.               /*          The number of local rows of A that have already been */
+   90.               /*          generated.  It should be a multiple of MB. */
+   91.               
+   92.               /*  IRNUM   (local input) INTEGER */
+   93.               /*          The number of local rows to be generated. */
+   94.               
+   95.               /*  ICOFF   (local input) INTEGER */
+   96.               /*          The number of local columns of A that have already been */
+   97.               /*          generated.  It should be a multiple of NB. */
+   98.               
+   99.               /*  ICNUM   (local input) INTEGER */
+  100.               /*          The number of local columns to be generated. */
+  101.               
+  102.               /*  MYROW   (local input) INTEGER */
+  103.               /*          The row process coordinate of the calling process. */
+  104.               
+  105.               /*  MYCOL   (local input) INTEGER */
+  106.               /*          The column process coordinate of the calling process. */
+  107.               
+  108.               /*  NPROW   (global input) INTEGER */
+  109.               /*          The number of process rows in the grid. */
+  110.               
+  111.               /*  NPCOL   (global input) INTEGER */
+  112.               /*          The number of process columns in the grid. */
+  113.               
+  114.               /*  ALPHA   (global input) DOUBLE PRECISION, multiplication factor for old content of `A':
+  115.                           A(I,J) <- ALPHA * A(I,J) + RANDOM(I,J)
+  116.                If ALPHA is zero then A is overwritten with random numbers. For non-zero ALPHAs, A gets updated.
+  117.                */
+  118.               
+  119.               /*  Notes */
+  120.               
+  121.               /*  The code is originally developed by David Walker, ORNL, */
+  122.               /*  and modified by Jaeyoung Choi, ORNL. */
+  123.               
+  124.               /*  Reference: G. Fox et al. */
+  125.               /*  Section 12.3 of "Solving problems on concurrent processors Vol. I" */
+  126.               
+  127.               /*     Test the input arguments */
+  128.               
+  129.                   /* Parameter adjustments */
+  130.                   a_dim1 = *lda;
+  131.                   a_offset = 1 + a_dim1;
+  132.                   aMat -= a_offset;
+  133.               
+  134.                   /* Function Body */
+  135.  +                mp = numroc_(m, mb, myrow, iarow, nprow);
+  136.  +                nq = numroc_(n, nb, mycol, iacol, npcol);
+  137.                   symm = (*aform == 'S' ? 1 : 0);
+  138.                   herm = (*aform == 'H' ? 1 : 0);
+  139.                   tran = (*aform == 'T' ? 1 : 0);
+  140.               
+  141.                   info = 0;
+  142.                   if (! (symm || herm || tran) && *aform != 'C' && *aform != 'N') {
+  143.                     info = 2;
+  144.                   } else if (*diag != 'D' && *diag != 'N') {
+  145.                     info = 3;
+  146.                   } else if (symm || herm) {
+  147.               	if (*m != *n) {
+  148.               	    info = 5;
+  149.               	} else if (*mb != *nb) {
+  150.               	    info = 7;
+  151.               	}
+  152.                   } else if (*m < 0) {
+  153.               	info = 4;
+  154.                   } else if (*n < 0) {
+  155.               	info = 5;
+  156.                   } else if (*mb < 1) {
+  157.               	info = 6;
+  158.                   } else if (*nb < 1) {
+  159.               	info = 7;
+  160.                   } else if (*lda < 0) {
+  161.               	info = 9;
+  162.                   } else if (*iarow < 0 || *iarow >= *nprow) {
+  163.               	info = 10;
+  164.                   } else if (*iacol < 0 || *iacol >= *npcol) {
+  165.               	info = 11;
+  166.                   } else if (*iroff % *mb > 0) {
+  167.               	info = 13;
+  168.                   } else if (*irnum > mp - *iroff) {
+  169.               	info = 14;
+  170.                   } else if (*icoff % *nb > 0) {
+  171.               	info = 15;
+  172.                   } else if (*icnum > nq - *icoff) {
+  173.               	info = 16;
+  174.                   } else if (*myrow < 0 || *myrow >= *nprow) {
+  175.               	info = 17;
+  176.                   } else if (*mycol < 0 || *mycol >= *npcol) {
+  177.               	info = 18;
+  178.                   } else if (*diag == 'D' && alpha != 0.0) {
+  179.               	info = 19; /* diagonal scaling is not implemented with matrix update (rather than overwrite) */
+  180.                   }
+  181.                   if (info != 0) {
+  182.  +            	pxerbla( ictxt, "PDMATGEN", &info );
+  183.               	return 0;
+  184.                   }
+  185.               
+  186.                   mrrow = (*nprow + *myrow - *iarow) % *nprow;
+  187.                   mrcol = (*npcol + *mycol - *iacol) % *npcol;
+  188.                   npmb = *nprow * *mb;
+  189.                   nqnb = *npcol * *nb;
+  190.                   moff = *iroff / *mb;
+  191.                   noff = *icoff / *nb;
+  192.  +                mend = iceil_(irnum, mb) + moff;
+  193.  +                nend = iceil_(icnum, nb) + noff;
+  194.               
+  195.                   mult[0] = 20077;
+  196.                   mult[1] = 16838;
+  197.                   iadd[0] = 12345;
+  198.                   iadd[1] = 0;
+  199.                   jseed[0] = *iseed;
+  200.                   jseed[1] = 0;
+  201.               
+  202.               /*     Symmetric or Hermitian matrix will be generated. */
+  203.               
+  204.                   if (symm || herm) {
+  205.               
+  206.               /*        First, generate the lower triangular part (with diagonal block) */
+  207.               
+  208.               	jump1 = 1;
+  209.               	jump2 = npmb;
+  210.               	jump3 = *m;
+  211.               	jump4 = nqnb;
+  212.               	jump5 = *nb;
+  213.               	jump6 = mrcol;
+  214.               	jump7 = *mb * mrrow;
+  215.               
+  216.  +            	xjumpm_(&jump1, mult, iadd, jseed, iran1, ia1, ic1);
+  217.  +            	xjumpm_(&jump2, mult, iadd, iran1, itmp1, ia2, ic2);
+  218.  +            	xjumpm_(&jump3, mult, iadd, iran1, itmp1, ia3, ic3);
+  219.  +            	xjumpm_(&jump4, ia3, ic3, iran1, itmp1, ia4, ic4);
+  220.  +            	xjumpm_(&jump5, ia3, ic3, iran1, itmp1, ia5, ic5);
+  221.  +            	xjumpm_(&jump6, ia5, ic5, iran1, itmp3, itmp1, itmp2);
+  222.  +            	xjumpm_(&jump7, mult, iadd, itmp3, iran1, itmp1, itmp2);
+  223.  +            	xjumpm_(&noff, ia4, ic4, iran1, itmp1, itmp2, itmp3);
+  224.  +            	xjumpm_(&moff, ia2, ic2, itmp1, iran1, itmp2, itmp3);
+  225.  +            	setran_(iran1, ia1, ic1);
+  226.               
+  227.  + w--------< 	for (i__ = 1; i__ <= 2; ++i__) {
+  228.    w          	    ib1[i__ - 1] = iran1[i__ - 1];
+  229.    w          	    ib2[i__ - 1] = iran1[i__ - 1];
+  230.    w          	    ib3[i__ - 1] = iran1[i__ - 1];
+  231.    w          /* L10: */
+  232.    w--------> 	}
+  233.               
+  234.               	jk = 1;
+  235.               	i__1 = nend;
+  236.  + 1--------< 	for (ic = noff + 1; ic <= i__1; ++ic) {
+  237.    1          	    ioffc = ((ic - 1) * *npcol + mrcol) * *nb;
+  238.    1          	    i__2 = *nb;
+  239.  + 1 2------< 	    for (i__ = 1; i__ <= i__2; ++i__) {
+  240.    1 2        		if (jk > *icnum) {
+  241.    1 2        		    goto L90;
+  242.    1 2        		}
+  243.    1 2        
+  244.    1 2        		ik = 1;
+  245.    1 2        		i__3 = mend;
+  246.  + 1 2 3----< 		for (ir = moff + 1; ir <= i__3; ++ir) {
+  247.    1 2 3      		    ioffr = ((ir - 1) * *nprow + mrrow) * *mb;
+  248.    1 2 3      
+  249.    1 2 3      		    if (ioffr > ioffc) {
+  250.    1 2 3      			i__4 = *mb;
+  251.  + 1 2 3 4--< 			for (j = 1; j <= i__4; ++j) {
+  252.    1 2 3 4    			    if (ik > *irnum) {
+  253.    1 2 3 4    				goto L60;
+  254.    1 2 3 4    			    }
+  255.  + 1 2 3 4    			    aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  256.    1 2 3 4    			    ++ik;
+  257.    1 2 3 4    /* L20: */
+  258.    1 2 3 4--> 			}
+  259.    1 2 3      
+  260.    1 2 3      		    } else if (ioffc == ioffr) {
+  261.    1 2 3      			ik = ik + i__ - 1;
+  262.    1 2 3      			if (ik > *irnum) {
+  263.    1 2 3      			    goto L60;
+  264.    1 2 3      			}
+  265.    1 2 3      			i__4 = i__ - 1;
+  266.  + 1 2 3 4--< 			for (j = 1; j <= i__4; ++j) {
+  267.  + 1 2 3 4    			    aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  268.    1 2 3 4    /* L30: */
+  269.    1 2 3 4--> 			}
+  270.  + 1 2 3      			aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  271.    1 2 3      			i__4 = *mb - i__;
+  272.  + 1 2 3 4--< 			for (j = 1; j <= i__4; ++j) {
+  273.    1 2 3 4    			    if (ik + j > *irnum) {
+  274.    1 2 3 4    				goto L60;
+  275.    1 2 3 4    			    }
+  276.  + 1 2 3 4               d_tmp =  1. - pdrand() * 2.;
+  277.    1 2 3 4    			    aMat[ik + j + jk * a_dim1] = alpha * aMat[ik + j + jk * a_dim1] + d_tmp;
+  278.    1 2 3 4    			    aMat[ik + (jk + j) * a_dim1] = alpha * aMat[ik + (jk + j) * a_dim1] + d_tmp;
+  279.    1 2 3 4    /* L40: */
+  280.    1 2 3 4--> 			}
+  281.    1 2 3      			ik = ik + *mb - i__ + 1;
+  282.    1 2 3      		    } else {
+  283.    1 2 3      			ik += *mb;
+  284.    1 2 3      		    }
+  285.    1 2 3      
+  286.  + 1 2 3      		    jumpit_(ia2, ic2, ib1, iran2);
+  287.    1 2 3      		    ib1[0] = iran2[0];
+  288.    1 2 3      		    ib1[1] = iran2[1];
+  289.    1 2 3      /* L50: */
+  290.    1 2 3----> 		}
+  291.    1 2        
+  292.    1 2        L60:
+  293.    1 2        		++jk;
+  294.  + 1 2        		jumpit_(ia3, ic3, ib2, iran3);
+  295.    1 2        		ib1[0] = iran3[0];
+  296.    1 2        		ib1[1] = iran3[1];
+  297.    1 2        		ib2[0] = iran3[0];
+  298.    1 2        		ib2[1] = iran3[1];
+  299.    1 2        /* L70: */
+  300.    1 2------> 	    }
+  301.    1          
+  302.  + 1          	    jumpit_(ia4, ic4, ib3, iran4);
+  303.    1          	    ib1[0] = iran4[0];
+  304.    1          	    ib1[1] = iran4[1];
+  305.    1          	    ib2[0] = iran4[0];
+  306.    1          	    ib2[1] = iran4[1];
+  307.    1          	    ib3[0] = iran4[0];
+  308.    1          	    ib3[1] = iran4[1];
+  309.    1          /* L80: */
+  310.    1--------> 	}
+  311.               
+  312.               /*        Next, generate the upper triangular part. */
+  313.               
+  314.               L90:
+  315.               	mult[0] = 20077;
+  316.               	mult[1] = 16838;
+  317.               	iadd[0] = 12345;
+  318.               	iadd[1] = 0;
+  319.               	jseed[0] = *iseed;
+  320.               	jseed[1] = 0;
+  321.               
+  322.               	jump1 = 1;
+  323.               	jump2 = nqnb;
+  324.               	jump3 = *n;
+  325.               	jump4 = npmb;
+  326.               	jump5 = *mb;
+  327.               	jump6 = mrrow;
+  328.               	jump7 = *nb * mrcol;
+  329.               
+  330.  +            	xjumpm_(&jump1, mult, iadd, jseed, iran1, ia1, ic1);
+  331.  +            	xjumpm_(&jump2, mult, iadd, iran1, itmp1, ia2, ic2);
+  332.  +            	xjumpm_(&jump3, mult, iadd, iran1, itmp1, ia3, ic3);
+  333.  +            	xjumpm_(&jump4, ia3, ic3, iran1, itmp1, ia4, ic4);
+  334.  +            	xjumpm_(&jump5, ia3, ic3, iran1, itmp1, ia5, ic5);
+  335.  +            	xjumpm_(&jump6, ia5, ic5, iran1, itmp3, itmp1, itmp2);
+  336.  +            	xjumpm_(&jump7, mult, iadd, itmp3, iran1, itmp1, itmp2);
+  337.  +            	xjumpm_(&moff, ia4, ic4, iran1, itmp1, itmp2, itmp3);
+  338.  +            	xjumpm_(&noff, ia2, ic2, itmp1, iran1, itmp2, itmp3);
+  339.  +            	setran_(iran1, ia1, ic1);
+  340.               
+  341.  + w--------< 	for (i__ = 1; i__ <= 2; ++i__) {
+  342.    w          	    ib1[i__ - 1] = iran1[i__ - 1];
+  343.    w          	    ib2[i__ - 1] = iran1[i__ - 1];
+  344.    w          	    ib3[i__ - 1] = iran1[i__ - 1];
+  345.    w          /* L100: */
+  346.    w--------> 	}
+  347.               
+  348.               	ik = 1;
+  349.               	i__1 = mend;
+  350.  + 1--------< 	for (ir = moff + 1; ir <= i__1; ++ir) {
+  351.    1          	    ioffr = ((ir - 1) * *nprow + mrrow) * *mb;
+  352.    1          	    i__2 = *mb;
+  353.  + 1 2------< 	    for (j = 1; j <= i__2; ++j) {
+  354.    1 2        		if (ik > *irnum) {
+  355.    1 2        		    goto L160;
+  356.    1 2        		}
+  357.    1 2        		jk = 1;
+  358.    1 2        		i__3 = nend;
+  359.  + 1 2 3----< 		for (ic = noff + 1; ic <= i__3; ++ic) {
+  360.    1 2 3      		    ioffc = ((ic - 1) * *npcol + mrcol) * *nb;
+  361.    1 2 3      		    if (ioffc > ioffr) {
+  362.    1 2 3      			i__4 = *nb;
+  363.  + 1 2 3 4--< 			for (i__ = 1; i__ <= i__4; ++i__) {
+  364.    1 2 3 4    			    if (jk > *icnum) {
+  365.    1 2 3 4    				goto L130;
+  366.    1 2 3 4    			    }
+  367.  + 1 2 3 4    			    aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  368.    1 2 3 4    			    ++jk;
+  369.    1 2 3 4    /* L110: */
+  370.    1 2 3 4--> 			}
+  371.    1 2 3      		    } else {
+  372.    1 2 3      			jk += *nb;
+  373.    1 2 3      		    }
+  374.  + 1 2 3      		    jumpit_(ia2, ic2, ib1, iran2);
+  375.    1 2 3      		    ib1[0] = iran2[0];
+  376.    1 2 3      		    ib1[1] = iran2[1];
+  377.    1 2 3      /* L120: */
+  378.    1 2 3----> 		}
+  379.    1 2        
+  380.    1 2        L130:
+  381.    1 2        		++ik;
+  382.  + 1 2        		jumpit_(ia3, ic3, ib2, iran3);
+  383.    1 2        		ib1[0] = iran3[0];
+  384.    1 2        		ib1[1] = iran3[1];
+  385.    1 2        		ib2[0] = iran3[0];
+  386.    1 2        		ib2[1] = iran3[1];
+  387.    1 2        /* L140: */
+  388.    1 2------> 	    }
+  389.    1          
+  390.  + 1          	    jumpit_(ia4, ic4, ib3, iran4);
+  391.    1          	    ib1[0] = iran4[0];
+  392.    1          	    ib1[1] = iran4[1];
+  393.    1          	    ib2[0] = iran4[0];
+  394.    1          	    ib2[1] = iran4[1];
+  395.    1          	    ib3[0] = iran4[0];
+  396.    1          	    ib3[1] = iran4[1];
+  397.    1          /* L150: */
+  398.    1--------> 	}
+  399.               L160:
+  400.               
+  401.               /*     (Conjugate) Transposed matrix A will be generated. */
+  402.               
+  403.               	;
+  404.                   } else if (tran || *aform == 'C') {
+  405.               
+  406.               	jump1 = 1;
+  407.               	jump2 = nqnb;
+  408.               	jump3 = *n;
+  409.               	jump4 = npmb;
+  410.               	jump5 = *mb;
+  411.               	jump6 = mrrow;
+  412.               	jump7 = *nb * mrcol;
+  413.               
+  414.  +            	xjumpm_(&jump1, mult, iadd, jseed, iran1, ia1, ic1);
+  415.  +            	xjumpm_(&jump2, mult, iadd, iran1, itmp1, ia2, ic2);
+  416.  +            	xjumpm_(&jump3, mult, iadd, iran1, itmp1, ia3, ic3);
+  417.  +            	xjumpm_(&jump4, ia3, ic3, iran1, itmp1, ia4, ic4);
+  418.  +            	xjumpm_(&jump5, ia3, ic3, iran1, itmp1, ia5, ic5);
+  419.  +            	xjumpm_(&jump6, ia5, ic5, iran1, itmp3, itmp1, itmp2);
+  420.  +            	xjumpm_(&jump7, mult, iadd, itmp3, iran1, itmp1, itmp2);
+  421.  +            	xjumpm_(&moff, ia4, ic4, iran1, itmp1, itmp2, itmp3);
+  422.  +            	xjumpm_(&noff, ia2, ic2, itmp1, iran1, itmp2, itmp3);
+  423.  +            	setran_(iran1, ia1, ic1);
+  424.               
+  425.  + w--------< 	for (i__ = 1; i__ <= 2; ++i__) {
+  426.    w          	    ib1[i__ - 1] = iran1[i__ - 1];
+  427.    w          	    ib2[i__ - 1] = iran1[i__ - 1];
+  428.    w          	    ib3[i__ - 1] = iran1[i__ - 1];
+  429.    w          /* L170: */
+  430.    w--------> 	}
+  431.               
+  432.               	ik = 1;
+  433.               	i__1 = mend;
+  434.  + 1--------< 	for (ir = moff + 1; ir <= i__1; ++ir) {
+  435.    1          	    ioffr = ((ir - 1) * *nprow + mrrow) * *mb;
+  436.    1          	    i__2 = *mb;
+  437.  + 1 2------< 	    for (j = 1; j <= i__2; ++j) {
+  438.    1 2        		if (ik > *irnum) {
+  439.    1 2        		    goto L230;
+  440.    1 2        		}
+  441.    1 2        		jk = 1;
+  442.    1 2        		i__3 = nend;
+  443.  + 1 2 3----< 		for (ic = noff + 1; ic <= i__3; ++ic) {
+  444.    1 2 3      		    ioffc = ((ic - 1) * *npcol + mrcol) * *nb;
+  445.    1 2 3      		    i__4 = *nb;
+  446.  + 1 2 3 4--< 		    for (i__ = 1; i__ <= i__4; ++i__) {
+  447.    1 2 3 4    			if (jk > *icnum) {
+  448.    1 2 3 4    			    goto L200;
+  449.    1 2 3 4    			}
+  450.  + 1 2 3 4    			aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  451.    1 2 3 4    			++jk;
+  452.    1 2 3 4    /* L180: */
+  453.    1 2 3 4--> 		    }
+  454.  + 1 2 3      		    jumpit_(ia2, ic2, ib1, iran2);
+  455.    1 2 3      		    ib1[0] = iran2[0];
+  456.    1 2 3      		    ib1[1] = iran2[1];
+  457.    1 2 3      /* L190: */
+  458.    1 2 3----> 		}
+  459.    1 2        
+  460.    1 2        L200:
+  461.    1 2        		++ik;
+  462.  + 1 2        		jumpit_(ia3, ic3, ib2, iran3);
+  463.    1 2        		ib1[0] = iran3[0];
+  464.    1 2        		ib1[1] = iran3[1];
+  465.    1 2        		ib2[0] = iran3[0];
+  466.    1 2        		ib2[1] = iran3[1];
+  467.    1 2        /* L210: */
+  468.    1 2------> 	    }
+  469.    1          
+  470.  + 1          	    jumpit_(ia4, ic4, ib3, iran4);
+  471.    1          	    ib1[0] = iran4[0];
+  472.    1          	    ib1[1] = iran4[1];
+  473.    1          	    ib2[0] = iran4[0];
+  474.    1          	    ib2[1] = iran4[1];
+  475.    1          	    ib3[0] = iran4[0];
+  476.    1          	    ib3[1] = iran4[1];
+  477.    1          /* L220: */
+  478.    1--------> 	}
+  479.               L230:
+  480.               
+  481.               /*     A random matrix is generated. */
+  482.               
+  483.               	;
+  484.                   } else {
+  485.               
+  486.               	jump1 = 1;
+  487.               	jump2 = npmb;
+  488.               	jump3 = *m;
+  489.               	jump4 = nqnb;
+  490.               	jump5 = *nb;
+  491.               	jump6 = mrcol;
+  492.               	jump7 = *mb * mrrow;
+  493.               
+  494.  +            	xjumpm_(&jump1, mult, iadd, jseed, iran1, ia1, ic1);
+  495.  +            	xjumpm_(&jump2, mult, iadd, iran1, itmp1, ia2, ic2);
+  496.  +            	xjumpm_(&jump3, mult, iadd, iran1, itmp1, ia3, ic3);
+  497.  +            	xjumpm_(&jump4, ia3, ic3, iran1, itmp1, ia4, ic4);
+  498.  +            	xjumpm_(&jump5, ia3, ic3, iran1, itmp1, ia5, ic5);
+  499.  +            	xjumpm_(&jump6, ia5, ic5, iran1, itmp3, itmp1, itmp2);
+  500.  +            	xjumpm_(&jump7, mult, iadd, itmp3, iran1, itmp1, itmp2);
+  501.  +            	xjumpm_(&noff, ia4, ic4, iran1, itmp1, itmp2, itmp3);
+  502.  +            	xjumpm_(&moff, ia2, ic2, itmp1, iran1, itmp2, itmp3);
+  503.  +            	setran_(iran1, ia1, ic1);
+  504.               
+  505.  + w--------< 	for (i__ = 1; i__ <= 2; ++i__) {
+  506.    w          	    ib1[i__ - 1] = iran1[i__ - 1];
+  507.    w          	    ib2[i__ - 1] = iran1[i__ - 1];
+  508.    w          	    ib3[i__ - 1] = iran1[i__ - 1];
+  509.    w          /* L240: */
+  510.    w--------> 	}
+  511.               
+  512.               	jk = 1;
+  513.               	i__1 = nend;
+  514.  + 1--------< 	for (ic = noff + 1; ic <= i__1; ++ic) {
+  515.    1          	    ioffc = ((ic - 1) * *npcol + mrcol) * *nb;
+  516.    1          	    i__2 = *nb;
+  517.  + 1 2------< 	    for (i__ = 1; i__ <= i__2; ++i__) {
+  518.    1 2        		if (jk > *icnum) {
+  519.    1 2        		    goto L300;
+  520.    1 2        		}
+  521.    1 2        		ik = 1;
+  522.    1 2        		i__3 = mend;
+  523.  + 1 2 3----< 		for (ir = moff + 1; ir <= i__3; ++ir) {
+  524.    1 2 3      		    ioffr = ((ir - 1) * *nprow + mrrow) * *mb;
+  525.    1 2 3      		    i__4 = *mb;
+  526.  + 1 2 3 4--< 		    for (j = 1; j <= i__4; ++j) {
+  527.    1 2 3 4    			if (ik > *irnum) {
+  528.    1 2 3 4    			    goto L270;
+  529.    1 2 3 4    			}
+  530.  + 1 2 3 4    			aMat[ik + jk * a_dim1] = alpha * aMat[ik + jk * a_dim1] + 1. - pdrand() * 2.;
+  531.    1 2 3 4    			++ik;
+  532.    1 2 3 4    /* L250: */
+  533.    1 2 3 4--> 		    }
+  534.  + 1 2 3      		    jumpit_(ia2, ic2, ib1, iran2);
+  535.    1 2 3      		    ib1[0] = iran2[0];
+  536.    1 2 3      		    ib1[1] = iran2[1];
+  537.    1 2 3      /* L260: */
+  538.    1 2 3----> 		}
+  539.    1 2        
+  540.    1 2        L270:
+  541.    1 2        		++jk;
+  542.  + 1 2        		jumpit_(ia3, ic3, ib2, iran3);
+  543.    1 2        		ib1[0] = iran3[0];
+  544.    1 2        		ib1[1] = iran3[1];
+  545.    1 2        		ib2[0] = iran3[0];
+  546.    1 2        		ib2[1] = iran3[1];
+  547.    1 2        /* L280: */
+  548.    1 2------> 	    }
+  549.    1          
+  550.  + 1          	    jumpit_(ia4, ic4, ib3, iran4);
+  551.    1          	    ib1[0] = iran4[0];
+  552.    1          	    ib1[1] = iran4[1];
+  553.    1          	    ib2[0] = iran4[0];
+  554.    1          	    ib2[1] = iran4[1];
+  555.    1          	    ib3[0] = iran4[0];
+  556.    1          	    ib3[1] = iran4[1];
+  557.    1          /* L290: */
+  558.    1--------> 	}
+  559.               L300:
+  560.               	;
+  561.                   }
+  562.               
+  563.               /*     Diagonally dominant matrix will be generated. */
+  564.               
+  565.                   if (*diag == 'D') {
+  566.               	if (*mb != *nb) {
+  567.                           printf( "Diagonally dominant matrices with rowNB not equal colNB is not supported!" );
+  568.               	    return 0;
+  569.               	}
+  570.               
+  571.               	maxmn = Mmax(*m,*n);
+  572.               	jk = 1;
+  573.               	i__1 = nend;
+  574.  + 1--------< 	for (ic = noff + 1; ic <= i__1; ++ic) {
+  575.    1          	    ioffc = ((ic - 1) * *npcol + mrcol) * *nb;
+  576.    1          	    ik = 1;
+  577.    1          	    i__2 = mend;
+  578.  + 1 2------< 	    for (ir = moff + 1; ir <= i__2; ++ir) {
+  579.    1 2        		ioffr = ((ir - 1) * *nprow + mrrow) * *mb;
+  580.    1 2        		if (ioffc == ioffr) {
+  581.    1 2        		    i__3 = *mb - 1;
+  582.  + 1 2 3----< 		    for (j = 0; j <= i__3; ++j) {
+  583.    1 2 3      			if (ik > *irnum) {
+  584.    1 2 3      			    goto L330;
+  585.    1 2 3      			}
+  586.    1 2 3      			aMat[ik + (jk + j) * a_dim1] = (d__1 = aMat[ik + (jk + j) * a_dim1], fabs(d__1)) + maxmn;
+  587.    1 2 3      			++ik;
+  588.    1 2 3      /* L310: */
+  589.    1 2 3----> 		    }
+  590.    1 2        		} else {
+  591.    1 2        		    ik += *mb;
+  592.    1 2        		}
+  593.    1 2        /* L320: */
+  594.    1 2------> 	    }
+  595.    1          L330:
+  596.    1          	    jk += *nb;
+  597.    1          /* L340: */
+  598.    1--------> 	}
+  599.                   }
+  600.               
+  601.                   return 0;
+  602.               } /* pdmatgen */
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 135 
+  "numroc_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 136 
+  "numroc_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 182 
+  "pxerbla" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 192 
+  "iceil_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 193 
+  "iceil_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 216 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 217 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 218 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 219 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 220 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 221 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 222 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 223 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 224 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 225 
+  "setran_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = pdmatgen.c, Line = 227 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = pdmatgen.c, Line = 227 
+  A loop was unwound.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 236 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 255.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 239 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 255.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 246 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 255.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 251 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 255.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 255 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 266 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 267.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 267 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 270 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 272 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 276.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 276 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 286 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 294 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 302 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 330 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 331 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 332 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 333 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 334 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 335 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 336 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 337 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 338 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 339 
+  "setran_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = pdmatgen.c, Line = 341 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = pdmatgen.c, Line = 341 
+  A loop was unwound.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 350 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 367.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 353 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 367.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 359 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 367.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 363 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 367.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 367 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 374 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 382 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 390 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 414 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 415 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 416 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 417 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 418 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 419 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 420 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 421 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 422 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 423 
+  "setran_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = pdmatgen.c, Line = 425 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = pdmatgen.c, Line = 425 
+  A loop was unwound.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 434 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 450.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 437 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 450.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 443 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 450.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 446 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 450.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 450 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 454 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 462 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 470 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 494 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 495 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 496 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 497 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 498 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 499 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 500 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 501 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 502 
+  "xjumpm_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 503 
+  "setran_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6271 CC: VECTOR File = pdmatgen.c, Line = 505 
+  A loop was not vectorized because its trip count is too small.
+
+CC-6008 CC: SCALAR File = pdmatgen.c, Line = 505 
+  A loop was unwound.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 514 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 530.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 517 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 530.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 523 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 530.
+
+CC-6287 CC: VECTOR File = pdmatgen.c, Line = 526 
+  A loop was not vectorized because it contains a call to function "pdrand" on line 530.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 530 
+  "pdrand" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 534 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 542 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = pdmatgen.c, Line = 550 
+  "jumpit_" (called from "pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = pdmatgen.c, Line = 574 
+  A loop was not vectorized because a recurrence was found on "ik" at line 587.
+
+CC-6254 CC: VECTOR File = pdmatgen.c, Line = 578 
+  A loop was not vectorized because a recurrence was found on "ik" at line 587.
+
+CC-6334 CC: VECTOR File = pdmatgen.c, Line = 582 
+  A loop was not vectorized because it contains multiple potential exits.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

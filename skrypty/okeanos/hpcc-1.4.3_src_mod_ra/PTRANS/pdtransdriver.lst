@@ -1,0 +1,622 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdtransdriver.c
+Compiled : 2016-03-19  13:20:17
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/pdtransdriver.o
+           -c ../../../../PTRANS/pdtransdriver.c -I ../../../../include
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/pdtransdriver.c
+Date     : 03/19/2016  13:20:18
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.               /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.               /*
+    3.                 pdtransdriver.c
+    4.               
+    5.                 -- PUMMA Package routine (version 2.1) --
+    6.                    Jaeyoung Choi, Oak Ridge National Laboratory.
+    7.                    Jack Dongarra, Univ. of Tennessee, Oak Ridge National Laboratory.
+    8.                    David Walker,  Oak Ridge National Laboratory.
+    9.                    March 26, 1995.
+   10.               
+   11.                 Purpose: Driver routine for testing the full matrix transpose.
+   12.               */
+   13.               
+   14.               #include <hpcc.h>
+   15.               
+   16.               #include "cblacslt.h"
+   17.               
+   18.               /* Common Block Declarations */
+   19.               
+   20.               struct {
+   21.                   int ictxt;
+   22.               } context_;
+   23.               
+   24.               #define context_1 context_
+   25.               
+   26.               /* Table of constant values */
+   27.               
+   28.               static int c__1 = 1;
+   29.               static int c__0 = 0;
+   30.               
+   31.               static void
+   32.               param_dump(FILE *outFile, char *name, int n, int *vals) {
+   33.                 int j;
+   34.                 fprintf( outFile, "%s:", name );
+   35.  + 1--------<   for (j = 0; j < n; ++j)
+   36.    1-------->     fprintf( outFile, " %d", vals[j] );
+   37.                 fprintf( outFile, "\n" );
+   38.               }
+   39.               
+   40.               static void
+   41.               param_illegal(int iam, FILE *outFile, char *fmt, char *contxt, char *val_name, int x) {
+   42.                 if (0 != iam) return;
+   43.               
+   44.                 if (val_name[0])
+   45.                   fprintf( outFile, fmt, contxt, val_name, x );
+   46.                 else
+   47.                   fprintf( outFile, fmt, contxt );
+   48.                 fprintf( outFile, "\n" );
+   49.               }
+   50.               
+   51.               static void
+   52.               param_allred_sum(int *ierr) {
+   53.                 int success;
+   54.                 MPI_Allreduce( ierr, &success, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+   55.                 ierr[0] = success;
+   56.               }
+   57.               
+   58.               static void
+   59.               grid_map(int np_me, int npall, int nprow, int npcol, int seed, int *umap) {
+   60.                 int i, j, k, rval[2], rmul[2], radd[2];
+   61.               
+   62.                 if (seed < 0) seed = -seed;
+   63.                 rval[1] = (seed >> 16) & 32767; rval[0] = seed & 65535;
+   64.               
+   65.                 rmul[0] = 20077;
+   66.                 rmul[1] = 16838;
+   67.                 radd[0] = 12345;
+   68.                 radd[1] = 0;
+   69.                 setran_( rval, rmul, radd );
+   70.                 pdrand();
+   71.               
+   72.  + 1--------<   for (i = 0; i < npall; ++i)
+   73.    1-------->     umap[i] = i;
+   74.               
+   75.  + 1--------<   for (i = 0; i < npall; ++i) {
+   76.    1              j = pdrand() * npall;
+   77.    1          
+   78.    1              /* swap entries i and j */
+   79.    1              k = umap[j];
+   80.    1              umap[j] = umap[i];
+   81.    1              umap[i] = k;
+   82.    1-------->   }
+   83.               }
+   84.               
+   85.               int
+   86.               PTRANS(HPCC_Params *params) {
+   87.                 /* calculation of passed/failed/skipped tests assumes that MPI rank 0 is 0x0 in CBLACS */
+   88.                 int ktests = 0;
+   89.                 int kpass = 0;
+   90.                 int kfail = 0;
+   91.                 int kskip = 0;
+   92.               
+   93.                 int i__, j, m, n;
+   94.                 int mb, nb, ii, mg, ng, mp, mq, np, nq;
+   95.                 int mp0, mq0, np0, nq0, lda, ldc, iam, lcm;
+   96.                 double eps, *mem;
+   97.                 int *imem;
+   98.                 long ipa, ipc, ipw, ipiw, isw;
+   99.                 int nmat, *mval, ierr[1], *nval;
+  100.                 int nbmat, *mbval, imcol, *nbval;
+  101.                 double ctime[2], resid, resid0 = 1.0;
+  102.                 int npcol, *npval, mycol, *nqval;
+  103.                 double wtime[2];
+  104.                 int imrow, nprow, myrow, iaseed = 100, proc_seed;
+  105.                 char *passed;
+  106.                 int ngrids;
+  107.                 double thresh;
+  108.                 int nprocs;
+  109.               
+  110.                 FILE *outFile;
+  111.                 double curGBs, curGBs_0, cpuGBs, *GBs;
+  112.                 int AllocSuccessful, grid_cnt, r0x0, r0_ingrid;
+  113.                 int icseed = 200;
+  114.                 double d_One = 1.0;
+  115.                 long dMemSize, li;
+  116.               
+  117.                 GBs = &params->PTRANSrdata.GBs;
+  118.                 *GBs = curGBs = 0.0;
+  119.               
+  120.                 Cblacs_pinfo(&iam, &nprocs);
+  121.               
+  122.                 if (0 == iam) {
+  123.                   outFile = fopen( params->outFname, "a" );
+  124.                   if (! outFile) outFile = stderr;
+  125.                 } else
+  126.                   outFile = stderr;
+  127.               
+  128.                 nmat = params->PTRANSns;
+  129.                 mval = params->PTRANSnval;
+  130.                 nval = params->PTRANSnval;
+  131.               
+  132.                 nbmat = params->PTRANSnbs;
+  133.                 mbval = params->PTRANSnbval;
+  134.                 nbval = params->PTRANSnbval;
+  135.               
+  136.                 ngrids = params->PTRANSnpqs;
+  137.                 npval = params->PTRANSpval;
+  138.                 nqval = params->PTRANSqval;
+  139.               
+  140.                 thresh = params->test.thrsh;
+  141.                 eps = params->test.epsil;
+  142.               
+  143.                 imrow = imcol = 0;
+  144.               
+  145.                 /* calculate and allocate memory */
+  146.                 AllocSuccessful = 0;
+  147.                 MaxMem( nprocs, imrow, imcol, nmat, mval, nval, nbmat, mbval, nbval, ngrids, npval, nqval, &dMemSize );
+  148.                 mem = NULL; imem = NULL;
+  149.                 if (dMemSize > 0) {
+  150.                   mem = HPCC_XMALLOC( double, dMemSize );
+  151.                   imem = HPCC_XMALLOC( int, (3 * nprocs) );
+  152.                   if (mem && imem) AllocSuccessful = 1;
+  153.                 }
+  154.               
+  155.                 MPI_Allreduce( &AllocSuccessful, ierr, 1, MPI_INT, MPI_MIN, MPI_COMM_WORLD );
+  156.                 if (ierr[0] < 1) {
+  157.                   if (imem) HPCC_free(imem);
+  158.                   if (mem) HPCC_free(mem);
+  159.                   if (0 == iam) fprintf( outFile, "Failed to allocate %ld doubles\n", dMemSize );
+  160.                   goto mem_failure;
+  161.                 }
+  162.               
+  163.                 /* initialize working arrays; it is necessary because on some systems it will contain NaNs
+  164.                  * (Not a Number) and NaTs (Not a Thing) and this makes pdmatgen() work incorrectly
+  165.                  * (0.0 * NaN may cause exception) */
+  166.  + 1-------<>   for (li = 0; li < dMemSize; li++) mem[li] = 0.0;
+  167.  + 1-------<>   for (j = 0; j < 3 * nprocs; j++) imem[j] = 0;
+  168.               
+  169.                 /* Print headings */
+  170.                 if (0 == iam) {
+  171.                   /* matrix sizes */
+  172.                   param_dump( outFile, "M", nmat, mval );
+  173.                   param_dump( outFile, "N", nmat, nval );
+  174.                   /* block sizes */
+  175.                   param_dump( outFile, "MB", nbmat, mbval );
+  176.                   param_dump( outFile, "NB", nbmat, nbval );
+  177.                   /* process grids */
+  178.                   param_dump( outFile, "P", ngrids, npval );
+  179.                   param_dump( outFile, "Q", ngrids, nqval );
+  180.               
+  181.                   fprintf( outFile,
+  182.                            "TIME   M     N    MB  NB  P   Q     TIME   CHECK   GB/s   RESID\n"
+  183.                            "---- ----- ----- --- --- --- --- -------- ------ -------- -----\n" );
+  184.                   fflush( outFile );
+  185.                 }
+  186.               
+  187.               
+  188.                 /*
+  189.                   Loop over different process grids
+  190.                  */
+  191.               
+  192.  + 1--------<   for (j = 0; j < ngrids; ++j) {
+  193.    1              nprow = npval[j];
+  194.    1              npcol = nqval[j];
+  195.    1          
+  196.    1              /*
+  197.    1                Make sure grid information is correct
+  198.    1              */
+  199.    1          
+  200.    1              ierr[0] = 0;
+  201.    1              if (nprow < 1) {
+  202.    1                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "GRID", "nprow", nprow );
+  203.    1                ierr[0] = 1;
+  204.    1              } else if (npcol < 1) {
+  205.    1                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "GRID", "npcol", npcol );
+  206.    1                ierr[0] = 1;
+  207.    1              } else if (nprow * npcol > nprocs) {
+  208.    1                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d. Too many processes requested.", "GRID", "nprow*npcol-nprocs",
+  209.    1                               nprow * npcol - nprocs );
+  210.    1                ierr[0] = 1;
+  211.    1              }
+  212.    1          
+  213.    1              param_allred_sum( ierr );
+  214.    1          
+  215.    1              if (ierr[0] > 0) {
+  216.    1                param_illegal( iam, outFile, "Bad %s parameters: going on to next test case.", "grid", "", 0 );
+  217.    1                ++kskip;
+  218.    1                continue;
+  219.    1              }
+  220.    1          
+  221.  + 1 2------<     for (i__ = 0; i__ < nmat; ++i__) {
+  222.    1 2              m = mval[i__];
+  223.    1 2              n = nval[i__];
+  224.    1 2        
+  225.    1 2              /*
+  226.    1 2                Make sure matrix information is correct
+  227.    1 2               */
+  228.    1 2        
+  229.    1 2              ierr[0] = 0;
+  230.    1 2              if (m < 1) {
+  231.    1 2                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "MATRIX", "M", m );
+  232.    1 2                ierr[0] = 1;
+  233.    1 2              } else if (n < 1) {
+  234.    1 2                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "MATRIX", "N", n );
+  235.    1 2                ierr[0] = 1;
+  236.    1 2              }
+  237.    1 2        
+  238.    1 2              /*
+  239.    1 2                Make sure no one had error
+  240.    1 2               */
+  241.    1 2        
+  242.    1 2              param_allred_sum( ierr );
+  243.    1 2        
+  244.    1 2              if (ierr[0] > 0) {
+  245.    1 2                param_illegal( iam, outFile, "Bad %s parameters: going on to next test case.", "MATRIX", "", 0 );
+  246.    1 2                ++kskip;
+  247.    1 2                continue;
+  248.    1 2              }
+  249.    1 2        
+  250.    1 2              /*
+  251.    1 2                Loop over different block sizes
+  252.    1 2               */
+  253.    1 2        
+  254.  + 1 2 3----<       for (ii = 1; ii <= nbmat; ++ii) {
+  255.    1 2 3      
+  256.    1 2 3              mb = mbval[ii - 1];
+  257.    1 2 3              nb = nbval[ii - 1];
+  258.    1 2 3      
+  259.    1 2 3              /*
+  260.    1 2 3                Make sure blocking sizes are legal
+  261.    1 2 3               */
+  262.    1 2 3      
+  263.    1 2 3              ierr[0] = 0;
+  264.    1 2 3              if (mb < 1) {
+  265.    1 2 3                ierr[0] = 1;
+  266.    1 2 3                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "MB", "MB", mb );
+  267.    1 2 3              } else if (nb < 1) {
+  268.    1 2 3                ierr[0] = 1;
+  269.    1 2 3                param_illegal( iam, outFile, "ILLEGAL %s: %s = %d; It should be at least 1", "NB", "NB", nb );
+  270.    1 2 3              }
+  271.    1 2 3      
+  272.    1 2 3              /*
+  273.    1 2 3                Make sure no one had error
+  274.    1 2 3               */
+  275.    1 2 3      
+  276.    1 2 3              param_allred_sum( ierr );
+  277.    1 2 3      
+  278.    1 2 3              if (ierr[0] > 0) {
+  279.    1 2 3                param_illegal( iam, outFile, "Bad %s parameters: going on to next test case.", "NB", "", 0 );
+  280.    1 2 3                ++kskip;
+  281.    1 2 3                continue;
+  282.    1 2 3              }
+  283.    1 2 3      
+  284.  + 1 2 3 4--<         for (grid_cnt = 0; grid_cnt < 5; ++grid_cnt) {
+  285.    1 2 3 4    
+  286.    1 2 3 4            /*
+  287.    1 2 3 4              Make sure all processes have the same seed
+  288.    1 2 3 4             */
+  289.    1 2 3 4            mp = (int)time(NULL);
+  290.    1 2 3 4            MPI_Allreduce( &mp, &proc_seed, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+  291.    1 2 3 4    
+  292.    1 2 3 4            /* Define process grid */
+  293.    1 2 3 4            Cblacs_get(-1, 0, &context_1.ictxt);
+  294.    1 2 3 4            grid_map( iam, nprocs, nprow, npcol, proc_seed, imem );
+  295.    1 2 3 4            Cblacs_gridmap( &context_1.ictxt, imem, npcol, nprow, npcol );
+  296.    1 2 3 4            Cblacs_gridinfo(context_1.ictxt, &nprow, &npcol, &myrow, &mycol);
+  297.    1 2 3 4    
+  298.    1 2 3 4            /*
+  299.    1 2 3 4              Make sure all processes know who's 0x0
+  300.    1 2 3 4             */
+  301.    1 2 3 4            mp = (0 == myrow && 0 == mycol) ? iam : 0;
+  302.    1 2 3 4            MPI_Allreduce( &mp, &r0x0, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD );
+  303.    1 2 3 4    
+  304.    1 2 3 4            r0_ingrid = 1;
+  305.    1 2 3 4    
+  306.    1 2 3 4            /* Go to bottom of process grid loop if this case doesn't use my process */
+  307.    1 2 3 4            if (myrow >= nprow || mycol >= npcol) {
+  308.    1 2 3 4              /* nprow and npcol were lost in the call to Cblacs_gridinfo */
+  309.    1 2 3 4              nprow = npval[j];
+  310.    1 2 3 4              npcol = nqval[j];
+  311.    1 2 3 4    
+  312.    1 2 3 4              /* reporting must be done on process 0 */
+  313.    1 2 3 4              if (0 != iam)
+  314.    1 2 3 4                continue;
+  315.    1 2 3 4    
+  316.    1 2 3 4              r0_ingrid = 0;
+  317.    1 2 3 4              goto report;
+  318.    1 2 3 4            }
+  319.    1 2 3 4    
+  320.    1 2 3 4            mp = numroc_(&m, &mb, &myrow, &imrow, &nprow);
+  321.    1 2 3 4            mq = numroc_(&m, &mb, &mycol, &imcol, &npcol);
+  322.    1 2 3 4            np = numroc_(&n, &nb, &myrow, &imrow, &nprow);
+  323.    1 2 3 4            nq = numroc_(&n, &nb, &mycol, &imcol, &npcol);
+  324.    1 2 3 4    
+  325.    1 2 3 4            mg = iceil_(&m, &mb);
+  326.    1 2 3 4            ng = iceil_(&n, &nb);
+  327.    1 2 3 4    
+  328.    1 2 3 4            mp0 = iceil_(&mg, &nprow) * mb;
+  329.    1 2 3 4            mq0 = iceil_(&mg, &npcol) * mb;
+  330.    1 2 3 4            np0 = iceil_(&ng, &nprow) * nb;
+  331.    1 2 3 4            nq0 = iceil_(&ng, &npcol) * nb;
+  332.    1 2 3 4    
+  333.    1 2 3 4            lcm = ilcm_(&nprow, &npcol);
+  334.    1 2 3 4            ipc = 1;
+  335.    1 2 3 4            ipa = ipc + (long)np0 * (long)mq0;
+  336.    1 2 3 4            ipiw = (long)mp0 * (long)nq0 + ipa;
+  337.    1 2 3 4            ipw = ipiw;
+  338.    1 2 3 4            isw = ipw + (long)(iceil_(&mg, &lcm) << 1) * (long)mb * (long)iceil_(&ng, &lcm) * (long)nb;
+  339.    1 2 3 4    
+  340.    1 2 3 4            /* Make sure have enough memory to handle problem */
+  341.    1 2 3 4            if (isw > dMemSize) {
+  342.    1 2 3 4              param_illegal( iam, outFile, "Unable to perform %s: need %s of at least %d thousand doubles\n",
+  343.    1 2 3 4                             "PTRANS", "memory", (int)((isw + 999)/ 1000) );
+  344.    1 2 3 4              ierr[0] = 1;
+  345.    1 2 3 4            }
+  346.    1 2 3 4    
+  347.    1 2 3 4            /* Make sure no one had error */
+  348.    1 2 3 4            Cigsum2d(context_1.ictxt,"a","h",1,1,ierr, 1,-1,0);
+  349.    1 2 3 4    
+  350.    1 2 3 4            if (ierr[0] > 0) {
+  351.    1 2 3 4              param_illegal( iam, outFile, "Bad %s parameters: going on to next test case.", "MEMORY", "", 0 );
+  352.    1 2 3 4              ++kskip;
+  353.    1 2 3 4              continue;
+  354.    1 2 3 4            }
+  355.    1 2 3 4    
+  356.    1 2 3 4            /*
+  357.    1 2 3 4              Generate matrix A
+  358.    1 2 3 4             */
+  359.    1 2 3 4    
+  360.    1 2 3 4            lda = Mmax(1,mp);
+  361.    1 2 3 4            /* A = rand(m, n, iaseed) */
+  362.    1 2 3 4            pdmatgen(&context_1.ictxt, "N", "N", &m, &n, &mb, &nb, &mem[ipa - 1], &lda, &imrow, &imcol,
+  363.    1 2 3 4                     &iaseed, &c__0, &mp, &c__0, &nq, &myrow, &mycol, &nprow, &npcol, 0.0);
+  364.    1 2 3 4            /* C = rand(n, m, icseed) */
+  365.    1 2 3 4            pdmatgen(&context_1.ictxt, "T", "N", &n, &m, &nb, &mb, &mem[ipc - 1], &lda, &imrow, &imcol,
+  366.    1 2 3 4                     &icseed, &c__0, &np, &c__0, &mq, &myrow, &mycol, &nprow, &npcol, 0.0);
+  367.    1 2 3 4    
+  368.    1 2 3 4            slboot_();
+  369.    1 2 3 4            Cblacs_barrier(context_1.ictxt, "All");
+  370.    1 2 3 4            sltimer_(&c__1);
+  371.    1 2 3 4    
+  372.    1 2 3 4            /*
+  373.    1 2 3 4              Perform the matrix transpose
+  374.    1 2 3 4             */
+  375.    1 2 3 4    
+  376.    1 2 3 4            ldc = Mmax(1,np);
+  377.    1 2 3 4            /* C := A' + d_One * C */
+  378.    1 2 3 4            pdtrans( "T", &m, &n, &mb, &nb, &mem[ipa - 1], &lda, &d_One, &mem[ipc - 1], &ldc, &imrow,
+  379.    1 2 3 4                     &imcol, &mem[ipw - 1], imem );
+  380.    1 2 3 4    
+  381.    1 2 3 4            sltimer_(&c__1);
+  382.    1 2 3 4    
+  383.    1 2 3 4            if (thresh > 0.0) {
+  384.    1 2 3 4    
+  385.    1 2 3 4              /*
+  386.    1 2 3 4                Regenerate matrix A in transpose form (A')
+  387.    1 2 3 4               */
+  388.    1 2 3 4    
+  389.    1 2 3 4              lda = Mmax(1,np);
+  390.    1 2 3 4              /* A = rand(n, m, icseed) */
+  391.    1 2 3 4              pdmatgen( &context_1.ictxt, "T", "N", &n, &m, &nb, &mb, &mem[ipa - 1], &lda, &imrow, &imcol, &icseed,
+  392.    1 2 3 4                        &c__0, &np, &c__0, &mq, &myrow, &mycol, &nprow, &npcol, 0.0);
+  393.    1 2 3 4              /* A += rand(m, n, iaseed) */
+  394.    1 2 3 4              pdmatgen( &context_1.ictxt, "T", "N", &m, &n, &mb, &nb, &mem[ipa - 1], &lda, &imrow,
+  395.    1 2 3 4                        &imcol, &iaseed, &c__0, &mp, &c__0, &nq, &myrow, &mycol, &nprow, &npcol, 1.0);
+  396.    1 2 3 4    
+  397.    1 2 3 4              /*
+  398.    1 2 3 4                Compare A' to C
+  399.    1 2 3 4               */
+  400.    1 2 3 4    
+  401.    1 2 3 4              pdmatcmp(&context_1.ictxt, &np, &mq, &mem[ipa - 1], &lda, &mem[ipc - 1], &ldc, &resid);
+  402.    1 2 3 4              resid0 = resid;
+  403.    1 2 3 4    
+  404.    1 2 3 4              resid /= eps * Mmax( m, n );
+  405.    1 2 3 4              if (resid <= thresh && resid - resid == 0.0) { /* if `resid' is small and is not NaN */
+  406.    1 2 3 4                ++kpass;
+  407.    1 2 3 4                passed = "PASSED";
+  408.    1 2 3 4              } else {
+  409.    1 2 3 4                ++kfail;
+  410.    1 2 3 4                passed = "FAILED";
+  411.    1 2 3 4              }
+  412.    1 2 3 4            } else {
+  413.    1 2 3 4    
+  414.    1 2 3 4              /*
+  415.    1 2 3 4                Don't perform the checking, only the timing operation
+  416.    1 2 3 4               */
+  417.    1 2 3 4    
+  418.    1 2 3 4              ++kpass;
+  419.    1 2 3 4              resid -= resid;
+  420.    1 2 3 4              passed = "BYPASS";
+  421.    1 2 3 4            }
+  422.    1 2 3 4    
+  423.    1 2 3 4            /*
+  424.    1 2 3 4              Gather maximum of all CPU and WALL clock timings
+  425.    1 2 3 4             */
+  426.    1 2 3 4    
+  427.    1 2 3 4            slcombine_(&context_1.ictxt, "All", ">", "W", &c__1, &c__1, wtime);
+  428.    1 2 3 4            slcombine_(&context_1.ictxt, "All", ">", "C", &c__1, &c__1, ctime);
+  429.    1 2 3 4    
+  430.    1 2 3 4            Cblacs_gridexit(context_1.ictxt);
+  431.    1 2 3 4    
+  432.    1 2 3 4            report:
+  433.    1 2 3 4    
+  434.    1 2 3 4            if (0 != r0x0) {
+  435.    1 2 3 4              double dva[3];
+  436.    1 2 3 4              MPI_Status status;
+  437.    1 2 3 4    
+  438.    1 2 3 4              if (r0x0 == iam) {
+  439.    1 2 3 4                dva[0] = wtime[0];
+  440.    1 2 3 4                dva[1] = ctime[0];
+  441.    1 2 3 4                dva[2] = passed[0];
+  442.    1 2 3 4                MPI_Send( dva, 3, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD );
+  443.    1 2 3 4              }
+  444.    1 2 3 4    
+  445.    1 2 3 4              if (0 == iam) {
+  446.    1 2 3 4                MPI_Recv( dva, 3, MPI_DOUBLE, r0x0, 0, MPI_COMM_WORLD, &status );
+  447.    1 2 3 4    
+  448.    1 2 3 4                if (! r0_ingrid) { /* if 0's process not in grid, timing and pass/fail info is missing */
+  449.    1 2 3 4                  wtime[0] = dva[0];
+  450.    1 2 3 4                  ctime[0] = dva[1];
+  451.    1 2 3 4                  switch ((int)(dva[2])) {
+  452.    1 2 3 4                    case 'F': passed = "FAILED"; ++kfail; break;
+  453.    1 2 3 4                    case 'B': passed = "BYPASS"; ++kpass; break;
+  454.    1 2 3 4                    default:  passed = "PASSED"; ++kpass; break;
+  455.    1 2 3 4                  }
+  456.    1 2 3 4                }
+  457.    1 2 3 4              }
+  458.    1 2 3 4            }
+  459.    1 2 3 4    
+  460.    1 2 3 4            /*
+  461.    1 2 3 4              Print results
+  462.    1 2 3 4             */
+  463.    1 2 3 4    
+  464.    1 2 3 4            if (0 == iam) {
+  465.    1 2 3 4              /*
+  466.    1 2 3 4                Print WALL time if machine supports it
+  467.    1 2 3 4               */
+  468.    1 2 3 4    
+  469.    1 2 3 4              if (wtime[0] > 0.0) {
+  470.    1 2 3 4                curGBs_0 = 1e-9 / wtime[0] * m * n * sizeof(double);
+  471.    1 2 3 4    
+  472.    1 2 3 4                if (0 == grid_cnt)
+  473.    1 2 3 4                  curGBs = curGBs_0;
+  474.    1 2 3 4    
+  475.    1 2 3 4                if (curGBs > curGBs_0) /* take minimum performance */
+  476.    1 2 3 4                  curGBs = curGBs_0;
+  477.    1 2 3 4    
+  478.    1 2 3 4                fprintf( outFile, "WALL %5d %5d %3d %3d %3d %3d %8.2f %s %8.3f %5.2f\n",
+  479.    1 2 3 4                         m, n, mb, nb, nprow, npcol, wtime[0], passed, curGBs, resid );
+  480.    1 2 3 4              }
+  481.    1 2 3 4    
+  482.    1 2 3 4              /*
+  483.    1 2 3 4                Print CPU time if machine supports it
+  484.    1 2 3 4               */
+  485.    1 2 3 4    
+  486.    1 2 3 4              if (ctime[0] > 0.0) {
+  487.    1 2 3 4                cpuGBs = 1e-9 / ctime[0] * m * n * sizeof(double);
+  488.    1 2 3 4                fprintf( outFile, "CPU  %5d %5d %3d %3d %3d %3d %8.2f %s %8.3f %5.2f\n",
+  489.    1 2 3 4                         m, n, mb, nb, nprow, npcol, ctime[0], passed, cpuGBs, resid );
+  490.    1 2 3 4              }
+  491.    1 2 3 4            }
+  492.    1 2 3 4    
+  493.    1 2 3 4-->         }
+  494.    1 2 3      
+  495.    1 2 3              if (0 == iam && curGBs > *GBs) {
+  496.    1 2 3                *GBs = curGBs;
+  497.    1 2 3                params->PTRANSrdata.time = wtime[0];
+  498.    1 2 3                params->PTRANSrdata.residual = resid0;
+  499.    1 2 3                params->PTRANSrdata.n = n;
+  500.    1 2 3                params->PTRANSrdata.nb = nb;
+  501.    1 2 3                params->PTRANSrdata.nprow = nprow;
+  502.    1 2 3                params->PTRANSrdata.npcol = npcol;
+  503.    1 2 3              }
+  504.    1 2 3      
+  505.    1 2 3---->       }
+  506.    1 2------>     }
+  507.    1-------->   }
+  508.               
+  509.                 if (imem) HPCC_free( imem );
+  510.                 if (mem) HPCC_free( mem );
+  511.               
+  512.                 mem_failure:
+  513.               
+  514.                 /* Print out ending messages and close output file */
+  515.               
+  516.                 if (0 == iam) {
+  517.                   ktests = kpass + kfail + kskip;
+  518.               
+  519.                   fprintf( outFile, "\nFinished %4d tests, with the following results:\n", ktests );
+  520.               
+  521.                   if (thresh > 0.0) {
+  522.                     fprintf( outFile, "%5d tests completed and passed residual checks.\n", kpass );
+  523.                     fprintf( outFile, "%5d tests completed and failed residual checks.\n", kfail );
+  524.                   } else {
+  525.                     fprintf( outFile, "%5d tests completed without checking.\n", kpass );
+  526.                   }
+  527.                   fprintf( outFile, "%5d tests skipped because of illegal input values.\n", kskip );
+  528.               
+  529.               
+  530.                   fprintf( outFile, "\nEND OF TESTS.\n" );
+  531.               
+  532.                   if (outFile != stdout && outFile != stderr) fclose( outFile );
+  533.                 }
+  534.               
+  535.                 Cblacs_exit(1);
+  536.               
+  537.                 /* if at least one test failed or was skipped then it's a total failure */
+  538.                 MPI_Reduce( &kfail, &ktests, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD );
+  539.                 if (ktests) params->Failure = 1;
+  540.                 MPI_Reduce( &kskip, &ktests, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD );
+  541.                 if (ktests) params->Failure = 1;
+  542.               
+  543.                 return 0;
+  544.               }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

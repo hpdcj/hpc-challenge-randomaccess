@@ -1,0 +1,1305 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/cblacslt.c
+Compiled : 2016-03-19  13:20:20
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../PTRANS/cblacslt.o -c ../../../../PTRANS/cblacslt.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../PTRANS/cblacslt.c
+Date     : 03/19/2016  13:20:21
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; -*- */
+    2.            /*
+    3.            
+    4.            cblacslt.c
+    5.            
+    6.            -- V0.0 Stripped-down BLACS routines --
+    7.            University of Tennessee, October, 2003
+    8.            Written by Piotr Luszczek.
+    9.            
+   10.            */
+   11.            
+   12.            #include <hpcc.h>
+   13.            
+   14.            #include <mpi.h>
+   15.            
+   16.            #include "cblacslt.h"
+   17.            
+   18.            #define DPRN(i,v) do{printf(__FILE__ "(%d)@%d:" #v "=%g\n",__LINE__,i,(double)(v));fflush(stdout);}while(0)
+   19.            
+   20.            /* ---------------------------------------------------------------------- */
+   21.            
+   22.            /*FIXME: what about parameter checking: context, etc? have a macro too? */
+   23.            #define CBLACS_INIT if (! CblacsInitialized) CblacsInit(); else if (CblacsFinalized) do{CblacsWarn();return;}while(0)
+   24.            #define CBLACS_INIT1(v) if (! CblacsInitialized) CblacsInit();else if (CblacsFinalized)do{CblacsWarn();return(v);}while(0)
+   25.            #define CblacsWarn() CblacsWarnImp( __FILE__, __LINE__ )
+   26.            
+   27.            static int CblacsInitialized = 0, CblacsFinalized;
+   28.            
+   29.            double
+   30.  +         dcputime00(void) {return HPL_ptimer_cputime();}
+   31.            double
+   32.  +         dwalltime00(void) {return MPI_Wtime();}
+   33.            
+   34.            static void
+   35.            CblacsWarnImp(char *file, int line) {
+   36.              int rank;
+   37.  +           MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+   38.              printf( "%s(%d)@%d: CBLACS warning.\n", file, line, rank );
+   39.  +           fflush(stdout);
+   40.            }
+   41.            
+   42.            static struct {MPI_Comm comm, rowComm, colComm; unsigned int taken;} CblacsComms[10];
+   43.            static int CblacsNComms;
+   44.            
+   45.            #define CBLACS_CHK_CTXT(v) if (ctxt < 1 || ctxt > CblacsNComms) return v
+   46.            static MPI_Comm
+   47.            CblacsGetComm(int ctxt) {
+   48.              CBLACS_CHK_CTXT(MPI_COMM_NULL);
+   49.              return CblacsComms[ctxt - 1].comm;
+   50.            }
+   51.            static MPI_Comm
+   52.            CblacsGetRowComm(int ctxt) {
+   53.              CBLACS_CHK_CTXT(MPI_COMM_NULL);
+   54.              return CblacsComms[ctxt - 1].rowComm;
+   55.            }
+   56.            static MPI_Comm
+   57.            CblacsGetColComm(int ctxt) {
+   58.              CBLACS_CHK_CTXT(MPI_COMM_NULL);
+   59.              return CblacsComms[ctxt - 1].colComm;
+   60.            }
+   61.            
+   62.            static int
+   63.            CblacsSetComm(int ctxt, MPI_Comm comm) {
+   64.              CBLACS_CHK_CTXT(-1);
+   65.              CblacsComms[ctxt - 1].comm = comm;
+   66.              return 0;
+   67.            }
+   68.            static int
+   69.            CblacsSetRowComm(int ctxt, MPI_Comm comm) {
+   70.              CBLACS_CHK_CTXT(-1);
+   71.              CblacsComms[ctxt - 1].rowComm = comm;
+   72.              return 0;
+   73.            }
+   74.            static int
+   75.            CblacsSetColComm(int ctxt, MPI_Comm comm) {
+   76.              CBLACS_CHK_CTXT(-1);
+   77.              CblacsComms[ctxt - 1].colComm = comm;
+   78.              return 0;
+   79.            }
+   80.            
+   81.            static int
+   82.            CblacsNewCtxt() {
+   83.              int i;
+   84.            
+   85.  + 1-----<   for (i = 1; i < CblacsNComms; i++)
+   86.    1           if (! CblacsComms[i].taken) {
+   87.    1             CblacsComms[i].taken = 1;
+   88.    1             return i + 1;
+   89.    1----->     }
+   90.            
+   91.              return 0;
+   92.            }
+   93.            
+   94.            static int
+   95.            CblacsDeleteCtxt(int *ctxtP) {
+   96.              int idx = *ctxtP - 1;
+   97.            
+   98.              if (idx < 1 || idx >= CblacsNComms) {
+   99.  +             CblacsWarn();
+  100.                return -1;
+  101.              }
+  102.              if (0 == CblacsComms[idx].taken) {
+  103.  +             CblacsWarn();
+  104.                return -1;
+  105.              }
+  106.            
+  107.  +           if (MPI_COMM_NULL != CblacsComms[idx].colComm) MPI_Comm_free( &(CblacsComms[idx].colComm) );
+  108.  +           if (MPI_COMM_NULL != CblacsComms[idx].rowComm) MPI_Comm_free( &(CblacsComms[idx].rowComm) );
+  109.  +           if (MPI_COMM_NULL != CblacsComms[idx].comm)    MPI_Comm_free( &(CblacsComms[idx].comm) );
+  110.            
+  111.              CblacsComms[idx].taken = 0;
+  112.            
+  113.              *ctxtP = 0; /* deleted contexts are 0 */
+  114.            
+  115.              return 0;
+  116.            }
+  117.            
+  118.            /*
+  119.            static void *
+  120.            CblacsNewBuf(int count, int esize) {
+  121.              return malloc( count * esize );
+  122.            }
+  123.            */
+  124.            #define CblacsNewBuf(c,s) malloc((c)*(s))
+  125.            #define CblacsDeleteBuf(b) free(b)
+  126.            
+  127.            static int
+  128.            CblacsInit() {
+  129.              int i, flag;
+  130.            
+  131.  +           if (MPI_SUCCESS != MPI_Initialized( &flag ) || ! flag) {CblacsWarn();return 1;}
+  132.            
+  133.              CblacsInitialized = 1;
+  134.              CblacsFinalized = 0;
+  135.            
+  136.              CblacsNComms = 10;
+  137.  + w-----<   for (i = 0; i < CblacsNComms; i++) {
+  138.    w           CblacsComms[i].comm    = MPI_COMM_NULL;
+  139.    w           CblacsComms[i].rowComm = MPI_COMM_NULL;
+  140.    w           CblacsComms[i].colComm = MPI_COMM_NULL;
+  141.    w           CblacsComms[i].taken   = 0;
+  142.    w----->   }
+  143.              /* FIXME: setup system context to be a cartesian grid with row and column comm's*/
+  144.              CblacsComms[0].comm    = MPI_COMM_WORLD;
+  145.              CblacsComms[0].rowComm = MPI_COMM_NULL;
+  146.              CblacsComms[0].colComm = MPI_COMM_NULL;
+  147.              CblacsComms[0].taken   = 1;
+  148.            
+  149.              return 0;
+  150.            }
+  151.            
+  152.            void
+  153.            Cblacs_pinfo(int *mypnum, int *nprocs) {
+  154.  + 1----<>   CBLACS_INIT;
+  155.  +           MPI_Comm_rank( MPI_COMM_WORLD, mypnum );
+  156.  +           MPI_Comm_size( MPI_COMM_WORLD, nprocs );
+  157.            }
+  158.            
+  159.            void
+  160.            Cblacs_exit(int NotDone) {
+  161.  + 1----<>   CBLACS_INIT;
+  162.              CblacsFinalized = 0;
+  163.  +           if (! NotDone) MPI_Finalize();
+  164.            }
+  165.            
+  166.            void
+  167.            Cblacs_abort(int ConTxt, int ErrNo) {
+  168.              int nprow, npcol, myrow, mycol, rank;
+  169.            
+  170.  + 1----<>   CBLACS_INIT;
+  171.            
+  172.  +           MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+  173.            
+  174.  +           Cblacs_gridinfo(ConTxt, &nprow, &npcol, &myrow, &mycol);
+  175.              fprintf(stderr, "{%d,%d}, pnum=%d, Contxt=%d, killed other procs, exiting with error #%d.\n\n",
+  176.                      myrow, mycol, rank, ConTxt, ErrNo);
+  177.            
+  178.  +           fflush(stderr);
+  179.  +           fflush(stdout);
+  180.  +           MPI_Abort( MPI_COMM_WORLD, ErrNo );
+  181.            }
+  182.            
+  183.            void
+  184.            Cblacs_get(int ConTxt, int what, int *val) {
+  185.  + 1----<>   CBLACS_INIT;
+  186.            
+  187.              switch (what) {
+  188.                case SGET_SYSCONTXT:
+  189.                  *val = 1;
+  190.                  break;
+  191.                default:
+  192.                  *val = -1;
+  193.  +               CblacsWarn();
+  194.                  break;
+  195.              }
+  196.            }
+  197.            
+  198.            static int
+  199.            CblacsGridNew(int nprow, int npcol, int *ConTxt, MPI_Comm *comm) {
+  200.              int size;
+  201.            
+  202.  + 1----<>   CBLACS_INIT1(-1);
+  203.            
+  204.     I        *comm = CblacsGetComm(*ConTxt);
+  205.              if (MPI_COMM_NULL == *comm) return -1;
+  206.            
+  207.  +           MPI_Comm_size( *comm, &size );
+  208.              if (nprow < 1 || nprow > size) return -1;
+  209.              if (npcol < 1 || npcol > size) return -1;
+  210.              if (nprow * npcol > size) return -1;
+  211.            
+  212.  +  I---->   *ConTxt = CblacsNewCtxt();
+  213.            
+  214.              return 0;
+  215.            }
+  216.            
+  217.            void
+  218.            Cblacs_gridmap(int *ConTxt, int *umap, int ldumap, int nprow, int npcol) {
+  219.              int i, j, np_me, npall, npwho, myrow, mycol, color, key, rv;
+  220.              MPI_Comm comm, newComm, rowComm, colComm;
+  221.            
+  222.  +           if (CblacsGridNew( nprow, npcol, ConTxt, &comm )) {
+  223.  +             CblacsWarn();
+  224.                goto gmapErr;
+  225.              }
+  226.            
+  227.  +           Cblacs_pinfo( &np_me, &npall );
+  228.            
+  229.              myrow = mycol = -1;
+  230.              color = MPI_UNDEFINED;
+  231.              key = 0;
+  232.  + 1-----<   for (i = 0; i < nprow; ++i)
+  233.  + 1 2---<     for (j = 0; j < npcol; ++j) {
+  234.    1 2           npwho = umap[j + i * ldumap];
+  235.    1 2           if (np_me == npwho) {
+  236.    1 2             color = 0;
+  237.    1 2             key = j + i * npcol;
+  238.    1 2             myrow = i;
+  239.    1 2             mycol = j;
+  240.    1 2             goto gmapFound;
+  241.    1 2           }
+  242.    1 2-->>     }
+  243.            
+  244.              gmapFound:
+  245.            
+  246.              /* communicator of all grid processes */
+  247.  +           rv = MPI_Comm_split( comm, color, key, &newComm );
+  248.              if (MPI_SUCCESS != rv) {
+  249.                /* make contexts for non-participating processes a 0 value so gridinfo() works correctly */
+  250.  +             CblacsDeleteCtxt( ConTxt );
+  251.                goto gmapErr;
+  252.              }
+  253.     I        CblacsSetComm( *ConTxt, newComm );
+  254.              if (MPI_COMM_NULL == newComm) { /* this process does not participate in this grid */
+  255.  +             CblacsDeleteCtxt( ConTxt );
+  256.                return;
+  257.              }
+  258.            
+  259.              /* row communicator */
+  260.  +           rv = MPI_Comm_split( newComm, myrow, mycol, &rowComm );
+  261.              if (MPI_SUCCESS != rv) {
+  262.  +             CblacsDeleteCtxt( ConTxt );
+  263.                goto gmapErr;
+  264.              }
+  265.     I        CblacsSetRowComm( *ConTxt, rowComm );
+  266.            
+  267.              /* column communicator */
+  268.  +           rv = MPI_Comm_split( newComm, mycol, myrow, &colComm );
+  269.              if (MPI_SUCCESS != rv) {
+  270.  +             CblacsDeleteCtxt( ConTxt );
+  271.                goto gmapErr;
+  272.              }
+  273.     I        CblacsSetColComm( *ConTxt, colComm );
+  274.            
+  275.              return;
+  276.            
+  277.              gmapErr:
+  278.            
+  279.              *ConTxt = 0;
+  280.  +           CblacsWarn();
+  281.              return;
+  282.            }
+  283.            
+  284.            void
+  285.            Cblacs_gridexit(int ConTxt) {
+  286.  + 1----<>   CBLACS_INIT;
+  287.  +           CblacsDeleteCtxt( &ConTxt );
+  288.            }
+  289.            
+  290.            void
+  291.            Cblacs_gridinfo(int ConTxt, int *nprow, int *npcol, int *myrow, int *mycol) {
+  292.              MPI_Comm comm;
+  293.            
+  294.  + 1----<>   CBLACS_INIT;
+  295.            
+  296.     I        comm = CblacsGetComm( ConTxt );
+  297.            
+  298.              /* deleted contexts (or the contexts for non-participating processes) are 0 */
+  299.              if (MPI_COMM_NULL == comm) {
+  300.                *nprow = *npcol = *myrow = *mycol = -1;
+  301.              } else {
+  302.  +  I---->     MPI_Comm_size( CblacsGetRowComm(ConTxt), npcol );
+  303.  +  I---->     MPI_Comm_rank( CblacsGetRowComm(ConTxt), mycol );
+  304.  +  I---->     MPI_Comm_size( CblacsGetColComm(ConTxt), nprow );
+  305.  +  I---->     MPI_Comm_rank( CblacsGetColComm(ConTxt), myrow );
+  306.              }
+  307.            }
+  308.            
+  309.            /* ---------------------------------------------------------------------- */
+  310.            /* Communication routines */
+  311.            
+  312.            void
+  313.            Cblacs_barrier(int ConTxt, char *scope) {
+  314.              MPI_Comm comm;
+  315.  + 1----<>   CBLACS_INIT;
+  316.            
+  317.              switch (*scope) {
+  318.     I          case 'A': case 'a': comm = CblacsGetComm( ConTxt );    break;
+  319.     I          case 'C': case 'c': comm = CblacsGetColComm( ConTxt ); break;
+  320.     I          case 'R': case 'r': comm = CblacsGetRowComm( ConTxt ); break;
+  321.  +             default: comm = MPI_COMM_NULL; CblacsWarn(); break;
+  322.              }
+  323.              if (MPI_COMM_NULL == comm) {
+  324.  +             CblacsWarn();
+  325.                return;
+  326.              }
+  327.            
+  328.  +           MPI_Barrier( comm );
+  329.            }
+  330.            
+  331.            static void
+  332.            Cvgred2d(int ConTxt, char *scope, int m, int n, void *A, int lda, int rowRank,
+  333.              int colRank, MPI_Datatype dtype, int dsize, MPI_Op op) {
+  334.              int j, rank, root, count, coords[2], dest_rank, npcol;
+  335.              void *sbuf, *rbuf;
+  336.              MPI_Comm comm;
+  337.            
+  338.              /* if the answer should be left on all processes */
+  339.              if (-1 == rowRank || -1 == colRank) root = 0;
+  340.              else root = 1;
+  341.            
+  342.              switch (*scope) {
+  343.                case 'A': case 'a':
+  344.     I            comm = CblacsGetComm( ConTxt );
+  345.                  coords[0] = rowRank;
+  346.                  coords[1] = colRank;
+  347.  +  I---->       MPI_Comm_size( CblacsGetRowComm( ConTxt ), &npcol );
+  348.                  dest_rank = colRank + rowRank * npcol;
+  349.                  break;
+  350.                case 'C': case 'c':
+  351.     I            comm = CblacsGetColComm( ConTxt );
+  352.                  coords[0] = rowRank;
+  353.                  dest_rank = rowRank;
+  354.                  break;
+  355.                case 'R': case 'r':
+  356.     I            comm = CblacsGetRowComm( ConTxt );
+  357.                  coords[0] = colRank;
+  358.                  dest_rank = colRank;
+  359.                  break;
+  360.  +             default: comm = MPI_COMM_NULL; CblacsWarn(); break;
+  361.              }
+  362.              if (MPI_COMM_NULL == comm) {
+  363.  +             CblacsWarn();
+  364.                return;
+  365.              }
+  366.              /* if not leave-on-all then get rank of the destination */
+  367.              if (root) root = dest_rank; /* MPI_Cart_rank( comm, coords, &root ); */
+  368.              else root = MPI_PROC_NULL;
+  369.            
+  370.              /* FIXME: what if contiguous buffer cannot be allocated */
+  371.              count = m * n;
+  372.              if (m == lda || n == 1) sbuf = A; /* A is contiguous, reuse it */
+  373.              else {
+  374.                /* a new data type could be created to reflect layout of `A' but then the
+  375.                 * receiving buffer would have to be the same, and if `lda' is large in
+  376.                 * comparison to `m' then it might be unfeasible */
+  377.                sbuf = CblacsNewBuf( count, dsize );
+  378.  + 1-----<     for (j = 0; j < n; j++)
+  379.    1----->       memcpy( (char *)sbuf + j * m * dsize, (char *)A + j * lda * dsize, m * dsize );
+  380.              }
+  381.              rbuf = CblacsNewBuf( count, dsize );
+  382.            
+  383.              if (MPI_PROC_NULL == root) {
+  384.  +             MPI_Allreduce( sbuf, rbuf, count, dtype, op, comm );
+  385.              } else {
+  386.  +             MPI_Reduce( sbuf, rbuf, count, dtype, op, root, comm );
+  387.  +             MPI_Comm_rank( comm, &rank );
+  388.              }
+  389.              if (MPI_PROC_NULL == root || root == rank) {
+  390.                if (A == sbuf) memcpy( A, rbuf, count * dsize ); /* A is contiguous */
+  391.                else {
+  392.  + 1-----<       for (j = 0; j < n; j++)
+  393.    1----->         memcpy( (char *)A + j * lda * dsize, (char *)rbuf + j * m * dsize, m * dsize );
+  394.                }
+  395.              }
+  396.            
+  397.              CblacsDeleteBuf( rbuf );
+  398.              if (sbuf != A) CblacsDeleteBuf( sbuf );
+  399.            }
+  400.            
+  401.            /*
+  402.             *  Purpose
+  403.             *
+  404.             *  Combine sum operation for double precision rectangular matrices.
+  405.             *
+  406.             *  Arguments
+  407.             *
+  408.             *  ConTxt  (input) int
+  409.             *          Index into MyConTxts00 (my contexts array).
+  410.             *
+  411.             *  scope   (input) Ptr to char
+  412.             *          Limit the scope of the operation.
+  413.             *          = 'R' :   Operation is performed by a process row
+  414.             *          = 'C' :   Operation is performed by a process column.
+  415.             *          = 'A' :   Operation is performed by all processes in grid.
+  416.             * If both `rdest' and `cdest' are not -1 then for 'R' scope `rdest' is ignored and for `C' - `cdest'
+  417.             * is ignored (row or column of the scope are used, respectively).
+  418.             *
+  419.             *  top     (input) Ptr to char
+  420.             *          Controls fashion in which messages flow within the operation.
+  421.             *
+  422.             *  m       (input) int
+  423.             *          The number of rows of the matrix A.  m >= 0.
+  424.             *
+  425.             *  n       (input) int
+  426.             *          The number of columns of the matrix A.  n >= 0.
+  427.             *
+  428.             *  A       (output) Ptr to double precision two dimensional array
+  429.             *          The m by n matrix A.  Fortran 77 (column-major) storage
+  430.             *          assumed.
+  431.             *
+  432.             *  lda     (input) int
+  433.             *          The leading dimension of the array A.  lda >= m.
+  434.             *
+  435.             *  rdest   (input) int
+  436.             *          The process row of the destination of the sum.
+  437.             *          If rdest == -1, then result is left on all processes in scope.
+  438.             *
+  439.             *  cdest   (input) int
+  440.             *          The process column of the destination of the sum.
+  441.             *          If cdest == -1, then result is left on all processes in scope.
+  442.             */
+  443.            void
+  444.            Cdgsum2d(int ConTxt, char *scope, char *top, int m, int n, double *A, int lda, int rdest, int cdest){
+  445.  + 1----<>   CBLACS_INIT;
+  446.              top = top; /* user `top'ology is ignored */
+  447.  +           Cvgred2d( ConTxt, scope, m, n, A, lda, rdest, cdest, MPI_DOUBLE, sizeof(double), MPI_SUM );
+  448.            }
+  449.            void
+  450.            Cigsum2d(int ConTxt, char *scope, char *top, int m, int n, int *A, int lda, int rdest, int cdest){
+  451.  + 1----<>   CBLACS_INIT;
+  452.              top = top; /* user `top'ology is ignored */
+  453.  +           Cvgred2d( ConTxt, scope, m, n, A, lda, rdest, cdest, MPI_INT, sizeof(int), MPI_SUM );
+  454.            }
+  455.            
+  456.            void
+  457.            CblacsAbsMax(void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) {
+  458.              int i, n = *len; double *dinvec, *dinoutvec;
+  459.              if (MPI_DOUBLE == *datatype) {
+  460.                dinvec = (double *)invec;
+  461.                dinoutvec = (double *)inoutvec;
+  462.    Vr2---<     for (i = n; i; i--, dinvec++, dinoutvec++)
+  463.    Vr2--->       if (fabs(*dinvec) > fabs(*dinoutvec)) *dinoutvec = *dinvec;
+  464.              } else
+  465.  +             CblacsWarn();
+  466.            }
+  467.            void
+  468.            CblacsAbsMin(void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) {
+  469.              int i, n = *len; double *dinvec, *dinoutvec;
+  470.              if (MPI_DOUBLE == *datatype) {
+  471.                dinvec = (double *)invec;
+  472.                dinoutvec = (double *)inoutvec;
+  473.    Vr2---<     for (i = n; i; i--, dinvec++, dinoutvec++)
+  474.    Vr2--->       if (fabs(*dinvec) < fabs(*dinoutvec)) *dinoutvec = *dinvec;
+  475.              } else
+  476.  +             CblacsWarn();
+  477.            }
+  478.            
+  479.            /*
+  480.             *  Purpose
+  481.             *
+  482.             *  Combine amx operation for double precision rectangular matrices.
+  483.             *
+  484.             *  Arguments
+  485.             *
+  486.             *  ConTxt  (input) Ptr to int
+  487.             *          Index into MyConTxts00 (my contexts array).
+  488.             *
+  489.             *  SCOPE   (input) Ptr to char
+  490.             *          Limit the scope of the operation.
+  491.             *          = 'R' :   Operation is performed by a process row.
+  492.             *          = 'C' :   Operation is performed by a process column.
+  493.             *          = 'A' :   Operation is performed by all processes in grid.
+  494.             *
+  495.             *  TOP     (input) Ptr to char
+  496.             *          Controls fashion in which messages flow within the operation.
+  497.             *
+  498.             *  M       (input) Ptr to int
+  499.             *          The number of rows of the matrix A.  M >= 0.
+  500.             *
+  501.             *  N       (input) Ptr to int
+  502.             *          The number of columns of the matrix A.  N >= 0.
+  503.             *
+  504.             *  A       (output) Ptr to double precision two dimensional array
+  505.             *          The m by n matrix A.  Fortran77 (column-major) storage
+  506.             *          assumed.
+  507.             *
+  508.             *  LDA     (input) Ptr to int
+  509.             *          The leading dimension of the array A.  LDA >= M.
+  510.             *
+  511.             *  RA      (output) Integer Array, dimension (LDIA, N)
+  512.             *          Contains process row that the amx of each element
+  513.             *          of A was found on: i.e., rA(1,2) contains the process
+  514.             *          row that the amx of A(1,2) was found on.
+  515.             *          Values are left on process {rdest, cdest} only, others
+  516.             *          may be modified, but not left with interesting data.
+  517.             *          If rdest == -1, then result is left on all processes in scope.
+  518.             *          If LDIA == -1, this array is not accessed, and need not exist.
+  519.             *
+  520.             *  CA      (output) Integer Array, dimension (LDIA, N)
+  521.             *          Contains process column that the amx of each element
+  522.             *          of A was found on: i.e., cA(1,2) contains the process
+  523.             *          column that the max/min of A(1,2) was found on.
+  524.             *          Values are left on process {rdest, cdest} only, others
+  525.             *          may be modified, but not left with interesting data.
+  526.             *          If rdest == -1, then result is left on all processes in scope.
+  527.             *          If LDIA == -1, this array is not accessed, and need not exist.
+  528.             *
+  529.             *  LDIA    (input) Ptr to int
+  530.             *          If (LDIA == -1), then the arrays RA and CA are not accessed.
+  531.             *          ELSE leading dimension of the arrays RA and CA.  LDIA >= M.
+  532.             *
+  533.             *  RDEST   (input) Ptr to int
+  534.             *          The process row of the destination of the amx.
+  535.             *          If rdest == -1, then result is left on all processes in scope.
+  536.             *
+  537.             *  CDEST   (input) Ptr to int
+  538.             *          The process column of the destination of the amx.
+  539.             *          If rdest == -1, then CDEST ignored.
+  540.             */
+  541.            void
+  542.            Cdgamx2d(int ConTxt, char *scope, char *top, int m, int n, double *A, int lda, int *rA, int *cA,
+  543.              int ldia, int rdest, int cdest) {
+  544.              MPI_Op op;
+  545.  + 1----<>   CBLACS_INIT;
+  546.  +           if (ldia > 0) {CblacsWarn(); rA = cA; return;} /* no AMAX_LOC yet */
+  547.  +           MPI_Op_create( CblacsAbsMax, 1, &op );
+  548.              top = top; /* user `top'ology is ignored */
+  549.  +           Cvgred2d( ConTxt, scope, m, n, A, lda, rdest, cdest, MPI_DOUBLE, sizeof(double), op );
+  550.  +           MPI_Op_free( &op );
+  551.            }
+  552.            void
+  553.            Cdgamn2d(int ConTxt, char *scope, char *top, int m, int n, double *A, int lda, int *rA, int *cA,
+  554.              int ldia, int rdest, int cdest) {
+  555.              MPI_Op op;
+  556.  + 1----<>   CBLACS_INIT;
+  557.  +           if (ldia > 0) {CblacsWarn(); rA = cA; return;} /* no AMAX_LOC yet */
+  558.  +           MPI_Op_create( CblacsAbsMin, 1, &op );
+  559.              top = top; /* user `top'ology is ignored */
+  560.  +           Cvgred2d( ConTxt, scope, m, n, A, lda, rdest, cdest, MPI_DOUBLE, sizeof(double), op );
+  561.  +           MPI_Op_free( &op );
+  562.            }
+  563.            
+  564.            void
+  565.            Cblacs_dSendrecv(int ctxt, int mSrc, int nSrc, double *Asrc, int ldaSrc, int rdest, int cdest,
+  566.              int mDest, int nDest, double *Adest, int ldaDest, int rsrc, int csrc) {
+  567.              MPI_Comm comm, rowComm;
+  568.              MPI_Datatype typeSrc, typeDest;
+  569.              MPI_Status stat;
+  570.              int src, dest, dataIsContiguousSrc, dataIsContiguousDest, countSrc, countDest, npcol;
+  571.              long int lSrc = mSrc * (long int)nSrc, lDest = mDest * (long int)nDest, li;
+  572.            
+  573.  + 1----<>   CBLACS_INIT;
+  574.            
+  575.     I        comm = CblacsGetComm( ctxt );
+  576.  +           if (MPI_COMM_NULL == comm) {CblacsWarn(); return;}
+  577.            
+  578.              if (mSrc == ldaSrc || 1 == nSrc) {
+  579.                dataIsContiguousSrc = 1;
+  580.                countSrc = mSrc * nSrc;
+  581.                typeSrc = MPI_DOUBLE;
+  582.              } else {
+  583.                dataIsContiguousSrc = 0;
+  584.                countSrc = 1;
+  585.  +             MPI_Type_vector( nSrc, mSrc, ldaSrc, MPI_DOUBLE, &typeSrc );
+  586.  +             MPI_Type_commit( &typeSrc );
+  587.              }
+  588.              if (mDest == ldaDest || 1 == nDest) {
+  589.                dataIsContiguousDest = 1;
+  590.                countDest = mDest * nDest;
+  591.                typeDest = MPI_DOUBLE;
+  592.              } else {
+  593.                dataIsContiguousDest = 0;
+  594.                countDest = 1;
+  595.  +             MPI_Type_vector( nDest, mDest, ldaDest, MPI_DOUBLE, &typeDest );
+  596.  +             MPI_Type_commit( &typeDest );
+  597.              }
+  598.            
+  599.     I        rowComm = CblacsGetRowComm( ctxt );
+  600.  +           MPI_Comm_size( rowComm, &npcol );
+  601.              dest = cdest + rdest * npcol;
+  602.              src  = csrc + rsrc * npcol;
+  603.            
+  604.              if (dataIsContiguousSrc && dataIsContiguousDest && lSrc == lDest) {
+  605.                int mlength, maxpayload = 12500000; /* 100 MB at a time */
+  606.            
+  607.  + 1-----<     for (li = 0; li < lSrc; li += maxpayload) {
+  608.    1             mlength = maxpayload;
+  609.    1             if (lSrc - li < maxpayload)
+  610.    1               mlength = lSrc - li;
+  611.  + 1             MPI_Sendrecv( Asrc + li, mlength, typeSrc, dest, 0, Adest + li, mlength, typeDest, src, 0, comm, &stat );
+  612.    1----->     }
+  613.              } else {
+  614.  +             MPI_Sendrecv( Asrc, countSrc, typeSrc, dest, 0, Adest, countDest, typeDest, src, 0, comm,
+  615.                            &stat ); /* IBM's (old ?) MPI doesn't have: MPI_STATUS_IGNORE */
+  616.              }
+  617.            
+  618.  +           if (! dataIsContiguousSrc) MPI_Type_free( &typeSrc );
+  619.  +           if (! dataIsContiguousDest) MPI_Type_free( &typeDest );
+  620.            }
+  621.            
+  622.            static void
+  623.            CblacsBcast(int ConTxt, char *scope, int m, int n, void *A, int lda, int rowRank, int colRank,
+  624.              MPI_Datatype baseType){
+  625.              MPI_Comm comm;
+  626.              MPI_Datatype type;
+  627.              int root, coords[2], dest_rank, npcol;
+  628.            
+  629.              /* if this process is the root of broadcast */
+  630.              if (-1 == rowRank || -1 == colRank) root = 0;
+  631.              else root = 1;
+  632.            
+  633.              switch (*scope) {
+  634.                case 'A': case 'a':
+  635.     I            comm = CblacsGetComm( ConTxt );
+  636.                  coords[0] = rowRank;
+  637.                  coords[1] = colRank;
+  638.  +  I---->       MPI_Comm_size( CblacsGetRowComm( ConTxt ), &npcol );
+  639.                  dest_rank = colRank + rowRank * npcol;
+  640.                  break;
+  641.                case 'C': case 'c':
+  642.     I            comm = CblacsGetColComm( ConTxt );
+  643.                  coords[0] = rowRank;
+  644.                  dest_rank = rowRank;
+  645.                  break;
+  646.                case 'R': case 'r':
+  647.     I            comm = CblacsGetRowComm( ConTxt );
+  648.                  coords[0] = colRank;
+  649.                  dest_rank = colRank;
+  650.                  break;
+  651.  +             default: comm = MPI_COMM_NULL; CblacsWarn(); break;
+  652.              }
+  653.              if (MPI_COMM_NULL == comm) {
+  654.  +             CblacsWarn();
+  655.                return;
+  656.              }
+  657.              if (MPI_COMM_NULL == comm) {
+  658.  +             CblacsWarn();
+  659.                return;
+  660.              }
+  661.            
+  662.              /* if broadcast/receive */
+  663.              if (root) root = dest_rank; /* MPI_Cart_rank( comm, coords, &root ); */
+  664.  +           else MPI_Comm_rank( comm, &root ); /* else broadcast/send - I'm the root */
+  665.            
+  666.  +           MPI_Type_vector( n, m, lda, baseType, &type );
+  667.  +           MPI_Type_commit( &type );
+  668.            
+  669.  +           MPI_Bcast( A, 1, type, root, comm );
+  670.            
+  671.  +           MPI_Type_free( &type );
+  672.            }
+  673.            
+  674.            /*
+  675.             *  Purpose
+  676.             *
+  677.             *  Broadcast/send for general double precision arrays.
+  678.             *
+  679.             *  Arguments
+  680.             *
+  681.             *  ConTxt  (input) Ptr to int
+  682.             *          Index into MyConTxts00 (my contexts array).
+  683.             *
+  684.             *  SCOPE   (input) Ptr to char
+  685.             *          Limit the scope of the operation.
+  686.             *          = 'R' :   Operation is performed by a process row.
+  687.             *          = 'C' :   Operation is performed by a process column.
+  688.             *          = 'A' :   Operation is performed by all processes in grid.
+  689.             *
+  690.             *  TOP     (input) Ptr to char
+  691.             *          Controls fashion in which messages flow within the operation.
+  692.             *
+  693.             *  M       (input) Ptr to int
+  694.             *          The number of rows of the matrix A.  M >= 0.
+  695.             *
+  696.             *  N       (input) Ptr to int
+  697.             *          The number of columns of the matrix A.  N >= 0.
+  698.             *
+  699.             *  A       (input) Ptr to double precision two dimensional array
+  700.             *          The m by n matrix A.  Fortran77 (column-major) storage
+  701.             *          assumed.
+  702.             *
+  703.             *  LDA     (input) Ptr to int
+  704.             *          The leading dimension of the array A.  LDA >= M.
+  705.             */
+  706.            void
+  707.            Cdgebs2d(int ConTxt, char *scope, char *top, int m, int n, double *A, int lda) {
+  708.  + 1----<>   CBLACS_INIT;
+  709.              top = top; /* user `top'ology is ignored */
+  710.  +           CblacsBcast( ConTxt, scope, m, n, A, lda, -1, -1, MPI_DOUBLE );
+  711.            }
+  712.            
+  713.            /*
+  714.             *  Purpose
+  715.             *
+  716.             *  Broadcast/receive for general double precision arrays.
+  717.             *
+  718.             *  Arguments
+  719.             *
+  720.             *  ConTxt  (input) Ptr to int
+  721.             *          Index into MyConTxts00 (my contexts array).
+  722.             *
+  723.             *  SCOPE   (input) Ptr to char
+  724.             *          Limit the scope of the operation.
+  725.             *          = 'R' :   Operation is performed by a process row.
+  726.             *          = 'C' :   Operation is performed by a process column.
+  727.             *          = 'A' :   Operation is performed by all processes in grid.
+  728.             *
+  729.             *  TOP     (input) Ptr to char
+  730.             *          Controls fashion in which messages flow within the operation.
+  731.             *
+  732.             *  M       (input) Ptr to int
+  733.             *          The number of rows of the matrix A.  M >= 0.
+  734.             *
+  735.             *  N       (input) Ptr to int
+  736.             *          The number of columns of the matrix A.  N >= 0.
+  737.             *
+  738.             *  A       (output) Ptr to double precision two dimensional array
+  739.             *          The m by n matrix A.  Fortran77 (column-major) storage
+  740.             *          assumed.
+  741.             *
+  742.             *  LDA     (input) Ptr to int
+  743.             *          The leading dimension of the array A.  LDA >= M.
+  744.             *
+  745.             *
+  746.             *  RSRC    (input) Ptr to int
+  747.             *          The process row of the source of the matrix.
+  748.             *
+  749.             *  CSRC    (input) Ptr to int
+  750.             *          The process column of the source of the matrix.
+  751.             */
+  752.            void
+  753.            Cdgebr2d(int ConTxt, char *scope, char *top, int m, int n, double *A, int lda, int rsrc, int csrc) {
+  754.  + 1----<>   CBLACS_INIT;
+  755.              top = top; /* user `top'ology is ignored */
+  756.  +           CblacsBcast( ConTxt, scope, m, n, A, lda, rsrc, csrc, MPI_DOUBLE );
+  757.            }
+  758.            void
+  759.            Cigebs2d(int ConTxt, char *scope, char *top, int m, int n, int *A, int lda) {
+  760.  + 1----<>   CBLACS_INIT;
+  761.              top = top; /* user `top'ology is ignored */
+  762.  +           CblacsBcast( ConTxt, scope, m, n, A, lda, -1, -1, MPI_INT );
+  763.            }
+  764.            void
+  765.            Cigebr2d(int ConTxt, char *scope, char *top, int m, int n, int *A, int lda, int rsrc, int csrc) {
+  766.  + 1----<>   CBLACS_INIT;
+  767.              top = top; /* user `top'ology is ignored */
+  768.  +           CblacsBcast( ConTxt, scope, m, n, A, lda, rsrc, csrc, MPI_INT );
+  769.            }
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 30 
+  "HPL_ptimer_cputime" (called from "dcputime00") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 32 
+  "MPI_Wtime" (called from "dwalltime00") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 37 
+  "MPI_Comm_rank" (called from "CblacsWarnImp") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 39 
+  "fflush" (called from "CblacsWarnImp") was not inlined because the compiler was unable to locate the routine.
+
+CC-6334 CC: VECTOR File = cblacslt.c, Line = 85 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 99 
+  "CblacsWarnImp" (called from "CblacsDeleteCtxt") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 103 
+  "CblacsWarnImp" (called from "CblacsDeleteCtxt") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 107 
+  "MPI_Comm_free" (called from "CblacsDeleteCtxt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 108 
+  "MPI_Comm_free" (called from "CblacsDeleteCtxt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 109 
+  "MPI_Comm_free" (called from "CblacsDeleteCtxt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 131 
+  "MPI_Initialized" (called from "CblacsInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 131 
+  "CblacsWarnImp" (called from "CblacsInit") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6332 CC: VECTOR File = cblacslt.c, Line = 137 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6008 CC: SCALAR File = cblacslt.c, Line = 137 
+  A loop was unwound.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 154 
+  "CblacsInit" (called from "Cblacs_pinfo") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 154 
+  "CblacsWarnImp" (called from "Cblacs_pinfo") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 155 
+  "MPI_Comm_rank" (called from "Cblacs_pinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 156 
+  "MPI_Comm_size" (called from "Cblacs_pinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 161 
+  "CblacsInit" (called from "Cblacs_exit") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 161 
+  "CblacsWarnImp" (called from "Cblacs_exit") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 163 
+  "MPI_Finalize" (called from "Cblacs_exit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 170 
+  "CblacsInit" (called from "Cblacs_abort") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 170 
+  "CblacsWarnImp" (called from "Cblacs_abort") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 172 
+  "MPI_Comm_rank" (called from "Cblacs_abort") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 174 
+  "Cblacs_gridinfo" (called from "Cblacs_abort") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 178 
+  "fflush" (called from "Cblacs_abort") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 179 
+  "fflush" (called from "Cblacs_abort") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 180 
+  "MPI_Abort" (called from "Cblacs_abort") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 185 
+  "CblacsInit" (called from "Cblacs_get") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 185 
+  "CblacsWarnImp" (called from "Cblacs_get") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 193 
+  "CblacsWarnImp" (called from "Cblacs_get") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 202 
+  "CblacsInit" (called from "CblacsGridNew") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 202 
+  "CblacsWarnImp" (called from "CblacsGridNew") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 204 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 207 
+  "MPI_Comm_size" (called from "CblacsGridNew") was not inlined because the compiler was unable to locate the routine.
+
+CC-6334 CC: VECTOR File = cblacslt.c, Line = 212 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 212 
+  The call to tiny leaf routine "CblacsNewCtxt" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 222 
+  "CblacsGridNew" (called from "Cblacs_gridmap") was not inlined because the type of argument 4 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 223 
+  "CblacsWarnImp" (called from "Cblacs_gridmap") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 227 
+  "Cblacs_pinfo" (called from "Cblacs_gridmap") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6250 CC: VECTOR File = cblacslt.c, Line = 232 
+  A loop was not vectorized for an unspecified reason.
+
+CC-6334 CC: VECTOR File = cblacslt.c, Line = 233 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 247 
+  "MPI_Comm_split" (called from "Cblacs_gridmap") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 250 
+  "CblacsDeleteCtxt" (called from "Cblacs_gridmap") was not inlined because the call site will not flatten.  "MPI_Comm_free" is
+  missing.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 253 
+  The call to tiny leaf routine "CblacsSetComm" was textually inlined.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 255 
+  "CblacsDeleteCtxt" (called from "Cblacs_gridmap") was not inlined because the call site will not flatten.  "MPI_Comm_free" is
+  missing.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 260 
+  "MPI_Comm_split" (called from "Cblacs_gridmap") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 262 
+  "CblacsDeleteCtxt" (called from "Cblacs_gridmap") was not inlined because the call site will not flatten.  "MPI_Comm_free" is
+  missing.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 265 
+  The call to tiny leaf routine "CblacsSetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 268 
+  "MPI_Comm_split" (called from "Cblacs_gridmap") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 270 
+  "CblacsDeleteCtxt" (called from "Cblacs_gridmap") was not inlined because the call site will not flatten.  "MPI_Comm_free" is
+  missing.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 273 
+  The call to tiny leaf routine "CblacsSetColComm" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 280 
+  "CblacsWarnImp" (called from "Cblacs_gridmap") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 286 
+  "CblacsInit" (called from "Cblacs_gridexit") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 286 
+  "CblacsWarnImp" (called from "Cblacs_gridexit") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 287 
+  "CblacsDeleteCtxt" (called from "Cblacs_gridexit") was not inlined because the call site will not flatten.  "MPI_Comm_free" is
+  missing.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 294 
+  "CblacsInit" (called from "Cblacs_gridinfo") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 294 
+  "CblacsWarnImp" (called from "Cblacs_gridinfo") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 296 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 302 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 302 
+  "MPI_Comm_size" (called from "Cblacs_gridinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 303 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 303 
+  "MPI_Comm_rank" (called from "Cblacs_gridinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 304 
+  The call to tiny leaf routine "CblacsGetColComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 304 
+  "MPI_Comm_size" (called from "Cblacs_gridinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 305 
+  The call to tiny leaf routine "CblacsGetColComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 305 
+  "MPI_Comm_rank" (called from "Cblacs_gridinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 315 
+  "CblacsInit" (called from "Cblacs_barrier") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 315 
+  "CblacsWarnImp" (called from "Cblacs_barrier") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 318 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 319 
+  The call to tiny leaf routine "CblacsGetColComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 320 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 321 
+  "CblacsWarnImp" (called from "Cblacs_barrier") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 324 
+  "CblacsWarnImp" (called from "Cblacs_barrier") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 328 
+  "MPI_Barrier" (called from "Cblacs_barrier") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 344 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 347 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 347 
+  "MPI_Comm_size" (called from "Cvgred2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 351 
+  The call to tiny leaf routine "CblacsGetColComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 356 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 360 
+  "CblacsWarnImp" (called from "Cvgred2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 363 
+  "CblacsWarnImp" (called from "Cvgred2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6263 CC: VECTOR File = cblacslt.c, Line = 378 
+  A loop was not vectorized because it contains a reference to a non-vector intrinsic on line 379.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 384 
+  "MPI_Allreduce" (called from "Cvgred2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 386 
+  "MPI_Reduce" (called from "Cvgred2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 387 
+  "MPI_Comm_rank" (called from "Cvgred2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-6263 CC: VECTOR File = cblacslt.c, Line = 392 
+  A loop was not vectorized because it contains a reference to a non-vector intrinsic on line 393.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 445 
+  "CblacsInit" (called from "Cdgsum2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 445 
+  "CblacsWarnImp" (called from "Cdgsum2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 447 
+  "Cvgred2d" (called from "Cdgsum2d") was not inlined because the call site will not flatten.  "MPI_Comm_rank" is missing.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 451 
+  "CblacsInit" (called from "Cigsum2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 451 
+  "CblacsWarnImp" (called from "Cigsum2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 453 
+  "Cvgred2d" (called from "Cigsum2d") was not inlined because the call site will not flatten.  "MPI_Comm_rank" is missing.
+
+CC-6005 CC: SCALAR File = cblacslt.c, Line = 462 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = cblacslt.c, Line = 462 
+  A loop was vectorized.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 465 
+  "CblacsWarnImp" (called from "CblacsAbsMax") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-6005 CC: SCALAR File = cblacslt.c, Line = 473 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = cblacslt.c, Line = 473 
+  A loop was vectorized.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 476 
+  "CblacsWarnImp" (called from "CblacsAbsMin") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 545 
+  "CblacsInit" (called from "Cdgamx2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 545 
+  "CblacsWarnImp" (called from "Cdgamx2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 546 
+  "CblacsWarnImp" (called from "Cdgamx2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 547 
+  "MPI_Op_create" (called from "Cdgamx2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 549 
+  "Cvgred2d" (called from "Cdgamx2d") was not inlined because the call site will not flatten.  "MPI_Comm_rank" is missing.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 550 
+  "MPI_Op_free" (called from "Cdgamx2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 556 
+  "CblacsInit" (called from "Cdgamn2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 556 
+  "CblacsWarnImp" (called from "Cdgamn2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 557 
+  "CblacsWarnImp" (called from "Cdgamn2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 558 
+  "MPI_Op_create" (called from "Cdgamn2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 560 
+  "Cvgred2d" (called from "Cdgamn2d") was not inlined because the call site will not flatten.  "MPI_Comm_rank" is missing.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 561 
+  "MPI_Op_free" (called from "Cdgamn2d") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 573 
+  "CblacsInit" (called from "Cblacs_dSendrecv") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 573 
+  "CblacsWarnImp" (called from "Cblacs_dSendrecv") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 575 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 576 
+  "CblacsWarnImp" (called from "Cblacs_dSendrecv") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 585 
+  "MPI_Type_vector" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 586 
+  "MPI_Type_commit" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 595 
+  "MPI_Type_vector" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 596 
+  "MPI_Type_commit" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 599 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 600 
+  "MPI_Comm_size" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = cblacslt.c, Line = 607 
+  A loop was not vectorized because it contains a call to function "MPI_Sendrecv" on line 611.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 611 
+  "MPI_Sendrecv" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 614 
+  "MPI_Sendrecv" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 618 
+  "MPI_Type_free" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 619 
+  "MPI_Type_free" (called from "Cblacs_dSendrecv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 635 
+  The call to tiny leaf routine "CblacsGetComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 638 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 638 
+  "MPI_Comm_size" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 642 
+  The call to tiny leaf routine "CblacsGetColComm" was textually inlined.
+
+CC-3001 CC: IPA File = cblacslt.c, Line = 647 
+  The call to tiny leaf routine "CblacsGetRowComm" was textually inlined.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 651 
+  "CblacsWarnImp" (called from "CblacsBcast") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 654 
+  "CblacsWarnImp" (called from "CblacsBcast") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 658 
+  "CblacsWarnImp" (called from "CblacsBcast") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 664 
+  "MPI_Comm_rank" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 666 
+  "MPI_Type_vector" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 667 
+  "MPI_Type_commit" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 669 
+  "MPI_Bcast" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = cblacslt.c, Line = 671 
+  "MPI_Type_free" (called from "CblacsBcast") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 708 
+  "CblacsInit" (called from "Cdgebs2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 708 
+  "CblacsWarnImp" (called from "Cdgebs2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 710 
+  "CblacsBcast" (called from "Cdgebs2d") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 754 
+  "CblacsInit" (called from "Cdgebr2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 754 
+  "CblacsWarnImp" (called from "Cdgebr2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 756 
+  "CblacsBcast" (called from "Cdgebr2d") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 760 
+  "CblacsInit" (called from "Cigebs2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 760 
+  "CblacsWarnImp" (called from "Cigebs2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 762 
+  "CblacsBcast" (called from "Cigebs2d") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+CC-3118 CC: IPA File = cblacslt.c, Line = 766 
+  "CblacsInit" (called from "Cigebr2d") was not inlined because the call site will not flatten.  "fflush" is missing.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 766 
+  "CblacsWarnImp" (called from "Cigebr2d") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = cblacslt.c, Line = 768 
+  "CblacsBcast" (called from "Cigebr2d") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

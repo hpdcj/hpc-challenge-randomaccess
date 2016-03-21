@@ -1,0 +1,331 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../DGEMM/tstdgemm.c
+Compiled : 2016-03-19  13:20:24
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../DGEMM/tstdgemm.o -c ../../../../DGEMM/tstdgemm.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../DGEMM/tstdgemm.c
+Date     : 03/19/2016  13:20:24
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.             /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.             /* tstdgemm.c
+    3.              */
+    4.             
+    5.             #include <hpcc.h>
+    6.             
+    7.             /* Generates random matrix with entries between 0.0 and 1.0 */
+    8.             static void
+    9.             dmatgen(int m, int n, double *a, int lda, int seed) {
+   10.               int i, j;
+   11.               double *a0 = a, rcp = 1.0 / RAND_MAX;
+   12.             
+   13.  +            srand( seed );
+   14.             
+   15.  + 1------<   for (j = 0; j < n; j++) {
+   16.  + 1 2----<     for (i = 0; i < m; i++)
+   17.  + 1 2 --->       a0[i] = rcp * rand();
+   18.    1        
+   19.    1            a0 += lda;
+   20.    1------>   }
+   21.             }
+   22.             
+   23.             static double
+   24.             dnrm_inf(int m, int n, double *a, int lda) {
+   25.               int i, j, k, lnx;
+   26.               double mx, *a0;
+   27.             
+   28.               int nx = 10;
+   29.               double x[10];
+   30.             
+   31.               mx = 0.0;
+   32.             
+   33.  + 1------<   for (i = 0; i < m; i += nx) {
+   34.    1            lnx = Mmin( nx, m-i );
+   35.    1 V---<>     for (k = 0; k < lnx; ++k) x[k] = 0.0;
+   36.    1        
+   37.    1            a0 = a + i;
+   38.    1        
+   39.  + 1 2----<     for (j = 0; j < n; ++j) {
+   40.    1 2 V--<       for (k = 0; k < lnx; ++k)
+   41.    1 2 V-->         x[k] += fabs( a0[k] );
+   42.    1 2      
+   43.    1 2            a0 += lda;
+   44.    1 2---->     }
+   45.    1        
+   46.    1 V----<     for (k = 0; k < lnx; ++k)
+   47.    1 V---->       if (mx < x[k]) mx = x[k];
+   48.    1------>   }
+   49.             
+   50.               return mx;
+   51.             }
+   52.             
+   53.             int
+   54.             HPCC_TestDGEMM(HPCC_Params *params, int doIO, double *UGflops, int *Un, int *Ufailure) {
+   55.               int n, lda, ldb, ldc, failure = 1;
+   56.               double *a, *b, *c, *x, *y, *z, alpha, beta, sres, cnrm, xnrm;
+   57.               double Gflops = 0.0, dn, t0, t1;
+   58.               long l_n;
+   59.               FILE *outFile;
+   60.               int seed_a, seed_b, seed_c, seed_x;
+   61.             
+   62.               if (doIO) {
+   63.  +              outFile = fopen( params->outFname, "a" );
+   64.                 if (! outFile) {
+   65.                   outFile = stderr;
+   66.                   fprintf( outFile, "Cannot open output file.\n" );
+   67.                   return 1;
+   68.                 }
+   69.               }
+   70.             
+   71.               n = (int)(sqrt( params->HPLMaxProcMem / sizeof(double) / 3 + 0.25 ) - 0.5);
+   72.               if (n < 0) n = -n; /* if 'n' has overflown an integer */
+   73.               l_n = n;
+   74.               lda = ldb = ldc = n;
+   75.             
+   76.               a = HPCC_XMALLOC( double, l_n * l_n );
+   77.               b = HPCC_XMALLOC( double, l_n * l_n );
+   78.               c = HPCC_XMALLOC( double, l_n * l_n );
+   79.             
+   80.               x = HPCC_XMALLOC( double, l_n );
+   81.               y = HPCC_XMALLOC( double, l_n );
+   82.               z = HPCC_XMALLOC( double, l_n );
+   83.             
+   84.               if (! a || ! b || ! c || ! x || ! y || ! z) {
+   85.                 goto comp_end;
+   86.               }
+   87.             
+   88.  +            seed_a = (int)time( NULL );
+   89.  +            dmatgen( n, n, a, n, seed_a );
+   90.             
+   91.  +            seed_b = (int)time( NULL );
+   92.  +            dmatgen( n, n, b, n, seed_b );
+   93.             
+   94.  +            seed_c = (int)time( NULL );
+   95.  +            dmatgen( n, n, c, n, seed_c );
+   96.             
+   97.  +            seed_x = (int)time( NULL );
+   98.  +            dmatgen( n, 1, x, n, seed_x );
+   99.             
+  100.               alpha = a[n / 2];
+  101.               beta  = b[n / 2];
+  102.             
+  103.  +            t0 = MPI_Wtime();
+  104.  +            HPL_dgemm( HplColumnMajor, HplNoTrans, HplNoTrans, n, n, n, alpha, a, n, b, n, beta, c, n );
+  105.  +            t1 = MPI_Wtime();
+  106.             
+  107.               t1 -= t0;
+  108.               dn = (double)n;
+  109.               if (t1 != 0.0 && t1 != -0.0)
+  110.                 Gflops = 2.0e-9 * dn * dn * dn / t1;
+  111.               else
+  112.                 Gflops = 0.0;
+  113.             
+  114.  +            cnrm = dnrm_inf( n, n, c, n );
+  115.  +            xnrm = dnrm_inf( n, 1, x, n );
+  116.             
+  117.               /* y <- c*x */
+  118.  +            HPL_dgemv( HplColumnMajor, HplNoTrans, n, n, 1.0, c, ldc, x, 1, 0.0, y, 1 );
+  119.             
+  120.               /* z <- b*x */
+  121.  +            HPL_dgemv( HplColumnMajor, HplNoTrans, n, n, 1.0, b, ldb, x, 1, 0.0, z, 1 );
+  122.             
+  123.               /* y <- alpha * a * z - y */
+  124.  +            HPL_dgemv( HplColumnMajor, HplNoTrans, n, n, alpha, a, lda, z, 1, -1.0, y, 1 );
+  125.             
+  126.  +            dmatgen( n, n, c, n, seed_c );
+  127.             
+  128.               /* y <- beta * c_orig * x + y */
+  129.  +            HPL_dgemv( HplColumnMajor, HplNoTrans, n, n, beta, c, ldc, x, 1, 1.0, y, 1 );
+  130.             
+  131.  +            sres = dnrm_inf( n, 1, y, n ) / cnrm / xnrm / n / HPL_dlamch( HPL_MACH_EPS );
+  132.             
+  133.               if (doIO) fprintf( outFile, "Scaled residual: %g\n", sres );
+  134.             
+  135.               if (sres < params->test.thrsh)
+  136.                 failure = 0;
+  137.             
+  138.               comp_end:
+  139.             
+  140.               if (z) HPCC_free( z );
+  141.               if (y) HPCC_free( y );
+  142.               if (x) HPCC_free( x );
+  143.               if (c) HPCC_free( c );
+  144.               if (b) HPCC_free( b );
+  145.               if (a) HPCC_free( a );
+  146.             
+  147.               if (doIO) {
+  148.  +              fflush( outFile );
+  149.  +              fclose( outFile );
+  150.               }
+  151.             
+  152.               if (UGflops) *UGflops = Gflops;
+  153.               if (Un) *Un = n;
+  154.               if (Ufailure) *Ufailure = failure;
+  155.             
+  156.               return 0;
+  157.             }
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 13 
+  "srand" (called from "dmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = tstdgemm.c, Line = 15 
+  A loop was not vectorized because it contains a call to function "rand" on line 17.
+
+CC-6287 CC: VECTOR File = tstdgemm.c, Line = 16 
+  A loop was not vectorized because it contains a call to function "rand" on line 17.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 17 
+  "rand" (called from "dmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6306 CC: VECTOR File = tstdgemm.c, Line = 33 
+  A loop was not vectorized because the iteration space is too irregular.
+
+CC-6204 CC: VECTOR File = tstdgemm.c, Line = 35 
+  A loop was vectorized.
+
+CC-6254 CC: VECTOR File = tstdgemm.c, Line = 39 
+  A loop was not vectorized because a recurrence was found on "x" at line 41.
+
+CC-6204 CC: VECTOR File = tstdgemm.c, Line = 40 
+  A loop was vectorized.
+
+CC-6204 CC: VECTOR File = tstdgemm.c, Line = 46 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 63 
+  "fopen" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 88 
+  "time" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstdgemm.c, Line = 89 
+  "dmatgen" (called from "HPCC_TestDGEMM") was not inlined because the call site will not flatten.  "rand" is missing.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 91 
+  "time" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstdgemm.c, Line = 92 
+  "dmatgen" (called from "HPCC_TestDGEMM") was not inlined because the call site will not flatten.  "rand" is missing.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 94 
+  "time" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstdgemm.c, Line = 95 
+  "dmatgen" (called from "HPCC_TestDGEMM") was not inlined because the call site will not flatten.  "rand" is missing.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 97 
+  "time" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstdgemm.c, Line = 98 
+  "dmatgen" (called from "HPCC_TestDGEMM") was not inlined because the call site will not flatten.  "rand" is missing.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 103 
+  "MPI_Wtime" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 104 
+  "HPL_dgemm" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 105 
+  "MPI_Wtime" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3171 CC: IPA File = tstdgemm.c, Line = 114 
+  "dnrm_inf" (called from "HPCC_TestDGEMM") was not inlined because it is not in the body of a loop.
+
+CC-3116 CC: IPA File = tstdgemm.c, Line = 115 
+  "dnrm_inf" (called from "HPCC_TestDGEMM") was not inlined because it contains restricted pointers.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 118 
+  "HPL_dgemv" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 121 
+  "HPL_dgemv" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 124 
+  "HPL_dgemv" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = tstdgemm.c, Line = 126 
+  "dmatgen" (called from "HPCC_TestDGEMM") was not inlined because the call site will not flatten.  "rand" is missing.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 129 
+  "HPL_dgemv" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3116 CC: IPA File = tstdgemm.c, Line = 131 
+  "dnrm_inf" (called from "HPCC_TestDGEMM") was not inlined because it contains restricted pointers.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 131 
+  "HPL_dlamch" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 148 
+  "fflush" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = tstdgemm.c, Line = 149 
+  "fclose" (called from "HPCC_TestDGEMM") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
