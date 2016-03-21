@@ -1,0 +1,431 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdtrsv.c
+Compiled : 2016-03-19  13:20:01
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_pdtrsv.o
+           -c ../../../src/pgesv/HPL_pdtrsv.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdtrsv.c
+Date     : 03/19/2016  13:20:01
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          /* 
+    2.           * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.           *    HPL - 2.0 - September 10, 2008                          
+    4.           *    Antoine P. Petitet                                                
+    5.           *    University of Tennessee, Knoxville                                
+    6.           *    Innovative Computing Laboratory                                 
+    7.           *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.           *                                                                      
+    9.           * -- Copyright notice and Licensing terms:                             
+   10.           *                                                                      
+   11.           * Redistribution  and  use in  source and binary forms, with or without
+   12.           * modification, are  permitted provided  that the following  conditions
+   13.           * are met:                                                             
+   14.           *                                                                      
+   15.           * 1. Redistributions  of  source  code  must retain the above copyright
+   16.           * notice, this list of conditions and the following disclaimer.        
+   17.           *                                                                      
+   18.           * 2. Redistributions in binary form must reproduce  the above copyright
+   19.           * notice, this list of conditions,  and the following disclaimer in the
+   20.           * documentation and/or other materials provided with the distribution. 
+   21.           *                                                                      
+   22.           * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.           * software must display the following acknowledgement:                 
+   24.           * This  product  includes  software  developed  at  the  University  of
+   25.           * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.           *                                                                      
+   27.           * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.           * names  of  its  contributors  may  not  be used to endorse or promote
+   29.           * products  derived   from   this  software  without  specific  written
+   30.           * permission.                                                          
+   31.           *                                                                      
+   32.           * -- Disclaimer:                                                       
+   33.           *                                                                      
+   34.           * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.           * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.           * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.           * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.           * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.           * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.           * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.           * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.           * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.           * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.           * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.           * ---------------------------------------------------------------------
+   46.           */ 
+   47.          /*
+   48.           * Include files
+   49.           */
+   50.          #include "hpl.h"
+   51.          
+   52.          #ifdef HPL_STDC_HEADERS
+   53.          void HPL_pdtrsv
+   54.          (
+   55.             HPL_T_grid *                     GRID,
+   56.             HPL_T_pmat *                     AMAT
+   57.          )
+   58.          #else
+   59.          void HPL_pdtrsv
+   60.          ( GRID, AMAT )
+   61.             HPL_T_grid *                     GRID;
+   62.             HPL_T_pmat *                     AMAT;
+   63.          #endif
+   64.          {
+   65.          /* 
+   66.           * Purpose
+   67.           * =======
+   68.           *
+   69.           * HPL_pdtrsv solves an upper triangular system of linear equations.
+   70.           *  
+   71.           * The rhs is the last column of the N by N+1 matrix A. The solve starts
+   72.           * in the process  column owning the  Nth  column of A, so the rhs b may
+   73.           * need to be moved one process column to the left at the beginning. The
+   74.           * routine therefore needs  a column  vector in every process column but
+   75.           * the one owning  b. The result is  replicated in all process rows, and
+   76.           * returned in XR, i.e. XR is of size nq = LOCq( N ) in all processes.
+   77.           *  
+   78.           * The algorithm uses decreasing one-ring broadcast in process rows  and
+   79.           * columns  implemented  in terms of  synchronous communication point to
+   80.           * point primitives.  The  lookahead of depth 1 is used to minimize  the
+   81.           * critical path. This entire operation is essentially ``latency'' bound
+   82.           * and an estimate of its running time is given by:
+   83.           *  
+   84.           *    (move rhs) lat + N / ( P bdwth ) +            
+   85.           *    (solve)    ((N / NB)-1) 2 (lat + NB / bdwth) +
+   86.           *               gam2 N^2 / ( P Q ),                
+   87.           *  
+   88.           * where  gam2   is an estimate of the   Level 2 BLAS rate of execution.
+   89.           * There are  N / NB  diagonal blocks. One must exchange  2  messages of
+   90.           * length NB to compute the next  NB  entries of the vector solution, as
+   91.           * well as performing a total of N^2 floating point operations.
+   92.           *
+   93.           * Arguments
+   94.           * =========
+   95.           *
+   96.           * GRID    (local input)                 HPL_T_grid *
+   97.           *         On entry,  GRID  points  to the data structure containing the
+   98.           *         process grid information.
+   99.           *
+  100.           * AMAT    (local input/output)          HPL_T_pmat *
+  101.           *         On entry,  AMAT  points  to the data structure containing the
+  102.           *         local array information.
+  103.           *
+  104.           * ---------------------------------------------------------------------
+  105.           */ 
+  106.          /*
+  107.           * .. Local Variables ..
+  108.           */
+  109.             MPI_Comm                   Ccomm, Rcomm;
+  110.             double                     * A=NULL, * Aprev=NULL, * Aptr, * XC=NULL,
+  111.                                        * XR=NULL, * Xd=NULL, * Xdprev=NULL,
+  112.                                        * W=NULL;
+  113.             int                        Alcol, Alrow, Anpprev, Anp, Anq, Bcol,
+  114.                                        Cmsgid, GridIsNotPx1, GridIsNot1xQ, Rmsgid,
+  115.                                        Wfr=0, colprev, kb, kbprev, lda, mycol,
+  116.                                        myrow, n, n1, n1p, n1pprev=0, nb, npcol,
+  117.                                        nprow, rowprev, tmp1, tmp2;
+  118.          /* ..
+  119.           * .. Executable Statements ..
+  120.           */
+  121.          #ifdef HPL_DETAILED_TIMING
+  122.             HPL_ptimer( HPL_TIMING_PTRSV );
+  123.          #endif
+  124.             if( ( n = AMAT->n ) <= 0 ) return;
+  125.             nb = AMAT->nb; lda = AMAT->ld; A = AMAT->A; XR = AMAT->X;
+  126.          
+  127.  +          (void) HPL_grid_info( GRID, &nprow, &npcol, &myrow, &mycol );
+  128.             Rcomm = GRID->row_comm; Rmsgid = MSGID_BEGIN_PTRSV;
+  129.             Ccomm = GRID->col_comm; Cmsgid = MSGID_BEGIN_PTRSV + 1;
+  130.             GridIsNot1xQ = ( nprow > 1 ); GridIsNotPx1 = ( npcol > 1 );
+  131.          /*
+  132.           * Move the rhs in the process column owning the last column of A.
+  133.           */
+  134.             Mnumroc( Anp, n, nb, nb, myrow, 0, nprow );
+  135.             Mnumroc( Anq, n, nb, nb, mycol, 0, npcol );
+  136.          
+  137.             tmp1  = ( n - 1 ) / nb;
+  138.             Alrow = tmp1 - ( tmp1 / nprow ) * nprow;
+  139.             Alcol = tmp1 - ( tmp1 / npcol ) * npcol;
+  140.             kb    = n    - tmp1 * nb;
+  141.          
+  142.             Aptr = (double *)(A); XC = Mptr( Aptr, 0, Anq, lda );
+  143.             Mindxg2p( n, nb, nb, Bcol, 0, npcol );
+  144.          
+  145.             if( ( Anp > 0 ) && ( Alcol != Bcol ) )
+  146.             {
+  147.                if( mycol == Bcol  )
+  148.  +             { (void) HPL_send( XC, Anp, Alcol, Rmsgid, Rcomm ); }
+  149.                else if( mycol == Alcol )
+  150.  +             { (void) HPL_recv( XC, Anp, Bcol,  Rmsgid, Rcomm ); }
+  151.             }
+  152.             Rmsgid = ( Rmsgid + 2 >
+  153.                        MSGID_END_PTRSV ? MSGID_BEGIN_PTRSV : Rmsgid + 2 );
+  154.             if( mycol != Alcol )
+  155.    A--<>    { for( tmp1=0; tmp1 < Anp; tmp1++ ) XC[tmp1] = HPL_rzero; }
+  156.          /*
+  157.           * Set up lookahead
+  158.           */
+  159.             n1 = ( npcol - 1 ) * nb; n1 = Mmax( n1, nb );
+  160.             if( Anp > 0 )
+  161.             {
+  162.                W = (double*)malloc( (size_t)(Mmin( n1, Anp )) * sizeof( double ) );
+  163.                if( W == NULL )
+  164.  +             { HPL_pabort( __LINE__, "HPL_pdtrsv", "Memory allocation failed" ); }
+  165.                Wfr = 1;
+  166.             }
+  167.          
+  168.             Anpprev = Anp; Xdprev = XR; Aprev = Aptr = Mptr( Aptr, 0, Anq, lda );
+  169.             tmp1    = n - kb; tmp1 -= ( tmp2 = Mmin( tmp1, n1 ) );
+  170.             MnumrocI( n1pprev, tmp2, Mmax( 0, tmp1 ), nb, nb, myrow, 0, nprow );
+  171.          
+  172.             if( myrow == Alrow ) { Anpprev = ( Anp -= kb ); }
+  173.             if( mycol == Alcol )
+  174.             {
+  175.                Aprev = ( Aptr -= lda * kb ); Anq -= kb; Xdprev = ( Xd = XR + Anq );
+  176.                if( myrow == Alrow )
+  177.                {
+  178.  +                HPL_dtrsv( HplColumnMajor, HplUpper, HplNoTrans, HplNonUnit,
+  179.                              kb, Aptr+Anp, lda, XC+Anp, 1 );
+  180.  +                HPL_dcopy( kb, XC+Anp, 1, Xd, 1 );
+  181.                }
+  182.             }
+  183.          
+  184.             rowprev = Alrow; Alrow = MModSub1( Alrow, nprow );
+  185.             colprev = Alcol; Alcol = MModSub1( Alcol, npcol );
+  186.             kbprev  = kb; n -= kb;
+  187.             tmp1    = n - ( kb = nb ); tmp1 -= ( tmp2 = Mmin( tmp1, n1 ) );
+  188.             MnumrocI( n1p, tmp2, Mmax( 0, tmp1 ), nb, nb, myrow, 0, nprow );
+  189.          /*
+  190.           * Start the operations
+  191.           */
+  192.  + 1---<    while( n > 0 )
+  193.    1        {
+  194.    1           if( mycol == Alcol ) { Aptr -= lda * kb; Anq -= kb; Xd = XR + Anq; }
+  195.    1           if( myrow == Alrow ) { Anp -= kb; }
+  196.    1     /*
+  197.    1      * Broadcast  (decreasing-ring)  of  previous solution block in previous
+  198.    1      * process column,  compute  partial update of current block and send it
+  199.    1      * to current process column.
+  200.    1      */
+  201.    1           if( mycol == colprev )
+  202.    1           {
+  203.    1     /*
+  204.    1      * Send previous solution block in process row above
+  205.    1      */
+  206.    1              if( myrow == rowprev )
+  207.    1              {
+  208.    1                 if( GridIsNot1xQ )
+  209.  + 1                    (void) HPL_send( Xdprev, kbprev, MModSub1( myrow, nprow ),
+  210.    1                                     Cmsgid, Ccomm );
+  211.    1              }
+  212.    1              else
+  213.    1              {
+  214.  + 1                 (void) HPL_recv( Xdprev, kbprev, MModAdd1( myrow, nprow ),
+  215.    1                                  Cmsgid, Ccomm );
+  216.    1              } 
+  217.    1     /*
+  218.    1      * Compute partial update of previous solution block and send it to cur-
+  219.    1      * rent column
+  220.    1      */
+  221.    1              if( n1pprev > 0 )
+  222.    1              {
+  223.    1                 tmp1 = Anpprev - n1pprev;
+  224.  + 1                 HPL_dgemv( HplColumnMajor, HplNoTrans, n1pprev, kbprev,
+  225.    1                            -HPL_rone, Aprev+tmp1, lda, Xdprev, 1, HPL_rone,
+  226.    1                            XC+tmp1, 1 );
+  227.    1                 if( GridIsNotPx1 )
+  228.  + 1                    (void) HPL_send( XC+tmp1, n1pprev, Alcol, Rmsgid, Rcomm );
+  229.    1              }
+  230.    1     /*
+  231.    1      * Finish  the (decreasing-ring) broadcast of the solution block in pre-
+  232.    1      * vious process column
+  233.    1      */
+  234.    1              if( ( myrow != rowprev ) &&
+  235.    1                  ( myrow != MModAdd1( rowprev, nprow ) ) )
+  236.  + 1                 (void) HPL_send( Xdprev, kbprev, MModSub1( myrow, nprow ),
+  237.    1                                  Cmsgid, Ccomm );
+  238.    1           }
+  239.    1           else if( mycol == Alcol )
+  240.    1           {
+  241.    1     /*
+  242.    1      * Current  column  receives  and accumulates partial update of previous
+  243.    1      * solution block
+  244.    1      */
+  245.    1              if( n1pprev > 0 )
+  246.    1              {
+  247.  + 1                 (void) HPL_recv( W, n1pprev, colprev, Rmsgid, Rcomm );
+  248.  + 1                 HPL_daxpy( n1pprev, HPL_rone, W, 1, XC+Anpprev-n1pprev, 1 );
+  249.    1              }
+  250.    1           }
+  251.    1     /*
+  252.    1      * Solve current diagonal block 
+  253.    1      */
+  254.    1           if( ( mycol == Alcol ) && ( myrow == Alrow ) )
+  255.    1           {
+  256.  + 1              HPL_dtrsv( HplColumnMajor, HplUpper, HplNoTrans, HplNonUnit,
+  257.    1                         kb, Aptr+Anp, lda, XC+Anp, 1 );
+  258.  + 1              HPL_dcopy( kb, XC+Anp, 1, XR+Anq, 1 );
+  259.    1           }
+  260.    1     /*
+  261.    1     *  Finish previous update
+  262.    1     */
+  263.    1           if( ( mycol == colprev ) && ( ( tmp1 = Anpprev - n1pprev ) > 0 ) )
+  264.  + 1              HPL_dgemv( HplColumnMajor, HplNoTrans, tmp1, kbprev, -HPL_rone,
+  265.    1                         Aprev, lda, Xdprev, 1, HPL_rone, XC, 1 );
+  266.    1     /*
+  267.    1     *  Save info of current step and update info for the next step
+  268.    1     */
+  269.    1           if( mycol == Alcol ) { Xdprev   = Xd; Aprev = Aptr; }
+  270.    1           if( myrow == Alrow ) { Anpprev -= kb; }
+  271.    1           rowprev = Alrow; colprev = Alcol;
+  272.    1           n1pprev = n1p;   kbprev  = kb; n -= kb;
+  273.    1           Alrow = MModSub1( Alrow, nprow ); Alcol = MModSub1( Alcol, npcol );
+  274.    1           tmp1  = n - ( kb = nb ); tmp1 -= ( tmp2 = Mmin( tmp1, n1 ) );
+  275.    1           MnumrocI( n1p, tmp2, Mmax( 0, tmp1 ), nb, nb, myrow, 0, nprow );
+  276.    1     
+  277.    1           Rmsgid = ( Rmsgid+2 > MSGID_END_PTRSV ? 
+  278.    1                      MSGID_BEGIN_PTRSV   : Rmsgid+2 );
+  279.    1           Cmsgid = ( Cmsgid+2 > MSGID_END_PTRSV ?
+  280.    1                      MSGID_BEGIN_PTRSV+1 : Cmsgid+2 );
+  281.    1--->    }
+  282.          /*
+  283.           * Replicate last solution block
+  284.           */
+  285.             if( mycol == colprev )
+  286.  +             (void) HPL_broadcast( (void *)(XR), kbprev, HPL_DOUBLE, rowprev,
+  287.                                      Ccomm );
+  288.          
+  289.             if( Wfr  ) free( W  );
+  290.          #ifdef HPL_DETAILED_TIMING
+  291.             HPL_ptimer( HPL_TIMING_PTRSV );
+  292.          #endif
+  293.          /*
+  294.           * End of HPL_pdtrsv
+  295.           */
+  296.          }
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 127 
+  "HPL_grid_info" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 148 
+  "HPL_send" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 150 
+  "HPL_recv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = HPL_pdtrsv.c, Line = 155 
+  A loop was replaced by a library call.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 164 
+  "HPL_pabort" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 178 
+  "HPL_dtrsv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 180 
+  "HPL_dcopy" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdtrsv.c, Line = 192 
+  A loop was not vectorized because it contains a call to function "HPL_send" on line 209.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 209 
+  "HPL_send" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 214 
+  "HPL_recv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 224 
+  "HPL_dgemv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 228 
+  "HPL_send" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 236 
+  "HPL_send" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 247 
+  "HPL_recv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 248 
+  "HPL_daxpy" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 256 
+  "HPL_dtrsv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 258 
+  "HPL_dcopy" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 264 
+  "HPL_dgemv" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdtrsv.c, Line = 286 
+  "HPL_broadcast" (called from "HPL_pdtrsv") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

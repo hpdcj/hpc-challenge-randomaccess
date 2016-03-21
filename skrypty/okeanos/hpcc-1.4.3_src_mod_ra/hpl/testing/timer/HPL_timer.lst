@@ -1,0 +1,355 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/timer/HPL_timer.c
+Compiled : 2016-03-19  13:20:04
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../testing/timer/HPL_timer.o
+           -c ../../../testing/timer/HPL_timer.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/timer/HPL_timer.c
+Date     : 03/19/2016  13:20:04
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.           /* 
+    2.            * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.            *    HPL - 2.0 - September 10, 2008                          
+    4.            *    Antoine P. Petitet                                                
+    5.            *    University of Tennessee, Knoxville                                
+    6.            *    Innovative Computing Laboratory                                 
+    7.            *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.            *                                                                      
+    9.            * -- Copyright notice and Licensing terms:                             
+   10.            *                                                                      
+   11.            * Redistribution  and  use in  source and binary forms, with or without
+   12.            * modification, are  permitted provided  that the following  conditions
+   13.            * are met:                                                             
+   14.            *                                                                      
+   15.            * 1. Redistributions  of  source  code  must retain the above copyright
+   16.            * notice, this list of conditions and the following disclaimer.        
+   17.            *                                                                      
+   18.            * 2. Redistributions in binary form must reproduce  the above copyright
+   19.            * notice, this list of conditions,  and the following disclaimer in the
+   20.            * documentation and/or other materials provided with the distribution. 
+   21.            *                                                                      
+   22.            * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.            * software must display the following acknowledgement:                 
+   24.            * This  product  includes  software  developed  at  the  University  of
+   25.            * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.            *                                                                      
+   27.            * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.            * names  of  its  contributors  may  not  be used to endorse or promote
+   29.            * products  derived   from   this  software  without  specific  written
+   30.            * permission.                                                          
+   31.            *                                                                      
+   32.            * -- Disclaimer:                                                       
+   33.            *                                                                      
+   34.            * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.            * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.            * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.            * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.            * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.            * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.            * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.            * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.            * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.            * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.            * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.            * ---------------------------------------------------------------------
+   46.            */ 
+   47.           /*
+   48.            * Include files
+   49.            */
+   50.           #include "hpl.h"
+   51.           /*
+   52.            * ---------------------------------------------------------------------
+   53.            * Static variables
+   54.            * ---------------------------------------------------------------------
+   55.            */
+   56.           static int                    HPL_timer_disabled;
+   57.           static double                 HPL_timer_cpusec   [HPL_NTIMER],
+   58.                                         HPL_timer_cpustart [HPL_NTIMER],
+   59.                                         HPL_timer_wallsec  [HPL_NTIMER],
+   60.                                         HPL_timer_wallstart[HPL_NTIMER];
+   61.           /*
+   62.            * ---------------------------------------------------------------------
+   63.            * User callable functions
+   64.            * ---------------------------------------------------------------------
+   65.            */
+   66.           #ifdef HPL_STDC_HEADERS
+   67.           void HPL_timer_boot( void )
+   68.           #else
+   69.           void HPL_timer_boot()
+   70.           #endif
+   71.           {
+   72.           /*
+   73.            * HPL_timer_boot (re)sets all timers to 0, and enables HPL_timer.
+   74.            */
+   75.           /*
+   76.            * .. Local Variables ..
+   77.            */
+   78.              int                        i;
+   79.           /* ..
+   80.            * .. Executable Statements ..
+   81.            */
+   82.              HPL_timer_disabled = 0;
+   83.           
+   84.    Vr2--<    for( i = 0; i < HPL_NTIMER; i++ )
+   85.    Vr2       {
+   86.    Vr2          HPL_timer_cpusec  [i] = HPL_timer_wallsec  [i] = HPL_rzero;
+   87.    Vr2          HPL_timer_cpustart[i] = HPL_timer_wallstart[i] = HPL_TIMER_STARTFLAG;
+   88.    Vr2-->    }
+   89.           /*
+   90.            * End of HPL_timer_boot
+   91.            */
+   92.           }
+   93.           
+   94.           #ifdef HPL_STDC_HEADERS
+   95.           void HPL_timer( const int I )
+   96.           #else
+   97.           void HPL_timer( I )
+   98.              const int                  I;
+   99.           #endif
+  100.           {
+  101.           /* 
+  102.            * Purpose
+  103.            * =======
+  104.            *
+  105.            * HPL_timer provides a  "stopwatch"  functionality  cpu/wall  timer  in
+  106.            * seconds.  Up to  64  separate timers can be functioning at once.  The
+  107.            * first call starts the timer,  and the second stops it.  This  routine
+  108.            * can be disenabled  by calling  HPL_timer_disable(),  so that calls to
+  109.            * the timer are ignored.  This feature can be used to make sure certain
+  110.            * sections of code do not affect timings,  even  if  they call routines
+  111.            * which have HPL_timer calls in them. HPL_timer_enable() will re-enable
+  112.            * the  timer  functionality.  One  can retrieve  the current value of a
+  113.            * timer by calling
+  114.            *  
+  115.            * t0 = HPL_timer_inquire( HPL_WALL_TIME | HPL_CPU_TIME, I )
+  116.            *  
+  117.            * where  I  is the timer index in  [0..64).  To  initialize  the  timer
+  118.            * functionality, one must have called HPL_timer_boot()  prior to any of
+  119.            * the functions mentioned above.
+  120.            *
+  121.            * Arguments
+  122.            * =========
+  123.            *
+  124.            * I       (global input)                const int
+  125.            *         On entry, I specifies the timer to stop/start.
+  126.            *
+  127.            * ---------------------------------------------------------------------
+  128.            */ 
+  129.           /* ..
+  130.            * .. Executable Statements ..
+  131.            */
+  132.              if( HPL_timer_disabled ) return;
+  133.           /*
+  134.            * If timer has not been started, start it.  Otherwise,  stop it and add
+  135.            * interval to count
+  136.            */
+  137.              if( HPL_timer_wallstart[I] == HPL_TIMER_STARTFLAG )
+  138.              {
+  139.  +              HPL_timer_wallstart[I] = HPL_timer_walltime();
+  140.  +              HPL_timer_cpustart [I] = HPL_timer_cputime ();
+  141.              }
+  142.              else
+  143.              {
+  144.  +              HPL_timer_cpusec   [I] += HPL_timer_cputime () - HPL_timer_cpustart [I];
+  145.  +              HPL_timer_wallsec  [I] += HPL_timer_walltime() - HPL_timer_wallstart[I];
+  146.                 HPL_timer_wallstart[I]  = HPL_TIMER_STARTFLAG;
+  147.              }
+  148.           /*
+  149.            * End of HPL_timer
+  150.            */
+  151.           }
+  152.           
+  153.           #ifdef HPL_STDC_HEADERS
+  154.           void HPL_timer_enable( void )
+  155.           #else
+  156.           void HPL_timer_enable()
+  157.           #endif
+  158.           {
+  159.           /*
+  160.            * HPL_timer_enable sets it so calls to HPL_timer are not ignored.
+  161.            */
+  162.           /* ..
+  163.            * .. Executable Statements ..
+  164.            */
+  165.              HPL_timer_disabled = 0;
+  166.              return;
+  167.           /*
+  168.            * End of HPL_timer_enable
+  169.            */
+  170.           }
+  171.           
+  172.           #ifdef HPL_STDC_HEADERS
+  173.           void HPL_timer_disable( void )
+  174.           #else
+  175.           void HPL_timer_disable()
+  176.           #endif
+  177.           {
+  178.           /*
+  179.            * HPL_timer_disable sets it so calls to HPL_timer are ignored.
+  180.            */
+  181.           /* ..
+  182.            * .. Executable Statements ..
+  183.            */
+  184.              HPL_timer_disabled = 1;
+  185.              return;
+  186.           /*
+  187.            * End of HPL_timer_disable
+  188.            */
+  189.           }
+  190.           
+  191.           #ifdef HPL_STDC_HEADERS
+  192.           double HPL_timer_inquire
+  193.           (
+  194.              const HPL_T_TIME           TMTYPE,
+  195.              const int                  I
+  196.           )
+  197.           #else
+  198.           double HPL_timer_inquire( TMTYPE, I )
+  199.              const int                  I;
+  200.              const HPL_T_TIME           TMTYPE;
+  201.           #endif
+  202.           {
+  203.           /*
+  204.            * Purpose
+  205.            * =======
+  206.            *
+  207.            * HPL_timer_inquire returns  wall- or cpu- time that has accumulated in
+  208.            * timer I.
+  209.            *
+  210.            * Arguments
+  211.            * =========
+  212.            *
+  213.            * TMTYPE  (global input)              const HPL_T_TIME
+  214.            *         On entry, TMTYPE specifies what time will be returned as fol-
+  215.            *         lows
+  216.            *            = HPL_WALL_TIME : wall clock time is returned,
+  217.            *            = HPL_CPU_TIME  : CPU time is returned (default).
+  218.            *
+  219.            * I       (global input)              const int
+  220.            *         On entry, I specifies the timer to return.
+  221.            *
+  222.            * ---------------------------------------------------------------------
+  223.            */
+  224.           /*
+  225.            * .. Local Variables ..
+  226.            */
+  227.              double          time;
+  228.           /* ..
+  229.            * .. Executable Statements ..
+  230.            */
+  231.           /*
+  232.            * If wall- or cpu-time are not available on this machine, return
+  233.            * HPL_TIMER_ERROR
+  234.            */
+  235.              if( TMTYPE == HPL_WALL_TIME )
+  236.              {
+  237.  +              if( HPL_timer_walltime() == HPL_TIMER_ERROR )
+  238.                    time = HPL_TIMER_ERROR;
+  239.                 else
+  240.                    time = HPL_timer_wallsec[I];
+  241.              }
+  242.              else
+  243.              {
+  244.  +              if( HPL_timer_cputime()  == HPL_TIMER_ERROR )
+  245.                    time = HPL_TIMER_ERROR;
+  246.                 else
+  247.                    time = HPL_timer_cpusec [I];
+  248.              }
+  249.              return( time );
+  250.           /*
+  251.            * End of HPL_timer_inquire
+  252.            */
+  253.           }
+
+CC-6005 CC: SCALAR File = HPL_timer.c, Line = 84 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = HPL_timer.c, Line = 84 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 139 
+  "HPL_timer_walltime" (called from "HPL_timer") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 140 
+  "HPL_timer_cputime" (called from "HPL_timer") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 144 
+  "HPL_timer_cputime" (called from "HPL_timer") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 145 
+  "HPL_timer_walltime" (called from "HPL_timer") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 237 
+  "HPL_timer_walltime" (called from "HPL_timer_inquire") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_timer.c, Line = 244 
+  "HPL_timer_cputime" (called from "HPL_timer_inquire") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

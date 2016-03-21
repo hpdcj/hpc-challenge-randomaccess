@@ -1,0 +1,377 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx1.c
+Compiled : 2016-03-19  13:19:57
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_plindx1.o
+           -c ../../../src/pgesv/HPL_plindx1.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx1.c
+Date     : 03/19/2016  13:19:57
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* 
+    2.             * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.             *    HPL - 2.0 - September 10, 2008                          
+    4.             *    Antoine P. Petitet                                                
+    5.             *    University of Tennessee, Knoxville                                
+    6.             *    Innovative Computing Laboratory                                 
+    7.             *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.             *                                                                      
+    9.             * -- Copyright notice and Licensing terms:                             
+   10.             *                                                                      
+   11.             * Redistribution  and  use in  source and binary forms, with or without
+   12.             * modification, are  permitted provided  that the following  conditions
+   13.             * are met:                                                             
+   14.             *                                                                      
+   15.             * 1. Redistributions  of  source  code  must retain the above copyright
+   16.             * notice, this list of conditions and the following disclaimer.        
+   17.             *                                                                      
+   18.             * 2. Redistributions in binary form must reproduce  the above copyright
+   19.             * notice, this list of conditions,  and the following disclaimer in the
+   20.             * documentation and/or other materials provided with the distribution. 
+   21.             *                                                                      
+   22.             * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.             * software must display the following acknowledgement:                 
+   24.             * This  product  includes  software  developed  at  the  University  of
+   25.             * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.             *                                                                      
+   27.             * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.             * names  of  its  contributors  may  not  be used to endorse or promote
+   29.             * products  derived   from   this  software  without  specific  written
+   30.             * permission.                                                          
+   31.             *                                                                      
+   32.             * -- Disclaimer:                                                       
+   33.             *                                                                      
+   34.             * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.             * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.             * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.             * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.             * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.             * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.             * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.             * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.             * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.             * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.             * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.             * ---------------------------------------------------------------------
+   46.             */ 
+   47.            /*
+   48.             * Include files
+   49.             */
+   50.            #include "hpl.h"
+   51.            
+   52.            #ifdef HPL_STDC_HEADERS
+   53.            void HPL_plindx1
+   54.            (
+   55.               HPL_T_panel *                    PANEL,
+   56.               const int                        K,
+   57.               const int *                      IPID,
+   58.               int *                            IPA,
+   59.               int *                            LINDXA,
+   60.               int *                            LINDXAU,
+   61.               int *                            IPLEN,
+   62.               int *                            IPMAP,
+   63.               int *                            IPMAPM1,
+   64.               int *                            PERMU,
+   65.               int *                            IWORK
+   66.            )
+   67.            #else
+   68.            void HPL_plindx1
+   69.            ( PANEL, K, IPID, IPA, LINDXA, LINDXAU, IPLEN, IPMAP, IPMAPM1, PERMU, IWORK )
+   70.               HPL_T_panel *                    PANEL;
+   71.               const int                        K;
+   72.               const int *                      IPID;
+   73.               int *                            IPA;
+   74.               int *                            LINDXA;
+   75.               int *                            LINDXAU;
+   76.               int *                            IPLEN;
+   77.               int *                            IPMAP;
+   78.               int *                            IPMAPM1;
+   79.               int *                            PERMU;
+   80.               int *                            IWORK;
+   81.            #endif
+   82.            {
+   83.            /* 
+   84.             * Purpose
+   85.             * =======
+   86.             *
+   87.             * HPL_plindx1 computes two local arrays  LINDXA and  LINDXAU  containing
+   88.             * the  local  source and final destination position  resulting from the
+   89.             * application of row interchanges.  In addition, this function computes
+   90.             * three arrays IPLEN, IPMAP and IPMAPM1  that contain  the  logarithmic
+   91.             * mapping information for the spreading phase.
+   92.             *
+   93.             * Arguments
+   94.             * =========
+   95.             *
+   96.             * PANEL   (local input/output)          HPL_T_panel *
+   97.             *         On entry,  PANEL  points to the data structure containing the
+   98.             *         panel information.
+   99.             *
+  100.             * K       (global input)                const int
+  101.             *         On entry, K specifies the number of entries in IPID.  K is at
+  102.             *         least 2*N, and at most 4*N.
+  103.             *
+  104.             * IPID    (global input)                const int *
+  105.             *         On entry,  IPID  is an array of length K. The first K entries
+  106.             *         of that array contain the src and final destination resulting
+  107.             *         from the application of the interchanges.
+  108.             *
+  109.             * IPA     (global output)               int *
+  110.             *         On exit,  IPA  specifies  the number of rows that the current
+  111.             *         process row has that either belong to U  or should be swapped
+  112.             *         with remote rows of A.
+  113.             *
+  114.             * LINDXA  (global output)               int *
+  115.             *         On entry, LINDXA  is an array of dimension 2*N. On exit, this
+  116.             *         array contains the local indexes of the rows of A I have that
+  117.             *         should be copied into U.
+  118.             *
+  119.             * LINDXAU (global output)               int *
+  120.             *         On exit, LINDXAU  is an array of dimension 2*N. On exit, this
+  121.             *         array contains  the local destination  information encoded as
+  122.             *         follows.  If LINDXAU(k) >= 0, row  LINDXA(k)  of A  is  to be
+  123.             *         copied in U at position LINDXAU(k).  Otherwise, row LINDXA(k)
+  124.             *         of A should be locally copied into A(-LINDXAU(k),:).
+  125.             *
+  126.             * IPLEN   (global output)               int *
+  127.             *         On entry, IPLEN is an array of dimension NPROW + 1. On  exit,
+  128.             *         this array is such that  IPLEN[i]  is the number of rows of A
+  129.             *         in  the  processes  before  process  IPMAP[i]  after the sort
+  130.             *         with the convention that IPLEN[nprow]  is the total number of
+  131.             *         rows of the panel.  In other words IPLEN[i+1]-IPLEN[i] is the
+  132.             *         local number of rows of A that should be moved to the process
+  133.             *         IPMAP[i]. IPLEN is such that the number of rows of the source
+  134.             *         process  row can be computed as  IPLEN[1] - IPLEN[0], and the
+  135.             *         remaining  entries  of  this  array  are  sorted  so that the
+  136.             *         quantities IPLEN[i+1] - IPLEN[i] are logarithmically sorted.
+  137.             *
+  138.             * IPMAP   (global output)               int *
+  139.             *         On entry, IPMAP is an array of dimension NPROW. On exit, this
+  140.             *         array contains  the logarithmic mapping of the processes.  In
+  141.             *         other words, IPMAP[myrow] is the corresponding sorted process
+  142.             *         coordinate.
+  143.             *
+  144.             * IPMAPM1 (global output)               int *
+  145.             *         On entry, IPMAPM1  is an array of dimension NPROW.  On  exit,
+  146.             *         this  array  contains  the inverse of the logarithmic mapping
+  147.             *         contained  in  IPMAP:  IPMAPM1[ IPMAP[i] ] = i,  for all i in
+  148.             *         [0.. NPROCS)
+  149.             *
+  150.             * PERMU   (global output)               int *
+  151.             *         On entry,  PERMU  is an array of dimension JB. On exit, PERMU
+  152.             *         contains  a sequence of permutations,  that should be applied
+  153.             *         in increasing order to permute in place the row panel U.
+  154.             *
+  155.             * IWORK   (workspace)                   int *
+  156.             *         On entry, IWORK is a workarray of dimension 2*JB.
+  157.             *
+  158.             * ---------------------------------------------------------------------
+  159.             */ 
+  160.            /*
+  161.             * .. Local Variables ..
+  162.             */
+  163.               int                        * iwork;
+  164.               int                        dst, dstrow, fndd, i, ia, icurrow, il,
+  165.                                          ip, ipU, iroff, j, jb, myrow, nb, nprow,
+  166.                                          src, srcrow;
+  167.            /* ..
+  168.             * .. Executable Statements ..
+  169.             */
+  170.            /*
+  171.             * Logarithmic sort of the processes - compute IPMAP, IPLEN and IPMAPM1
+  172.             */
+  173.  +            HPL_plindx10( PANEL, K, IPID, IPLEN, IPMAP, IPMAPM1 );
+  174.            /*
+  175.             * Compute the local arrays  LINDXA  and  LINDXAU  containing  the local
+  176.             * source and final destination position resulting from  the application
+  177.             * of N interchanges. Compute LINDXA and LINDXAU in icurrow,  and LINDXA
+  178.             * elsewhere and PERMU in every process.
+  179.             */
+  180.               myrow = PANEL->grid->myrow; nprow   = PANEL->grid->nprow;
+  181.               jb    = PANEL->jb;          nb      = PANEL->nb;     ia = PANEL->ia;
+  182.               iroff = PANEL->ii;          icurrow = PANEL->prow;
+  183.            
+  184.               iwork = IWORK + jb;
+  185.             
+  186.               if( myrow == icurrow )
+  187.               {
+  188.  + 1-----<       for( i = 0, ip = 0, ipU = 0; i < K; i += 2 )
+  189.    1             {
+  190.    1                src = IPID[i]; Mindxg2p( src, nb, nb, srcrow, 0, nprow );
+  191.    1        
+  192.    1                if( srcrow == icurrow )
+  193.    1                {
+  194.    1                   dst = IPID[i+1]; Mindxg2p( dst, nb, nb, dstrow, 0, nprow );
+  195.    1        
+  196.    1                   Mindxg2l( il, src, nb, nb, myrow, 0, nprow );
+  197.    1                   LINDXA[ip] = il - iroff;
+  198.    1        
+  199.    1                   if( ( dstrow == icurrow ) && ( dst - ia < jb ) )
+  200.    1                   {
+  201.    1                      PERMU[ipU] = dst - ia;  il = IPMAPM1[dstrow];
+  202.    1                      j          = IPLEN[il]; iwork[ipU] = LINDXAU[ip] = j;
+  203.    1                      IPLEN[il]++; ipU++;
+  204.    1                   }
+  205.    1                   else if( dstrow != icurrow )
+  206.    1                   {
+  207.    1                      j = 0;
+  208.  + 1 2---<                do { fndd = ( dst == IPID[j] ); j+=2; }
+  209.    1 2--->                while( !fndd && ( j < K ) );
+  210.    1        
+  211.    1                      PERMU[ipU] = IPID[j-1]-ia; il = IPMAPM1[dstrow];
+  212.    1                      j          = IPLEN[il];    iwork[ipU] = LINDXAU[ip] = j;
+  213.    1                      IPLEN[il]++; ipU++;
+  214.    1                   }
+  215.    1                   else if( ( dstrow == icurrow ) && ( dst - ia >= jb ) )
+  216.    1                   {
+  217.    1                      Mindxg2l( il, dst, nb, nb, myrow, 0, nprow );
+  218.    1                      LINDXAU[ip] = iroff - il;
+  219.    1                   }
+  220.    1                   ip++;
+  221.    1                }
+  222.    1----->       }
+  223.                  *IPA = ip;
+  224.               }
+  225.               else
+  226.               {
+  227.  + 1-----<       for( i = 0, ip = 0, ipU = 0; i < K; i += 2 )
+  228.    1             {
+  229.    1                src = IPID[i  ]; Mindxg2p( src, nb, nb, srcrow, 0, nprow );
+  230.    1                dst = IPID[i+1]; Mindxg2p( dst, nb, nb, dstrow, 0, nprow );
+  231.    1       /*
+  232.    1        * LINDXA[i] is the local index of the row of A that belongs into U
+  233.    1        */
+  234.    1                if( myrow == dstrow )
+  235.    1                {
+  236.    1                   Mindxg2l( il, dst, nb, nb, myrow, 0, nprow );
+  237.    1                   LINDXA[ip] = il - iroff; ip++;
+  238.    1                }
+  239.    1       /*
+  240.    1        * iwork[i] is the local (current) position  index in U
+  241.    1        * PERMU[i] is the local (final) destination index in U
+  242.    1        */
+  243.    1                if( srcrow == icurrow )
+  244.    1                {
+  245.    1                   if( ( dstrow == icurrow ) && ( dst - ia < jb ) )
+  246.    1                   {
+  247.    1                      PERMU[ipU] = dst - ia;  il = IPMAPM1[dstrow];
+  248.    1                      iwork[ipU] = IPLEN[il]; IPLEN[il]++; ipU++;
+  249.    1                   }
+  250.    1                   else if( dstrow != icurrow )
+  251.    1                   {
+  252.    1                      j = 0;
+  253.  + 1 2---<                do { fndd = ( dst == IPID[j] ); j+=2; }
+  254.    1 2--->                while( !fndd && ( j < K ) );
+  255.    1                      PERMU[ipU] = IPID[j-1] - ia; il = IPMAPM1[dstrow];
+  256.    1                      iwork[ipU] = IPLEN[il]; IPLEN[il]++; ipU++;
+  257.    1                   }
+  258.    1                }
+  259.    1----->       }
+  260.                  *IPA = 0;
+  261.               }
+  262.            /*
+  263.             * Simplify iwork and PERMU, return in PERMU the sequence of permutation
+  264.             * that need to be apply to U after it has been broadcast.
+  265.             */
+  266.  +            HPL_perm( jb, iwork, PERMU, IWORK );
+  267.            /*
+  268.             * Reset IPLEN to its correct value
+  269.             */
+  270.    Vr2--<>    for( i = nprow; i > 0; i-- ) IPLEN[i] = IPLEN[i-1];
+  271.               IPLEN[0] = 0; 
+  272.            /*
+  273.             * End of HPL_plindx1
+  274.             */
+  275.            }
+
+CC-3021 CC: IPA File = HPL_plindx1.c, Line = 173 
+  "HPL_plindx10" (called from "HPL_plindx1") was not inlined because the compiler was unable to locate the routine.
+
+CC-6289 CC: VECTOR File = HPL_plindx1.c, Line = 188 
+  A loop was not vectorized because a recurrence was found on "IPLEN" between lines 202 and 213.
+
+CC-6334 CC: VECTOR File = HPL_plindx1.c, Line = 208 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-6289 CC: VECTOR File = HPL_plindx1.c, Line = 227 
+  A loop was not vectorized because a recurrence was found on "IPLEN" between lines 248 and 256.
+
+CC-6334 CC: VECTOR File = HPL_plindx1.c, Line = 253 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3021 CC: IPA File = HPL_plindx1.c, Line = 266 
+  "HPL_perm" (called from "HPL_plindx1") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_plindx1.c, Line = 270 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = HPL_plindx1.c, Line = 270 
+  A loop was vectorized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

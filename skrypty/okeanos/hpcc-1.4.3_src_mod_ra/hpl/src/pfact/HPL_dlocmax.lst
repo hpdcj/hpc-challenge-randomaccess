@@ -1,0 +1,230 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_dlocmax.c
+Compiled : 2016-03-19  13:19:46
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pfact/HPL_dlocmax.o
+           -c ../../../src/pfact/HPL_dlocmax.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_dlocmax.c
+Date     : 03/19/2016  13:19:46
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* 
+    2.      * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.      *    HPL - 2.0 - September 10, 2008                          
+    4.      *    Antoine P. Petitet                                                
+    5.      *    University of Tennessee, Knoxville                                
+    6.      *    Innovative Computing Laboratory                                 
+    7.      *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.      *                                                                      
+    9.      * -- Copyright notice and Licensing terms:                             
+   10.      *                                                                      
+   11.      * Redistribution  and  use in  source and binary forms, with or without
+   12.      * modification, are  permitted provided  that the following  conditions
+   13.      * are met:                                                             
+   14.      *                                                                      
+   15.      * 1. Redistributions  of  source  code  must retain the above copyright
+   16.      * notice, this list of conditions and the following disclaimer.        
+   17.      *                                                                      
+   18.      * 2. Redistributions in binary form must reproduce  the above copyright
+   19.      * notice, this list of conditions,  and the following disclaimer in the
+   20.      * documentation and/or other materials provided with the distribution. 
+   21.      *                                                                      
+   22.      * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.      * software must display the following acknowledgement:                 
+   24.      * This  product  includes  software  developed  at  the  University  of
+   25.      * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.      *                                                                      
+   27.      * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.      * names  of  its  contributors  may  not  be used to endorse or promote
+   29.      * products  derived   from   this  software  without  specific  written
+   30.      * permission.                                                          
+   31.      *                                                                      
+   32.      * -- Disclaimer:                                                       
+   33.      *                                                                      
+   34.      * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.      * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.      * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.      * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.      * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.      * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.      * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.      * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.      * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.      * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.      * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.      * ---------------------------------------------------------------------
+   46.      */ 
+   47.     /*
+   48.      * Include files
+   49.      */
+   50.     #include "hpl.h"
+   51.     
+   52.     #ifdef HPL_STDC_HEADERS
+   53.     void HPL_dlocmax
+   54.     (
+   55.        HPL_T_panel *                    PANEL,
+   56.        const int                        N,
+   57.        const int                        II,
+   58.        const int                        JJ,
+   59.        double *                         WORK
+   60.     )
+   61.     #else
+   62.     void HPL_dlocmax
+   63.     ( PANEL, N, II, JJ, WORK )
+   64.        HPL_T_panel *                    PANEL;
+   65.        const int                        N;
+   66.        const int                        II;
+   67.        const int                        JJ;
+   68.        double *                         WORK;
+   69.     #endif
+   70.     {
+   71.     /* 
+   72.      * Purpose
+   73.      * =======
+   74.      *
+   75.      * HPL_dlocmax finds  the maximum entry in the current column  and packs
+   76.      * the useful information in  WORK[0:3].  On exit,  WORK[0] contains the
+   77.      * local maximum  absolute value  scalar,  WORK[1] is the  corresponding
+   78.      * local row index,  WORK[2]  is the corresponding global row index, and
+   79.      * WORK[3] is the coordinate of the process owning this max.  When N  is
+   80.      * less than 1, the WORK[0:2] is initialized to zero, and WORK[3] is set
+   81.      * to the total number of process rows.
+   82.      *
+   83.      * Arguments
+   84.      * =========
+   85.      *
+   86.      * PANEL   (local input/output)          HPL_T_panel *
+   87.      *         On entry,  PANEL  points to the data structure containing the
+   88.      *         panel information.
+   89.      *
+   90.      * N       (local input)                 const int
+   91.      *         On entry,  N specifies the local number of rows of the column
+   92.      *         of A on which we operate.
+   93.      *
+   94.      * II      (local input)                 const int
+   95.      *         On entry, II  specifies the row offset where the column to be
+   96.      *         operated on starts with respect to the panel.
+   97.      *
+   98.      * JJ      (local input)                 const int
+   99.      *         On entry, JJ  specifies the column offset where the column to
+  100.      *         be operated on starts with respect to the panel.
+  101.      *
+  102.      * WORK    (local workspace)             double *
+  103.      *         On entry, WORK  is  a workarray of size at least 4.  On exit,
+  104.      *         WORK[0] contains  the  local  maximum  absolute value scalar,
+  105.      *         WORK[1] contains  the corresponding local row index,  WORK[2]
+  106.      *         contains the corresponding global row index, and  WORK[3]  is
+  107.      *         the coordinate of process owning this max.
+  108.      *
+  109.      * ---------------------------------------------------------------------
+  110.      */ 
+  111.     /*
+  112.      * .. Local Variables ..
+  113.      */
+  114.        double                     * A;
+  115.        int                        kk, igindx, ilindx, myrow, nb, nprow;
+  116.     /* ..
+  117.      * .. Executable Statements ..
+  118.      */
+  119.        if( N > 0 )
+  120.        {
+  121.           A      = Mptr( PANEL->A, II, JJ, PANEL->lda );
+  122.           myrow  = PANEL->grid->myrow;
+  123.           nprow  = PANEL->grid->nprow;
+  124.           nb     = PANEL->nb;
+  125.  +        kk     = PANEL->ii + II + ( ilindx = HPL_idamax( N, A, 1 ) );
+  126.           Mindxl2g( igindx, kk, nb, nb, myrow, 0, nprow );
+  127.     /*
+  128.      * WORK[0] := local maximum absolute value scalar,
+  129.      * WORK[1] := corresponding local  row index,
+  130.      * WORK[2] := corresponding global row index,
+  131.      * WORK[3] := coordinate of process owning this max.
+  132.      */
+  133.           WORK[0] = A[ilindx];         WORK[1] = (double)(ilindx);
+  134.           WORK[2] = (double)(igindx);  WORK[3] = (double)(myrow);
+  135.        }
+  136.        else
+  137.        {
+  138.     /*
+  139.      * If I do not have any row of A, then set the coordinate of the process
+  140.      * (WORK[3]) owning this "ghost" row,  such that it  will never be used,
+  141.      * even if there are only zeros in the current column of A.
+  142.      */
+  143.           WORK[0] = WORK[1] = WORK[2] = HPL_rzero;
+  144.           WORK[3] = (double)(PANEL->grid->nprow);
+  145.        }
+  146.     /*
+  147.      * End of HPL_dlocmax
+  148.      */
+  149.     }
+
+CC-3021 CC: IPA File = HPL_dlocmax.c, Line = 125 
+  "HPL_idamax" (called from "HPL_dlocmax") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

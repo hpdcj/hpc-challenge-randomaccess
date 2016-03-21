@@ -1,0 +1,242 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx10.c
+Compiled : 2016-03-19  13:19:57
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_plindx10.o
+           -c ../../../src/pgesv/HPL_plindx10.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx10.c
+Date     : 03/19/2016  13:19:57
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          /* 
+    2.           * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.           *    HPL - 2.0 - September 10, 2008                          
+    4.           *    Antoine P. Petitet                                                
+    5.           *    University of Tennessee, Knoxville                                
+    6.           *    Innovative Computing Laboratory                                 
+    7.           *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.           *                                                                      
+    9.           * -- Copyright notice and Licensing terms:                             
+   10.           *                                                                      
+   11.           * Redistribution  and  use in  source and binary forms, with or without
+   12.           * modification, are  permitted provided  that the following  conditions
+   13.           * are met:                                                             
+   14.           *                                                                      
+   15.           * 1. Redistributions  of  source  code  must retain the above copyright
+   16.           * notice, this list of conditions and the following disclaimer.        
+   17.           *                                                                      
+   18.           * 2. Redistributions in binary form must reproduce  the above copyright
+   19.           * notice, this list of conditions,  and the following disclaimer in the
+   20.           * documentation and/or other materials provided with the distribution. 
+   21.           *                                                                      
+   22.           * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.           * software must display the following acknowledgement:                 
+   24.           * This  product  includes  software  developed  at  the  University  of
+   25.           * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.           *                                                                      
+   27.           * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.           * names  of  its  contributors  may  not  be used to endorse or promote
+   29.           * products  derived   from   this  software  without  specific  written
+   30.           * permission.                                                          
+   31.           *                                                                      
+   32.           * -- Disclaimer:                                                       
+   33.           *                                                                      
+   34.           * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.           * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.           * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.           * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.           * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.           * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.           * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.           * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.           * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.           * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.           * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.           * ---------------------------------------------------------------------
+   46.           */ 
+   47.          /*
+   48.           * Include files
+   49.           */
+   50.          #include "hpl.h"
+   51.          
+   52.          #ifdef HPL_STDC_HEADERS
+   53.          void HPL_plindx10
+   54.          (
+   55.             HPL_T_panel *                    PANEL,
+   56.             const int                        K,
+   57.             const int *                      IPID,
+   58.             int *                            IPLEN,
+   59.             int *                            IPMAP,
+   60.             int *                            IPMAPM1
+   61.          )
+   62.          #else
+   63.          void HPL_plindx10
+   64.          ( PANEL, K, IPID, IPLEN, IPMAP, IPMAPM1 )
+   65.             HPL_T_panel *                    PANEL;
+   66.             const int                        K;
+   67.             const int *                      IPID;
+   68.             int *                            IPLEN;
+   69.             int *                            IPMAP;
+   70.             int *                            IPMAPM1;
+   71.          #endif
+   72.          {
+   73.          /* 
+   74.           * Purpose
+   75.           * =======
+   76.           *
+   77.           * HPL_plindx10 computes  three arrays  IPLEN,  IPMAP  and  IPMAPM1  that
+   78.           * contain the logarithmic mapping information for the spreading phase.
+   79.           *
+   80.           * Arguments
+   81.           * =========
+   82.           *
+   83.           * PANEL   (local input/output)          HPL_T_panel *
+   84.           *         On entry,  PANEL  points to the data structure containing the
+   85.           *         panel information.
+   86.           *
+   87.           * K       (global input)                const int
+   88.           *         On entry, K specifies the number of entries in IPID.  K is at
+   89.           *         least 2*N, and at most 4*N.
+   90.           *
+   91.           * IPID    (global input)                const int *
+   92.           *         On entry,  IPID  is an array of length K. The first K entries
+   93.           *         of that array contain the src and final destination resulting
+   94.           *         from the application of the interchanges.
+   95.           *
+   96.           * IPLEN   (global output)               int *
+   97.           *         On entry, IPLEN  is an array of dimension NPROW + 1. On exit,
+   98.           *         this array is such that  IPLEN[i]  is the number of rows of A
+   99.           *         in the processes  before process IMAP[i] after the sort, with
+  100.           *         the convention that IPLEN[nprow] is the total number of rows.
+  101.           *         In other words,  IPLEN[i+1] - IPLEN[i] is the local number of
+  102.           *         rows of  A  that should be moved for each process.  IPLEN  is
+  103.           *         such that the number of rows of the source process row can be
+  104.           *         computed as IPLEN[1] - IPLEN[0], and the remaining entries of
+  105.           *         this  array are sorted  so  that  the quantities IPLEN[i+1] -
+  106.           *         IPLEN[i] are logarithmically sorted.
+  107.           *
+  108.           * IPMAP   (global output)               int *
+  109.           *         On entry, IPMAP is an array of dimension NPROW. On exit, this
+  110.           *         array contains  the logarithmic mapping of the processes.  In
+  111.           *         other words, IPMAP[myrow] is the corresponding sorted process
+  112.           *         coordinate.
+  113.           *
+  114.           * IPMAPM1 (global output)               int *
+  115.           *         On entry, IPMAPM1  is an array of dimension NPROW.  On  exit,
+  116.           *         this  array  contains  the inverse of the logarithmic mapping
+  117.           *         contained  in  IPMAP:  IPMAPM1[ IPMAP[i] ] = i,  for all i in
+  118.           *         [0.. NPROW)
+  119.           *
+  120.           * ---------------------------------------------------------------------
+  121.           */ 
+  122.          /*
+  123.           * .. Local Variables ..
+  124.           */
+  125.             int                        dst, dstrow, i, ia, icurrow, jb, nb,
+  126.                                        nprow, src, srcrow;
+  127.          /* ..
+  128.           * .. Executable Statements ..
+  129.           */
+  130.             nprow = PANEL->grid->nprow; jb = PANEL->jb; nb = PANEL->nb;
+  131.             ia    = PANEL->ia;          icurrow = PANEL->prow;
+  132.          /*
+  133.           * Compute  redundantly  the local number of rows  that each process has
+  134.           * and that belong to U in IPLEN[1 .. nprow+1]
+  135.           */
+  136.    A--<>    for( i = 0; i <= nprow; i++ ) IPLEN[i] = 0;
+  137.           
+  138.  + 1---<    for( i = 0; i < K; i += 2 )
+  139.    1        {
+  140.    1           src = IPID[i]; Mindxg2p( src, nb, nb, srcrow, 0, nprow );
+  141.    1           if( srcrow == icurrow )
+  142.    1           {
+  143.    1              dst = IPID[i+1]; Mindxg2p( dst, nb, nb, dstrow, 0, nprow );
+  144.    1              if( ( dstrow != srcrow ) || ( dst - ia < jb ) ) IPLEN[dstrow+1]++;
+  145.    1           }
+  146.    1--->    }
+  147.          /*
+  148.           * Logarithmic sort of the processes - compute IPMAP, IPLEN and IPMAPM1
+  149.           * (the inverse of IPMAP)
+  150.           */
+  151.  +          HPL_logsort( nprow, icurrow, IPLEN, IPMAP, IPMAPM1 );
+  152.          /*
+  153.           * End of HPL_plindx10
+  154.           */
+  155.          }
+
+CC-6202 CC: VECTOR File = HPL_plindx10.c, Line = 136 
+  A loop was replaced by a library call.
+
+CC-6254 CC: VECTOR File = HPL_plindx10.c, Line = 138 
+  A loop was not vectorized because a recurrence was found on "IPLEN" at line 144.
+
+CC-3021 CC: IPA File = HPL_plindx10.c, Line = 151 
+  "HPL_logsort" (called from "HPL_plindx10") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

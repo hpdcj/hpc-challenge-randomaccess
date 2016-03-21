@@ -1,0 +1,2082 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/ptest/HPL_pdinfo.c
+Compiled : 2016-03-20  19:46:08
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../testing/ptest/HPL_pdinfo.o
+           -c ../../../testing/ptest/HPL_pdinfo.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/ptest/HPL_pdinfo.c
+Date     : 03/20/2016  19:46:09
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.           /* 
+    2.            * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.            *    HPL - 2.0 - September 10, 2008                          
+    4.            *    Antoine P. Petitet                                                
+    5.            *    University of Tennessee, Knoxville                                
+    6.            *    Innovative Computing Laboratory                                 
+    7.            *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.            *                                                                      
+    9.            * -- Copyright notice and Licensing terms:                             
+   10.            *                                                                      
+   11.            * Redistribution  and  use in  source and binary forms, with or without
+   12.            * modification, are  permitted provided  that the following  conditions
+   13.            * are met:                                                             
+   14.            *                                                                      
+   15.            * 1. Redistributions  of  source  code  must retain the above copyright
+   16.            * notice, this list of conditions and the following disclaimer.        
+   17.            *                                                                      
+   18.            * 2. Redistributions in binary form must reproduce  the above copyright
+   19.            * notice, this list of conditions,  and the following disclaimer in the
+   20.            * documentation and/or other materials provided with the distribution. 
+   21.            *                                                                      
+   22.            * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.            * software must display the following acknowledgement:                 
+   24.            * This  product  includes  software  developed  at  the  University  of
+   25.            * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.            *                                                                      
+   27.            * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.            * names  of  its  contributors  may  not  be used to endorse or promote
+   29.            * products  derived   from   this  software  without  specific  written
+   30.            * permission.                                                          
+   31.            *                                                                      
+   32.            * -- Disclaimer:                                                       
+   33.            *                                                                      
+   34.            * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.            * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.            * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.            * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.            * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.            * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.            * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.            * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.            * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.            * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.            * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.            * ---------------------------------------------------------------------
+   46.            */ 
+   47.           /*
+   48.            * Include files
+   49.            */
+   50.           #include "hpl.h"
+   51.           
+   52.           extern int
+   53.           HPCC_Defaults(HPL_T_test *TEST, int *NS, int *N,
+   54.                         int *NBS, int *NB,
+   55.                         HPL_T_ORDER *PMAPPIN,
+   56.                         int *NPQS, int *P, int *Q,
+   57.                         int *NPFS, HPL_T_FACT *PF,
+   58.                         int *NBMS, int *NBM,
+   59.                         int *NDVS, int *NDV,
+   60.                         int *NRFS, HPL_T_FACT *RF,
+   61.                         int *NTPS, HPL_T_TOP *TP,
+   62.                         int *NDHS, int *DH,
+   63.                         HPL_T_SWAP *FSWAP, int *TSWAP, int *L1NOTRAN, int *UNOTRAN, int *EQUIL, int *ALIGN, MPI_Comm comm);
+   64.           
+   65.           #ifdef HPL_STDC_HEADERS
+   66.           void HPL_pdinfo
+   67.           (
+   68.              HPL_T_test *                     TEST,
+   69.              int *                            NS,
+   70.              int *                            N,
+   71.              int *                            NBS,
+   72.              int *                            NB,
+   73.              HPL_T_ORDER *                    PMAPPIN,
+   74.              int *                            NPQS,
+   75.              int *                            P,
+   76.              int *                            Q,
+   77.              int *                            NPFS,
+   78.              HPL_T_FACT *                     PF,
+   79.              int *                            NBMS,
+   80.              int *                            NBM,
+   81.              int *                            NDVS,
+   82.              int *                            NDV,
+   83.              int *                            NRFS,
+   84.              HPL_T_FACT *                     RF,
+   85.              int *                            NTPS,
+   86.              HPL_T_TOP *                      TP,
+   87.              int *                            NDHS,
+   88.              int *                            DH,
+   89.              HPL_T_SWAP *                     FSWAP,
+   90.              int *                            TSWAP,
+   91.              int *                            L1NOTRAN,
+   92.              int *                            UNOTRAN,
+   93.              int *                            EQUIL,
+   94.              int *                            ALIGN
+   95.           )
+   96.           #else
+   97.           void HPL_pdinfo
+   98.           ( TEST, NS, N, NBS, NB, PMAPPIN, NPQS, P, Q, NPFS, PF, NBMS, NBM, NDVS, NDV, NRFS, RF, NTPS, TP, NDHS, DH, FSWAP, TSWAP, L1NOTRAN, UNOTRAN, EQUIL, ALIGN )
+   99.              HPL_T_test *                     TEST;
+  100.              int *                            NS;
+  101.              int *                            N;
+  102.              int *                            NBS;
+  103.              int *                            NB;
+  104.              HPL_T_ORDER *                    PMAPPIN;
+  105.              int *                            NPQS;
+  106.              int *                            P;
+  107.              int *                            Q;
+  108.              int *                            NPFS;
+  109.              HPL_T_FACT *                     PF;
+  110.              int *                            NBMS;
+  111.              int *                            NBM;
+  112.              int *                            NDVS;
+  113.              int *                            NDV;
+  114.              int *                            NRFS;
+  115.              HPL_T_FACT *                     RF;
+  116.              int *                            NTPS;
+  117.              HPL_T_TOP *                      TP;
+  118.              int *                            NDHS;
+  119.              int *                            DH;
+  120.              HPL_T_SWAP *                     FSWAP;
+  121.              int *                            TSWAP;
+  122.              int *                            L1NOTRAN;
+  123.              int *                            UNOTRAN;
+  124.              int *                            EQUIL;
+  125.              int *                            ALIGN;
+  126.           #endif
+  127.           {
+  128.           /* 
+  129.            * Purpose
+  130.            * =======
+  131.            *
+  132.            * HPL_pdinfo reads  the  startup  information for the various tests and
+  133.            * transmits it to all processes.
+  134.            *
+  135.            * Arguments
+  136.            * =========
+  137.            *
+  138.            * TEST    (global output)               HPL_T_test *
+  139.            *         On entry, TEST  points to a testing data structure.  On exit,
+  140.            *         the fields of this data structure are initialized as follows:
+  141.            *         TEST->outfp  specifies the output file where the results will
+  142.            *         be printed.  It is only defined and used by  the process 0 of
+  143.            *         the grid.  TEST->thrsh specifies the threshhold value for the
+  144.            *         test ratio.  TEST->epsil is the relative machine precision of
+  145.            *         the distributed computer.  Finally  the test counters, kfail,
+  146.            *         kpass, kskip, ktest are initialized to zero.
+  147.            *
+  148.            * NS      (global output)               int *
+  149.            *         On exit,  NS  specifies the number of different problem sizes
+  150.            *         to be tested. NS is less than or equal to HPL_MAX_PARAM.
+  151.            *
+  152.            * N       (global output)               int *
+  153.            *         On entry, N is an array of dimension HPL_MAX_PARAM.  On exit,
+  154.            *         the first NS entries of this array contain the  problem sizes
+  155.            *         to run the code with.
+  156.            *
+  157.            * NBS     (global output)               int *
+  158.            *         On exit,  NBS  specifies the number of different distribution
+  159.            *         blocking factors to be tested. NBS must be less than or equal
+  160.            *         to HPL_MAX_PARAM.
+  161.            *
+  162.            * NB      (global output)               int *
+  163.            *         On exit,  PMAPPIN  specifies the process mapping onto the no-
+  164.            *         des of the  MPI machine configuration.  PMAPPIN  defaults  to
+  165.            *         row-major ordering.
+  166.            *
+  167.            * PMAPPIN (global output)               HPL_T_ORDER *
+  168.            *         On entry, NB is an array of dimension HPL_MAX_PARAM. On exit,
+  169.            *         the first NBS entries of this array contain the values of the
+  170.            *         various distribution blocking factors, to run the code with.
+  171.            *
+  172.            * NPQS    (global output)               int *
+  173.            *         On exit, NPQS  specifies the  number of different values that
+  174.            *         can be used for P and Q, i.e., the number of process grids to
+  175.            *         run  the  code with.  NPQS must be  less  than  or  equal  to
+  176.            *         HPL_MAX_PARAM.
+  177.            *
+  178.            * P       (global output)               int *
+  179.            *         On entry, P  is an array of dimension HPL_MAX_PARAM. On exit,
+  180.            *         the first NPQS entries of this array contain the values of P,
+  181.            *         the number of process rows of the  NPQS grids to run the code
+  182.            *         with.
+  183.            *
+  184.            * Q       (global output)               int *
+  185.            *         On entry, Q  is an array of dimension HPL_MAX_PARAM. On exit,
+  186.            *         the first NPQS entries of this array contain the values of Q,
+  187.            *         the number of process columns of the  NPQS  grids to  run the
+  188.            *         code with.
+  189.            *
+  190.            * NPFS    (global output)               int *
+  191.            *         On exit, NPFS  specifies the  number of different values that
+  192.            *         can be used for PF : the panel factorization algorithm to run
+  193.            *         the code with. NPFS is less than or equal to HPL_MAX_PARAM.
+  194.            *
+  195.            * PF      (global output)               HPL_T_FACT *
+  196.            *         On entry, PF is an array of dimension HPL_MAX_PARAM. On exit,
+  197.            *         the first  NPFS  entries  of this array  contain  the various
+  198.            *         panel factorization algorithms to run the code with.
+  199.            *
+  200.            * NBMS    (global output)               int *
+  201.            *         On exit,  NBMS  specifies  the  number  of  various recursive
+  202.            *         stopping criteria  to be tested.  NBMS  must be  less than or
+  203.            *         equal to HPL_MAX_PARAM.
+  204.            *
+  205.            * NBM     (global output)               int *
+  206.            *         On entry,  NBM  is an array of  dimension  HPL_MAX_PARAM.  On
+  207.            *         exit, the first NBMS entries of this array contain the values
+  208.            *         of the various recursive stopping criteria to be tested.
+  209.            *
+  210.            * NDVS    (global output)               int *
+  211.            *         On exit,  NDVS  specifies  the number  of various numbers  of
+  212.            *         panels in recursion to be tested.  NDVS is less than or equal
+  213.            *         to HPL_MAX_PARAM.
+  214.            *
+  215.            * NDV     (global output)               int *
+  216.            *         On entry,  NDV  is an array of  dimension  HPL_MAX_PARAM.  On
+  217.            *         exit, the first NDVS entries of this array contain the values
+  218.            *         of the various numbers of panels in recursion to be tested.
+  219.            *
+  220.            * NRFS    (global output)               int *
+  221.            *         On exit, NRFS  specifies the  number of different values that
+  222.            *         can be used for RF : the recursive factorization algorithm to
+  223.            *         be tested. NRFS is less than or equal to HPL_MAX_PARAM.
+  224.            *
+  225.            * RF      (global output)               HPL_T_FACT *
+  226.            *         On entry, RF is an array of dimension HPL_MAX_PARAM. On exit,
+  227.            *         the first  NRFS  entries  of  this array contain  the various
+  228.            *         recursive factorization algorithms to run the code with.
+  229.            *
+  230.            * NTPS    (global output)               int *
+  231.            *         On exit, NTPS  specifies the  number of different values that
+  232.            *         can be used for the  broadcast topologies  to be tested. NTPS
+  233.            *         is less than or equal to HPL_MAX_PARAM.
+  234.            *
+  235.            * TP      (global output)               HPL_T_TOP *
+  236.            *         On entry, TP is an array of dimension HPL_MAX_PARAM. On exit,
+  237.            *         the  first NTPS  entries of this  array  contain  the various
+  238.            *         broadcast (along rows) topologies to run the code with.
+  239.            *
+  240.            * NDHS    (global output)               int *
+  241.            *         On exit, NDHS  specifies the  number of different values that
+  242.            *         can be used for the  lookahead depths to be  tested.  NDHS is
+  243.            *         less than or equal to HPL_MAX_PARAM.
+  244.            *
+  245.            * DH      (global output)               int *
+  246.            *         On entry,  DH  is  an array of  dimension  HPL_MAX_PARAM.  On
+  247.            *         exit, the first NDHS entries of this array contain the values
+  248.            *         of lookahead depths to run the code with.  Such a value is at
+  249.            *         least 0 (no-lookahead) or greater than zero.
+  250.            *
+  251.            * FSWAP   (global output)               HPL_T_SWAP *
+  252.            *         On exit, FSWAP specifies the swapping algorithm to be used in
+  253.            *         all tests.
+  254.            *
+  255.            * TSWAP   (global output)               int *
+  256.            *         On exit,  TSWAP  specifies the swapping threshold as a number
+  257.            *         of columns when the mixed swapping algorithm was chosen.
+  258.            *
+  259.            * L1NOTRA (global output)               int *
+  260.            *         On exit, L1NOTRAN specifies whether the upper triangle of the
+  261.            *         panels of columns  should  be stored  in  no-transposed  form
+  262.            *         (L1NOTRAN=1) or in transposed form (L1NOTRAN=0).
+  263.            *
+  264.            * UNOTRAN (global output)               int *
+  265.            *         On exit, UNOTRAN  specifies whether the panels of rows should
+  266.            *         be stored in  no-transposed form  (UNOTRAN=1)  or  transposed
+  267.            *         form (UNOTRAN=0) during their broadcast.
+  268.            *
+  269.            * EQUIL   (global output)               int *
+  270.            *         On exit,  EQUIL  specifies  whether  equilibration during the
+  271.            *         swap-broadcast  of  the  panel of rows  should  be  performed
+  272.            *         (EQUIL=1) or not (EQUIL=0).
+  273.            *
+  274.            * ALIGN   (global output)               int *
+  275.            *         On exit,  ALIGN  specifies the alignment  of  the dynamically
+  276.            *         allocated buffers in double precision words. ALIGN is greater
+  277.            *         than zero.
+  278.            *
+  279.            * ---------------------------------------------------------------------
+  280.            */ 
+  281.           /*
+  282.            * .. Local Variables ..
+  283.            */
+  284.              char                       file[HPL_LINE_MAX], line[HPL_LINE_MAX],
+  285.                                         auth[HPL_LINE_MAX], num [HPL_LINE_MAX];
+  286.              FILE                       * infp;
+  287.              int                        * iwork;
+  288.              char                       * lineptr;
+  289.              int                        error=0, fid, i, j, lwork, maxp, nprocs,
+  290.                                         rank, size;
+  291.           /* ..
+  292.            * .. Executable Statements ..
+  293.            */
+  294.  +           MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+  295.  +           MPI_Comm_size( MPI_COMM_WORLD, &size );
+  296.           /*
+  297.            * Initialize the TEST data structure with default values
+  298.            */
+  299.              TEST->outfp = stderr; TEST->epsil = 2.0e-16; TEST->thrsh = 16.0;
+  300.              TEST->kfail = TEST->kpass = TEST->kskip = TEST->ktest = 0;
+  301.           /*
+  302.            * Process 0 reads the input data, broadcasts to other processes and
+  303.            * writes needed information to TEST->outfp.
+  304.            */
+  305.              if( rank == 0 )
+  306.              {
+  307.           /*
+  308.            * Open file and skip data file header
+  309.            */
+  310.           #define INFILE "hpccinf.txt"
+  311.  +              if( ( infp = fopen( INFILE, "r" ) ) == NULL )
+  312.                 { 
+  313.  +                 HPL_pwarn( stderr, __LINE__ + (1 << 30), "HPL_pdinfo",
+  314.                               "cannot open file " INFILE );
+  315.                    error = 1; /* goto label_error; */
+  316.                 }
+  317.           
+  318.                 if (infp) {
+  319.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  320.  +              (void) fgets( auth, HPL_LINE_MAX - 2, infp );
+  321.           /*
+  322.            * Read name and unit number for summary output file
+  323.            */
+  324.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  325.  +              (void) sscanf( line, "%s", file );
+  326.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  327.  +              (void) sscanf( line, "%s", num  );
+  328.                 fid = atoi( num );
+  329.                 }
+  330.           
+  331.                 fid = 8; /* always write to a file */
+  332.  +              strcpy( file, "hpccoutf.txt" );
+  333.                 if     ( fid == 6 ) TEST->outfp = stdout;
+  334.                 else if( fid == 7 ) TEST->outfp = stderr;
+  335.  +              else if( ( TEST->outfp = fopen( file, "a" ) ) == NULL )
+  336.                 {
+  337.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "cannot open file %s.",
+  338.                               file );
+  339.                    TEST->outfp = stderr;
+  340.                    error = 1; goto label_error;
+  341.                 }
+  342.                 if (error == 1) goto label_error;
+  343.           /*
+  344.            * Read and check the parameter values for the tests.
+  345.            *
+  346.            * Problem size (>=0) (N)
+  347.            */
+  348.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); 
+  349.  +              (void) sscanf( line, "%s", num ); *NS = atoi( num );
+  350.                 if( ( *NS < 1 ) || ( *NS > HPL_MAX_PARAM ) )
+  351.                 {
+  352.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %d",
+  353.                               "Number of values of N is less than 1 or greater than",
+  354.                               HPL_MAX_PARAM );
+  355.                    error = 1; goto label_error;
+  356.                 }
+  357.           
+  358.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  359.  + 1----<       for( i = 0; i < *NS; i++ )
+  360.    1            {
+  361.  + 1               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  362.    1               if( ( N[ i ] = atoi( num ) ) < 0 )
+  363.    1               {
+  364.  + 1                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  365.    1                             "Value of N less than 0" );
+  366.    1                  error = 1; goto label_error;
+  367.    1               }
+  368.    1---->       }
+  369.           /*
+  370.            * Block size (>=1) (NB)
+  371.            */
+  372.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  373.  +              (void) sscanf( line, "%s", num ); *NBS = atoi( num );
+  374.                 if( ( *NBS < 1 ) || ( *NBS > HPL_MAX_PARAM ) )
+  375.                 {
+  376.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  377.                               "Number of values of NB is less than 1 or",
+  378.                               "greater than", HPL_MAX_PARAM );
+  379.                    error = 1; goto label_error;
+  380.                 }
+  381.           
+  382.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  383.  + 1----<       for( i = 0; i < *NBS; i++ )
+  384.    1            {
+  385.  + 1               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  386.    1               if( ( NB[ i ] = atoi( num ) ) < 1 )
+  387.    1               {
+  388.  + 1                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", 
+  389.    1                             "Value of NB less than 1" );
+  390.    1                  error = 1; goto label_error;
+  391.    1               }
+  392.    1---->       }
+  393.           /*
+  394.            * Process grids, mapping, (>=1) (P, Q)
+  395.            */
+  396.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  397.  +              (void) sscanf( line, "%s", num );
+  398.                 *PMAPPIN = ( atoi( num ) == 1 ? HPL_COLUMN_MAJOR : HPL_ROW_MAJOR );
+  399.           
+  400.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  401.  +              (void) sscanf( line, "%s", num ); *NPQS = atoi( num );
+  402.                 if( ( *NPQS < 1 ) || ( *NPQS > HPL_MAX_PARAM ) )
+  403.                 {
+  404.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  405.                               "Number of values of grids is less",
+  406.                               "than 1 or greater than", HPL_MAX_PARAM );
+  407.                    error = 1; goto label_error;
+  408.                 }
+  409.           
+  410.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  411.  + 1----<       for( i = 0; i < *NPQS; i++ )
+  412.    1            {
+  413.  + 1               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  414.    1               if( ( P[ i ] = atoi( num ) ) < 1 )
+  415.    1               {
+  416.  + 1                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  417.    1                             "Value of P less than 1" );
+  418.    1                  error = 1; goto label_error;
+  419.    1               }
+  420.    1---->       }
+  421.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  422.  + 1----<       for( i = 0; i < *NPQS; i++ )
+  423.    1            {
+  424.  + 1               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  425.    1               if( ( Q[ i ] = atoi( num ) ) < 1 )
+  426.    1               {
+  427.  + 1                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  428.    1                             "Value of Q less than 1" );
+  429.    1                  error = 1; goto label_error;
+  430.    1               }
+  431.    1---->       }
+  432.           /*
+  433.            * Check for enough processes in machine configuration
+  434.            */
+  435.                 maxp = 0;
+  436.    Vr6--<       for( i = 0; i < *NPQS; i++ )
+  437.    Vr6-->       { nprocs   = P[i] * Q[i]; maxp = Mmax( maxp, nprocs ); }
+  438.                 if( maxp > size || maxp <= size )
+  439.                 {
+  440.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  441.                               "Need at least %d processes for these tests", maxp );
+  442.                    error = 1; goto label_error;
+  443.                 }
+  444.           /*
+  445.            * Checking threshold value (TEST->thrsh)
+  446.            */
+  447.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  448.  +              (void) sscanf( line, "%s", num ); TEST->thrsh = atof( num );
+  449.           /*
+  450.            * Panel factorization algorithm (PF)
+  451.            */
+  452.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  453.  +              (void) sscanf( line, "%s", num ); *NPFS = atoi( num );
+  454.                 if( ( *NPFS < 1 ) || ( *NPFS > HPL_MAX_PARAM ) )
+  455.                 {
+  456.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  457.                               "number of values of PFACT",
+  458.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  459.                    error = 1; goto label_error;
+  460.                 }
+  461.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  462.    D----<       for( i = 0; i < *NPFS; i++ )
+  463.    D            {
+  464.  + D               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  465.    D               j = atoi( num );
+  466.    D               if(      j == 0 ) PF[ i ] = HPL_LEFT_LOOKING;
+  467.    D               else if( j == 1 ) PF[ i ] = HPL_CROUT;
+  468.    D               else if( j == 2 ) PF[ i ] = HPL_RIGHT_LOOKING;
+  469.    D               else              PF[ i ] = HPL_RIGHT_LOOKING;
+  470.    D---->       }
+  471.           /*
+  472.            * Recursive stopping criterium (>=1) (NBM)
+  473.            */
+  474.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  475.  +              (void) sscanf( line, "%s", num ); *NBMS = atoi( num );
+  476.                 if( ( *NBMS < 1 ) || ( *NBMS > HPL_MAX_PARAM ) )
+  477.                 {
+  478.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  479.                               "Number of values of NBMIN",
+  480.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  481.                    error = 1; goto label_error;
+  482.                 }
+  483.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  484.    D----<       for( i = 0; i < *NBMS; i++ )
+  485.    D            {
+  486.  + D               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  487.    D               if( ( NBM[ i ] = atoi( num ) ) < 1 )
+  488.    D               {
+  489.  + D                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  490.    D                             "Value of NBMIN less than 1" );
+  491.    D                  error = 1; goto label_error;
+  492.    D               }
+  493.    D---->       }
+  494.           /*
+  495.            * Number of panels in recursion (>=2) (NDV)
+  496.            */
+  497.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  498.  +              (void) sscanf( line, "%s", num ); *NDVS = atoi( num );
+  499.                 if( ( *NDVS < 1 ) || ( *NDVS > HPL_MAX_PARAM ) )
+  500.                 {
+  501.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  502.                               "Number of values of NDIV",
+  503.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  504.                    error = 1; goto label_error;
+  505.                 }
+  506.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  507.    D----<       for( i = 0; i < *NDVS; i++ )
+  508.    D            {
+  509.  + D               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  510.    D               if( ( NDV[ i ] = atoi( num ) ) < 2 )
+  511.    D               {
+  512.  + D                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  513.    D                             "Value of NDIV less than 2" );
+  514.    D                  error = 1; goto label_error;
+  515.    D               }
+  516.    D---->       }
+  517.           /*
+  518.            * Recursive panel factorization (RF)
+  519.            */
+  520.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  521.  +              (void) sscanf( line, "%s", num ); *NRFS = atoi( num );
+  522.                 if( ( *NRFS < 1 ) || ( *NRFS > HPL_MAX_PARAM ) )
+  523.                 {
+  524.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  525.                               "Number of values of RFACT",
+  526.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  527.                    error = 1; goto label_error;
+  528.                 }
+  529.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  530.    D----<       for( i = 0; i < *NRFS; i++ )
+  531.    D            {
+  532.  + D               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  533.    D               j = atoi( num );
+  534.    D               if(      j == 0 ) RF[ i ] = HPL_LEFT_LOOKING;
+  535.    D               else if( j == 1 ) RF[ i ] = HPL_CROUT;
+  536.    D               else if( j == 2 ) RF[ i ] = HPL_RIGHT_LOOKING;
+  537.    D               else              RF[ i ] = HPL_RIGHT_LOOKING;
+  538.    D---->       }
+  539.           /*
+  540.            * Broadcast topology (TP) (0=rg, 1=2rg, 2=rgM, 3=2rgM, 4=L)
+  541.            */
+  542.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  543.  +              (void) sscanf( line, "%s", num ); *NTPS = atoi( num );
+  544.                 if( ( *NTPS < 1 ) || ( *NTPS > HPL_MAX_PARAM ) )
+  545.                 {
+  546.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  547.                               "Number of values of BCAST",
+  548.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  549.                    error = 1; goto label_error;
+  550.                 }
+  551.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  552.    D----<       for( i = 0; i < *NTPS; i++ )
+  553.    D            {
+  554.  + D               (void) sscanf( lineptr, "%s", num ); lineptr += strlen( num ) + 1;
+  555.    D               j = atoi( num );
+  556.    D               if(      j == 0 ) TP[ i ] = HPL_1RING;
+  557.    D               else if( j == 1 ) TP[ i ] = HPL_1RING_M;
+  558.    D               else if( j == 2 ) TP[ i ] = HPL_2RING;
+  559.    D               else if( j == 3 ) TP[ i ] = HPL_2RING_M;
+  560.    D               else if( j == 4 ) TP[ i ] = HPL_BLONG;
+  561.    D               else if( j == 5 ) TP[ i ] = HPL_BLONG_M;
+  562.    D               else              TP[ i ] = HPL_1RING_M;
+  563.    D---->       }
+  564.           /*
+  565.            * Lookahead depth (>=0) (NDH)
+  566.            */
+  567.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  568.  +              (void) sscanf( line, "%s", num ); *NDHS = atoi( num );
+  569.                 if( ( *NDHS < 1 ) || ( *NDHS > HPL_MAX_PARAM ) )
+  570.                 {
+  571.  +                 HPL_pwarn( stderr, __LINE__, "HPL_pdinfo", "%s %s %d",
+  572.                               "Number of values of DEPTH",
+  573.                               "is less than 1 or greater than", HPL_MAX_PARAM );
+  574.                    error = 1; goto label_error;
+  575.                 }
+  576.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp ); lineptr = line;
+  577.    D----<       for( i = 0; i < *NDHS; i++ )
+  578.    D            {
+  579.  + D               (void) sscanf( lineptr, "%s", num );
+  580.    D               lineptr += strlen( num ) + 1;
+  581.    D               if( ( DH[ i ] = atoi( num ) ) < 0 )
+  582.    D               {
+  583.  + D                  HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  584.    D                             "Value of DEPTH less than 0" );
+  585.    D                  error = 1; goto label_error;
+  586.    D               }
+  587.    D---->       }
+  588.           /*
+  589.            * Swapping algorithm (0,1 or 2) (FSWAP)
+  590.            */
+  591.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  592.  +              (void) sscanf( line, "%s", num ); j = atoi( num );
+  593.                 if(      j == 0 ) *FSWAP = HPL_SWAP00;
+  594.                 else if( j == 1 ) *FSWAP = HPL_SWAP01;
+  595.                 else if( j == 2 ) *FSWAP = HPL_SW_MIX;
+  596.                 else              *FSWAP = HPL_SWAP01;
+  597.           /*
+  598.            * Swapping threshold (>=0) (TSWAP)
+  599.            */
+  600.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  601.  +              (void) sscanf( line, "%s", num ); *TSWAP = atoi( num );
+  602.                 if( *TSWAP <= 0 ) *TSWAP = 0;
+  603.           /*
+  604.            * L1 in (no-)transposed form (0 or 1)
+  605.            */
+  606.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  607.  +              (void) sscanf( line, "%s", num ); *L1NOTRAN = atoi( num );
+  608.                 if( ( *L1NOTRAN != 0 ) && ( *L1NOTRAN != 1 ) ) *L1NOTRAN = 0; 
+  609.           /*
+  610.            * U  in (no-)transposed form (0 or 1)
+  611.            */
+  612.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  613.  +              (void) sscanf( line, "%s", num ); *UNOTRAN = atoi( num );
+  614.                 if( ( *UNOTRAN != 0 ) && ( *UNOTRAN != 1 ) ) *UNOTRAN = 0;
+  615.           /*
+  616.            * Equilibration (0=no, 1=yes)
+  617.            */
+  618.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  619.  +              (void) sscanf( line, "%s", num ); *EQUIL = atoi( num );
+  620.                 if( ( *EQUIL != 0 ) && ( *EQUIL != 1 ) ) *EQUIL = 1;
+  621.           /*
+  622.            * Memory alignment in bytes (> 0) (ALIGN)
+  623.            */
+  624.  +              (void) fgets( line, HPL_LINE_MAX - 2, infp );
+  625.  +              (void) sscanf( line, "%s", num ); *ALIGN = atoi( num );
+  626.                 if( *ALIGN <= 0 ) *ALIGN = 4;
+  627.           /*
+  628.            * Close input file
+  629.            */
+  630.           label_error:
+  631.  +              if (infp) fclose( infp );
+  632.              }
+  633.              else { TEST->outfp = NULL; }
+  634.           /*
+  635.            * Check for error on reading input file
+  636.            */
+  637.  +           (void) HPL_all_reduce( (void *)(&error), 1, HPL_INT, HPL_max,
+  638.                                     MPI_COMM_WORLD );
+  639.              if( error )
+  640.              {
+  641.                /*
+  642.                 if( rank == 0 )
+  643.                    HPL_pwarn( stderr, __LINE__, "HPL_pdinfo",
+  644.                               "Illegal input in file " INFILE ". Exiting ..." );
+  645.                 MPI_Finalize();
+  646.           #ifdef HPL_CALL_VSIPL
+  647.                 (void) vsip_finalize( NULL );
+  648.           #endif
+  649.                 exit( 1 );
+  650.                 */
+  651.  +             HPCC_Defaults( TEST, /* use outfp, set threshold */
+  652.                               NS, N,
+  653.                               NBS, NB,
+  654.                               PMAPPIN,
+  655.                               NPQS, P, Q,
+  656.                               NPFS, PF,
+  657.                               NBMS, NBM,
+  658.                               NDVS, NDV,
+  659.                               NRFS, RF,
+  660.                               NTPS, TP,
+  661.                               NDHS, DH,
+  662.                               FSWAP,
+  663.                               TSWAP,
+  664.                               L1NOTRAN,
+  665.                               UNOTRAN,
+  666.                               EQUIL,
+  667.                               ALIGN,
+  668.                               MPI_COMM_WORLD );
+  669.              }
+  670.           /*
+  671.            * Compute and broadcast machine epsilon
+  672.            */
+  673.  +           TEST->epsil = HPL_pdlamch( MPI_COMM_WORLD, HPL_MACH_EPS );
+  674.           /*
+  675.            * Pack information arrays and broadcast
+  676.            */
+  677.  +           (void) HPL_broadcast( (void *)(&(TEST->thrsh)), 1, HPL_DOUBLE, 0,
+  678.                                    MPI_COMM_WORLD );
+  679.           /*
+  680.            * Broadcast array sizes
+  681.            */
+  682.              iwork = (int *)malloc( (size_t)(15) * sizeof( int ) );
+  683.              if( rank == 0 )
+  684.              {
+  685.                 iwork[ 0] = *NS;      iwork[ 1] = *NBS;
+  686.                 iwork[ 2] = ( *PMAPPIN == HPL_ROW_MAJOR ? 0 : 1 );
+  687.                 iwork[ 3] = *NPQS;    iwork[ 4] = *NPFS;     iwork[ 5] = *NBMS;
+  688.                 iwork[ 6] = *NDVS;    iwork[ 7] = *NRFS;     iwork[ 8] = *NTPS;
+  689.                 iwork[ 9] = *NDHS;    iwork[10] = *TSWAP;    iwork[11] = *L1NOTRAN;
+  690.                 iwork[12] = *UNOTRAN; iwork[13] = *EQUIL;    iwork[14] = *ALIGN;
+  691.              }
+  692.  +           (void) HPL_broadcast( (void *)iwork, 15, HPL_INT, 0, MPI_COMM_WORLD );
+  693.              if( rank != 0 )
+  694.              {
+  695.                 *NS       = iwork[ 0]; *NBS   = iwork[ 1];
+  696.                 *PMAPPIN  = ( iwork[ 2] == 0 ?  HPL_ROW_MAJOR : HPL_COLUMN_MAJOR );
+  697.                 *NPQS     = iwork[ 3]; *NPFS  = iwork[ 4]; *NBMS     = iwork[ 5];
+  698.                 *NDVS     = iwork[ 6]; *NRFS  = iwork[ 7]; *NTPS     = iwork[ 8];
+  699.                 *NDHS     = iwork[ 9]; *TSWAP = iwork[10]; *L1NOTRAN = iwork[11];
+  700.                 *UNOTRAN  = iwork[12]; *EQUIL = iwork[13]; *ALIGN    = iwork[14];
+  701.              }
+  702.              if( iwork ) free( iwork );
+  703.           /*
+  704.            * Pack information arrays and broadcast
+  705.            */
+  706.              lwork = (*NS) + (*NBS) + 2 * (*NPQS) + (*NPFS) + (*NBMS) + 
+  707.                      (*NDVS) + (*NRFS) + (*NTPS) + (*NDHS) + 1;
+  708.              iwork = (int *)malloc( (size_t)(lwork) * sizeof( int ) );
+  709.              if( rank == 0 )
+  710.              {
+  711.                 j = 0;
+  712.  + 1---<>       for( i = 0; i < *NS;   i++ ) { iwork[j] = N [i]; j++; }
+  713.  + 1---<>       for( i = 0; i < *NBS;  i++ ) { iwork[j] = NB[i]; j++; }
+  714.  + 1---<>       for( i = 0; i < *NPQS; i++ ) { iwork[j] = P [i]; j++; }
+  715.  + 1---<>       for( i = 0; i < *NPQS; i++ ) { iwork[j] = Q [i]; j++; }
+  716.  + 1----<       for( i = 0; i < *NPFS; i++ )
+  717.    1            {
+  718.    1               if(      PF[i] == HPL_LEFT_LOOKING  ) iwork[j] = 0;
+  719.    1               else if( PF[i] == HPL_CROUT         ) iwork[j] = 1;
+  720.    1               else if( PF[i] == HPL_RIGHT_LOOKING ) iwork[j] = 2;
+  721.    1               j++;
+  722.    1---->       }
+  723.  + 1---<>       for( i = 0; i < *NBMS; i++ ) { iwork[j] = NBM[i]; j++; }
+  724.  + 1---<>       for( i = 0; i < *NDVS; i++ ) { iwork[j] = NDV[i]; j++; }
+  725.  + 1----<       for( i = 0; i < *NRFS; i++ )
+  726.    1            {
+  727.    1               if(      RF[i] == HPL_LEFT_LOOKING  ) iwork[j] = 0;
+  728.    1               else if( RF[i] == HPL_CROUT         ) iwork[j] = 1;
+  729.    1               else if( RF[i] == HPL_RIGHT_LOOKING ) iwork[j] = 2;
+  730.    1               j++;
+  731.    1---->       }
+  732.  + 1----<       for( i = 0; i < *NTPS; i++ )
+  733.    1            {
+  734.    1               if(      TP[i] == HPL_1RING   ) iwork[j] = 0;
+  735.    1               else if( TP[i] == HPL_1RING_M ) iwork[j] = 1;
+  736.    1               else if( TP[i] == HPL_2RING   ) iwork[j] = 2;
+  737.    1               else if( TP[i] == HPL_2RING_M ) iwork[j] = 3;
+  738.    1               else if( TP[i] == HPL_BLONG   ) iwork[j] = 4;
+  739.    1               else if( TP[i] == HPL_BLONG_M ) iwork[j] = 5;
+  740.    1               j++;
+  741.    1---->       }
+  742.  + 1---<>       for( i = 0; i < *NDHS; i++ ) { iwork[j] = DH[i]; j++; }
+  743.           
+  744.                 if(      *FSWAP == HPL_SWAP00 ) iwork[j] = 0;
+  745.                 else if( *FSWAP == HPL_SWAP01 ) iwork[j] = 1;
+  746.                 else if( *FSWAP == HPL_SW_MIX ) iwork[j] = 2;
+  747.                 j++;
+  748.              }
+  749.  +           (void) HPL_broadcast( (void*)iwork, lwork, HPL_INT, 0,
+  750.                                    MPI_COMM_WORLD );
+  751.              if( rank != 0 )
+  752.              {
+  753.                 j = 0;
+  754.  + 1---<>       for( i = 0; i < *NS;   i++ ) { N [i] = iwork[j]; j++; }
+  755.  + 1---<>       for( i = 0; i < *NBS;  i++ ) { NB[i] = iwork[j]; j++; }
+  756.  + 1---<>       for( i = 0; i < *NPQS; i++ ) { P [i] = iwork[j]; j++; }
+  757.  + 1---<>       for( i = 0; i < *NPQS; i++ ) { Q [i] = iwork[j]; j++; }
+  758.           
+  759.  + 1----<       for( i = 0; i < *NPFS; i++ )
+  760.    1            {
+  761.    1               if(      iwork[j] == 0 ) PF[i] = HPL_LEFT_LOOKING;
+  762.    1               else if( iwork[j] == 1 ) PF[i] = HPL_CROUT;
+  763.    1               else if( iwork[j] == 2 ) PF[i] = HPL_RIGHT_LOOKING;
+  764.    1               j++;
+  765.    1---->       }
+  766.  + 1---<>       for( i = 0; i < *NBMS; i++ ) { NBM[i] = iwork[j]; j++; }
+  767.  + 1---<>       for( i = 0; i < *NDVS; i++ ) { NDV[i] = iwork[j]; j++; }
+  768.  + 1----<       for( i = 0; i < *NRFS; i++ )
+  769.    1            {
+  770.    1               if(      iwork[j] == 0 ) RF[i] = HPL_LEFT_LOOKING;
+  771.    1               else if( iwork[j] == 1 ) RF[i] = HPL_CROUT;
+  772.    1               else if( iwork[j] == 2 ) RF[i] = HPL_RIGHT_LOOKING;
+  773.    1               j++;
+  774.    1---->       }
+  775.  + 1----<       for( i = 0; i < *NTPS; i++ )
+  776.    1            {
+  777.    1               if(      iwork[j] == 0 ) TP[i] = HPL_1RING;
+  778.    1               else if( iwork[j] == 1 ) TP[i] = HPL_1RING_M;
+  779.    1               else if( iwork[j] == 2 ) TP[i] = HPL_2RING;
+  780.    1               else if( iwork[j] == 3 ) TP[i] = HPL_2RING_M;
+  781.    1               else if( iwork[j] == 4 ) TP[i] = HPL_BLONG;
+  782.    1               else if( iwork[j] == 5 ) TP[i] = HPL_BLONG_M;
+  783.    1               j++;
+  784.    1---->       }
+  785.  + 1---<>       for( i = 0; i < *NDHS; i++ ) { DH[i] = iwork[j]; j++; }
+  786.           
+  787.                 if(      iwork[j] == 0 ) *FSWAP = HPL_SWAP00;
+  788.                 else if( iwork[j] == 1 ) *FSWAP = HPL_SWAP01;
+  789.                 else if( iwork[j] == 2 ) *FSWAP = HPL_SW_MIX;
+  790.                 j++;
+  791.              }
+  792.              if( iwork ) free( iwork );
+  793.           /*
+  794.            * regurgitate input
+  795.            */
+  796.              if( rank == 0 )
+  797.              {
+  798.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  799.                              "========================================",
+  800.                              "========================================" );
+  801.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  802.                     "HPLinpack 2.0  --  High-Performance Linpack benchmark  --  ",
+  803.                     " September 10, 2008" );
+  804.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  805.                     "Written by A. Petitet and R. Clint Whaley,  ",
+  806.                     "Innovative Computing Laboratory, UTK" );
+  807.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  808.                     "Modified by Piotr Luszczek, ",
+  809.                     "Innovative Computing Laboratory, UTK" );
+  810.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  811.                     "Modified by Julien Langou, ",
+  812.                     "University of Colorado Denver");
+  813.  +              HPL_fprintf( TEST->outfp, "%s%s\n",
+  814.                              "========================================",
+  815.                              "========================================" );
+  816.           
+  817.  +              HPL_fprintf( TEST->outfp, "\n%s\n",
+  818.                     "An explanation of the input/output parameters follows:" );
+  819.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  820.                     "T/V    : Wall time / encoded variant." );
+  821.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  822.                    "N      : The order of the coefficient matrix A." );
+  823.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  824.                     "NB     : The partitioning blocking factor." );
+  825.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  826.                     "P      : The number of process rows." );
+  827.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  828.                     "Q      : The number of process columns." );
+  829.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  830.                    "Time   : Time in seconds to solve the linear system." );
+  831.  +              HPL_fprintf( TEST->outfp, "%s\n\n",
+  832.                    "Gflops : Rate of execution for solving the linear system." );
+  833.  +              HPL_fprintf( TEST->outfp, "%s\n",
+  834.                     "The following parameter values will be used:" );
+  835.           /*
+  836.            * Problem size
+  837.            */
+  838.  +              HPL_fprintf( TEST->outfp,       "\nN      :" );
+  839.  + 1----<       for( i = 0; i < Mmin( 8, *NS ); i++ )
+  840.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", N[i]  );
+  841.                 if( *NS > 8 )
+  842.                 {
+  843.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  844.  + 1----<          for( i = 8; i < Mmin( 16, *NS ); i++ )
+  845.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", N[i]  );
+  846.                    if( *NS > 16 )
+  847.                    {
+  848.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  849.  + 1----<             for( i = 16; i < *NS; i++ )
+  850.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", N[i]  );
+  851.                    }
+  852.                 }
+  853.           /*
+  854.            * Distribution blocking factor
+  855.            */
+  856.  +              HPL_fprintf( TEST->outfp,       "\nNB     :" );
+  857.  + 1----<       for( i = 0; i < Mmin( 8, *NBS ); i++ )
+  858.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", NB[i] );
+  859.                 if( *NBS > 8 )
+  860.                 {
+  861.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  862.  + 1----<          for( i = 8; i < Mmin( 16, *NBS ); i++ )
+  863.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", NB[i] );
+  864.                    if( *NBS > 16 )
+  865.                    {
+  866.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  867.  + 1----<             for( i = 16; i < *NBS; i++ )
+  868.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", NB[i] );
+  869.                    }
+  870.                 }
+  871.           /*
+  872.            * Process mapping
+  873.            */
+  874.  +              HPL_fprintf( TEST->outfp,       "\nPMAP   :" );
+  875.                 if(      *PMAPPIN == HPL_ROW_MAJOR    )
+  876.  +                 HPL_fprintf( TEST->outfp, " Row-major process mapping" );
+  877.                 else if( *PMAPPIN == HPL_COLUMN_MAJOR )
+  878.  +                 HPL_fprintf( TEST->outfp, " Column-major process mapping" );
+  879.           /*
+  880.            * Process grid
+  881.            */
+  882.  +              HPL_fprintf( TEST->outfp,       "\nP      :" );
+  883.  + 1----<       for( i = 0; i < Mmin( 8, *NPQS ); i++ )
+  884.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", P[i]  );
+  885.                 if( *NPQS > 8 )
+  886.                 {
+  887.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  888.  + 1----<          for( i = 8; i < Mmin( 16, *NPQS ); i++ )
+  889.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", P[i]  );
+  890.                    if( *NPQS > 16 )
+  891.                    {
+  892.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  893.  + 1----<             for( i = 16; i < *NPQS; i++ )
+  894.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", P[i]  );
+  895.                    }
+  896.                 }
+  897.  +              HPL_fprintf( TEST->outfp,       "\nQ      :" );
+  898.  + 1----<       for( i = 0; i < Mmin( 8, *NPQS ); i++ )
+  899.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", Q[i]  );
+  900.                 if( *NPQS > 8 )
+  901.                 {
+  902.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  903.  + 1----<          for( i = 8; i < Mmin( 16, *NPQS ); i++ )
+  904.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", Q[i]  );
+  905.                    if( *NPQS > 16 )
+  906.                    {
+  907.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  908.  + 1----<             for( i = 16; i < *NPQS; i++ )
+  909.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", Q[i]  );
+  910.                    }
+  911.                 }
+  912.           /*
+  913.            * Panel Factorization
+  914.            */
+  915.  +              HPL_fprintf( TEST->outfp,       "\nPFACT  :" );
+  916.  + 1----<       for( i = 0; i < Mmin( 8, *NPFS ); i++ )
+  917.    1            {
+  918.    1               if(      PF[i] == HPL_LEFT_LOOKING  )
+  919.  + 1                  HPL_fprintf( TEST->outfp,       "    Left " );
+  920.    1               else if( PF[i] == HPL_CROUT         )
+  921.  + 1                  HPL_fprintf( TEST->outfp,       "   Crout " );
+  922.    1               else if( PF[i] == HPL_RIGHT_LOOKING )
+  923.  + 1                  HPL_fprintf( TEST->outfp,       "   Right " );
+  924.    1---->       }
+  925.                 if( *NPFS > 8 )
+  926.                 {
+  927.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  928.  + 1----<          for( i = 8; i < Mmin( 16, *NPFS ); i++ )
+  929.    1               {
+  930.    1                  if(      PF[i] == HPL_LEFT_LOOKING  )
+  931.  + 1                     HPL_fprintf( TEST->outfp,       "    Left " );
+  932.    1                  else if( PF[i] == HPL_CROUT         )
+  933.  + 1                     HPL_fprintf( TEST->outfp,       "   Crout " );
+  934.    1                  else if( PF[i] == HPL_RIGHT_LOOKING )
+  935.  + 1                     HPL_fprintf( TEST->outfp,       "   Right " );
+  936.    1---->          }
+  937.                    if( *NPFS > 16 )
+  938.                    {
+  939.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  940.  + 1----<             for( i = 16; i < *NPFS; i++ )
+  941.    1                  {
+  942.    1                     if(      PF[i] == HPL_LEFT_LOOKING  )
+  943.  + 1                        HPL_fprintf( TEST->outfp,       "    Left " );
+  944.    1                     else if( PF[i] == HPL_CROUT         )
+  945.  + 1                        HPL_fprintf( TEST->outfp,       "   Crout " );
+  946.    1                     else if( PF[i] == HPL_RIGHT_LOOKING )
+  947.  + 1                        HPL_fprintf( TEST->outfp,       "   Right " );
+  948.    1---->             }
+  949.                    }
+  950.                 }
+  951.           /*
+  952.            * Recursive stopping criterium
+  953.            */
+  954.  +              HPL_fprintf( TEST->outfp,       "\nNBMIN  :" );
+  955.  + 1----<       for( i = 0; i < Mmin( 8, *NBMS ); i++ )
+  956.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", NBM[i]  );
+  957.                 if( *NBMS > 8 )
+  958.                 {
+  959.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  960.  + 1----<          for( i = 8; i < Mmin( 16, *NBMS ); i++ )
+  961.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", NBM[i]  );
+  962.                    if( *NBMS > 16 )
+  963.                    {
+  964.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  965.  + 1----<             for( i = 16; i < *NBMS; i++ )
+  966.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", NBM[i]  );
+  967.                    }
+  968.                 }
+  969.           /*
+  970.            * Number of panels in recursion
+  971.            */
+  972.  +              HPL_fprintf( TEST->outfp,       "\nNDIV   :" );
+  973.  + 1----<       for( i = 0; i < Mmin( 8, *NDVS ); i++ )
+  974.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", NDV[i]  );
+  975.                 if( *NDVS > 8 )
+  976.                 {
+  977.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+  978.  + 1----<          for( i = 8; i < Mmin( 16, *NDVS ); i++ )
+  979.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", NDV[i]  );
+  980.                    if( *NDVS > 16 )
+  981.                    {
+  982.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+  983.  + 1----<             for( i = 16; i < *NDVS; i++ )
+  984.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", NDV[i]  );
+  985.                    }
+  986.                 }
+  987.           /*
+  988.            * Recursive Factorization
+  989.            */
+  990.  +              HPL_fprintf( TEST->outfp,       "\nRFACT  :" );
+  991.  + 1----<       for( i = 0; i < Mmin( 8, *NRFS ); i++ )
+  992.    1            {
+  993.    1               if(      RF[i] == HPL_LEFT_LOOKING  )
+  994.  + 1                  HPL_fprintf( TEST->outfp,       "    Left " );
+  995.    1               else if( RF[i] == HPL_CROUT         )
+  996.  + 1                  HPL_fprintf( TEST->outfp,       "   Crout " );
+  997.    1               else if( RF[i] == HPL_RIGHT_LOOKING )
+  998.  + 1                  HPL_fprintf( TEST->outfp,       "   Right " );
+  999.    1---->       }
+ 1000.                 if( *NRFS > 8 )
+ 1001.                 {
+ 1002.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+ 1003.  + 1----<          for( i = 8; i < Mmin( 16, *NRFS ); i++ )
+ 1004.    1               {
+ 1005.    1                  if(      RF[i] == HPL_LEFT_LOOKING  )
+ 1006.  + 1                     HPL_fprintf( TEST->outfp,       "    Left " );
+ 1007.    1                  else if( RF[i] == HPL_CROUT         )
+ 1008.  + 1                     HPL_fprintf( TEST->outfp,       "   Crout " );
+ 1009.    1                  else if( RF[i] == HPL_RIGHT_LOOKING )
+ 1010.  + 1                     HPL_fprintf( TEST->outfp,       "   Right " );
+ 1011.    1---->          }
+ 1012.                    if( *NRFS > 16 )
+ 1013.                    {
+ 1014.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+ 1015.  + 1----<             for( i = 16; i < *NRFS; i++ )
+ 1016.    1                  {
+ 1017.    1                     if(      RF[i] == HPL_LEFT_LOOKING  )
+ 1018.  + 1                        HPL_fprintf( TEST->outfp,       "    Left " );
+ 1019.    1                     else if( RF[i] == HPL_CROUT         )
+ 1020.  + 1                        HPL_fprintf( TEST->outfp,       "   Crout " );
+ 1021.    1                     else if( RF[i] == HPL_RIGHT_LOOKING )
+ 1022.  + 1                        HPL_fprintf( TEST->outfp,       "   Right " );
+ 1023.    1---->             }
+ 1024.                    }
+ 1025.                 }
+ 1026.           /*
+ 1027.            * Broadcast topology
+ 1028.            */
+ 1029.  +              HPL_fprintf( TEST->outfp,       "\nBCAST  :" );
+ 1030.  + 1----<       for( i = 0; i < Mmin( 8, *NTPS ); i++ )
+ 1031.    1            {
+ 1032.    1               if(      TP[i] == HPL_1RING   )
+ 1033.  + 1                  HPL_fprintf( TEST->outfp,       "   1ring " );
+ 1034.    1               else if( TP[i] == HPL_1RING_M )
+ 1035.  + 1                  HPL_fprintf( TEST->outfp,       "  1ringM " );
+ 1036.    1               else if( TP[i] == HPL_2RING   )
+ 1037.  + 1                  HPL_fprintf( TEST->outfp,       "   2ring " );
+ 1038.    1               else if( TP[i] == HPL_2RING_M )
+ 1039.  + 1                  HPL_fprintf( TEST->outfp,       "  2ringM " );
+ 1040.    1               else if( TP[i] == HPL_BLONG   )
+ 1041.  + 1                  HPL_fprintf( TEST->outfp,       "   Blong " );
+ 1042.    1               else if( TP[i] == HPL_BLONG_M )
+ 1043.  + 1                  HPL_fprintf( TEST->outfp,       "  BlongM " );
+ 1044.    1---->       }
+ 1045.                 if( *NTPS > 8 )
+ 1046.                 {
+ 1047.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+ 1048.  + 1----<          for( i = 8; i < Mmin( 16, *NTPS ); i++ )
+ 1049.    1               {
+ 1050.    1                  if(      TP[i] == HPL_1RING   )
+ 1051.  + 1                     HPL_fprintf( TEST->outfp,       "   1ring " );
+ 1052.    1                  else if( TP[i] == HPL_1RING_M )
+ 1053.  + 1                     HPL_fprintf( TEST->outfp,       "  1ringM " );
+ 1054.    1                  else if( TP[i] == HPL_2RING   )
+ 1055.  + 1                     HPL_fprintf( TEST->outfp,       "   2ring " );
+ 1056.    1                  else if( TP[i] == HPL_2RING_M )
+ 1057.  + 1                     HPL_fprintf( TEST->outfp,       "  2ringM " );
+ 1058.    1                  else if( TP[i] == HPL_BLONG   )
+ 1059.  + 1                     HPL_fprintf( TEST->outfp,       "   Blong " );
+ 1060.    1                  else if( TP[i] == HPL_BLONG_M )
+ 1061.  + 1                     HPL_fprintf( TEST->outfp,       "  BlongM " );
+ 1062.    1---->          }
+ 1063.                    if( *NTPS > 16 )
+ 1064.                    {
+ 1065.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+ 1066.  + 1----<             for( i = 16; i < *NTPS; i++ )
+ 1067.    1                  {
+ 1068.    1                     if(      TP[i] == HPL_1RING   )
+ 1069.  + 1                        HPL_fprintf( TEST->outfp,       "   1ring " );
+ 1070.    1                     else if( TP[i] == HPL_1RING_M )
+ 1071.  + 1                        HPL_fprintf( TEST->outfp,       "  1ringM " );
+ 1072.    1                     else if( TP[i] == HPL_2RING   )
+ 1073.  + 1                        HPL_fprintf( TEST->outfp,       "   2ring " );
+ 1074.    1                     else if( TP[i] == HPL_2RING_M )
+ 1075.  + 1                        HPL_fprintf( TEST->outfp,       "  2ringM " );
+ 1076.    1                     else if( TP[i] == HPL_BLONG   )
+ 1077.  + 1                        HPL_fprintf( TEST->outfp,       "   Blong " );
+ 1078.    1                     else if( TP[i] == HPL_BLONG_M )
+ 1079.  + 1                        HPL_fprintf( TEST->outfp,       "  BlongM " );
+ 1080.    1---->             }
+ 1081.                    }
+ 1082.                 }
+ 1083.           /*
+ 1084.            * Lookahead depths
+ 1085.            */
+ 1086.  +              HPL_fprintf( TEST->outfp,       "\nDEPTH  :" );
+ 1087.  + 1----<       for( i = 0; i < Mmin( 8, *NDHS ); i++ )
+ 1088.  + 1 --->          HPL_fprintf( TEST->outfp,       "%8d ", DH[i]  );
+ 1089.                 if( *NDHS > 8 )
+ 1090.                 {
+ 1091.  +                 HPL_fprintf( TEST->outfp,    "\n        " );
+ 1092.  + 1----<          for( i = 8; i < Mmin( 16, *NDHS ); i++ )
+ 1093.  + 1 --->             HPL_fprintf( TEST->outfp,    "%8d ", DH[i]  );
+ 1094.                    if( *NDHS > 16 )
+ 1095.                    {
+ 1096.  +                    HPL_fprintf( TEST->outfp, "\n        " );
+ 1097.  + 1----<             for( i = 16; i < *NDHS; i++ )
+ 1098.  + 1 --->                HPL_fprintf( TEST->outfp, "%8d ", DH[i]  );
+ 1099.                    }
+ 1100.                 }
+ 1101.           /*
+ 1102.            * Swapping algorithm
+ 1103.            */
+ 1104.  +              HPL_fprintf( TEST->outfp,       "\nSWAP   :" );
+ 1105.                 if(      *FSWAP == HPL_SWAP00 )
+ 1106.  +                 HPL_fprintf( TEST->outfp, " Binary-exchange" );
+ 1107.                 else if( *FSWAP == HPL_SWAP01 )
+ 1108.  +                 HPL_fprintf( TEST->outfp, " Spread-roll (long)" );
+ 1109.                 else if( *FSWAP == HPL_SW_MIX )
+ 1110.  +                 HPL_fprintf( TEST->outfp, " Mix (threshold = %d)", *TSWAP );
+ 1111.           /*
+ 1112.            * L1 storage form
+ 1113.            */
+ 1114.  +              HPL_fprintf( TEST->outfp,       "\nL1     :" );
+ 1115.                 if(      *L1NOTRAN != 0 )
+ 1116.  +                 HPL_fprintf( TEST->outfp, " no-transposed form" );
+ 1117.                 else
+ 1118.  +                 HPL_fprintf( TEST->outfp, " transposed form" );
+ 1119.           /*
+ 1120.            * U  storage form
+ 1121.            */
+ 1122.  +              HPL_fprintf( TEST->outfp,       "\nU      :" );
+ 1123.                 if(      *UNOTRAN != 0 )
+ 1124.  +                 HPL_fprintf( TEST->outfp, " no-transposed form" );
+ 1125.                 else
+ 1126.  +                 HPL_fprintf( TEST->outfp, " transposed form" );
+ 1127.           /*
+ 1128.            * Equilibration
+ 1129.            */
+ 1130.  +              HPL_fprintf( TEST->outfp,       "\nEQUIL  :" );
+ 1131.                 if(      *EQUIL != 0 )
+ 1132.  +                 HPL_fprintf( TEST->outfp, " yes" );
+ 1133.                 else
+ 1134.  +                 HPL_fprintf( TEST->outfp, " no" );
+ 1135.           /*
+ 1136.            * Alignment
+ 1137.            */
+ 1138.  +              HPL_fprintf( TEST->outfp,       "\nALIGN  : %d double precision words",
+ 1139.                              *ALIGN );
+ 1140.           
+ 1141.  +              HPL_fprintf( TEST->outfp, "\n\n" );
+ 1142.           /*
+ 1143.            * For testing only
+ 1144.            */
+ 1145.                 if( TEST->thrsh > HPL_rzero )
+ 1146.                 {
+ 1147.  +                 HPL_fprintf( TEST->outfp, "%s%s\n\n",
+ 1148.                                 "----------------------------------------",
+ 1149.                                 "----------------------------------------" );
+ 1150.  +                 HPL_fprintf( TEST->outfp, "%s\n",
+ 1151.                       "- The matrix A is randomly generated for each test." );
+ 1152.  +                 HPL_fprintf( TEST->outfp, "%s\n",
+ 1153.                       "- The following scaled residual check will be computed:" );
+ 1154.  +                 HPL_fprintf( TEST->outfp, "%s\n",
+ 1155.                       "      ||Ax-b||_oo / ( eps * ( || x ||_oo * || A ||_oo + || b ||_oo ) * N )" );
+ 1156.  +                 HPL_fprintf( TEST->outfp, "%s %21.6e\n",
+ 1157.                       "- The relative machine precision (eps) is taken to be     ",
+ 1158.                       TEST->epsil );
+ 1159.  +                 HPL_fprintf( TEST->outfp, "%s   %11.1f\n\n",
+ 1160.                       "- Computational tests pass if scaled residuals are less than      ",
+ 1161.                       TEST->thrsh );
+ 1162.                 }
+ 1163.              }
+ 1164.           /*
+ 1165.            * End of HPL_pdinfo
+ 1166.            */
+ 1167.           }
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 294 
+  "MPI_Comm_rank" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 295 
+  "MPI_Comm_size" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 311 
+  "fopen" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 313 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 319 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 320 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 324 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 325 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 326 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 327 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 332 
+  "strcpy" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 335 
+  "fopen" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 337 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 348 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 349 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 352 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 358 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 359 
+  A loop was not vectorized because it contains a call to function "sscanf" on line 361.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 361 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 364 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 372 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 373 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 376 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 382 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 383 
+  A loop was not vectorized because it contains a call to function "sscanf" on line 385.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 385 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 388 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 396 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 397 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 400 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 401 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 404 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 410 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 411 
+  A loop was not vectorized because it contains a call to function "sscanf" on line 413.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 413 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 416 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 421 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 422 
+  A loop was not vectorized because it contains a call to function "sscanf" on line 424.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 424 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 427 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_pdinfo.c, Line = 436 
+  A loop was unrolled 6 times.
+
+CC-6204 CC: VECTOR File = HPL_pdinfo.c, Line = 436 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 440 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 447 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 448 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 452 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 453 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 456 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 461 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 462 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 464 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 474 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 475 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 478 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 483 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 484 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 486 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 489 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 497 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 498 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 501 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 506 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 507 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 509 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 512 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 520 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 521 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 524 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 529 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 530 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 532 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 542 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 543 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 546 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 551 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 552 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 554 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 567 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 568 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 571 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 576 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6002 CC: SCALAR File = HPL_pdinfo.c, Line = 577 
+  A loop was eliminated by optimization.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 579 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 583 
+  "HPL_pwarn" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 591 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 592 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 600 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 601 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 606 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 607 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 612 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 613 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 618 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 619 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 624 
+  "fgets" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 625 
+  "sscanf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 631 
+  "fclose" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 637 
+  "HPL_all_reduce" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 651 
+  "HPCC_Defaults" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 673 
+  "HPL_pdlamch" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 677 
+  "HPL_broadcast" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 692 
+  "HPL_broadcast" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 712 
+  A loop was not vectorized because a recurrence was found on "j" at line 712.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 713 
+  A loop was not vectorized because a recurrence was found on "j" at line 713.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 714 
+  A loop was not vectorized because a recurrence was found on "j" at line 714.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 715 
+  A loop was not vectorized because a recurrence was found on "j" at line 715.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 716 
+  A loop was not vectorized because a recurrence was found on "j" at line 721.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 723 
+  A loop was not vectorized because a recurrence was found on "j" at line 723.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 724 
+  A loop was not vectorized because a recurrence was found on "j" at line 724.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 725 
+  A loop was not vectorized because a recurrence was found on "j" at line 730.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 732 
+  A loop was not vectorized because a recurrence was found on "j" at line 740.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 742 
+  A loop was not vectorized because a recurrence was found on "j" at line 742.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 749 
+  "HPL_broadcast" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 754 
+  A loop was not vectorized because a recurrence was found on "j" at line 754.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 755 
+  A loop was not vectorized because a recurrence was found on "j" at line 755.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 756 
+  A loop was not vectorized because a recurrence was found on "j" at line 756.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 757 
+  A loop was not vectorized because a recurrence was found on "j" at line 757.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 759 
+  A loop was not vectorized because a recurrence was found on "j" at line 764.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 766 
+  A loop was not vectorized because a recurrence was found on "j" at line 766.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 767 
+  A loop was not vectorized because a recurrence was found on "j" at line 767.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 768 
+  A loop was not vectorized because a recurrence was found on "j" at line 773.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 775 
+  A loop was not vectorized because a recurrence was found on "j" at line 783.
+
+CC-6254 CC: VECTOR File = HPL_pdinfo.c, Line = 785 
+  A loop was not vectorized because a recurrence was found on "j" at line 785.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 798 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 801 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 804 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 807 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 810 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 813 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 817 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 819 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 821 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 823 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 825 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 827 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 829 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 831 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 833 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 838 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 839 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 840.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 840 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 843 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 844 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 845.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 845 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 848 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 849 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 850.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 850 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 856 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 857 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 858.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 858 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 861 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 862 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 863.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 863 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 866 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 867 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 868.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 868 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 874 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 876 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 878 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 882 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 883 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 884.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 884 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 887 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 888 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 889.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 889 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 892 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 893 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 894.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 894 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 897 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 898 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 899.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 899 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 902 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 903 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 904.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 904 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 907 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 908 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 909.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 909 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 915 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 916 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 919.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 919 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 921 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 923 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 927 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 928 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 931.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 931 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 933 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 935 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 939 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 940 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 943.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 943 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 945 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 947 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 954 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 955 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 956.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 956 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 959 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 960 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 961.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 961 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 964 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 965 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 966.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 966 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 972 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 973 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 974.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 974 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 977 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 978 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 979.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 979 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 982 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 983 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 984.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 984 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 990 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 991 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 994.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 994 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 996 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 998 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1002 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1003 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1006.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1006 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1008 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1010 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1014 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1015 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1018.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1018 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1020 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1022 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1029 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1030 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1033.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1033 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1035 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1037 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1039 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1041 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1043 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1047 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1048 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1051.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1051 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1053 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1055 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1057 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1059 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1061 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1065 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1066 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1069.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1069 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1071 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1073 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1075 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1077 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1079 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1086 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1087 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1088.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1088 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1091 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1092 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1093.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1093 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1096 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdinfo.c, Line = 1097 
+  A loop was not vectorized because it contains a call to function "HPL_fprintf" on line 1098.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1098 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1104 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1106 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1108 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1110 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1114 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1116 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1118 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1122 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1124 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1126 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1130 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1132 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1134 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1138 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1141 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1147 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1150 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1152 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1154 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1156 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdinfo.c, Line = 1159 
+  "HPL_fprintf" (called from "HPL_pdinfo") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

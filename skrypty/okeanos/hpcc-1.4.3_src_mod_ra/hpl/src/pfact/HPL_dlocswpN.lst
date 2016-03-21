@@ -1,0 +1,580 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_dlocswpN.c
+Compiled : 2016-03-19  13:19:46
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pfact/HPL_dlocswpN.o
+           -c ../../../src/pfact/HPL_dlocswpN.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_dlocswpN.c
+Date     : 03/19/2016  13:19:47
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.             /* 
+    2.              * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.              *    HPL - 2.0 - September 10, 2008                          
+    4.              *    Antoine P. Petitet                                                
+    5.              *    University of Tennessee, Knoxville                                
+    6.              *    Innovative Computing Laboratory                                 
+    7.              *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.              *                                                                      
+    9.              * -- Copyright notice and Licensing terms:                             
+   10.              *                                                                      
+   11.              * Redistribution  and  use in  source and binary forms, with or without
+   12.              * modification, are  permitted provided  that the following  conditions
+   13.              * are met:                                                             
+   14.              *                                                                      
+   15.              * 1. Redistributions  of  source  code  must retain the above copyright
+   16.              * notice, this list of conditions and the following disclaimer.        
+   17.              *                                                                      
+   18.              * 2. Redistributions in binary form must reproduce  the above copyright
+   19.              * notice, this list of conditions,  and the following disclaimer in the
+   20.              * documentation and/or other materials provided with the distribution. 
+   21.              *                                                                      
+   22.              * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.              * software must display the following acknowledgement:                 
+   24.              * This  product  includes  software  developed  at  the  University  of
+   25.              * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.              *                                                                      
+   27.              * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.              * names  of  its  contributors  may  not  be used to endorse or promote
+   29.              * products  derived   from   this  software  without  specific  written
+   30.              * permission.                                                          
+   31.              *                                                                      
+   32.              * -- Disclaimer:                                                       
+   33.              *                                                                      
+   34.              * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.              * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.              * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.              * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.              * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.              * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.              * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.              * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.              * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.              * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.              * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.              * ---------------------------------------------------------------------
+   46.              */ 
+   47.             /*
+   48.              * Include files
+   49.              */
+   50.             #include "hpl.h"
+   51.             /*
+   52.              * Define default value for unrolling factor
+   53.              */
+   54.             #ifndef HPL_LOCSWP_DEPTH
+   55.             #define    HPL_LOCSWP_DEPTH        32
+   56.             #define    HPL_LOCSWP_LOG2_DEPTH    5
+   57.             #endif
+   58.             
+   59.             #ifdef HPL_STDC_HEADERS
+   60.             void HPL_dlocswpN
+   61.             (
+   62.                HPL_T_panel *                    PANEL,
+   63.                const int                        II,
+   64.                const int                        JJ,
+   65.                double *                         WORK
+   66.             )
+   67.             #else
+   68.             void HPL_dlocswpN
+   69.             ( PANEL, II, JJ, WORK )
+   70.                HPL_T_panel *                    PANEL;
+   71.                const int                        II;
+   72.                const int                        JJ;
+   73.                double *                         WORK;
+   74.             #endif
+   75.             {
+   76.             /* 
+   77.              * Purpose
+   78.              * =======
+   79.              *
+   80.              * HPL_dlocswpN performs  the local swapping operations  within a panel.
+   81.              * The lower triangular  N0-by-N0  upper block of the panel is stored in
+   82.              * no-transpose form (i.e. just like the input matrix itself).
+   83.              *
+   84.              * Arguments
+   85.              * =========
+   86.              *
+   87.              * PANEL   (local input/output)          HPL_T_panel *
+   88.              *         On entry,  PANEL  points to the data structure containing the
+   89.              *         panel information.
+   90.              *
+   91.              * II      (local input)                 const int
+   92.              *         On entry, II  specifies the row offset where the column to be
+   93.              *         operated on starts with respect to the panel.
+   94.              *
+   95.              * JJ      (local input)                 const int
+   96.              *         On entry, JJ  specifies the column offset where the column to
+   97.              *         be operated on starts with respect to the panel.
+   98.              *
+   99.              * WORK    (local workspace)             double *
+  100.              *         On entry, WORK  is a workarray of size at least 2 * (4+2*N0).
+  101.              *         WORK[0] contains  the  local  maximum  absolute value scalar,
+  102.              *         WORK[1] contains  the corresponding local row index,  WORK[2]
+  103.              *         contains the corresponding global row index, and  WORK[3]  is
+  104.              *         the coordinate of process owning this max.  The N0 length max
+  105.              *         row is stored in WORK[4:4+N0-1];  Note  that this is also the
+  106.              *         JJth row  (or column) of L1. The remaining part of this array
+  107.              *         is used as workspace.
+  108.              *
+  109.              * ---------------------------------------------------------------------
+  110.              */ 
+  111.             /*
+  112.              * .. Local Variables ..
+  113.              */
+  114.                double                     gmax;
+  115.                double                     * A1, * A2, * L, * Wr0, * Wmx;
+  116.                int                        ilindx, lda, myrow, n0, nr, nu;
+  117.                register int               i;
+  118.             /* ..
+  119.              * .. Executable Statements ..
+  120.              */
+  121.                myrow = PANEL->grid->myrow; n0 = PANEL->jb; lda = PANEL->lda;
+  122.             
+  123.                Wr0   = ( Wmx = WORK + 4 ) + n0; Wmx[JJ] = gmax = WORK[0];
+  124.                nu    = (int)( ( (unsigned int)(n0) >> HPL_LOCSWP_LOG2_DEPTH ) 
+  125.                               << HPL_LOCSWP_LOG2_DEPTH );
+  126.                nr    = n0 - nu;
+  127.             /*
+  128.              * Replicated swap and copy of the current (new) row of A into L1
+  129.              */
+  130.                L  = Mptr( PANEL->L1, JJ, 0, n0  );
+  131.             /*
+  132.              * If the pivot is non-zero ...
+  133.              */
+  134.                if( gmax != HPL_rzero )
+  135.                {
+  136.             /*
+  137.              * and if I own the current row of A ...
+  138.              */
+  139.                   if( myrow == PANEL->prow )
+  140.                   {
+  141.             /*
+  142.              * and if I also own the row to be swapped with the current row of A ...
+  143.              */
+  144.                      if( myrow == (int)(WORK[3]) )
+  145.                      {
+  146.             /*
+  147.              * and if the current row of A is not to swapped with itself ...
+  148.              */
+  149.                         if( ( ilindx = (int)(WORK[1]) ) != 0 )
+  150.                         {
+  151.             /*
+  152.              * then copy the max row into L1 and locally swap the 2 rows of A.
+  153.              */
+  154.                            A1 = Mptr( PANEL->A,  II,     0, lda );
+  155.                            A2 = Mptr( A1,        ilindx, 0, lda );
+  156.             
+  157.  + 1------<                for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  158.    1                            Wmx += HPL_LOCSWP_DEPTH, Wr0 += HPL_LOCSWP_DEPTH )
+  159.    1                       {
+  160.    1                          *L=*A1=Wmx[ 0]; *A2=Wr0[ 0]; L+=n0; A1+=lda; A2+=lda;
+  161.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  162.    1                          *L=*A1=Wmx[ 1]; *A2=Wr0[ 1]; L+=n0; A1+=lda; A2+=lda;
+  163.    1        #endif
+  164.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  165.    1                          *L=*A1=Wmx[ 2]; *A2=Wr0[ 2]; L+=n0; A1+=lda; A2+=lda;
+  166.    1                          *L=*A1=Wmx[ 3]; *A2=Wr0[ 3]; L+=n0; A1+=lda; A2+=lda;
+  167.    1        #endif
+  168.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  169.    1                          *L=*A1=Wmx[ 4]; *A2=Wr0[ 4]; L+=n0; A1+=lda; A2+=lda;
+  170.    1                          *L=*A1=Wmx[ 5]; *A2=Wr0[ 5]; L+=n0; A1+=lda; A2+=lda;
+  171.    1                          *L=*A1=Wmx[ 6]; *A2=Wr0[ 6]; L+=n0; A1+=lda; A2+=lda;
+  172.    1                          *L=*A1=Wmx[ 7]; *A2=Wr0[ 7]; L+=n0; A1+=lda; A2+=lda;
+  173.    1        #endif
+  174.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  175.    1                          *L=*A1=Wmx[ 8]; *A2=Wr0[ 8]; L+=n0; A1+=lda; A2+=lda;
+  176.    1                          *L=*A1=Wmx[ 9]; *A2=Wr0[ 9]; L+=n0; A1+=lda; A2+=lda;
+  177.    1                          *L=*A1=Wmx[10]; *A2=Wr0[10]; L+=n0; A1+=lda; A2+=lda;
+  178.    1                          *L=*A1=Wmx[11]; *A2=Wr0[11]; L+=n0; A1+=lda; A2+=lda;
+  179.    1                          *L=*A1=Wmx[12]; *A2=Wr0[12]; L+=n0; A1+=lda; A2+=lda;
+  180.    1                          *L=*A1=Wmx[13]; *A2=Wr0[13]; L+=n0; A1+=lda; A2+=lda;
+  181.    1                          *L=*A1=Wmx[14]; *A2=Wr0[14]; L+=n0; A1+=lda; A2+=lda;
+  182.    1                          *L=*A1=Wmx[15]; *A2=Wr0[15]; L+=n0; A1+=lda; A2+=lda;
+  183.    1        #endif
+  184.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  185.    1                          *L=*A1=Wmx[16]; *A2=Wr0[16]; L+=n0; A1+=lda; A2+=lda;
+  186.    1                          *L=*A1=Wmx[17]; *A2=Wr0[17]; L+=n0; A1+=lda; A2+=lda;
+  187.    1                          *L=*A1=Wmx[18]; *A2=Wr0[18]; L+=n0; A1+=lda; A2+=lda;
+  188.    1                          *L=*A1=Wmx[19]; *A2=Wr0[19]; L+=n0; A1+=lda; A2+=lda;
+  189.    1                          *L=*A1=Wmx[20]; *A2=Wr0[20]; L+=n0; A1+=lda; A2+=lda;
+  190.    1                          *L=*A1=Wmx[21]; *A2=Wr0[21]; L+=n0; A1+=lda; A2+=lda;
+  191.    1                          *L=*A1=Wmx[22]; *A2=Wr0[22]; L+=n0; A1+=lda; A2+=lda;
+  192.    1                          *L=*A1=Wmx[23]; *A2=Wr0[23]; L+=n0; A1+=lda; A2+=lda;
+  193.    1                          *L=*A1=Wmx[24]; *A2=Wr0[24]; L+=n0; A1+=lda; A2+=lda;
+  194.    1                          *L=*A1=Wmx[25]; *A2=Wr0[25]; L+=n0; A1+=lda; A2+=lda;
+  195.    1                          *L=*A1=Wmx[26]; *A2=Wr0[26]; L+=n0; A1+=lda; A2+=lda;
+  196.    1                          *L=*A1=Wmx[27]; *A2=Wr0[27]; L+=n0; A1+=lda; A2+=lda;
+  197.    1                          *L=*A1=Wmx[28]; *A2=Wr0[28]; L+=n0; A1+=lda; A2+=lda;
+  198.    1                          *L=*A1=Wmx[29]; *A2=Wr0[29]; L+=n0; A1+=lda; A2+=lda;
+  199.    1                          *L=*A1=Wmx[30]; *A2=Wr0[30]; L+=n0; A1+=lda; A2+=lda;
+  200.    1                          *L=*A1=Wmx[31]; *A2=Wr0[31]; L+=n0; A1+=lda; A2+=lda;
+  201.    1        #endif
+  202.    1------>                }
+  203.  + r8-----<                for( i = 0; i < nr; i++, L += n0, A1 += lda, A2 += lda )
+  204.    r8----->                { *L = *A1 = Wmx[i]; *A2 = Wr0[i]; }
+  205.                         }
+  206.                         else
+  207.                         {
+  208.             /*
+  209.              * otherwise the current row of  A  is swapped with itself, so just copy
+  210.              * the current of A into L1.
+  211.              */
+  212.                            *Mptr( PANEL->A, II, JJ, lda ) = gmax;
+  213.             
+  214.  + 1------<                for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  215.    1                            Wmx += HPL_LOCSWP_DEPTH, Wr0 += HPL_LOCSWP_DEPTH )
+  216.    1                       {
+  217.    1                          *L = Wmx[ 0]; L+=n0;
+  218.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  219.    1                          *L = Wmx[ 1]; L+=n0;
+  220.    1        #endif
+  221.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  222.    1                          *L = Wmx[ 2]; L+=n0; *L = Wmx[ 3]; L+=n0;
+  223.    1        #endif
+  224.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  225.    1                          *L = Wmx[ 4]; L+=n0; *L = Wmx[ 5]; L+=n0;
+  226.    1                          *L = Wmx[ 6]; L+=n0; *L = Wmx[ 7]; L+=n0;
+  227.    1        #endif
+  228.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  229.    1                          *L = Wmx[ 8]; L+=n0; *L = Wmx[ 9]; L+=n0;
+  230.    1                          *L = Wmx[10]; L+=n0; *L = Wmx[11]; L+=n0;
+  231.    1                          *L = Wmx[12]; L+=n0; *L = Wmx[13]; L+=n0;
+  232.    1                          *L = Wmx[14]; L+=n0; *L = Wmx[15]; L+=n0;
+  233.    1        #endif
+  234.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  235.    1                          *L = Wmx[16]; L+=n0; *L = Wmx[17]; L+=n0;
+  236.    1                          *L = Wmx[18]; L+=n0; *L = Wmx[19]; L+=n0;
+  237.    1                          *L = Wmx[20]; L+=n0; *L = Wmx[21]; L+=n0;
+  238.    1                          *L = Wmx[22]; L+=n0; *L = Wmx[23]; L+=n0;
+  239.    1                          *L = Wmx[24]; L+=n0; *L = Wmx[25]; L+=n0;
+  240.    1                          *L = Wmx[26]; L+=n0; *L = Wmx[27]; L+=n0;
+  241.    1                          *L = Wmx[28]; L+=n0; *L = Wmx[29]; L+=n0;
+  242.    1                          *L = Wmx[30]; L+=n0; *L = Wmx[31]; L+=n0;
+  243.    1        #endif
+  244.    1------>                }
+  245.  + Vpr2--<>                for( i = 0; i < nr; i++, L += n0 ) { *L = Wmx[i]; }
+  246.                         }
+  247.                      }
+  248.                      else
+  249.                      {
+  250.             /*
+  251.              * otherwise, the row to be swapped with the current row of A is in Wmx,
+  252.              * so copy Wmx into L1 and A.
+  253.              */
+  254.                         A1 = Mptr( PANEL->A,  II, 0, lda );
+  255.             
+  256.  + 1------<             for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  257.    1                         Wmx += HPL_LOCSWP_DEPTH )
+  258.    1                    {
+  259.    1                       *L = *A1 = Wmx[ 0]; L += n0; A1 += lda;
+  260.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  261.    1                       *L = *A1 = Wmx[ 1]; L += n0; A1 += lda;
+  262.    1        #endif
+  263.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  264.    1                       *L = *A1 = Wmx[ 2]; L += n0; A1 += lda;
+  265.    1                       *L = *A1 = Wmx[ 3]; L += n0; A1 += lda;
+  266.    1        #endif
+  267.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  268.    1                       *L = *A1 = Wmx[ 4]; L += n0; A1 += lda;
+  269.    1                       *L = *A1 = Wmx[ 5]; L += n0; A1 += lda;
+  270.    1                       *L = *A1 = Wmx[ 6]; L += n0; A1 += lda;
+  271.    1                       *L = *A1 = Wmx[ 7]; L += n0; A1 += lda;
+  272.    1        #endif
+  273.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  274.    1                       *L = *A1 = Wmx[ 8]; L += n0; A1 += lda;
+  275.    1                       *L = *A1 = Wmx[ 9]; L += n0; A1 += lda;
+  276.    1                       *L = *A1 = Wmx[10]; L += n0; A1 += lda;
+  277.    1                       *L = *A1 = Wmx[11]; L += n0; A1 += lda;
+  278.    1                       *L = *A1 = Wmx[12]; L += n0; A1 += lda;
+  279.    1                       *L = *A1 = Wmx[13]; L += n0; A1 += lda;
+  280.    1                       *L = *A1 = Wmx[14]; L += n0; A1 += lda;
+  281.    1                       *L = *A1 = Wmx[15]; L += n0; A1 += lda;
+  282.    1        #endif
+  283.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  284.    1                       *L = *A1 = Wmx[16]; L += n0; A1 += lda;
+  285.    1                       *L = *A1 = Wmx[17]; L += n0; A1 += lda;
+  286.    1                       *L = *A1 = Wmx[18]; L += n0; A1 += lda;
+  287.    1                       *L = *A1 = Wmx[19]; L += n0; A1 += lda;
+  288.    1                       *L = *A1 = Wmx[20]; L += n0; A1 += lda;
+  289.    1                       *L = *A1 = Wmx[21]; L += n0; A1 += lda;
+  290.    1                       *L = *A1 = Wmx[22]; L += n0; A1 += lda;
+  291.    1                       *L = *A1 = Wmx[23]; L += n0; A1 += lda;
+  292.    1                       *L = *A1 = Wmx[24]; L += n0; A1 += lda;
+  293.    1                       *L = *A1 = Wmx[25]; L += n0; A1 += lda;
+  294.    1                       *L = *A1 = Wmx[26]; L += n0; A1 += lda;
+  295.    1                       *L = *A1 = Wmx[27]; L += n0; A1 += lda;
+  296.    1                       *L = *A1 = Wmx[28]; L += n0; A1 += lda;
+  297.    1                       *L = *A1 = Wmx[29]; L += n0; A1 += lda;
+  298.    1                       *L = *A1 = Wmx[30]; L += n0; A1 += lda;
+  299.    1                       *L = *A1 = Wmx[31]; L += n0; A1 += lda;
+  300.    1        #endif
+  301.    1------>             }
+  302.             
+  303.  + r8-----<             for( i = 0; i < nr; i++, L += n0, A1 += lda )
+  304.    r8----->             { *L = *A1 = Wmx[i]; }
+  305.                      }
+  306.                   }
+  307.                   else
+  308.                   {
+  309.             /*
+  310.              * otherwise I do not own the current row of A, so copy the max row  Wmx
+  311.              * into L1.
+  312.              */
+  313.  + 1------<          for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  314.    1                      Wmx += HPL_LOCSWP_DEPTH )
+  315.    1                 {
+  316.    1                    *L = Wmx[ 0]; L+=n0;
+  317.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  318.    1                    *L = Wmx[ 1]; L+=n0;
+  319.    1        #endif
+  320.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  321.    1                    *L = Wmx[ 2]; L+=n0; *L = Wmx[ 3]; L+=n0;
+  322.    1        #endif
+  323.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  324.    1                    *L = Wmx[ 4]; L+=n0; *L = Wmx[ 5]; L+=n0;
+  325.    1                    *L = Wmx[ 6]; L+=n0; *L = Wmx[ 7]; L+=n0;
+  326.    1        #endif
+  327.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  328.    1                    *L = Wmx[ 8]; L+=n0; *L = Wmx[ 9]; L+=n0;
+  329.    1                    *L = Wmx[10]; L+=n0; *L = Wmx[11]; L+=n0;
+  330.    1                    *L = Wmx[12]; L+=n0; *L = Wmx[13]; L+=n0;
+  331.    1                    *L = Wmx[14]; L+=n0; *L = Wmx[15]; L+=n0;
+  332.    1        #endif
+  333.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  334.    1                    *L = Wmx[16]; L+=n0; *L = Wmx[17]; L+=n0;
+  335.    1                    *L = Wmx[18]; L+=n0; *L = Wmx[19]; L+=n0;
+  336.    1                    *L = Wmx[20]; L+=n0; *L = Wmx[21]; L+=n0;
+  337.    1                    *L = Wmx[22]; L+=n0; *L = Wmx[23]; L+=n0;
+  338.    1                    *L = Wmx[24]; L+=n0; *L = Wmx[25]; L+=n0;
+  339.    1                    *L = Wmx[26]; L+=n0; *L = Wmx[27]; L+=n0;
+  340.    1                    *L = Wmx[28]; L+=n0; *L = Wmx[29]; L+=n0;
+  341.    1                    *L = Wmx[30]; L+=n0; *L = Wmx[31]; L+=n0;
+  342.    1        #endif
+  343.    1------>          }
+  344.  + Vpr2--<>          for( i = 0; i < nr; i++, L += n0 ) { *L = Wmx[i]; }
+  345.             /*
+  346.              * and if I own the max row, overwrite it with the current row Wr0.
+  347.              */
+  348.                      if( myrow == (int)(WORK[3]) )
+  349.                      {
+  350.                         A2 = Mptr( PANEL->A, II + (size_t)(WORK[1]), 0, lda );
+  351.             
+  352.  + 1------<             for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  353.    1                         Wr0 += HPL_LOCSWP_DEPTH )
+  354.    1                    {
+  355.    1                       *A2 = Wr0[ 0]; A2+=lda;
+  356.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  357.    1                       *A2 = Wr0[ 1]; A2+=lda;
+  358.    1        #endif
+  359.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  360.    1                       *A2 = Wr0[ 2]; A2+=lda; *A2 = Wr0[ 3]; A2+=lda;
+  361.    1        #endif
+  362.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  363.    1                       *A2 = Wr0[ 4]; A2+=lda; *A2 = Wr0[ 5]; A2+=lda;
+  364.    1                       *A2 = Wr0[ 6]; A2+=lda; *A2 = Wr0[ 7]; A2+=lda;
+  365.    1        #endif
+  366.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  367.    1                       *A2 = Wr0[ 8]; A2+=lda; *A2 = Wr0[ 9]; A2+=lda;
+  368.    1                       *A2 = Wr0[10]; A2+=lda; *A2 = Wr0[11]; A2+=lda;
+  369.    1                       *A2 = Wr0[12]; A2+=lda; *A2 = Wr0[13]; A2+=lda;
+  370.    1                       *A2 = Wr0[14]; A2+=lda; *A2 = Wr0[15]; A2+=lda;
+  371.    1        #endif
+  372.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  373.    1                       *A2 = Wr0[16]; A2+=lda; *A2 = Wr0[17]; A2+=lda;
+  374.    1                       *A2 = Wr0[18]; A2+=lda; *A2 = Wr0[19]; A2+=lda;
+  375.    1                       *A2 = Wr0[20]; A2+=lda; *A2 = Wr0[21]; A2+=lda;
+  376.    1                       *A2 = Wr0[22]; A2+=lda; *A2 = Wr0[23]; A2+=lda;
+  377.    1                       *A2 = Wr0[24]; A2+=lda; *A2 = Wr0[25]; A2+=lda;
+  378.    1                       *A2 = Wr0[26]; A2+=lda; *A2 = Wr0[27]; A2+=lda;
+  379.    1                       *A2 = Wr0[28]; A2+=lda; *A2 = Wr0[29]; A2+=lda;
+  380.    1                       *A2 = Wr0[30]; A2+=lda; *A2 = Wr0[31]; A2+=lda;
+  381.    1        #endif
+  382.    1------>             }
+  383.             
+  384.  + Vpr2--<>             for( i = 0; i < nr; i++, A2 += lda ) { *A2 = Wr0[i]; }
+  385.                      }
+  386.                   }
+  387.                }
+  388.                else
+  389.                {
+  390.             /*
+  391.              * Otherwise the max element in the current column is zero,  simply copy
+  392.              * the current row Wr0 into L1. The matrix is singular.
+  393.              */
+  394.  + 1------<       for( i = 0; i < nu; i += HPL_LOCSWP_DEPTH,
+  395.    1                   Wr0 += HPL_LOCSWP_DEPTH )
+  396.    1              {
+  397.    1                 *L = Wr0[ 0]; L+=n0;
+  398.    1        #if ( HPL_LOCSWP_DEPTH >  1 )
+  399.    1                 *L = Wr0[ 1]; L+=n0;
+  400.    1        #endif
+  401.    1        #if ( HPL_LOCSWP_DEPTH >  2 )
+  402.    1                 *L = Wr0[ 2]; L+=n0; *L = Wr0[ 3]; L+=n0;
+  403.    1        #endif
+  404.    1        #if ( HPL_LOCSWP_DEPTH >  4 )
+  405.    1                 *L = Wr0[ 4]; L+=n0; *L = Wr0[ 5]; L+=n0;
+  406.    1                 *L = Wr0[ 6]; L+=n0; *L = Wr0[ 7]; L+=n0;
+  407.    1        #endif
+  408.    1        #if ( HPL_LOCSWP_DEPTH >  8 )
+  409.    1                 *L = Wr0[ 8]; L+=n0; *L = Wr0[ 9]; L+=n0;
+  410.    1                 *L = Wr0[10]; L+=n0; *L = Wr0[11]; L+=n0;
+  411.    1                 *L = Wr0[12]; L+=n0; *L = Wr0[13]; L+=n0;
+  412.    1                 *L = Wr0[14]; L+=n0; *L = Wr0[15]; L+=n0;
+  413.    1        #endif
+  414.    1        #if ( HPL_LOCSWP_DEPTH > 16 )
+  415.    1                 *L = Wr0[16]; L+=n0; *L = Wr0[17]; L+=n0;
+  416.    1                 *L = Wr0[18]; L+=n0; *L = Wr0[19]; L+=n0;
+  417.    1                 *L = Wr0[20]; L+=n0; *L = Wr0[21]; L+=n0;
+  418.    1                 *L = Wr0[22]; L+=n0; *L = Wr0[23]; L+=n0;
+  419.    1                 *L = Wr0[24]; L+=n0; *L = Wr0[25]; L+=n0;
+  420.    1                 *L = Wr0[26]; L+=n0; *L = Wr0[27]; L+=n0;
+  421.    1                 *L = Wr0[28]; L+=n0; *L = Wr0[29]; L+=n0;
+  422.    1                 *L = Wr0[30]; L+=n0; *L = Wr0[31]; L+=n0;
+  423.    1        #endif
+  424.    1------>       }
+  425.             
+  426.  + Vpr2--<>       for( i = 0; i < nr; i++, L += n0 ) { *L = Wr0[i]; }
+  427.             /*
+  428.              * set INFO.
+  429.              */
+  430.                   if( *(PANEL->DINFO) == 0.0 )
+  431.                      *(PANEL->DINFO) = (double)(PANEL->ia + JJ + 1);
+  432.                }
+  433.             /*
+  434.              * End of HPL_dlocswpN
+  435.              */
+  436.             }
+
+CC-6289 CC: VECTOR File = HPL_dlocswpN.c, Line = 157 
+  A loop was not vectorized because a recurrence was found on "L" between lines 160 and 162.
+
+CC-6332 CC: VECTOR File = HPL_dlocswpN.c, Line = 203 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 203 
+  A loop was unrolled 8 times.
+
+CC-6254 CC: VECTOR File = HPL_dlocswpN.c, Line = 214 
+  A loop was not vectorized because a recurrence was found on "L" at line 222.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 245 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = HPL_dlocswpN.c, Line = 245 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = HPL_dlocswpN.c, Line = 245 
+  A loop was partially vectorized.
+
+CC-6289 CC: VECTOR File = HPL_dlocswpN.c, Line = 256 
+  A loop was not vectorized because a recurrence was found on "L" between lines 259 and 261.
+
+CC-6332 CC: VECTOR File = HPL_dlocswpN.c, Line = 303 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 303 
+  A loop was unrolled 8 times.
+
+CC-6254 CC: VECTOR File = HPL_dlocswpN.c, Line = 313 
+  A loop was not vectorized because a recurrence was found on "L" at line 321.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 344 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = HPL_dlocswpN.c, Line = 344 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = HPL_dlocswpN.c, Line = 344 
+  A loop was partially vectorized.
+
+CC-6254 CC: VECTOR File = HPL_dlocswpN.c, Line = 352 
+  A loop was not vectorized because a recurrence was found on "A2" at line 360.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 384 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = HPL_dlocswpN.c, Line = 384 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = HPL_dlocswpN.c, Line = 384 
+  A loop was partially vectorized.
+
+CC-6254 CC: VECTOR File = HPL_dlocswpN.c, Line = 394 
+  A loop was not vectorized because a recurrence was found on "L" at line 402.
+
+CC-6005 CC: SCALAR File = HPL_dlocswpN.c, Line = 426 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = HPL_dlocswpN.c, Line = 426 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = HPL_dlocswpN.c, Line = 426 
+  A loop was partially vectorized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

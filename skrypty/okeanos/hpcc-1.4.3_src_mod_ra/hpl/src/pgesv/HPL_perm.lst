@@ -1,0 +1,233 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_perm.c
+Compiled : 2016-03-19  13:19:56
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_perm.o -c ../../../src/pgesv/HPL_perm.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_perm.c
+Date     : 03/19/2016  13:19:56
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* 
+    2.             * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.             *    HPL - 2.0 - September 10, 2008                          
+    4.             *    Antoine P. Petitet                                                
+    5.             *    University of Tennessee, Knoxville                                
+    6.             *    Innovative Computing Laboratory                                 
+    7.             *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.             *                                                                      
+    9.             * -- Copyright notice and Licensing terms:                             
+   10.             *                                                                      
+   11.             * Redistribution  and  use in  source and binary forms, with or without
+   12.             * modification, are  permitted provided  that the following  conditions
+   13.             * are met:                                                             
+   14.             *                                                                      
+   15.             * 1. Redistributions  of  source  code  must retain the above copyright
+   16.             * notice, this list of conditions and the following disclaimer.        
+   17.             *                                                                      
+   18.             * 2. Redistributions in binary form must reproduce  the above copyright
+   19.             * notice, this list of conditions,  and the following disclaimer in the
+   20.             * documentation and/or other materials provided with the distribution. 
+   21.             *                                                                      
+   22.             * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.             * software must display the following acknowledgement:                 
+   24.             * This  product  includes  software  developed  at  the  University  of
+   25.             * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.             *                                                                      
+   27.             * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.             * names  of  its  contributors  may  not  be used to endorse or promote
+   29.             * products  derived   from   this  software  without  specific  written
+   30.             * permission.                                                          
+   31.             *                                                                      
+   32.             * -- Disclaimer:                                                       
+   33.             *                                                                      
+   34.             * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.             * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.             * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.             * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.             * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.             * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.             * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.             * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.             * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.             * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.             * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.             * ---------------------------------------------------------------------
+   46.             */ 
+   47.            /*
+   48.             * Include files
+   49.             */
+   50.            #include "hpl.h"
+   51.            
+   52.            #ifdef HPL_STDC_HEADERS
+   53.            void HPL_perm
+   54.            (
+   55.               const int                        N,
+   56.               int *                            LINDXA,
+   57.               int *                            LINDXAU,
+   58.               int *                            IWORK
+   59.            )
+   60.            #else
+   61.            void HPL_perm
+   62.            ( N, LINDXA, LINDXAU, IWORK )
+   63.               const int                        N;
+   64.               int *                            LINDXA;
+   65.               int *                            LINDXAU;
+   66.               int *                            IWORK;
+   67.            #endif
+   68.            {
+   69.            /* 
+   70.             * Purpose
+   71.             * =======
+   72.             *
+   73.             * HPL_perm combines  two  index  arrays  and generate the corresponding
+   74.             * permutation. First, this function computes the inverse of LINDXA, and
+   75.             * then combine it with LINDXAU.  Second, in order to be able to perform
+   76.             * the permutation in place,  LINDXAU  is overwritten by the sequence of
+   77.             * permutation  producing  the  same result.  What we ultimately want to
+   78.             * achieve is:  U[LINDXAU[i]] := U[LINDXA[i]] for i in [0..N). After the
+   79.             * call to this function,  this in place permutation can be performed by
+   80.             * for i in [0..N) swap U[i] with U[LINDXAU[i]].
+   81.             *
+   82.             * Arguments
+   83.             * =========
+   84.             *
+   85.             * N       (global input)                const int
+   86.             *         On entry,  N  specifies the length of the arrays  LINDXA  and
+   87.             *         LINDXAU. N should be at least zero.
+   88.             *
+   89.             * LINDXA  (global input/output)         int *
+   90.             *         On entry,  LINDXA  is an array of dimension N  containing the
+   91.             *         source indexes. On exit,  LINDXA  contains the combined index
+   92.             *         array.
+   93.             *
+   94.             * LINDXAU (global input/output)         int *
+   95.             *         On entry,  LINDXAU is an array of dimension N  containing the
+   96.             *         target indexes.  On exit,  LINDXAU  contains  the sequence of
+   97.             *         permutation,  that  should be applied  in increasing order to
+   98.             *         permute the underlying array U in place.
+   99.             *
+  100.             * IWORK   (workspace)                   int *
+  101.             *         On entry, IWORK is a workarray of dimension N.
+  102.             *
+  103.             * ---------------------------------------------------------------------
+  104.             */ 
+  105.            /*
+  106.             * .. Local Variables ..
+  107.             */
+  108.               int                        i, j, k, fndd;
+  109.            /* ..
+  110.             * .. Executable Statements ..
+  111.             */
+  112.            /*
+  113.             * Inverse LINDXA - combine LINDXA and LINDXAU - Initialize IWORK
+  114.             */
+  115.  + r8---<>    for( i = 0; i < N; i++ ) { IWORK[LINDXA[i]] = i; }
+  116.  + Vr2--<>    for( i = 0; i < N; i++ ) { LINDXA[i] = LINDXAU[IWORK[i]]; IWORK[i] = i; }
+  117.             
+  118.  + 1-----<    for( i = 0; i < N; i++ )
+  119.    1          {
+  120.    1             /* search LINDXA such that    LINDXA[j]  == i */
+  121.  + 1 2--<>       j = 0; do { fndd = ( LINDXA[j] == i ); j++; } while( !fndd ); j--;
+  122.    1             /* search IWORK  such that    IWORK[k]   == j */
+  123.  + 1 2--<>       k = 0; do { fndd = ( IWORK[k]  == j ); k++; } while( !fndd ); k--;
+  124.    1             /* swap IWORK[i] and IWORK[k]; LINDXAU[i] = k */
+  125.    1             j = IWORK[i]; IWORK[i] = IWORK[k]; IWORK[k] = j;
+  126.    1             LINDXAU[i] = k;
+  127.    1----->    }
+  128.            /*
+  129.             * End of HPL_perm
+  130.             */
+  131.            }
+
+CC-6332 CC: VECTOR File = HPL_perm.c, Line = 115 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = HPL_perm.c, Line = 115 
+  A loop was unrolled 8 times.
+
+CC-6005 CC: SCALAR File = HPL_perm.c, Line = 116 
+  A loop was unrolled 2 times.
+
+CC-6382 CC: VECTOR File = HPL_perm.c, Line = 116 
+  A loop was partially vector pipelined.
+
+CC-6204 CC: VECTOR File = HPL_perm.c, Line = 116 
+  A loop was vectorized.
+
+CC-6254 CC: VECTOR File = HPL_perm.c, Line = 118 
+  A loop was not vectorized because a recurrence was found on "IWORK" at line 125.
+
+CC-6254 CC: VECTOR File = HPL_perm.c, Line = 121 
+  A loop was not vectorized because a recurrence was found on "j" at line 121.
+
+CC-6254 CC: VECTOR File = HPL_perm.c, Line = 123 
+  A loop was not vectorized because a recurrence was found on "k" at line 123.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

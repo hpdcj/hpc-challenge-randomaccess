@@ -1,0 +1,619 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdlaswp00T.c
+Compiled : 2016-03-19  13:19:56
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_pdlaswp00T.o
+           -c ../../../src/pgesv/HPL_pdlaswp00T.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdlaswp00T.c
+Date     : 03/19/2016  13:19:56
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.             /* 
+    2.              * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.              *    HPL - 2.0 - September 10, 2008                          
+    4.              *    Antoine P. Petitet                                                
+    5.              *    University of Tennessee, Knoxville                                
+    6.              *    Innovative Computing Laboratory                                 
+    7.              *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.              *                                                                      
+    9.              * -- Copyright notice and Licensing terms:                             
+   10.              *                                                                      
+   11.              * Redistribution  and  use in  source and binary forms, with or without
+   12.              * modification, are  permitted provided  that the following  conditions
+   13.              * are met:                                                             
+   14.              *                                                                      
+   15.              * 1. Redistributions  of  source  code  must retain the above copyright
+   16.              * notice, this list of conditions and the following disclaimer.        
+   17.              *                                                                      
+   18.              * 2. Redistributions in binary form must reproduce  the above copyright
+   19.              * notice, this list of conditions,  and the following disclaimer in the
+   20.              * documentation and/or other materials provided with the distribution. 
+   21.              *                                                                      
+   22.              * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.              * software must display the following acknowledgement:                 
+   24.              * This  product  includes  software  developed  at  the  University  of
+   25.              * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.              *                                                                      
+   27.              * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.              * names  of  its  contributors  may  not  be used to endorse or promote
+   29.              * products  derived   from   this  software  without  specific  written
+   30.              * permission.                                                          
+   31.              *                                                                      
+   32.              * -- Disclaimer:                                                       
+   33.              *                                                                      
+   34.              * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.              * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.              * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.              * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.              * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.              * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.              * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.              * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.              * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.              * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.              * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.              * ---------------------------------------------------------------------
+   46.              */ 
+   47.             /*
+   48.              * Include files
+   49.              */
+   50.             #include "hpl.h"
+   51.             
+   52.             #ifdef HPL_STDC_HEADERS
+   53.             void HPL_pdlaswp00T
+   54.             (
+   55.                HPL_T_panel *                    PBCST,
+   56.                int *                            IFLAG,
+   57.                HPL_T_panel *                    PANEL,
+   58.                const int                        NN
+   59.             )
+   60.             #else
+   61.             void HPL_pdlaswp00T
+   62.             ( PBCST, IFLAG, PANEL, NN )
+   63.                HPL_T_panel *                    PBCST;
+   64.                int *                            IFLAG;
+   65.                HPL_T_panel *                    PANEL;
+   66.                const int                        NN;
+   67.             #endif
+   68.             {
+   69.             /* 
+   70.              * Purpose
+   71.              * =======
+   72.              *
+   73.              * HPL_pdlaswp00T applies the  NB  row interchanges to  NN columns of the
+   74.              * trailing submatrix and broadcast a column panel.
+   75.              *  
+   76.              * Bi-directional  exchange  is used to perform the  swap :: broadcast of
+   77.              * the row  panel U at once, resulting in a lower number of messages than
+   78.              * usual as well as a lower communication volume. With P process rows and
+   79.              * assuming  bi-directional links,  the running time of this function can
+   80.              * be approximated by:
+   81.              *  
+   82.              *    log_2(P) * (lat + NB*LocQ(N) / bdwth)
+   83.              *  
+   84.              * where  NB  is the number of rows of the row panel U,  N is the global
+   85.              * number of columns being updated,  lat and bdwth  are the latency  and
+   86.              * bandwidth  of  the  network  for  double  precision real words.  Mono
+   87.              * directional links will double this communication cost.
+   88.              *
+   89.              * Arguments
+   90.              * =========
+   91.              *
+   92.              * PBCST   (local input/output)          HPL_T_panel *
+   93.              *         On entry,  PBCST  points to the data structure containing the
+   94.              *         panel (to be broadcast) information.
+   95.              *
+   96.              * IFLAG   (local input/output)          int *
+   97.              *         On entry, IFLAG  indicates  whether or not  the broadcast has
+   98.              *         already been completed.  If not,  probing will occur, and the
+   99.              *         outcome will be contained in IFLAG on exit.
+  100.              *
+  101.              * PANEL   (local input/output)          HPL_T_panel *
+  102.              *         On entry,  PANEL  points to the data structure containing the
+  103.              *         panel (to be broadcast and swapped) information.
+  104.              *
+  105.              * NN      (local input)                 const int
+  106.              *         On entry, NN specifies  the  local  number  of columns of the
+  107.              *         trailing  submatrix  to  be swapped and broadcast starting at
+  108.              *         the current position. NN must be at least zero.
+  109.              *
+  110.              * ---------------------------------------------------------------------
+  111.              */ 
+  112.             /*
+  113.              * .. Local Variables ..
+  114.              */
+  115.                MPI_Comm                  comm;
+  116.                HPL_T_grid                * grid;
+  117.                double                    * A, * U, * W;
+  118.                void                       * vptr = NULL;
+  119.                int                       * ipID, * lindxA, * lindxAU, * llen,
+  120.                                          * llen_sv;
+  121.                unsigned int              ip2, ip2_=1, ipdist, ipow=1, mask=1,
+  122.                                          mydist, mydis_;
+  123.                int                       Cmsgid=MSGID_BEGIN_PFACT, Np2, align,
+  124.                                          hdim, i, icurrow, *iflag, ipA, ipW, *ipl,
+  125.                                          iprow, jb, k, lda, ldW, myrow, n, nprow,
+  126.                                          partner, root, size_, usize;
+  127.             #define LDU                  n
+  128.             /* ..
+  129.              * .. Executable Statements ..
+  130.              */
+  131.                n = Mmin( NN, PANEL->n ); jb = PANEL->jb;
+  132.             /*
+  133.              * Quick return if there is nothing to do
+  134.              */
+  135.                if( ( n <= 0 ) || ( jb <= 0 ) ) return;
+  136.             
+  137.             #ifdef HPL_DETAILED_TIMING
+  138.                HPL_ptimer( HPL_TIMING_LASWP );
+  139.             #endif
+  140.             /*
+  141.              * Retrieve parameters from the PANEL data structure
+  142.              */
+  143.                grid  = PANEL->grid;    nprow   = grid->nprow; myrow = grid->myrow;
+  144.                comm  = grid->col_comm; ip2     = (unsigned int)grid->row_ip2;
+  145.                hdim  = grid->row_hdim; align   = PANEL->algo->align;
+  146.                A     = PANEL->A;       U       = PANEL->U;    iflag = PANEL->IWORK;
+  147.                lda   = PANEL->lda;     icurrow = PANEL->prow; usize = jb * n;
+  148.                ldW   = n + 1;
+  149.             /*
+  150.              * Allocate space for temporary W (ldW * jb)
+  151.              */
+  152.                vptr = (void*)malloc( ( (size_t)(align) + 
+  153.                                        ((size_t)(jb) * (size_t)(ldW))) * 
+  154.                                        sizeof(double) );
+  155.                if( vptr == NULL )
+  156.  +             { HPL_pabort( __LINE__, "HPL_pdlaswp00T", "Memory allocation failed" ); }
+  157.             
+  158.  +             W = (double *)HPL_PTR( vptr, ((size_t)(align) * sizeof(double) ) );
+  159.             /*
+  160.              * Construct ipID and its local counter parts lindxA, lindxAU -  llen is
+  161.              * the number of rows/columns that I have in workspace and that I should
+  162.              * send.  Compute  lindx_, ipA, llen if it has not already been done for
+  163.              * this panel;
+  164.              */
+  165.                k = (int)((unsigned int)(jb) << 1); ipl = iflag + 1; ipID = ipl + 1;
+  166.                lindxA  = ipID + ((unsigned int)(k) << 1); lindxAU = lindxA + k;
+  167.                llen    = lindxAU + k; llen_sv = llen + nprow;
+  168.             
+  169.                if( *iflag == -1 )    /* no index arrays have been computed so far */
+  170.                {
+  171.  +                HPL_pipid(   PANEL,  ipl, ipID );
+  172.  +                HPL_plindx0( PANEL, *ipl, ipID, lindxA, lindxAU, llen_sv );
+  173.                   *iflag = 0;
+  174.                }
+  175.                else if( *iflag == 1 ) /* HPL_pdlaswp01T called before: reuse ipID */
+  176.                {
+  177.  +                HPL_plindx0( PANEL, *ipl, ipID, lindxA, lindxAU, llen_sv );
+  178.                   *iflag = 0;
+  179.                }
+  180.             /*
+  181.              * Copy the llen_sv into llen - Reset ipA to its correct value
+  182.              */
+  183.                ipA = llen_sv[myrow];
+  184.    Vcr2--<>    for( i = 0; i < nprow; i++ ) { llen[i]  = llen_sv[i]; }
+  185.             /*
+  186.              * For i in [0..2*jb),  lindxA[i] is the offset in A of a row that ulti-
+  187.              * mately goes to U( lindxAU[i], : ) or U( :, lindxAU[i] ).  In icurrow,
+  188.              * we directly pack into U, otherwise we pack into workspace. The  first
+  189.              * entry of each column packed in workspace is in fact the row or column
+  190.              * offset in U where it should go to.
+  191.              */
+  192.                if( myrow == icurrow ) 
+  193.                {
+  194.  +                HPL_dlaswp01T( ipA, n, A, lda, U, LDU, lindxA, lindxAU );
+  195.                }
+  196.                else
+  197.                {
+  198.  +                HPL_dlaswp02N( ipA, n, A, lda, W, W+1, ldW, lindxA, lindxAU );
+  199.                }
+  200.             /*
+  201.              * Probe for column panel - forward it when available 
+  202.              */
+  203.  +             if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  204.             /*
+  205.              * Algorithm for bi-directional data exchange:
+  206.              *
+  207.              * As long as I have not talked to a process that  already  had the data
+  208.              * from icurrow,  I will be sending the workspace,  otherwise  I will be
+  209.              * sending U. Note that the columns in workspace contain the local index
+  210.              * in U they should go to.
+  211.              *
+  212.              * If I am receiving from a process that  has the data from  icurrow,  I
+  213.              * will be receiving in  U, copy the data of  U  that stays into  A, and
+  214.              * then the columns I have in workspace into U; otherwise  I will be re-
+  215.              * ceiving in the remaining workspace.  If I am one  of  those processes 
+  216.              * that already has the data from icurrow, I will be immediately copying
+  217.              * the data I have in my workspace into U.
+  218.              *
+  219.              * When I receive U, some of U should be copied in my piece of A  before
+  220.              * I can copy the rows I have in my workspace into  U.  This information
+  221.              * is kept in the lists  lindx_:  the row lindxAU[i] should be copied in
+  222.              * the row  lindxA[i] of my piece of  A, just as in the reversed initial
+  223.              * packing operation. Those rows are thus the first ones in the work ar-
+  224.              * ray.  After  this  operation  has  been  performed,  I will not  need
+  225.              * those lindx arrays,  and  I  will  always be sending a buffer of size
+  226.              * jb x n, or n x jb, that is, U.
+  227.              *
+  228.              * At  every  step  of  the algorithm, it is necesary to update the list 
+  229.              * llen,  so that I can figure out how large the next messages I will be
+  230.              * sending/receiving are.  It is  obvious when I am sending U. It is not
+  231.              * otherwise.
+  232.              *
+  233.              * We  choose  icurrow  to be the source of the bi-directional exchange.
+  234.              * This allows the processes in the non-power 2 part to receive U at the
+  235.              * first exchange,  and  then  broadcast internally this U so that those 
+  236.              * processes can grab their piece of A.
+  237.              */
+  238.                if( myrow == icurrow ) { llen[myrow] = 0; ipA = 0; }
+  239.                ipW    = ipA;
+  240.                Np2    = ( ( size_ = nprow - ip2 ) != 0 );
+  241.                mydist = (unsigned int)MModSub( myrow, icurrow, nprow );
+  242.             /*
+  243.              * bi-directional exchange:   If nprow is not a power of 2,  proc[i-ip2]
+  244.              * receives local data from proc[i] for all i in  [ip2..nprow);  icurrow
+  245.              * is the source, these last process indexes are relative to icurrow.
+  246.              */
+  247.                if( ( Np2 != 0 ) && ( ( partner = (int)(mydist ^ ip2) ) < nprow ) )
+  248.                {
+  249.                   partner = MModAdd( icurrow, partner, nprow );
+  250.             
+  251.                   if( mydist == 0 )  /* I am the current row: I send U and recv W */
+  252.                   {
+  253.  +                   (void) HPL_sdrv( U, usize, Cmsgid, W, llen[partner] * ldW,
+  254.                                       Cmsgid, partner, comm );
+  255.                      if( llen[partner] > 0 )
+  256.  +                      HPL_dlaswp03T( llen[partner], n, U, LDU, W, W+1, ldW );
+  257.                   }
+  258.                   else if( mydist == ip2 )
+  259.                   {                      /* I recv U for later Bcast, I send my W */
+  260.  +                   (void) HPL_sdrv( W, llen[myrow]*ldW, Cmsgid, U, usize,
+  261.                                       Cmsgid, partner, comm );
+  262.                   }
+  263.                   else               /* None of us is icurrow, we exchange our Ws */
+  264.                   {
+  265.                      if( ( mydist & ip2 ) != 0 ) 
+  266.                      {
+  267.  +                      (void) HPL_send( W, llen[myrow]*ldW, partner, Cmsgid, comm );
+  268.                      }
+  269.                      else
+  270.                      {
+  271.  +                      (void) HPL_recv( Mptr( W, 0, ipW, ldW ), llen[partner]*ldW,
+  272.                                          partner, Cmsgid, comm );
+  273.                         if( llen[partner] > 0 ) ipW += llen[partner];
+  274.                      }
+  275.                   }
+  276.                }
+  277.             /*
+  278.              * Update llen
+  279.              */
+  280.  + r4-----<    for( i = 1; i < size_; i++ )
+  281.    r4          {
+  282.    r4             iprow   = MModAdd( icurrow, i,          nprow );
+  283.    r4             partner = MModAdd( iprow,   (int)(ip2), nprow );
+  284.    r4             llen[ iprow ] += llen[ partner ];
+  285.    r4----->    }
+  286.             /*
+  287.              * Probe for column panel - forward it when available 
+  288.              */
+  289.  +             if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  290.             /*
+  291.              * power of 2 part of the processes collection:  only processes [0..ip2)
+  292.              * are working;  some of them  (mydist >> (k+1) == 0) either send or re-
+  293.              * ceive U.  At every step k, k is in [0 .. hdim),  of the algorithm,  a
+  294.              * process pair that exchanges  U  is such that  (mydist >> (k+1) == 0).
+  295.              * Among  those  processes,  the  ones  that are sending U are such that 
+  296.              * mydist >> k == 0.
+  297.              */
+  298.                if( mydist < ip2 )
+  299.                {
+  300.                   k = 0;
+  301.             
+  302.  + 1------<       while( k < hdim )
+  303.    1              {
+  304.    1                 partner = (int)(mydist ^ ipow);
+  305.    1                 partner = MModAdd( icurrow, partner, nprow );
+  306.    1        /*
+  307.    1         * Exchange and combine the local results - If I receive U,  then I must
+  308.    1         * copy from U the rows that belong to my piece of A, and then update  U
+  309.    1         * by  copying in it the rows I have accumulated in W.  Otherwise, I re-
+  310.    1         * ceive W.  In this later case, and I have U, I shall update my copy of
+  311.    1         * U by copying in it the rows I have accumulated in  W.  If  I  did not
+  312.    1         * have U before, I simply need to update my pointer in W for later use.
+  313.    1         */
+  314.    1                 if( ( mydist >> (unsigned int)( k + 1 ) ) == 0 )
+  315.    1                 {
+  316.    1                    if( ( mydist >> (unsigned int)(k) ) == 0 )
+  317.    1                    {
+  318.  + 1                       (void) HPL_sdrv( U, usize, Cmsgid, Mptr( W, 0, ipW,
+  319.    1                                        ldW ), llen[partner]*ldW, Cmsgid,
+  320.    1                                        partner, comm );
+  321.  + 1                       HPL_dlaswp03T( llen[partner], n, U, LDU, Mptr( W, 0, ipW,
+  322.    1                                      ldW ), Mptr( W, 1, ipW, ldW ), ldW );
+  323.    1                       ipW += llen[partner];
+  324.    1                    }
+  325.    1                    else
+  326.    1                    {
+  327.  + 1                       (void) HPL_sdrv( W, llen[myrow]*ldW, Cmsgid, U, usize,
+  328.    1                                        Cmsgid, partner, comm );
+  329.  + 1                       HPL_dlaswp04T( ipA, llen[myrow], n, U, LDU, A, lda, W,
+  330.    1                                      W+1, ldW, lindxA, lindxAU );
+  331.    1                    }
+  332.    1                 }
+  333.    1                 else
+  334.    1                 {
+  335.  + 1                    (void) HPL_sdrv( W, llen[myrow]*ldW, Cmsgid, Mptr( W, 0,
+  336.    1                                     ipW, ldW ), llen[partner]*ldW, Cmsgid,
+  337.    1                                     partner, comm );
+  338.    1                    ipW += llen[partner];
+  339.    1                 }
+  340.    1        /*
+  341.    1         * Update llen - Go to next process pairs
+  342.    1         */
+  343.    1                 iprow = icurrow; ipdist = 0;
+  344.  + 1 r4---<          do
+  345.    1 r4              {
+  346.    1 r4                 if( (unsigned int)( partner = (int)(ipdist ^ ipow) ) > ipdist )
+  347.    1 r4                 {
+  348.    1 r4                    partner = MModAdd( icurrow, partner, nprow );
+  349.    1 r4                    llen[iprow]  += llen[partner];
+  350.    1 r4                    llen[partner] = llen[iprow];
+  351.    1 r4                 }
+  352.    1 r4                 iprow = MModAdd( iprow, 1, nprow ); ipdist++;
+  353.    1 r4     
+  354.    1 r4--->          } while( ipdist < ip2 );
+  355.    1        
+  356.    1                 ipow <<= 1; k++;
+  357.    1        /*
+  358.    1         * Probe for column panel - forward it when available 
+  359.    1         */
+  360.  + 1                 if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  361.    1------>       }
+  362.                }
+  363.                else
+  364.                {
+  365.             /*
+  366.              * non power of 2 part of the process collection:  proc[ip2] broadcast U
+  367.              * to procs[ip2..nprow) (relatively to icurrow).
+  368.              */
+  369.                   if( size_ > 1 )
+  370.                   {
+  371.                      k = size_ - 1;
+  372.  + 1-----<>          while( k > 1 ) { k >>= 1; ip2_ <<= 1; mask <<= 1; mask++; }
+  373.                      root   = MModAdd( icurrow, (int)(ip2), nprow );
+  374.                      mydis_ = (unsigned int)MModSub( myrow,  root, nprow );
+  375.             
+  376.  + 1------<          do
+  377.    1                 {
+  378.    1                    mask ^= ip2_;
+  379.    1                    if( ( mydis_ & mask ) == 0 )
+  380.    1                    {
+  381.    1                       partner = (int)(mydis_ ^ ip2_);
+  382.    1                       if( ( mydis_ & ip2_ ) != 0 )
+  383.    1                       {
+  384.  + 1                          (void) HPL_recv( U, usize, MModAdd( root, partner,
+  385.    1                                           nprow ), Cmsgid, comm );
+  386.    1        
+  387.    1                       }
+  388.    1                       else if( partner < size_ )
+  389.    1                       {
+  390.  + 1                          (void) HPL_send( U, usize, MModAdd( root, partner,
+  391.    1                                           nprow ), Cmsgid, comm );
+  392.    1                       }
+  393.    1                    }
+  394.    1                    ip2_ >>= 1;
+  395.    1        /*
+  396.    1         * Probe for column panel - forward it when available 
+  397.    1         */
+  398.  + 1                    if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  399.    1        
+  400.    1------>          } while( ip2_ > 0 );
+  401.                   }
+  402.             /*
+  403.              * Every process in [ip2..nprow) (relatively to icurrow) grabs its piece
+  404.              * of A.
+  405.              */
+  406.  +                HPL_dlaswp05T( ipA, n, A, lda, U, LDU, lindxA, lindxAU );
+  407.                }
+  408.             /*
+  409.              * If  nprow  is not a power of 2,  proc[i-ip2]  sends  global result to
+  410.              * proc[i] for all i in [ip2..nprow);
+  411.              */
+  412.                if( ( Np2 != 0 ) && ( ( partner = (int)(mydist ^ ip2) ) < nprow ) )
+  413.                {
+  414.                   partner = MModAdd( icurrow, partner, nprow );
+  415.                   if( ( mydist & ip2 ) != 0 )
+  416.  +                { (void) HPL_recv( U, usize, partner, Cmsgid, comm ); }
+  417.                   else
+  418.  +                { (void) HPL_send( U, usize, partner, Cmsgid, comm ); }
+  419.                }
+  420.             
+  421.                if( vptr ) free( vptr );
+  422.             /*
+  423.              * Probe for column panel - forward it when available 
+  424.              */
+  425.  +             if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  426.             
+  427.             #ifdef HPL_DETAILED_TIMING
+  428.                HPL_ptimer( HPL_TIMING_LASWP );
+  429.             #endif
+  430.             /*
+  431.              * End of HPL_pdlaswp00T
+  432.              */
+  433.             }
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 156 
+  "HPL_pabort" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-7703 CC: OPTIMIZATION File = HPL_pdlaswp00T.c, Line = 158 
+  Optimization curtailed due to an assignment of a non-pointer to a pointer.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 171 
+  "HPL_pipid" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 172 
+  "HPL_plindx0" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 177 
+  "HPL_plindx0" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_pdlaswp00T.c, Line = 184 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 184 
+  A loop was conditionally vectorized.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 194 
+  "HPL_dlaswp01T" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 198 
+  "HPL_dlaswp02N" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 203 
+  "HPL_bcast" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 253 
+  "HPL_sdrv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 256 
+  "HPL_dlaswp03T" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 260 
+  "HPL_sdrv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 267 
+  "HPL_send" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 271 
+  "HPL_recv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_pdlaswp00T.c, Line = 280 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 280 
+  A loop was not vectorized because a recurrence was found on "llen" at line 284.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 289 
+  "HPL_bcast" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 302 
+  A loop was not vectorized because it contains a call to function "HPL_sdrv" on line 318.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 318 
+  "HPL_sdrv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 321 
+  "HPL_dlaswp03T" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 327 
+  "HPL_sdrv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 329 
+  "HPL_dlaswp04T" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 335 
+  "HPL_sdrv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_pdlaswp00T.c, Line = 344 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 344 
+  A loop was not vectorized because a recurrence was found on "llen" at line 349.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 360 
+  "HPL_bcast" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 372 
+  A loop was not vectorized because a recurrence was found on "ip2_" at line 372.
+
+CC-6287 CC: VECTOR File = HPL_pdlaswp00T.c, Line = 376 
+  A loop was not vectorized because it contains a call to function "HPL_recv" on line 384.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 384 
+  "HPL_recv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 390 
+  "HPL_send" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 398 
+  "HPL_bcast" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 406 
+  "HPL_dlaswp05T" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 416 
+  "HPL_recv" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 418 
+  "HPL_send" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaswp00T.c, Line = 425 
+  "HPL_bcast" (called from "HPL_pdlaswp00T") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

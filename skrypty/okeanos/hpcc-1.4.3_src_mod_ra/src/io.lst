@@ -1,0 +1,1419 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/io.c
+Compiled : 2016-03-19  13:20:22
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../src/io.o -c ../../../../src/io.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/io.c
+Date     : 03/19/2016  13:20:23
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.            /*
+    3.              hpcc.c
+    4.            */
+    5.            
+    6.            #include <hpcc.h>
+    7.            
+    8.            #include <ctype.h>
+    9.            #include <string.h>
+   10.            #include <time.h>
+   11.            
+   12.            #ifdef _OPENMP
+   13.            #include <omp.h>
+   14.            #endif
+   15.            
+   16.            static double HPCC_MemProc = -1.0, HPCC_MemVal = -1.0;
+   17.            static int HPCC_MemSpec = -1;
+   18.            
+   19.            static int
+   20.            ReadInts(char *buf, int n, int *val) {
+   21.              int i, j;
+   22.            
+   23.  + 1-----<   for (j = i = 0; i < n; i++) {
+   24.  + 1           if (sscanf( buf + j, "%d", val + i ) != 1) {
+   25.    1             i--;
+   26.    1             break;
+   27.    1           }
+   28.  + 1 F---<     for (; buf[j] && isdigit(buf[j]); j++)
+   29.    1 F--->       ; /* EMPTY */
+   30.  + 1 F---<     for (; buf[j] && ! isdigit(buf[j]); j++)
+   31.    1 F--->       ; /* EMPTY */
+   32.    1           if (! buf[j]) {
+   33.    1             i--;
+   34.    1             break;
+   35.    1           }
+   36.    1----->   }
+   37.            
+   38.              return i + 1;
+   39.            }
+   40.            
+   41.            static int
+   42.            HPCC_InitHPL(HPCC_Params *p) {
+   43.  +           HPL_pdinfo( &p->test, &p->ns, p->nval, &p->nbs, p->nbval, &p->porder, &p->npqs, p->pval,
+   44.                          p->qval, &p->npfs, p->pfaval, &p->nbms, p->nbmval, &p->ndvs, p->ndvval, &p->nrfs,
+   45.                          p->rfaval, &p->ntps, p->topval, &p->ndhs, p->ndhval, &p->fswap, &p->tswap,
+   46.                          &p->L1notran, &p->Unotran, &p->equil, &p->align );
+   47.            
+   48.              if (p->test.thrsh <= 0.0) p->Failure = 1;
+   49.            
+   50.              return 0;
+   51.            }
+   52.            
+   53.            static int
+   54.            iiamax(int n, int *x, int incx) {
+   55.              int i, v, mx, idx = 0;
+   56.            
+   57.              idx = 0;
+   58.              mx = (x[0] < 0 ? -x[0] : x[0]);
+   59.  + 1-----<   for (i = 0; i < n; i += incx) {
+   60.    1           v = (x[i] < 0 ? -x[i] : x[i]);
+   61.    1           if (mx < v) {mx = v; idx = i;}
+   62.    1----->   }
+   63.            
+   64.              return idx;
+   65.            }
+   66.            
+   67.            static void
+   68.            icopy(int n, int *src, int sinc, int *dst, int dinc) {
+   69.              int i;
+   70.            
+   71.    Vcr2--<   for (i = n; i; i--) {
+   72.    Vcr2        *dst = *src;
+   73.    Vcr2        dst += dinc;
+   74.    Vcr2        src += sinc;
+   75.    Vcr2-->   }
+   76.            }
+   77.            
+   78.            int
+   79.            HPCC_InputFileInit(HPCC_Params *params) {
+   80.              int myRank, commSize;
+   81.              int i, j, n, ioErr, lastConfigLine = 32, line, rv, maxHPLn;
+   82.              char buf[82]; int nbuf = 82;
+   83.              FILE *f, *outputFile;
+   84.              MPI_Comm comm = MPI_COMM_WORLD;
+   85.            
+   86.  +           MPI_Comm_size( comm, &commSize );
+   87.  +           MPI_Comm_rank( comm, &myRank );
+   88.            
+   89.              if (0 == myRank) {
+   90.  +             f = fopen( params->inFname, "r" );
+   91.                if (! f) {
+   92.                  ioErr = 1;
+   93.                  goto ioEnd;
+   94.                }
+   95.            
+   96.                /* skip irrelevant lines in config file */
+   97.  + 1-----<             for (line = 0; line < lastConfigLine; line++)
+   98.  + 1 ---->               if (! fgets( buf, nbuf, f )) break;
+   99.            
+  100.                        if (line < lastConfigLine) { /* if didn't read all the required lines */
+  101.                  ioErr = 1;
+  102.                  goto ioEnd;
+  103.                }
+  104.            
+  105.                /* Get values of N for PTRANS */
+  106.                line++;
+  107.  +             fgets( buf, nbuf, f );
+  108.  +             rv = sscanf( buf, "%d", &n );
+  109.                if (rv != 1 || n < 0) { /* parse error or negative value*/
+  110.                  n = 0;
+  111.  +               BEGIN_IO(myRank, params->outFname, outputFile);
+  112.                  fprintf( outputFile, "Error in line %d of the input file.\n", line );
+  113.  +               END_IO( myRank, outputFile );
+  114.                }
+  115.                n = Mmin( n, HPL_MAX_PARAM );
+  116.            
+  117.                line++;
+  118.  +             fgets( buf, nbuf, f );
+  119.  +             ReadInts( buf, n, params->PTRANSnval );
+  120.            
+  121.                /* find the largest matrix for HPL */
+  122.  +             maxHPLn = params->nval[iiamax( params->ns, params->nval, 1 )];
+  123.            
+  124.  + 1-----<     for (j = i = 0; i < n; i++) {
+  125.    1             /* if memory for PTRANS is at least 90% of what's used for HPL */
+  126.    1             if (params->PTRANSnval[i] >= 0.9486 * maxHPLn * 0.5) {
+  127.    1               params->PTRANSnval[j] = params->PTRANSnval[i];
+  128.    1               j++;
+  129.    1             }
+  130.    1----->     }
+  131.                n = j; /* only this many entries use enough memory */
+  132.            
+  133.                /* copy matrix sizes from HPL, divide by 2 so both PTRANS matrices (plus "work" arrays) occupy
+  134.                   as much as HPL's one */
+  135.  + 1-----<     for (i = 0; i < params->ns; i++)
+  136.    1----->       params->PTRANSnval[i + n] = params->nval[i] / 2;
+  137.                params->PTRANSns = n + params->ns;
+  138.            
+  139.                /* Get values of block sizes */
+  140.                line++;
+  141.  +             fgets( buf, nbuf, f );
+  142.  +             rv = sscanf( buf, "%d", &n );
+  143.                if (rv != 1 || n < 0) { /* parse error or negative value*/
+  144.                  n = 0;
+  145.  +               BEGIN_IO( myRank, params->outFname, outputFile );
+  146.                  fprintf( outputFile, "Error in line %d of the input file.\n", line );
+  147.  +               END_IO( myRank, outputFile );
+  148.                }
+  149.                n = Mmin( n, HPL_MAX_PARAM );
+  150.            
+  151.                line++;
+  152.  +             fgets( buf, nbuf, f );
+  153.  +             ReadInts( buf, n, params->PTRANSnbval );
+  154.            
+  155.  +             icopy( params->nbs, params->nbval, 1, params->PTRANSnbval + n, 1 );
+  156.                params->PTRANSnbs = n + params->nbs;
+  157.            
+  158.                ioErr = 0;
+  159.                ioEnd:
+  160.  +             if (f) fclose( f );
+  161.              }
+  162.            
+  163.  +           MPI_Bcast( &ioErr, 1, MPI_INT, 0, comm );
+  164.              if (ioErr) {
+  165.                /* copy matrix sizes from HPL, divide by 2 so both PTRANS matrices (plus "work" arrays) occupy
+  166.                   as much as HPL's one */
+  167.  + 1-----<     for (i = 0; i < params->ns; i++)
+  168.    1----->       params->PTRANSnval[i] = params->nval[i] / 2;
+  169.                params->PTRANSns = params->ns;
+  170.            
+  171.  +             icopy( params->nbs, params->nbval, 1, params->PTRANSnbval, 1 );
+  172.                params->PTRANSnbs = params->nbs;
+  173.              }
+  174.            
+  175.              /* broadcast what's been read on node 0 */
+  176.  +           MPI_Bcast( &params->PTRANSns, 1, MPI_INT, 0, comm );
+  177.              if (params->PTRANSns > 0)
+  178.  +             MPI_Bcast( &params->PTRANSnval, params->PTRANSns, MPI_INT, 0, comm );
+  179.  +           MPI_Bcast( &params->PTRANSnbs, 1, MPI_INT, 0, comm );
+  180.              if (params->PTRANSnbs > 0)
+  181.  +             MPI_Bcast( &params->PTRANSnbval, params->PTRANSnbs, MPI_INT, 0, comm );
+  182.            
+  183.              /* copy what HPL has */
+  184.              params->PTRANSnpqs = params->npqs;
+  185.  +           icopy( params->npqs, params->qval, 1, params->PTRANSqval, 1 );
+  186.  +           icopy( params->npqs, params->pval, 1, params->PTRANSpval, 1 );
+  187.            
+  188.              return ioErr;
+  189.            }
+  190.            
+  191.            static int
+  192.            ErrorReduce(FILE *f, char *str, int eCode, MPI_Comm comm) {
+  193.              int rCode;
+  194.            
+  195.              if (eCode) eCode = 1; /* make sure error is indicated with 1 */
+  196.            
+  197.  +           MPI_Allreduce( &eCode, &rCode, 1, MPI_INT, MPI_SUM, comm );
+  198.            
+  199.              if (rCode) {
+  200.                if (f)
+  201.                  fprintf( f, str );
+  202.            
+  203.                return -1;
+  204.              }
+  205.            
+  206.              return 0;
+  207.            }
+  208.            
+  209.            int
+  210.            HPCC_Init(HPCC_Params *params) {
+  211.              int myRank, commSize;
+  212.              int i, nMax, nbMax, procCur, procMax, procMin, errCode;
+  213.              double totalMem;
+  214.              char inFname[12] = "hpccinf.txt", outFname[13] = "hpccoutf.txt";
+  215.              FILE *outputFile;
+  216.              MPI_Comm comm = MPI_COMM_WORLD;
+  217.              time_t currentTime;
+  218.              char hostname[MPI_MAX_PROCESSOR_NAME + 1]; int hostnameLen;
+  219.            #ifdef HPCC_MEMALLCTR
+  220.              size_t hpl_mem, ptrans_mem;
+  221.              long dMemSize;
+  222.            #endif
+  223.            
+  224.              outputFile = NULL;
+  225.            
+  226.  +           MPI_Comm_size( comm, &commSize );
+  227.  +           MPI_Comm_rank( comm, &myRank );
+  228.            
+  229.  +           strcpy( params->inFname, inFname );
+  230.  +           strcpy( params->outFname, outFname );
+  231.            
+  232.              if (0 == myRank)
+  233.  +             outputFile = fopen( params->outFname, "a" );
+  234.            
+  235.              errCode = 0;
+  236.              if (sizeof(u64Int) < 8 || sizeof(s64Int) < 8) errCode = 1;
+  237.  +           if (ErrorReduce( outputFile, "No 64-bit integer type available.", errCode, comm ))
+  238.                return -1;
+  239.            
+  240.  +           i = MPI_Get_processor_name( hostname, &hostnameLen );
+  241.              if (i) hostname[0] = 0;
+  242.              else hostname[Mmax(hostnameLen, MPI_MAX_PROCESSOR_NAME)] = 0;
+  243.  +           time( &currentTime );
+  244.            
+  245.  +           BEGIN_IO( myRank, params->outFname, outputFile );
+  246.              fprintf( outputFile,
+  247.                        "########################################################################\n" );
+  248.              fprintf( outputFile,
+  249.                        "This is the DARPA/DOE HPC Challenge Benchmark version %d.%d.%d October 2012\n",
+  250.                        HPCC_VERSION_MAJOR, HPCC_VERSION_MINOR, HPCC_VERSION_MICRO );
+  251.              fprintf( outputFile, "Produced by Jack Dongarra and Piotr Luszczek\n" );
+  252.              fprintf( outputFile, "Innovative Computing Laboratory\n" );
+  253.              fprintf( outputFile, "University of Tennessee Knoxville and Oak Ridge National Laboratory\n\n" );
+  254.              fprintf( outputFile, "See the source files for authors of specific codes.\n" );
+  255.              fprintf( outputFile, "Compiled on %s at %s\n", __DATE__ , __TIME__ );
+  256.  +           fprintf( outputFile, "Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  257.              fprintf( outputFile, "Hostname: '%s'\n", hostname );
+  258.              fprintf( outputFile,
+  259.                        "########################################################################\n" );
+  260.  +           END_IO( myRank, outputFile );
+  261.            
+  262.              params->Failure = 0;
+  263.            
+  264.  +           HPCC_InitHPL( params ); /* HPL calls exit() if there is a problem */
+  265.  +           HPCC_InputFileInit( params );
+  266.            
+  267.              params->RunHPL = 0;
+  268.              params->RunStarDGEMM = 0;
+  269.              params->RunSingleDGEMM = 0;
+  270.              params->RunPTRANS = 0;
+  271.              params->RunStarStream = 0;
+  272.              params->RunSingleStream = 0;
+  273.              params->RunMPIRandomAccess_LCG = 0;
+  274.              params->RunStarRandomAccess_LCG = 0;
+  275.              params->RunSingleRandomAccess_LCG = 0;
+  276.              params->RunMPIRandomAccess = 0;
+  277.              params->RunStarRandomAccess = 0;
+  278.              params->RunSingleRandomAccess = 0;
+  279.              params->RunLatencyBandwidth = 0;
+  280.              params->RunMPIFFT = 0;
+  281.              params->RunStarFFT = 0;
+  282.              params->RunSingleFFT = 0;
+  283.              params->RunHPL = params->RunStarDGEMM = params->RunSingleDGEMM =
+  284.              params->RunPTRANS = params->RunStarStream = params->RunSingleStream =
+  285.              params->RunMPIRandomAccess_LCG = params->RunStarRandomAccess_LCG = params->RunSingleRandomAccess_LCG =
+  286.              params->RunMPIRandomAccess = params->RunStarRandomAccess = params->RunSingleRandomAccess =
+  287.              params->RunMPIFFT = params->RunStarFFT = params->RunSingleFFT =
+  288.              params->RunLatencyBandwidth = 1;
+  289.            
+  290.              params->MPIRandomAccess_LCG_GUPs =
+  291.              params->MPIRandomAccess_GUPs = params->StarGUPs = params->SingleGUPs =
+  292.              params->StarDGEMMGflops = params->SingleDGEMMGflops = -1.0;
+  293.              params->StarStreamCopyGBs = params->StarStreamScaleGBs = params->StarStreamAddGBs =
+  294.              params->StarStreamTriadGBs = params->SingleStreamCopyGBs = params->SingleStreamScaleGBs =
+  295.              params->SingleStreamAddGBs = params->SingleStreamTriadGBs =
+  296.              params->SingleFFTGflops = params->StarFFTGflops = params->MPIFFTGflops = params->MPIFFT_maxErr =
+  297.              params->MaxPingPongLatency = params-> RandomlyOrderedRingLatency = params-> MinPingPongBandwidth =
+  298.              params->NaturallyOrderedRingBandwidth = params->RandomlyOrderedRingBandwidth =
+  299.              params->MinPingPongLatency = params->AvgPingPongLatency = params->MaxPingPongBandwidth =
+  300.              params->AvgPingPongBandwidth = params->NaturallyOrderedRingLatency = -1.0;
+  301.            
+  302.              params->HPLrdata.Gflops = -1000.0;
+  303.              params->HPLrdata.time = params->HPLrdata.eps = params->HPLrdata.RnormI = params->HPLrdata.Anorm1 = params->HPLrdata.AnormI = params->HPLrdata.Xnorm1 = params->HPLrdata.XnormI = -1.0;
+  304.              params->HPLrdata.N = params->HPLrdata.NB = params->HPLrdata.nprow = params->HPLrdata.npcol = params->HPLrdata.depth = params->HPLrdata.nbdiv = params->HPLrdata.nbmin = -1;
+  305.              params->HPLrdata.cpfact = params->HPLrdata.crfact = params->HPLrdata.ctop = params->HPLrdata.order = '-';
+  306.            
+  307.              params->PTRANSrdata.GBs = params->PTRANSrdata.time = params->PTRANSrdata.residual = -1.0;
+  308.              params->PTRANSrdata.n = params->PTRANSrdata.nb = params->PTRANSrdata.nprow =
+  309.              params->PTRANSrdata.npcol = -1;
+  310.            
+  311.              params->MPIRandomAccess_LCG_ErrorsFraction =
+  312.              params->MPIRandomAccess_ErrorsFraction =
+  313.              params->MPIRandomAccess_LCG_time = params->MPIRandomAccess_LCG_CheckTime =
+  314.              params->MPIRandomAccess_time = params->MPIRandomAccess_CheckTime =
+  315.              params->MPIRandomAccess_LCG_TimeBound =
+  316.              params->MPIRandomAccess_TimeBound = -1.0;
+  317.            
+  318.              params->DGEMM_N =
+  319.              params->FFT_N =
+  320.              params->StreamVectorSize =
+  321.              params->MPIRandomAccess_LCG_Algorithm =
+  322.              params->MPIRandomAccess_Algorithm =
+  323.              params->MPIFFT_Procs = -1;
+  324.            
+  325.              params->StreamThreads = 1;
+  326.            
+  327.              params->FFTEnblk = params->FFTEnp = params->FFTEl2size = -1;
+  328.            
+  329.              params->MPIFFT_N =
+  330.              params->RandomAccess_LCG_N =
+  331.              params->MPIRandomAccess_LCG_N =
+  332.              params->MPIRandomAccess_LCG_Errors =
+  333.              params->RandomAccess_N =
+  334.              params->MPIRandomAccess_N =
+  335.              params->MPIRandomAccess_Errors =
+  336.              params->MPIRandomAccess_LCG_ExeUpdates =
+  337.              params->MPIRandomAccess_ExeUpdates = (s64Int)(-1);
+  338.            
+  339.              procMax = procMin = params->pval[0] * params->qval[0];
+  340.    V-----<   for (i = 1; i < params->npqs; ++i) {
+  341.    V           procCur = params->pval[i] * params->qval[i];
+  342.    V           if (procMax < procCur) procMax = procCur;
+  343.    V           if (procMin > procCur) procMin = procCur;
+  344.    V----->   }
+  345.              params->HPLMaxProc = procMax;
+  346.              params->HPLMinProc = procMin;
+  347.            
+  348.  +           nMax = params->nval[iiamax( params->ns, params->nval, 1 )];
+  349.            
+  350.              /* totalMem = (nMax*nMax) * sizeof(double) */
+  351.              totalMem = nMax;
+  352.              totalMem *= nMax;
+  353.              totalMem *= sizeof(double);
+  354.              params->HPLMaxProcMem = totalMem / procMin;
+  355.            
+  356.    Vw----<   for (i = 0; i < MPIFFT_TIMING_COUNT; i++)
+  357.    Vw---->     params->MPIFFTtimingsForward[i] = 0.0;
+  358.            
+  359.  +           i = iiamax( params->PTRANSnbs, params->PTRANSnbval, 1 );
+  360.              nbMax = params->PTRANSnbval[i];
+  361.            
+  362.            #ifdef HPCC_MEMALLCTR
+  363.              MaxMem( commSize, 0, 0, params->PTRANSns, params->PTRANSnval, params->PTRANSnval, params->PTRANSnbs, params->PTRANSnbval, params->PTRANSnbval, params->PTRANSnpqs, params->PTRANSpval, params->PTRANSqval, &dMemSize );
+  364.              ptrans_mem = dMemSize * sizeof(double) + 3 * commSize * sizeof(int);
+  365.              hpl_mem = params->HPLMaxProcMem + (nMax + nbMax) * sizeof(double) * nbMax;
+  366.              HPCC_alloc_init( Mmax( ptrans_mem, hpl_mem ) );
+  367.            #endif
+  368.            
+  369.              return 0;
+  370.            }
+  371.            
+  372.            int
+  373.            HPCC_Finalize(HPCC_Params *params) {
+  374.              int myRank, commSize;
+  375.              int i;
+  376.              FILE *outputFile;
+  377.              MPI_Comm comm = MPI_COMM_WORLD;
+  378.              time_t currentTime;
+  379.            
+  380.            #ifdef HPCC_MEMALLCTR
+  381.              HPCC_alloc_finalize();
+  382.            #endif
+  383.            
+  384.  +           time( &currentTime );
+  385.            
+  386.  +           MPI_Comm_rank( comm, &myRank );
+  387.  +           MPI_Comm_size( comm, &commSize );
+  388.            
+  389.  +           BEGIN_IO(myRank, params->outFname, outputFile);
+  390.              fprintf( outputFile, "Begin of Summary section.\n" );
+  391.              fprintf( outputFile, "VersionMajor=%d\n", HPCC_VERSION_MAJOR );
+  392.              fprintf( outputFile, "VersionMinor=%d\n", HPCC_VERSION_MINOR );
+  393.              fprintf( outputFile, "VersionMicro=%d\n", HPCC_VERSION_MICRO );
+  394.              fprintf( outputFile, "VersionRelease=%c\n", HPCC_VERSION_RELEASE );
+  395.              fprintf( outputFile, "LANG=%s\n", "C" );
+  396.              fprintf( outputFile, "Success=%d\n", params->Failure ? 0 : 1 );
+  397.              fprintf( outputFile, "sizeof_char=%d\n", (int)sizeof(char) );
+  398.              fprintf( outputFile, "sizeof_short=%d\n", (int)sizeof(short) );
+  399.              fprintf( outputFile, "sizeof_int=%d\n", (int)sizeof(int) );
+  400.              fprintf( outputFile, "sizeof_long=%d\n", (int)sizeof(long) );
+  401.              fprintf( outputFile, "sizeof_void_ptr=%d\n", (int)sizeof(void*) );
+  402.              fprintf( outputFile, "sizeof_size_t=%d\n", (int)sizeof(size_t) );
+  403.              fprintf( outputFile, "sizeof_float=%d\n", (int)sizeof(float) );
+  404.              fprintf( outputFile, "sizeof_double=%d\n", (int)sizeof(double) );
+  405.              fprintf( outputFile, "sizeof_s64Int=%d\n", (int)sizeof(s64Int) );
+  406.              fprintf( outputFile, "sizeof_u64Int=%d\n", (int)sizeof(u64Int) );
+  407.              fprintf( outputFile, "sizeof_struct_double_double=%d\n", (int)sizeof(struct{double HPCC_r,HPCC_i;}) );
+  408.              fprintf( outputFile, "CommWorldProcs=%d\n", commSize );
+  409.  +           fprintf( outputFile, "MPI_Wtick=%e\n", MPI_Wtick() );
+  410.              fprintf( outputFile, "HPL_Tflops=%g\n", params->HPLrdata.Gflops * 1e-3 );
+  411.              fprintf( outputFile, "HPL_time=%g\n", params->HPLrdata.time );
+  412.              fprintf( outputFile, "HPL_eps=%g\n", params->HPLrdata.eps );
+  413.              fprintf( outputFile, "HPL_RnormI=%g\n", params->HPLrdata.RnormI );
+  414.              fprintf( outputFile, "HPL_Anorm1=%g\n", params->HPLrdata.Anorm1 );
+  415.              fprintf( outputFile, "HPL_AnormI=%g\n", params->HPLrdata.AnormI );
+  416.              fprintf( outputFile, "HPL_Xnorm1=%g\n", params->HPLrdata.Xnorm1 );
+  417.              fprintf( outputFile, "HPL_XnormI=%g\n", params->HPLrdata.XnormI );
+  418.              fprintf( outputFile, "HPL_BnormI=%g\n", params->HPLrdata.BnormI );
+  419.              fprintf( outputFile, "HPL_N=%d\n", params->HPLrdata.N );
+  420.              fprintf( outputFile, "HPL_NB=%d\n", params->HPLrdata.NB );
+  421.              fprintf( outputFile, "HPL_nprow=%d\n", params->HPLrdata.nprow );
+  422.              fprintf( outputFile, "HPL_npcol=%d\n", params->HPLrdata.npcol );
+  423.              fprintf( outputFile, "HPL_depth=%d\n", params->HPLrdata.depth );
+  424.              fprintf( outputFile, "HPL_nbdiv=%d\n", params->HPLrdata.nbdiv );
+  425.              fprintf( outputFile, "HPL_nbmin=%d\n", params->HPLrdata.nbmin );
+  426.              fprintf( outputFile, "HPL_cpfact=%c\n", params->HPLrdata.cpfact );
+  427.              fprintf( outputFile, "HPL_crfact=%c\n", params->HPLrdata.crfact );
+  428.              fprintf( outputFile, "HPL_ctop=%c\n", params->HPLrdata.ctop );
+  429.              fprintf( outputFile, "HPL_order=%c\n", params->HPLrdata.order );
+  430.  +           fprintf( outputFile, "HPL_dMACH_EPS=%e\n",  HPL_dlamch( HPL_MACH_EPS ) );
+  431.  +           fprintf( outputFile, "HPL_dMACH_SFMIN=%e\n",HPL_dlamch( HPL_MACH_SFMIN ) );
+  432.  +           fprintf( outputFile, "HPL_dMACH_BASE=%e\n", HPL_dlamch( HPL_MACH_BASE ) );
+  433.  +           fprintf( outputFile, "HPL_dMACH_PREC=%e\n", HPL_dlamch( HPL_MACH_PREC ) );
+  434.  +           fprintf( outputFile, "HPL_dMACH_MLEN=%e\n", HPL_dlamch( HPL_MACH_MLEN ) );
+  435.  +           fprintf( outputFile, "HPL_dMACH_RND=%e\n",  HPL_dlamch( HPL_MACH_RND ) );
+  436.  +           fprintf( outputFile, "HPL_dMACH_EMIN=%e\n", HPL_dlamch( HPL_MACH_EMIN ) );
+  437.  +           fprintf( outputFile, "HPL_dMACH_RMIN=%e\n", HPL_dlamch( HPL_MACH_RMIN ) );
+  438.  +           fprintf( outputFile, "HPL_dMACH_EMAX=%e\n", HPL_dlamch( HPL_MACH_EMAX ) );
+  439.  +           fprintf( outputFile, "HPL_dMACH_RMAX=%e\n", HPL_dlamch( HPL_MACH_RMAX ) );
+  440.  +           fprintf( outputFile, "HPL_sMACH_EPS=%e\n",  (double)HPL_slamch( HPL_MACH_EPS ) );
+  441.  +           fprintf( outputFile, "HPL_sMACH_SFMIN=%e\n",(double)HPL_slamch( HPL_MACH_SFMIN ) );
+  442.  +           fprintf( outputFile, "HPL_sMACH_BASE=%e\n", (double)HPL_slamch( HPL_MACH_BASE ) );
+  443.  +           fprintf( outputFile, "HPL_sMACH_PREC=%e\n", (double)HPL_slamch( HPL_MACH_PREC ) );
+  444.  +           fprintf( outputFile, "HPL_sMACH_MLEN=%e\n", (double)HPL_slamch( HPL_MACH_MLEN ) );
+  445.  +           fprintf( outputFile, "HPL_sMACH_RND=%e\n",  (double)HPL_slamch( HPL_MACH_RND ) );
+  446.  +           fprintf( outputFile, "HPL_sMACH_EMIN=%e\n", (double)HPL_slamch( HPL_MACH_EMIN ) );
+  447.  +           fprintf( outputFile, "HPL_sMACH_RMIN=%e\n", (double)HPL_slamch( HPL_MACH_RMIN ) );
+  448.  +           fprintf( outputFile, "HPL_sMACH_EMAX=%e\n", (double)HPL_slamch( HPL_MACH_EMAX ) );
+  449.  +           fprintf( outputFile, "HPL_sMACH_RMAX=%e\n", (double)HPL_slamch( HPL_MACH_RMAX ) );
+  450.  +           fprintf( outputFile, "dweps=%e\n", HPCC_dweps() );
+  451.  +           fprintf( outputFile, "sweps=%e\n", (double)HPCC_sweps() );
+  452.              fprintf( outputFile, "HPLMaxProcs=%d\n", params->HPLMaxProc );
+  453.              fprintf( outputFile, "HPLMinProcs=%d\n", params->HPLMinProc );
+  454.              fprintf( outputFile, "DGEMM_N=%d\n", params->DGEMM_N );
+  455.              fprintf( outputFile, "StarDGEMM_Gflops=%g\n",   params->StarDGEMMGflops );
+  456.              fprintf( outputFile, "SingleDGEMM_Gflops=%g\n", params->SingleDGEMMGflops );
+  457.              fprintf( outputFile, "PTRANS_GBs=%g\n", params->PTRANSrdata.GBs );
+  458.              fprintf( outputFile, "PTRANS_time=%g\n", params->PTRANSrdata.time );
+  459.              fprintf( outputFile, "PTRANS_residual=%g\n", params->PTRANSrdata.residual );
+  460.              fprintf( outputFile, "PTRANS_n=%d\n", params->PTRANSrdata.n );
+  461.              fprintf( outputFile, "PTRANS_nb=%d\n", params->PTRANSrdata.nb );
+  462.              fprintf( outputFile, "PTRANS_nprow=%d\n", params->PTRANSrdata.nprow );
+  463.              fprintf( outputFile, "PTRANS_npcol=%d\n", params->PTRANSrdata.npcol );
+  464.              fprintf( outputFile, "MPIRandomAccess_LCG_N=" FSTR64 "\n", params->MPIRandomAccess_LCG_N );
+  465.              fprintf( outputFile, "MPIRandomAccess_LCG_time=%g\n", params->MPIRandomAccess_LCG_time );
+  466.              fprintf( outputFile, "MPIRandomAccess_LCG_CheckTime=%g\n", params->MPIRandomAccess_LCG_CheckTime );
+  467.              fprintf( outputFile, "MPIRandomAccess_LCG_Errors=" FSTR64 "\n", params->MPIRandomAccess_LCG_Errors );
+  468.              fprintf( outputFile, "MPIRandomAccess_LCG_ErrorsFraction=%g\n", params->MPIRandomAccess_LCG_ErrorsFraction );
+  469.              fprintf( outputFile, "MPIRandomAccess_LCG_ExeUpdates=" FSTR64 "\n", params->MPIRandomAccess_LCG_ExeUpdates );
+  470.              fprintf( outputFile, "MPIRandomAccess_LCG_GUPs=%g\n", params->MPIRandomAccess_LCG_GUPs );
+  471.              fprintf( outputFile, "MPIRandomAccess_LCG_TimeBound=%g\n", params->MPIRandomAccess_LCG_TimeBound );
+  472.              fprintf( outputFile, "MPIRandomAccess_LCG_Algorithm=%d\n", params->MPIRandomAccess_LCG_Algorithm );
+  473.              fprintf( outputFile, "MPIRandomAccess_N=" FSTR64 "\n", params->MPIRandomAccess_N );
+  474.              fprintf( outputFile, "MPIRandomAccess_time=%g\n", params->MPIRandomAccess_time );
+  475.              fprintf( outputFile, "MPIRandomAccess_CheckTime=%g\n", params->MPIRandomAccess_CheckTime );
+  476.              fprintf( outputFile, "MPIRandomAccess_Errors=" FSTR64 "\n", params->MPIRandomAccess_Errors );
+  477.              fprintf( outputFile, "MPIRandomAccess_ErrorsFraction=%g\n", params->MPIRandomAccess_ErrorsFraction );
+  478.              fprintf( outputFile, "MPIRandomAccess_ExeUpdates=" FSTR64 "\n", params->MPIRandomAccess_ExeUpdates );
+  479.              fprintf( outputFile, "MPIRandomAccess_GUPs=%g\n", params->MPIRandomAccess_GUPs );
+  480.              fprintf( outputFile, "MPIRandomAccess_TimeBound=%g\n", params->MPIRandomAccess_TimeBound );
+  481.              fprintf( outputFile, "MPIRandomAccess_Algorithm=%d\n", params->MPIRandomAccess_Algorithm );
+  482.              fprintf( outputFile, "RandomAccess_LCG_N=" FSTR64 "\n", params->RandomAccess_LCG_N );
+  483.              fprintf( outputFile, "StarRandomAccess_LCG_GUPs=%g\n", params->Star_LCG_GUPs );
+  484.              fprintf( outputFile, "SingleRandomAccess_LCG_GUPs=%g\n", params->Single_LCG_GUPs );
+  485.              fprintf( outputFile, "RandomAccess_N=" FSTR64 "\n", params->RandomAccess_N );
+  486.              fprintf( outputFile, "StarRandomAccess_GUPs=%g\n", params->StarGUPs );
+  487.              fprintf( outputFile, "SingleRandomAccess_GUPs=%g\n", params->SingleGUPs );
+  488.              fprintf( outputFile, "STREAM_VectorSize=%d\n", params->StreamVectorSize );
+  489.              fprintf( outputFile, "STREAM_Threads=%d\n", params->StreamThreads );
+  490.              fprintf( outputFile, "StarSTREAM_Copy=%g\n", params->StarStreamCopyGBs );
+  491.              fprintf( outputFile, "StarSTREAM_Scale=%g\n", params->StarStreamScaleGBs );
+  492.              fprintf( outputFile, "StarSTREAM_Add=%g\n", params->StarStreamAddGBs );
+  493.              fprintf( outputFile, "StarSTREAM_Triad=%g\n", params->StarStreamTriadGBs );
+  494.              fprintf( outputFile, "SingleSTREAM_Copy=%g\n", params->SingleStreamCopyGBs );
+  495.              fprintf( outputFile, "SingleSTREAM_Scale=%g\n", params->SingleStreamScaleGBs );
+  496.              fprintf( outputFile, "SingleSTREAM_Add=%g\n", params->SingleStreamAddGBs );
+  497.              fprintf( outputFile, "SingleSTREAM_Triad=%g\n", params->SingleStreamTriadGBs );
+  498.              fprintf( outputFile, "FFT_N=%d\n", params->FFT_N );
+  499.              fprintf( outputFile, "StarFFT_Gflops=%g\n",   params->StarFFTGflops );
+  500.              fprintf( outputFile, "SingleFFT_Gflops=%g\n", params->SingleFFTGflops );
+  501.              fprintf( outputFile, "MPIFFT_N=" FSTR64 "\n", params->MPIFFT_N );
+  502.              fprintf( outputFile, "MPIFFT_Gflops=%g\n", params->MPIFFTGflops );
+  503.              fprintf( outputFile, "MPIFFT_maxErr=%g\n", params->MPIFFT_maxErr );
+  504.              fprintf( outputFile, "MPIFFT_Procs=%d\n", params->MPIFFT_Procs );
+  505.              fprintf( outputFile, "MaxPingPongLatency_usec=%g\n", params->MaxPingPongLatency );
+  506.              fprintf( outputFile, "RandomlyOrderedRingLatency_usec=%g\n", params->RandomlyOrderedRingLatency );
+  507.              fprintf( outputFile, "MinPingPongBandwidth_GBytes=%g\n", params->MinPingPongBandwidth );
+  508.              fprintf( outputFile, "NaturallyOrderedRingBandwidth_GBytes=%g\n", params->NaturallyOrderedRingBandwidth );
+  509.              fprintf( outputFile, "RandomlyOrderedRingBandwidth_GBytes=%g\n", params->RandomlyOrderedRingBandwidth );
+  510.              fprintf( outputFile, "MinPingPongLatency_usec=%g\n", params->MinPingPongLatency );
+  511.              fprintf( outputFile, "AvgPingPongLatency_usec=%g\n", params->AvgPingPongLatency );
+  512.              fprintf( outputFile, "MaxPingPongBandwidth_GBytes=%g\n", params->MaxPingPongBandwidth );
+  513.              fprintf( outputFile, "AvgPingPongBandwidth_GBytes=%g\n", params->AvgPingPongBandwidth );
+  514.              fprintf( outputFile, "NaturallyOrderedRingLatency_usec=%g\n", params->NaturallyOrderedRingLatency );
+  515.              fprintf( outputFile, "FFTEnblk=%d\n", params->FFTEnblk );
+  516.              fprintf( outputFile, "FFTEnp=%d\n", params->FFTEnp );
+  517.              fprintf( outputFile, "FFTEl2size=%d\n", params->FFTEl2size );
+  518.            
+  519.            #ifdef _OPENMP
+  520.              fprintf( outputFile, "M_OPENMP=%ld\n", (long)(_OPENMP) );
+  521.            #pragma omp parallel
+  522.    M-----<   {
+  523.    M       #pragma omp single nowait
+  524.    M           {
+  525.    M       
+  526.  + M             fprintf( outputFile, "omp_get_num_threads=%d\n", omp_get_num_threads() );
+  527.  + M             fprintf( outputFile, "omp_get_max_threads=%d\n", omp_get_max_threads() );
+  528.  + M             fprintf( outputFile, "omp_get_num_procs=%d\n",   omp_get_num_procs() );
+  529.    M           }
+  530.    M----->   }
+  531.            #else
+  532.              fprintf( outputFile, "M_OPENMP=%ld\n", -1L );
+  533.              fprintf( outputFile, "omp_get_num_threads=%d\n", 0 );
+  534.              fprintf( outputFile, "omp_get_max_threads=%d\n", 0 );
+  535.              fprintf( outputFile, "omp_get_num_procs=%d\n",   0 );
+  536.            #endif
+  537.            
+  538.              fprintf( outputFile, "MemProc=%g\n", HPCC_MemProc );
+  539.              fprintf( outputFile, "MemSpec=%d\n", HPCC_MemSpec );
+  540.              fprintf( outputFile, "MemVal=%g\n", HPCC_MemVal );
+  541.            
+  542.  + F-----<   for (i = 0; i < MPIFFT_TIMING_COUNT - 1; i++)
+  543.    F----->     fprintf( outputFile, "MPIFFT_time%d=%g\n", i, params->MPIFFTtimingsForward[i+1] - params->MPIFFTtimingsForward[i] );
+  544.            
+  545.              /* CPS: C Preprocessor Symbols */
+  546.            
+  547.              i = 0;
+  548.            #ifdef HPCC_FFT_235
+  549.              i = 1;
+  550.            #endif
+  551.              fprintf( outputFile, "CPS_HPCC_FFT_235=%d\n", i );
+  552.            
+  553.              i = 0;
+  554.            #ifdef HPCC_FFTW_ESTIMATE
+  555.              i = 1;
+  556.            #endif
+  557.              fprintf( outputFile, "CPS_HPCC_FFTW_ESTIMATE=%d\n", i );
+  558.            
+  559.              i = 0;
+  560.            #ifdef HPCC_MEMALLCTR
+  561.              i = 1;
+  562.            #endif
+  563.              fprintf( outputFile, "CPS_HPCC_MEMALLCTR=%d\n", i );
+  564.            
+  565.              i = 0;
+  566.            #ifdef HPL_USE_GETPROCESSTIMES
+  567.              i = 1;
+  568.            #endif
+  569.              fprintf( outputFile, "CPS_HPL_USE_GETPROCESSTIMES=%d\n", i );
+  570.            
+  571.            
+  572.              i = 0;
+  573.            #ifdef RA_SANDIA_NOPT
+  574.              i = 1;
+  575.            #endif
+  576.              fprintf( outputFile, "CPS_RA_SANDIA_NOPT=%d\n", i );
+  577.            
+  578.              i = 0;
+  579.            #ifdef RA_SANDIA_OPT2
+  580.              i = 1;
+  581.            #endif
+  582.              fprintf( outputFile, "CPS_RA_SANDIA_OPT2=%d\n", i );
+  583.            
+  584.              i = 0;
+  585.            #ifdef USING_FFTW
+  586.              i = 1;
+  587.            #endif
+  588.              fprintf( outputFile, "CPS_USING_FFTW=%d\n", i );
+  589.            
+  590.              fprintf( outputFile, "End of Summary section.%s\n", "" );
+  591.              fprintf( outputFile,
+  592.                        "########################################################################\n" );
+  593.              fprintf( outputFile, "End of HPC Challenge tests.\n" );
+  594.  +           fprintf( outputFile, "Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  595.              fprintf( outputFile,
+  596.                        "########################################################################\n" );
+  597.  +           END_IO( myRank, outputFile );
+  598.            
+  599.              return 0;
+  600.            }
+  601.            
+  602.            int
+  603.            HPCC_LocalVectorSize(HPCC_Params *params, int vecCnt, size_t size, int pow2) {
+  604.              int flg2, maxIntBits2;
+  605.            
+  606.              /* this is the maximum power of 2 that that can be held in a signed integer (for a 4-byte
+  607.                 integer, 2**31-1 is the maximum integer, so the maximum power of 2 is 30) */
+  608.              maxIntBits2 = sizeof(int) * 8 - 2;
+  609.            
+  610.              /* flg2 = floor(log2(params->HPLMaxProcMem / size / vecCnt)) */
+  611.  + 1-----<   for (flg2 = 1; params->HPLMaxProcMem / size / vecCnt >> flg2; ++flg2)
+  612.    1----->     ; /* EMPTY */
+  613.              --flg2;
+  614.            
+  615.              if (flg2 <= maxIntBits2) {
+  616.                if (pow2)
+  617.                  return 1 << flg2;
+  618.            
+  619.                return params->HPLMaxProcMem / size / vecCnt;
+  620.              }
+  621.            
+  622.              return 1 << maxIntBits2;
+  623.            }
+  624.            
+  625.            int
+  626.            HPCC_ProcessGrid(int *P, int *Q, MPI_Comm comm) {
+  627.              int myRank, commSize;
+  628.              int i, p, q, nproc;
+  629.            
+  630.  +           MPI_Comm_size( comm, &commSize );
+  631.  +           MPI_Comm_rank( comm, &myRank );
+  632.            
+  633.  + 1-----<   for (nproc = commSize; ; --nproc) { /* this loop makes at most two iterations */
+  634.    1       
+  635.  + 1 2---<     for (i = (int)sqrt( nproc ); i > 1; --i) {
+  636.    1 2           q = nproc / i;
+  637.    1 2           p = nproc / q;
+  638.    1 2           if (p * q == nproc) {
+  639.    1 2             *P = p;
+  640.    1 2             *Q = q;
+  641.    1 2             return 0;
+  642.    1 2           }
+  643.    1 2--->     }
+  644.    1       
+  645.    1           /* if the code gets here `nproc' is small or is a prime */
+  646.    1       
+  647.    1           if (nproc < 20) { /* do 1D grid for small process counts */
+  648.    1             *P = 1;
+  649.    1             *Q = nproc;
+  650.    1             return 0;
+  651.    1           }
+  652.    1----->   }
+  653.            
+  654.              return 0;
+  655.            }
+  656.            
+  657.            size_t
+  658.            HPCC_Memory(MPI_Comm comm) {
+  659.              int myRank, commSize;
+  660.              int num_threads;
+  661.              char memFile[13] = "hpccmemf.txt";
+  662.              char buf[HPL_LINE_MAX]; int nbuf = HPL_LINE_MAX;
+  663.              char *sVal;
+  664.              FILE *f;
+  665.              double mult, mval, procMem;
+  666.              size_t rv;
+  667.            
+  668.              mult = 1.0;
+  669.              num_threads = 1;
+  670.            
+  671.  +           MPI_Comm_size( comm, &commSize );
+  672.  +           MPI_Comm_rank( comm, &myRank );
+  673.            
+  674.            #ifdef _OPENMP
+  675.            #pragma omp parallel
+  676.    M-----<   {
+  677.    M       #pragma omp single nowait
+  678.    M           {
+  679.  + M             num_threads = omp_get_num_threads();
+  680.    M           }
+  681.    M----->   }
+  682.            #endif
+  683.            
+  684.              if (myRank == 0) {
+  685.                procMem = 64;
+  686.            
+  687.  +             f = fopen( memFile, "r" );
+  688.                if (f) {
+  689.            
+  690.  +               if (fgets( buf, nbuf, f )) {
+  691.            
+  692.                    if (strncmp( "Total=", buf, 6 ) == 0) {
+  693.                      mult = 1.0 / commSize;
+  694.                      sVal = buf + 6;
+  695.                      HPCC_MemSpec = 1;
+  696.                    } else if (strncmp( "Thread=", buf, 7 ) == 0) {
+  697.                      mult = num_threads;
+  698.                      sVal = buf + 7;
+  699.                      HPCC_MemSpec = 2;
+  700.                    } else if (strncmp( "Process=", buf, 8 ) == 0) {
+  701.                      mult = 1.0;
+  702.                      sVal = buf + 8;
+  703.                      HPCC_MemSpec = 3;
+  704.                    } else
+  705.                      sVal = NULL;
+  706.            
+  707.  +                 if (sVal && 1 == sscanf( sVal, "%lf", &mval )) {
+  708.                      procMem = mval * mult;
+  709.                      HPCC_MemVal = mval;
+  710.                    }
+  711.                  }
+  712.            
+  713.  +               fclose( f );
+  714.                }
+  715.              }
+  716.            
+  717.  +           MPI_Bcast( &procMem, 1, MPI_DOUBLE, 0, comm );
+  718.            
+  719.              rv = procMem;
+  720.              rv *= 1024; rv *= 1024;
+  721.            
+  722.              HPCC_MemProc = procMem;
+  723.            
+  724.              return rv;
+  725.            }
+  726.            
+  727.            int
+  728.            HPCC_Defaults(HPL_T_test *TEST, int *NS, int *N,
+  729.                          int *NBS, int *NB,
+  730.                          HPL_T_ORDER *PMAPPIN,
+  731.                          int *NPQS, int *P, int *Q,
+  732.                          int *NPFS, HPL_T_FACT *PF,
+  733.                          int *NBMS, int *NBM,
+  734.                          int *NDVS, int *NDV,
+  735.                          int *NRFS, HPL_T_FACT *RF,
+  736.                          int *NTPS, HPL_T_TOP *TP,
+  737.                          int *NDHS, int *DH,
+  738.                          HPL_T_SWAP *FSWAP, int *TSWAP, int *L1NOTRAN, int *UNOTRAN, int *EQUIL, int *ALIGN, MPI_Comm comm) {
+  739.              int nb = 80;
+  740.              double memFactor = 0.8;
+  741.            
+  742.              *NS = *NBS = *NPQS = *NPFS = *NBMS = *NDVS = *NRFS = *NTPS = *NDHS = 1;
+  743.            
+  744.              TEST->thrsh = 16.0;
+  745.            
+  746.              *NB = nb;
+  747.            
+  748.              *PMAPPIN = HPL_COLUMN_MAJOR;
+  749.            
+  750.  +           HPCC_ProcessGrid( P, Q, comm );
+  751.            
+  752.  +           *N = (int)sqrt( memFactor * (double)(*P * *Q) * (double)(HPCC_Memory( comm ) / sizeof(double)) ) / (2 * nb);
+  753.              *N *= 2*nb; /* make N multiple of 2*nb so both HPL and PTRANS see matrix
+  754.                             dimension divisible by nb */
+  755.            
+  756.              *PF = HPL_RIGHT_LOOKING;
+  757.            
+  758.              *NBM = 4;
+  759.            
+  760.              *NDV = 2;
+  761.            
+  762.              *RF = HPL_CROUT;
+  763.            
+  764.              *TP = HPL_1RING_M;
+  765.            
+  766.              *DH = 1;
+  767.            
+  768.              *FSWAP = HPL_SW_MIX;
+  769.            
+  770.              *TSWAP = 64;
+  771.            
+  772.              *L1NOTRAN = 0;
+  773.            
+  774.              *UNOTRAN = 0;
+  775.            
+  776.              *EQUIL = 1;
+  777.            
+  778.              *ALIGN = 8;
+  779.            
+  780.              return 0;
+  781.            }
+  782.            
+  783.            #ifdef XERBLA_MISSING
+  784.            
+  785.            #ifdef Add_
+  786.            #define F77xerbla xerbla_
+  787.            #endif
+  788.            #ifdef Add__
+  789.            #define F77xerbla xerbla__
+  790.            #endif
+  791.            #ifdef NoChange
+  792.            #define F77xerbla xerbla
+  793.            #endif
+  794.            #ifdef UpCase
+  795.            #define F77xerbla XERBLA
+  796.            #endif
+  797.            #ifdef f77IsF2C
+  798.            #define F77xerbla xerbla_
+  799.            #endif
+  800.            
+  801.            void
+  802.            F77xerbla(char *srname, F77_INTEGER *info, long srname_len) {
+  803.              /*
+  804.              int i; char Cname[7];
+  805.              for (i = 0; i < 6; i++) Cname[i] = srname[i];
+  806.              Cname[6] = 0;
+  807.              printf("xerbla(%d)\n", *info);
+  808.              */
+  809.              printf("xerbla()\n");
+  810.              fflush(stdout);
+  811.            }
+  812.            #endif
+  813.            
+  814.            #ifdef HPCC_MEMALLCTR
+  815.            #define MEM_MAXCNT 7
+  816.            
+  817.            typedef double Mem_t;
+  818.            
+  819.            static Mem_t *Mem_base;
+  820.            static size_t Mem_dsize;
+  821.            
+  822.            /*
+  823.              Each entry can be in one of three states:
+  824.              1. Full (holds a block of allocated memory) if:
+  825.                 ptr != NULL; size > 0; free == 0
+  826.              2. Free (holds block of unallocated memory) if:
+  827.                 ptr != NULL; free = 1
+  828.              3  Empty (doesn't hold a block of memory) if:
+  829.                 ptr == NULL; free = 1
+  830.             */
+  831.            typedef struct {
+  832.              Mem_t *Mem_ptr;
+  833.              size_t Mem_size;
+  834.              int Mem_free;
+  835.            } Mem_entry_t;
+  836.            
+  837.            static Mem_entry_t Mem_blocks[MEM_MAXCNT];
+  838.            
+  839.            static void
+  840.            HPCC_alloc_set_empty(int idx) {
+  841.              int i, n0, n;
+  842.            
+  843.              if (MEM_MAXCNT == idx) {
+  844.                n0 = 0;
+  845.                n = idx;
+  846.              } else {
+  847.                n0 = idx;
+  848.                n = idx + 1;
+  849.              }
+  850.            
+  851.              /* initialize all blocks to empty */
+  852.              for (i = n0; i < n; ++i) {
+  853.                Mem_blocks[i].Mem_ptr = (Mem_t *)(NULL);
+  854.                Mem_blocks[i].Mem_size = 0;
+  855.                Mem_blocks[i].Mem_free = 1;
+  856.              }
+  857.            }
+  858.            
+  859.            static void
+  860.            HPCC_alloc_set_free(int idx, Mem_t *dptr, size_t size) {
+  861.              Mem_blocks[idx].Mem_ptr = dptr;
+  862.              Mem_blocks[idx].Mem_size = size;
+  863.              Mem_blocks[idx].Mem_free = 1;
+  864.            }
+  865.            
+  866.            int
+  867.            HPCC_alloc_init(size_t total_size) {
+  868.              size_t dsize;
+  869.            
+  870.              Mem_dsize = dsize = Mceil( total_size, sizeof(Mem_t) );
+  871.            
+  872.              Mem_base = (Mem_t *)malloc( dsize * sizeof(Mem_t) );
+  873.            
+  874.              HPCC_alloc_set_empty( MEM_MAXCNT );
+  875.            
+  876.              if (Mem_base) {
+  877.                HPCC_alloc_set_free( 0, Mem_base, dsize );
+  878.                return 0;
+  879.              }
+  880.            
+  881.              return -1;
+  882.            }
+  883.            
+  884.            int
+  885.            HPCC_alloc_finalize() {
+  886.              free( Mem_base );
+  887.              HPCC_alloc_set_empty( MEM_MAXCNT );
+  888.              return 0;
+  889.            }
+  890.            
+  891.            void *
+  892.            HPCC_malloc(size_t size) {
+  893.              size_t dsize, diff_size, cur_diff_size;
+  894.              int i, cur_best, cur_free;
+  895.            
+  896.              dsize = Mceil( size, sizeof(Mem_t) );
+  897.            
+  898.              cur_diff_size = Mem_dsize + 1;
+  899.              cur_free = cur_best = MEM_MAXCNT;
+  900.            
+  901.              for (i = 0; i < MEM_MAXCNT; ++i) {
+  902.                /* skip full spots */
+  903.                if (! Mem_blocks[i].Mem_free)
+  904.                  continue;
+  905.            
+  906.                /* find empty spot */
+  907.                if (! Mem_blocks[i].Mem_ptr) {
+  908.                  cur_free = i;
+  909.                  continue;
+  910.                }
+  911.            
+  912.                diff_size = Mem_blocks[i].Mem_size - dsize;
+  913.            
+  914.                if (Mem_blocks[i].Mem_size >= dsize && diff_size < cur_diff_size) {
+  915.                  /* a match that's the best (so far) was found */
+  916.                  cur_diff_size = diff_size;
+  917.                  cur_best = i;
+  918.                }
+  919.              }
+  920.            
+  921.              /* found a match */
+  922.              if (cur_best < MEM_MAXCNT) {
+  923.                if (cur_free < MEM_MAXCNT && cur_diff_size > 0) {
+  924.                  /* create a new free block */
+  925.                  HPCC_alloc_set_free( cur_free, Mem_blocks[cur_best].Mem_ptr + dsize,
+  926.                                       cur_diff_size );
+  927.            
+  928.                  Mem_blocks[cur_best].Mem_size = dsize; /* shrink the best match */
+  929.                }
+  930.            
+  931.                Mem_blocks[cur_best].Mem_free = 0;
+  932.            
+  933.                return (void *)(Mem_blocks[cur_best].Mem_ptr);
+  934.              }
+  935.            
+  936.              return NULL;
+  937.            }
+  938.            
+  939.            void
+  940.            HPCC_free(void *ptr) {
+  941.              Mem_t *dptr = (Mem_t *)ptr;
+  942.              int cur_blk = MEM_MAXCNT, made_changes, i, j;
+  943.            
+  944.              /* look for the block being freed */
+  945.              for (i = 0; i < MEM_MAXCNT; ++i) {
+  946.                if (Mem_blocks[i].Mem_free)
+  947.                  continue;
+  948.            
+  949.                if (Mem_blocks[i].Mem_ptr == dptr) {
+  950.                  cur_blk = i;
+  951.                  break;
+  952.                }
+  953.              }
+  954.            
+  955.              /* not finding the pointer (including NULL) causes abort */
+  956.              if (MEM_MAXCNT == cur_blk) {
+  957.                HPL_pabort( __LINE__, "HPCC_free", "Unknown pointer in HPCC_free()." );
+  958.              }
+  959.            
+  960.              /* double-free causes abort */
+  961.              if (1 == Mem_blocks[cur_blk].Mem_free) {
+  962.                HPL_pabort( __LINE__, "HPCC_free", "Second call to HPCC_free() with the same pointer." );
+  963.              }
+  964.            
+  965.              Mem_blocks[cur_blk].Mem_free = 1;
+  966.            
+  967.              /* merge as many blocks as possible */
+  968.              for (made_changes = 1; made_changes;) {
+  969.                made_changes = 0;
+  970.            
+  971.                for (i = 0; i < MEM_MAXCNT; ++i) {
+  972.            
+  973.                  /* empty or full blocks can't be merged */
+  974.                  if (! Mem_blocks[i].Mem_free || ! Mem_blocks[i].Mem_ptr)
+  975.                    continue;
+  976.            
+  977.                  for (j = 0; j < MEM_MAXCNT; ++j) {
+  978.            
+  979.                    /* empty or occupied blocks can't be merged */
+  980.                    if (! Mem_blocks[j].Mem_free || ! Mem_blocks[j].Mem_ptr)
+  981.                      continue;
+  982.            
+  983.                    if (Mem_blocks[i].Mem_ptr + Mem_blocks[i].Mem_size ==
+  984.                        Mem_blocks[j].Mem_ptr) {
+  985.                      Mem_blocks[i].Mem_size += Mem_blocks[j].Mem_size;
+  986.            
+  987.                      HPCC_alloc_set_empty( j );
+  988.            
+  989.                      made_changes = 1;
+  990.                    }
+  991.                  }
+  992.                }
+  993.              }
+  994.            }
+  995.            #endif
+
+CC-6287 CC: VECTOR File = io.c, Line = 23 
+  A loop was not vectorized because it contains a call to function "sscanf" on line 24.
+
+CC-3021 CC: IPA File = io.c, Line = 24 
+  "sscanf" (called from "ReadInts") was not inlined because the compiler was unable to locate the routine.
+
+CC-6262 CC: VECTOR File = io.c, Line = 28 
+  A loop was not vectorized because it contains a call to a function on line 28.
+
+CC-3182 CC: IPA File = io.c, Line = 28 
+  Loop has been flattened.
+
+CC-6262 CC: VECTOR File = io.c, Line = 30 
+  A loop was not vectorized because it contains a call to a function on line 30.
+
+CC-3182 CC: IPA File = io.c, Line = 30 
+  Loop has been flattened.
+
+CC-3021 CC: IPA File = io.c, Line = 43 
+  "HPL_pdinfo" (called from "HPCC_InitHPL") was not inlined because the compiler was unable to locate the routine.
+
+CC-6337 CC: VECTOR File = io.c, Line = 59 
+  A loop was not vectorized because it contains unsupported conditional constructs near line 61.
+
+CC-6005 CC: SCALAR File = io.c, Line = 71 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = io.c, Line = 71 
+  A loop was conditionally vectorized.
+
+CC-3021 CC: IPA File = io.c, Line = 86 
+  "MPI_Comm_size" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 87 
+  "MPI_Comm_rank" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 90 
+  "fopen" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = io.c, Line = 97 
+  A loop was not vectorized because it contains a call to function "fgets" on line 98.
+
+CC-3021 CC: IPA File = io.c, Line = 98 
+  "fgets" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 107 
+  "fgets" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 108 
+  "sscanf" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 111 
+  "fopen" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 113 
+  "fflush" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 113 
+  "fclose" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 118 
+  "fgets" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = io.c, Line = 119 
+  "ReadInts" (called from "HPCC_InputFileInit") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = io.c, Line = 122 
+  "iiamax" (called from "HPCC_InputFileInit") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-6336 CC: VECTOR File = io.c, Line = 124 
+  A loop was not vectorized because it requires additional hardware capabilities for pack or unpack operations on line 127.
+
+CC-6289 CC: VECTOR File = io.c, Line = 135 
+  A loop was not vectorized because a recurrence was found on "i" between lines 136 and 135.
+
+CC-3021 CC: IPA File = io.c, Line = 141 
+  "fgets" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 142 
+  "sscanf" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 145 
+  "fopen" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 147 
+  "fflush" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 147 
+  "fclose" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 152 
+  "fgets" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = io.c, Line = 153 
+  "ReadInts" (called from "HPCC_InputFileInit") was not inlined because the type of argument 1 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = io.c, Line = 155 
+  "icopy" (called from "HPCC_InputFileInit") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = io.c, Line = 160 
+  "fclose" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 163 
+  "MPI_Bcast" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-6289 CC: VECTOR File = io.c, Line = 167 
+  A loop was not vectorized because a recurrence was found on "i" between lines 168 and 167.
+
+CC-3005 CC: IPA File = io.c, Line = 171 
+  "icopy" (called from "HPCC_InputFileInit") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = io.c, Line = 176 
+  "MPI_Bcast" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 178 
+  "MPI_Bcast" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 179 
+  "MPI_Bcast" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 181 
+  "MPI_Bcast" (called from "HPCC_InputFileInit") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = io.c, Line = 185 
+  "icopy" (called from "HPCC_InputFileInit") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3005 CC: IPA File = io.c, Line = 186 
+  "icopy" (called from "HPCC_InputFileInit") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = io.c, Line = 197 
+  "MPI_Allreduce" (called from "ErrorReduce") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 226 
+  "MPI_Comm_size" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 227 
+  "MPI_Comm_rank" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 229 
+  "strcpy" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 230 
+  "strcpy" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 233 
+  "fopen" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = io.c, Line = 237 
+  "ErrorReduce" (called from "HPCC_Init") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = io.c, Line = 240 
+  "MPI_Get_processor_name" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 243 
+  "time" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 245 
+  "fopen" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 256 
+  "ctime" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 260 
+  "fflush" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 260 
+  "fclose" (called from "HPCC_Init") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = io.c, Line = 264 
+  "HPCC_InitHPL" (called from "HPCC_Init") was not inlined because the call site will not flatten.  "HPL_pdinfo" is missing.
+
+CC-3118 CC: IPA File = io.c, Line = 265 
+  "HPCC_InputFileInit" (called from "HPCC_Init") was not inlined because the call site will not flatten.  "MPI_Bcast" is missing.
+
+CC-6204 CC: VECTOR File = io.c, Line = 340 
+  A loop was vectorized.
+
+CC-3005 CC: IPA File = io.c, Line = 348 
+  "iiamax" (called from "HPCC_Init") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-6373 CC: VECTOR File = io.c, Line = 356 
+  A loop with a trip count of 8 was unwound into 2 vector iterations.
+
+CC-6204 CC: VECTOR File = io.c, Line = 356 
+  A loop was vectorized.
+
+CC-3005 CC: IPA File = io.c, Line = 359 
+  "iiamax" (called from "HPCC_Init") was not inlined because the type of argument 2 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = io.c, Line = 384 
+  "time" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 386 
+  "MPI_Comm_rank" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 387 
+  "MPI_Comm_size" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 389 
+  "fopen" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 409 
+  "MPI_Wtick" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 430 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 431 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 432 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 433 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 434 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 435 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 436 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 437 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 438 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 439 
+  "HPL_dlamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 440 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 441 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 442 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 443 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 444 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 445 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 446 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 447 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 448 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 449 
+  "HPL_slamch" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 450 
+  "HPCC_dweps" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 451 
+  "HPCC_sweps" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-6823 CC: THREAD File = io.c, Line = 522 
+  A region starting at line 522 and ending at line 530 was multi-threaded.
+
+CC-3021 CC: IPA File = io.c, Line = 526 
+  "omp_get_num_threads" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 527 
+  "omp_get_max_threads" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 528 
+  "omp_get_num_procs" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = io.c, Line = 542 
+  A loop was not vectorized because it contains a call to function "fprintf" on line 543.
+
+CC-3182 CC: IPA File = io.c, Line = 542 
+  Loop has been flattened.
+
+CC-3021 CC: IPA File = io.c, Line = 594 
+  "ctime" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 597 
+  "fflush" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 597 
+  "fclose" (called from "HPCC_Finalize") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = io.c, Line = 611 
+  A loop was not vectorized because a recurrence was found on "flg2" at line 611.
+
+CC-3021 CC: IPA File = io.c, Line = 630 
+  "MPI_Comm_size" (called from "HPCC_ProcessGrid") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 631 
+  "MPI_Comm_rank" (called from "HPCC_ProcessGrid") was not inlined because the compiler was unable to locate the routine.
+
+CC-6302 CC: VECTOR File = io.c, Line = 633 
+  A loop was not vectorized because the loop starting at line 635 was not vectorizable.
+
+CC-6334 CC: VECTOR File = io.c, Line = 635 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3021 CC: IPA File = io.c, Line = 671 
+  "MPI_Comm_size" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 672 
+  "MPI_Comm_rank" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-6823 CC: THREAD File = io.c, Line = 676 
+  A region starting at line 676 and ending at line 681 was multi-threaded.
+
+CC-3021 CC: IPA File = io.c, Line = 679 
+  "omp_get_num_threads" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 687 
+  "fopen" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 690 
+  "fgets" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 707 
+  "sscanf" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 713 
+  "fclose" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = io.c, Line = 717 
+  "MPI_Bcast" (called from "HPCC_Memory") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = io.c, Line = 750 
+  "HPCC_ProcessGrid" (called from "HPCC_Defaults") was not inlined because the call site will not flatten.  "MPI_Comm_rank" is
+  missing.
+
+CC-3118 CC: IPA File = io.c, Line = 752 
+  "HPCC_Memory" (called from "HPCC_Defaults") was not inlined because the call site will not flatten.  "MPI_Bcast" is missing.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

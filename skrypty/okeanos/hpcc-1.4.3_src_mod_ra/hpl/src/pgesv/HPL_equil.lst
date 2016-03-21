@@ -1,0 +1,361 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_equil.c
+Compiled : 2016-03-19  13:19:58
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_equil.o -c ../../../src/pgesv/HPL_equil.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_equil.c
+Date     : 03/19/2016  13:19:59
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.            /* 
+    2.             * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.             *    HPL - 2.0 - September 10, 2008                          
+    4.             *    Antoine P. Petitet                                                
+    5.             *    University of Tennessee, Knoxville                                
+    6.             *    Innovative Computing Laboratory                                 
+    7.             *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.             *                                                                      
+    9.             * -- Copyright notice and Licensing terms:                             
+   10.             *                                                                      
+   11.             * Redistribution  and  use in  source and binary forms, with or without
+   12.             * modification, are  permitted provided  that the following  conditions
+   13.             * are met:                                                             
+   14.             *                                                                      
+   15.             * 1. Redistributions  of  source  code  must retain the above copyright
+   16.             * notice, this list of conditions and the following disclaimer.        
+   17.             *                                                                      
+   18.             * 2. Redistributions in binary form must reproduce  the above copyright
+   19.             * notice, this list of conditions,  and the following disclaimer in the
+   20.             * documentation and/or other materials provided with the distribution. 
+   21.             *                                                                      
+   22.             * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.             * software must display the following acknowledgement:                 
+   24.             * This  product  includes  software  developed  at  the  University  of
+   25.             * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.             *                                                                      
+   27.             * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.             * names  of  its  contributors  may  not  be used to endorse or promote
+   29.             * products  derived   from   this  software  without  specific  written
+   30.             * permission.                                                          
+   31.             *                                                                      
+   32.             * -- Disclaimer:                                                       
+   33.             *                                                                      
+   34.             * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.             * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.             * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.             * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.             * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.             * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.             * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.             * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.             * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.             * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.             * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.             * ---------------------------------------------------------------------
+   46.             */ 
+   47.            /*
+   48.             * Include files
+   49.             */
+   50.            #include "hpl.h"
+   51.            
+   52.            #ifdef HPL_STDC_HEADERS
+   53.            void HPL_equil
+   54.            (
+   55.               HPL_T_panel *                    PBCST,
+   56.               int *                            IFLAG,
+   57.               HPL_T_panel *                    PANEL,
+   58.               const enum HPL_TRANS             TRANS,
+   59.               const int                        N,
+   60.               double *                         U,
+   61.               const int                        LDU,
+   62.               int *                            IPLEN,
+   63.               const int *                      IPMAP,
+   64.               const int *                      IPMAPM1,
+   65.               int *                            IWORK
+   66.            )
+   67.            #else
+   68.            void HPL_equil
+   69.            ( PBCST, IFLAG, PANEL, TRANS, N, U, LDU, IPLEN, IPMAP, IPMAPM1, IWORK )
+   70.               HPL_T_panel *                    PBCST;
+   71.               int *                            IFLAG;
+   72.               HPL_T_panel *                    PANEL;
+   73.               const enum HPL_TRANS             TRANS;
+   74.               const int                        N;
+   75.               double *                         U;
+   76.               const int                        LDU;
+   77.               int *                            IPLEN;
+   78.               const int *                      IPMAP;
+   79.               const int *                      IPMAPM1;
+   80.               int *                            IWORK;
+   81.            #endif
+   82.            {
+   83.            /* 
+   84.             * Purpose
+   85.             * =======
+   86.             *
+   87.             * HPL_equil equilibrates  the  local  pieces  of U, so that on exit to
+   88.             * this function, pieces of U contained in every process row are of the
+   89.             * same size. This phase makes the rolling phase optimal.  In addition,
+   90.             * this  function probes  for  the  column panel L and forwards it when
+   91.             * possible.
+   92.             *
+   93.             * Arguments
+   94.             * =========
+   95.             *
+   96.             * PBCST   (local input/output)          HPL_T_panel *
+   97.             *         On entry,  PBCST  points to the data structure containing the
+   98.             *         panel (to be broadcast) information.
+   99.             *
+  100.             * IFLAG   (local input/output)          int *
+  101.             *         On entry, IFLAG  indicates  whether or not  the broadcast has
+  102.             *         already been completed.  If not,  probing will occur, and the
+  103.             *         outcome will be contained in IFLAG on exit.
+  104.             *
+  105.             * PANEL   (local input/output)          HPL_T_panel *
+  106.             *         On entry,  PANEL  points to the data structure containing the
+  107.             *         panel (to be equilibrated) information.
+  108.             *
+  109.             * TRANS   (global input)                const enum HPL_TRANS
+  110.             *         On entry, TRANS specifies whether  U  is stored in transposed
+  111.             *         or non-transposed form.
+  112.             *
+  113.             * N       (local input)                 const int
+  114.             *         On entry, N  specifies the number of rows or columns of  U. N
+  115.             *         must be at least 0.
+  116.             *
+  117.             * U       (local input/output)          double *
+  118.             *         On entry,  U  is an array of dimension (LDU,*) containing the
+  119.             *         local pieces of U in each process row.
+  120.             *
+  121.             * LDU     (local input)                 const int
+  122.             *         On entry, LDU specifies the local leading dimension of U. LDU
+  123.             *         should be at least MAX(1,IPLEN[nprow]) when  U  is stored  in
+  124.             *         non-transposed form, and MAX(1,N) otherwise.
+  125.             *
+  126.             * IPLEN   (global input)                int *
+  127.             *         On entry, IPLEN is an array of dimension NPROW+1.  This array
+  128.             *         is such that IPLEN[i+1] - IPLEN[i] is the number of rows of U
+  129.             *         in process IPMAP[i].
+  130.             *
+  131.             * IPMAP   (global input)                const int *
+  132.             *         On entry, IPMAP is an array of dimension  NPROW.  This  array
+  133.             *         contains  the  logarithmic mapping of the processes. In other
+  134.             *         words, IPMAP[myrow]  is the absolute coordinate of the sorted
+  135.             *         process.
+  136.             *
+  137.             * IPMAPM1 (global input)                const int *
+  138.             *         On entry, IPMAPM1  is an array of dimension NPROW. This array
+  139.             *         contains  the inverse of the logarithmic mapping contained in
+  140.             *         IPMAP: For i in [0.. NPROCS) IPMAPM1[IPMAP[i]] = i.
+  141.             *
+  142.             * IWORK   (workspace)                   int *
+  143.             *         On entry, IWORK is a workarray of dimension NPROW+1.
+  144.             *
+  145.             * ---------------------------------------------------------------------
+  146.             */ 
+  147.            /*
+  148.             * .. Local Variables ..
+  149.             */
+  150.               int                        i, ip, ipU, ipcur, iprow, iptgt, lastrow,
+  151.                                          left, npm1, nprow, ll, llU, llcur, lltgt,
+  152.                                          right, slen, smax, smin;
+  153.            /* ..
+  154.             * .. Executable Statements ..
+  155.             */
+  156.               if( ( npm1 = ( nprow = PANEL->grid->nprow ) - 1 ) <= 1 ) return;
+  157.            /*
+  158.             * If the current distribution of the pieces of U is already optimal for
+  159.             * the rolling phase, then return imediately.  The  optimal distribution
+  160.             * is such that ip processes have smax items and the remaining processes
+  161.             * only have smin items. Another way to check this is to verify that all
+  162.             * differences IPLEN[i+1] - IPLEN[i] are either smin or smax.
+  163.             */
+  164.               smax = ( ( slen = IPLEN[nprow] ) + npm1 ) / nprow;
+  165.               ip   = slen - nprow * ( smin = slen / nprow );
+  166.            
+  167.               iprow = 0;
+  168.  + 1-----<    do
+  169.    1          {
+  170.    1             ll = IPLEN[iprow+1] - IPLEN[iprow]; iprow++;
+  171.    1----->    } while( ( iprow < nprow ) && ( ( ll == smin ) || ( ll == smax ) ) );
+  172.            
+  173.               if( iprow == nprow ) return;
+  174.            /*
+  175.             * Now,  we are sure  the distribution of the pieces of U is not optimal
+  176.             * with respect to the rolling phase,  thus  perform  equilibration.  Go
+  177.             * through the list of processes:  Processes  that have rows that do not
+  178.             * belong to them  with respect to the optimal mapping spread them  in a
+  179.             * logarithmic fashion. To simplify a little bit the implementation, and
+  180.             * mainly the packing, a source process row spreads its data to its left
+  181.             * first, and then to its right.
+  182.             */
+  183.               IWORK[nprow] = slen;
+  184.            
+  185.  + 1-----<    for( iprow = 0; iprow < nprow; iprow++ )
+  186.    1          {
+  187.    1             llU = IPLEN[iprow+1] - ( ipU = IPLEN[iprow] );
+  188.    1             if( iprow < ip ) { lltgt = smax; iptgt = iprow * smax;      }
+  189.    1             else             { lltgt = smin; iptgt = iprow * smin + ip; }
+  190.    1       
+  191.    1             left = ( ipU < iptgt ); right = ( iptgt + lltgt < ipU + llU );
+  192.    1       /*
+  193.    1        * If I have something to spread to either the left or the right
+  194.    1        */
+  195.    1             if( ( llU > 0 ) && ( left || right ) )
+  196.    1             {        /* Figure out how much every other process should have */
+  197.    1       
+  198.    1                ipcur = ipU; llcur = llU;
+  199.    1       
+  200.  + 1 r2--<          for( i = 0; i < nprow; i++ )
+  201.    1 r2             {
+  202.    1 r2                if( i < ip ) { lltgt = smax; iptgt = i * smax;      }
+  203.    1 r2                else         { lltgt = smin; iptgt = i * smin + ip; }
+  204.    1 r2                lastrow = iptgt + lltgt - 1;
+  205.    1 r2    
+  206.    1 r2                if( ( lastrow >= ipcur ) && ( llcur > 0 ) )
+  207.    1 r2                { ll = lastrow - ipcur + 1; ll = Mmin( ll, llcur ); llcur -= ll; }
+  208.    1 r2                else { ll = 0; }
+  209.    1 r2    
+  210.    1 r2                IWORK[i] = ipcur; ipcur += ll; IWORK[i+1] = ipcur;
+  211.    1 r2-->          }
+  212.    1       /*
+  213.    1        * Equilibration phase
+  214.    1        */
+  215.    1                if( TRANS == HplNoTrans )
+  216.    1                {
+  217.    1                   if( left  )
+  218.    1                   {
+  219.  + 1                      HPL_spreadN( PBCST, IFLAG, PANEL, HplLeft,  N, U, LDU,
+  220.    1                                   iprow, IWORK, IPMAP, IPMAPM1 );
+  221.    1                   }
+  222.    1       
+  223.    1                   if( right )
+  224.    1                   {
+  225.  + 1                      HPL_spreadN( PBCST, IFLAG, PANEL, HplRight, N, U, LDU,
+  226.    1                                   iprow, IWORK, IPMAP, IPMAPM1 );
+  227.    1                   }
+  228.    1                }
+  229.    1                else
+  230.    1                {
+  231.    1                   if( left  )
+  232.    1                   {
+  233.  + 1                      HPL_spreadT( PBCST, IFLAG, PANEL, HplLeft,  N, U, LDU,
+  234.    1                                   iprow, IWORK, IPMAP, IPMAPM1 );
+  235.    1                   }
+  236.    1       
+  237.    1                   if( right )
+  238.    1                   {
+  239.  + 1                      HPL_spreadT( PBCST, IFLAG, PANEL, HplRight, N, U, LDU,
+  240.    1                                   iprow, IWORK, IPMAP, IPMAPM1 );
+  241.    1                   }
+  242.    1                }
+  243.    1             }
+  244.    1----->    }
+  245.            /*
+  246.             * Finally update  IPLEN  with the indexes corresponding to the new dis-
+  247.             * tribution of U - IPLEN[nprow] remained unchanged.
+  248.             */
+  249.  + r8---<>    for( i = 0; i < nprow; i++ ) IPLEN[i] = ( i < ip ? i*smax : i*smin + ip );
+  250.            /*
+  251.             * End of HPL_equil
+  252.             */
+  253.            }
+
+CC-6254 CC: VECTOR File = HPL_equil.c, Line = 168 
+  A loop was not vectorized because a recurrence was found on "iprow" at line 170.
+
+CC-6287 CC: VECTOR File = HPL_equil.c, Line = 185 
+  A loop was not vectorized because it contains a call to function "HPL_spreadN" on line 219.
+
+CC-6005 CC: SCALAR File = HPL_equil.c, Line = 200 
+  A loop was unrolled 2 times.
+
+CC-6254 CC: VECTOR File = HPL_equil.c, Line = 200 
+  A loop was not vectorized because a recurrence was found on "IWORK" at line 210.
+
+CC-3021 CC: IPA File = HPL_equil.c, Line = 219 
+  "HPL_spreadN" (called from "HPL_equil") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_equil.c, Line = 225 
+  "HPL_spreadN" (called from "HPL_equil") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_equil.c, Line = 233 
+  "HPL_spreadT" (called from "HPL_equil") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_equil.c, Line = 239 
+  "HPL_spreadT" (called from "HPL_equil") was not inlined because the compiler was unable to locate the routine.
+
+CC-6332 CC: VECTOR File = HPL_equil.c, Line = 249 
+  A loop was not vectorized because it does not map well onto the target architecture.
+
+CC-6005 CC: SCALAR File = HPL_equil.c, Line = 249 
+  A loop was unrolled 8 times.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

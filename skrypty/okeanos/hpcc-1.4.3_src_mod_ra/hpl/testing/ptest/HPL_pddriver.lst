@@ -1,0 +1,460 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/ptest/HPL_pddriver.c
+Compiled : 2016-03-19  13:20:06
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../testing/ptest/HPL_pddriver.o
+           -c ../../../testing/ptest/HPL_pddriver.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/ptest/HPL_pddriver.c
+Date     : 03/19/2016  13:20:06
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                         /* 
+    2.                          * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.                          *    HPL - 2.0 - September 10, 2008                          
+    4.                          *    Antoine P. Petitet                                                
+    5.                          *    University of Tennessee, Knoxville                                
+    6.                          *    Innovative Computing Laboratory                                 
+    7.                          *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.                          *                                                                      
+    9.                          * -- Copyright notice and Licensing terms:                             
+   10.                          *                                                                      
+   11.                          * Redistribution  and  use in  source and binary forms, with or without
+   12.                          * modification, are  permitted provided  that the following  conditions
+   13.                          * are met:                                                             
+   14.                          *                                                                      
+   15.                          * 1. Redistributions  of  source  code  must retain the above copyright
+   16.                          * notice, this list of conditions and the following disclaimer.        
+   17.                          *                                                                      
+   18.                          * 2. Redistributions in binary form must reproduce  the above copyright
+   19.                          * notice, this list of conditions,  and the following disclaimer in the
+   20.                          * documentation and/or other materials provided with the distribution. 
+   21.                          *                                                                      
+   22.                          * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.                          * software must display the following acknowledgement:                 
+   24.                          * This  product  includes  software  developed  at  the  University  of
+   25.                          * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.                          *                                                                      
+   27.                          * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.                          * names  of  its  contributors  may  not  be used to endorse or promote
+   29.                          * products  derived   from   this  software  without  specific  written
+   30.                          * permission.                                                          
+   31.                          *                                                                      
+   32.                          * -- Disclaimer:                                                       
+   33.                          *                                                                      
+   34.                          * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.                          * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.                          * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.                          * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.                          * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.                          * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.                          * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.                          * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.                          * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.                          * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.                          * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.                          * ---------------------------------------------------------------------
+   46.                          */ 
+   47.                         /*
+   48.                          * Include files
+   49.                          */
+   50.                         #include "hpl.h"
+   51.                         
+   52.                         #ifdef HPL_STDC_HEADERS
+   53.                         int HPL_main
+   54.                         (
+   55.                            int                        ARGC,
+   56.                            char                       * * ARGV,
+   57.                            HPL_RuntimeData            * rdata,
+   58.                            int *failure
+   59.                         )
+   60.                         #else
+   61.                         int HPL_main( ARGC, ARGV, rdata, failure )
+   62.                         /*
+   63.                          * .. Scalar Arguments ..
+   64.                          */
+   65.                            int                        ARGC;
+   66.                         /*
+   67.                          * .. Array Arguments ..
+   68.                          */
+   69.                            char                       * * ARGV;
+   70.                            HPL_RuntimeData            * rdata;
+   71.                            int *failure;
+   72.                         #endif
+   73.                         {
+   74.                         /* 
+   75.                          * Purpose
+   76.                          * =======
+   77.                          *
+   78.                          * main is the main driver program for testing the HPL routines.
+   79.                          * This  program is  driven  by  a short data file named  "HPL.dat".
+   80.                          *
+   81.                          * ---------------------------------------------------------------------
+   82.                          */ 
+   83.                         /*
+   84.                          * .. Local Variables ..
+   85.                          */
+   86.                            int                        nval  [HPL_MAX_PARAM],
+   87.                                                       nbval [HPL_MAX_PARAM],
+   88.                                                       pval  [HPL_MAX_PARAM],
+   89.                                                       qval  [HPL_MAX_PARAM],
+   90.                                                       nbmval[HPL_MAX_PARAM],
+   91.                                                       ndvval[HPL_MAX_PARAM],
+   92.                                                       ndhval[HPL_MAX_PARAM];
+   93.                         
+   94.                            HPL_T_FACT                 pfaval[HPL_MAX_PARAM],
+   95.                                                       rfaval[HPL_MAX_PARAM];
+   96.                         
+   97.                            HPL_T_TOP                  topval[HPL_MAX_PARAM];
+   98.                         
+   99.                            HPL_T_grid                 grid;
+  100.                            HPL_T_palg                 algo;
+  101.                            HPL_T_test                 test;
+  102.                            int                        L1notran, Unotran, align, equil, in, inb,
+  103.                                                       inbm, indh, indv, ipfa, ipq, irfa, itop,
+  104.                                                       mycol, myrow, ns, nbs, nbms, ndhs, ndvs,
+  105.                                                       npcol, npfs, npqs, nprow, nrfs, ntps, 
+  106.                                                       rank, size, tswap;
+  107.                            HPL_T_ORDER                pmapping;
+  108.                            HPL_T_FACT                 rpfa;
+  109.                            HPL_T_SWAP                 fswap;
+  110.                            HPL_RuntimeData rdataCur;
+  111.                         /* ..
+  112.                          * .. Executable Statements ..
+  113.                          */
+  114.                            /* MPI_Init( &ARGC, &ARGV ); */
+  115.                         #ifdef HPL_CALL_VSIPL
+  116.                            vsip_init((void*)0);
+  117.                         #endif
+  118.  +                         MPI_Comm_rank( MPI_COMM_WORLD, &rank );
+  119.  +                         MPI_Comm_size( MPI_COMM_WORLD, &size );
+  120.                         /*
+  121.                          * Read and check validity of test parameters from input file
+  122.                          *
+  123.                          * HPL Version 1.0, Linpack benchmark input file
+  124.                          * Your message here
+  125.                          * HPL.out      output file name (if any)
+  126.                          * 6            device out (6=stdout,7=stderr,file)
+  127.                          * 4            # of problems sizes (N)
+  128.                          * 29 30 34 35  Ns
+  129.                          * 4            # of NBs
+  130.                          * 1 2 3 4      NBs
+  131.                          * 0            PMAP process mapping (0=Row-,1=Column-major)
+  132.                          * 3            # of process grids (P x Q)
+  133.                          * 2 1 4        Ps
+  134.                          * 2 4 1        Qs
+  135.                          * 16.0         threshold
+  136.                          * 3            # of panel fact
+  137.                          * 0 1 2        PFACTs (0=left, 1=Crout, 2=Right)
+  138.                          * 2            # of recursive stopping criterium
+  139.                          * 2 4          NBMINs (>= 1)
+  140.                          * 1            # of panels in recursion
+  141.                          * 2            NDIVs
+  142.                          * 3            # of recursive panel fact.
+  143.                          * 0 1 2        RFACTs (0=left, 1=Crout, 2=Right)
+  144.                          * 1            # of broadcast
+  145.                          * 0            BCASTs (0=1rg,1=1rM,2=2rg,3=2rM,4=Lng,5=LnM)
+  146.                          * 1            # of lookahead depth
+  147.                          * 0            DEPTHs (>=0)
+  148.                          * 2            SWAP (0=bin-exch,1=long,2=mix)
+  149.                          * 4            swapping threshold
+  150.                          * 0            L1 in (0=transposed,1=no-transposed) form
+  151.                          * 0            U  in (0=transposed,1=no-transposed) form
+  152.                          * 1            Equilibration (0=no,1=yes)
+  153.                          * 8            memory alignment in double (> 0)
+  154.                          */
+  155.  +                         HPL_pdinfo( &test, &ns, nval, &nbs, nbval, &pmapping, &npqs, pval, qval,
+  156.                                        &npfs, pfaval, &nbms, nbmval, &ndvs, ndvval, &nrfs, rfaval,
+  157.                                        &ntps, topval, &ndhs, ndhval, &fswap, &tswap, &L1notran,
+  158.                                        &Unotran, &equil, &align );
+  159.                         /*
+  160.                          * Loop over different process grids - Define process grid. Go to bottom
+  161.                          * of process grid loop if this case does not use my process.
+  162.                          */
+  163.  + 1------------------<    for( ipq = 0; ipq < npqs; ipq++ )
+  164.    1                       {
+  165.  + 1                          (void) HPL_grid_init( MPI_COMM_WORLD, pmapping, pval[ipq], qval[ipq],
+  166.    1                                                &grid );
+  167.  + 1                          (void) HPL_grid_info( &grid, &nprow, &npcol, &myrow, &mycol );
+  168.    1                    
+  169.    1                          if( ( myrow < 0 ) || ( myrow >= nprow ) ||
+  170.    1                              ( mycol < 0 ) || ( mycol >= npcol ) ) goto label_end_of_npqs;
+  171.    1                    
+  172.  + 1 2----------------<       for( in = 0; in < ns; in++ )
+  173.    1 2                        {                            /* Loop over various problem sizes */
+  174.  + 1 2 3--------------<        for( inb = 0; inb < nbs; inb++ )
+  175.    1 2 3                       {                        /* Loop over various blocking factors */
+  176.  + 1 2 3 4------------<         for( indh = 0; indh < ndhs; indh++ )
+  177.    1 2 3 4                      {                       /* Loop over various lookahead depths */
+  178.  + 1 2 3 4 5----------<          for( itop = 0; itop < ntps; itop++ )
+  179.    1 2 3 4 5                     {                  /* Loop over various broadcast topologies */
+  180.  + 1 2 3 4 5 6--------<           for( irfa = 0; irfa < nrfs; irfa++ )
+  181.    1 2 3 4 5 6                    {             /* Loop over various recursive factorizations */
+  182.  + 1 2 3 4 5 6 7------<            for( ipfa = 0; ipfa < npfs; ipfa++ )
+  183.    1 2 3 4 5 6 7                   {                /* Loop over various panel factorizations */
+  184.  + 1 2 3 4 5 6 7 8----<             for( inbm = 0; inbm < nbms; inbm++ )
+  185.    1 2 3 4 5 6 7 8                  {        /* Loop over various recursive stopping criteria */
+  186.  + 1 2 3 4 5 6 7 8 9--<              for( indv = 0; indv < ndvs; indv++ )
+  187.    1 2 3 4 5 6 7 8 9                 {          /* Loop over various # of panels in recursion */
+  188.    1 2 3 4 5 6 7 8 9    /*
+  189.    1 2 3 4 5 6 7 8 9     * Set up the algorithm parameters
+  190.    1 2 3 4 5 6 7 8 9     */
+  191.    1 2 3 4 5 6 7 8 9                  algo.btopo = topval[itop]; algo.depth = ndhval[indh];
+  192.    1 2 3 4 5 6 7 8 9                  algo.nbmin = nbmval[inbm]; algo.nbdiv = ndvval[indv];
+  193.    1 2 3 4 5 6 7 8 9    
+  194.    1 2 3 4 5 6 7 8 9                  algo.pfact = rpfa = pfaval[ipfa];
+  195.    1 2 3 4 5 6 7 8 9    
+  196.    1 2 3 4 5 6 7 8 9                  if( L1notran != 0 )
+  197.    1 2 3 4 5 6 7 8 9                  {
+  198.    1 2 3 4 5 6 7 8 9                     if( rpfa == HPL_LEFT_LOOKING ) algo.pffun = HPL_pdpanllN;
+  199.    1 2 3 4 5 6 7 8 9                     else if( rpfa == HPL_CROUT   ) algo.pffun = HPL_pdpancrN;
+  200.    1 2 3 4 5 6 7 8 9                     else                           algo.pffun = HPL_pdpanrlN;
+  201.    1 2 3 4 5 6 7 8 9    
+  202.    1 2 3 4 5 6 7 8 9                     algo.rfact = rpfa = rfaval[irfa];
+  203.    1 2 3 4 5 6 7 8 9                     if( rpfa == HPL_LEFT_LOOKING ) algo.rffun = HPL_pdrpanllN;
+  204.    1 2 3 4 5 6 7 8 9                     else if( rpfa == HPL_CROUT   ) algo.rffun = HPL_pdrpancrN;
+  205.    1 2 3 4 5 6 7 8 9                     else                           algo.rffun = HPL_pdrpanrlN;
+  206.    1 2 3 4 5 6 7 8 9    
+  207.    1 2 3 4 5 6 7 8 9                     if( Unotran != 0 ) algo.upfun = HPL_pdupdateNN;
+  208.    1 2 3 4 5 6 7 8 9                     else               algo.upfun = HPL_pdupdateNT;
+  209.    1 2 3 4 5 6 7 8 9                  }
+  210.    1 2 3 4 5 6 7 8 9                  else
+  211.    1 2 3 4 5 6 7 8 9                  {
+  212.    1 2 3 4 5 6 7 8 9                     if( rpfa == HPL_LEFT_LOOKING ) algo.pffun = HPL_pdpanllT;
+  213.    1 2 3 4 5 6 7 8 9                     else if( rpfa == HPL_CROUT   ) algo.pffun = HPL_pdpancrT;
+  214.    1 2 3 4 5 6 7 8 9                     else                           algo.pffun = HPL_pdpanrlT;
+  215.    1 2 3 4 5 6 7 8 9    
+  216.    1 2 3 4 5 6 7 8 9                     algo.rfact = rpfa = rfaval[irfa];
+  217.    1 2 3 4 5 6 7 8 9                     if( rpfa == HPL_LEFT_LOOKING ) algo.rffun = HPL_pdrpanllT;
+  218.    1 2 3 4 5 6 7 8 9                     else if( rpfa == HPL_CROUT   ) algo.rffun = HPL_pdrpancrT;
+  219.    1 2 3 4 5 6 7 8 9                     else                           algo.rffun = HPL_pdrpanrlT;
+  220.    1 2 3 4 5 6 7 8 9    
+  221.    1 2 3 4 5 6 7 8 9                     if( Unotran != 0 ) algo.upfun = HPL_pdupdateTN;
+  222.    1 2 3 4 5 6 7 8 9                     else               algo.upfun = HPL_pdupdateTT;
+  223.    1 2 3 4 5 6 7 8 9                  }
+  224.    1 2 3 4 5 6 7 8 9    
+  225.    1 2 3 4 5 6 7 8 9                  algo.fswap = fswap; algo.fsthr = tswap;
+  226.    1 2 3 4 5 6 7 8 9                  algo.equil = equil; algo.align = align;
+  227.    1 2 3 4 5 6 7 8 9    
+  228.  + 1 2 3 4 5 6 7 8 9                  HPL_pdtest( &test, &grid, &algo, nval[in], nbval[inb], &rdataCur );
+  229.    1 2 3 4 5 6 7 8 9                  if (0 == myrow && 0 == mycol)
+  230.    1 2 3 4 5 6 7 8 9                    if (rdata->Gflops < rdataCur.Gflops) *rdata = rdataCur;
+  231.    1 2 3 4 5 6 7 8 9    
+  232.    1 2 3 4 5 6 7 8 9-->              }
+  233.    1 2 3 4 5 6 7 8---->             }
+  234.    1 2 3 4 5 6 7------>            }
+  235.    1 2 3 4 5 6-------->           }
+  236.    1 2 3 4 5---------->          }
+  237.    1 2 3 4------------>         }
+  238.    1 2 3-------------->        }
+  239.    1 2---------------->       }
+  240.  + 1                          (void) HPL_grid_exit( &grid );
+  241.    1                    label_end_of_npqs: ;
+  242.    1------------------>    }
+  243.                         /*
+  244.                          * Print ending messages, close output file, exit.
+  245.                          */
+  246.                            if( rank == 0 )
+  247.                            {
+  248.                              if (test.kfail || test.kskip) *failure = 1;
+  249.                               test.ktest = test.kpass + test.kfail + test.kskip;
+  250.                         #ifndef HPL_DETAILED_TIMING
+  251.  +                            HPL_fprintf( test.outfp, "%s%s\n",
+  252.                                            "========================================",
+  253.                                            "========================================" );
+  254.                         #else
+  255.                               if( test.thrsh > HPL_rzero )
+  256.                                  HPL_fprintf( test.outfp, "%s%s\n",
+  257.                                               "========================================",
+  258.                                               "========================================" );
+  259.                         #endif
+  260.                         
+  261.  +                            HPL_fprintf( test.outfp, "\n%s %6d %s\n", "Finished", test.ktest,
+  262.                                            "tests with the following results:" );
+  263.                               if( test.thrsh > HPL_rzero )
+  264.                               {
+  265.  +                               HPL_fprintf( test.outfp, "         %6d %s\n", test.kpass,
+  266.                                               "tests completed and passed residual checks," );
+  267.  +                               HPL_fprintf( test.outfp, "         %6d %s\n", test.kfail,
+  268.                                               "tests completed and failed residual checks," );
+  269.  +                               HPL_fprintf( test.outfp, "         %6d %s\n", test.kskip,
+  270.                                               "tests skipped because of illegal input values." );
+  271.                               }
+  272.                               else
+  273.                               {
+  274.  +                               HPL_fprintf( test.outfp, "         %6d %s\n", test.kpass,
+  275.                                               "tests completed without checking," );
+  276.  +                               HPL_fprintf( test.outfp, "         %6d %s\n", test.kskip,
+  277.                                               "tests skipped because of illegal input values." );
+  278.                               }
+  279.                         
+  280.  +                            HPL_fprintf( test.outfp, "%s%s\n",
+  281.                                            "----------------------------------------",
+  282.                                            "----------------------------------------" );
+  283.  +                            HPL_fprintf( test.outfp, "\nEnd of Tests.\n" );
+  284.  +                            HPL_fprintf( test.outfp, "%s%s\n",
+  285.                                            "========================================",
+  286.                                            "========================================" );
+  287.                         
+  288.                               if( ( test.outfp != stdout ) && ( test.outfp != stderr ) )
+  289.  +                               (void) fclose( test.outfp );
+  290.                            }
+  291.                         #ifdef HPL_CALL_VSIPL
+  292.                            vsip_finalize((void*)0);
+  293.                         #endif
+  294.                            /* MPI_Finalize(); */
+  295.                            /* exit( 0 ); */
+  296.                         
+  297.                            return( 0 );
+  298.                         /*
+  299.                          * End of main
+  300.                          */
+  301.                         }
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 118 
+  "MPI_Comm_rank" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 119 
+  "MPI_Comm_size" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 155 
+  "HPL_pdinfo" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 163 
+  A loop was not vectorized because it contains a call to function "HPL_grid_init" on line 165.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 165 
+  "HPL_grid_init" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 167 
+  "HPL_grid_info" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 172 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 174 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 176 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 178 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 180 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 182 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 184 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-6287 CC: VECTOR File = HPL_pddriver.c, Line = 186 
+  A loop was not vectorized because it contains a call to function "HPL_pdtest" on line 228.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 228 
+  "HPL_pdtest" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 240 
+  "HPL_grid_exit" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 251 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 261 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 265 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 267 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 269 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 274 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 276 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 280 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 283 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 284 
+  "HPL_fprintf" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pddriver.c, Line = 289 
+  "fclose" (called from "HPL_main") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

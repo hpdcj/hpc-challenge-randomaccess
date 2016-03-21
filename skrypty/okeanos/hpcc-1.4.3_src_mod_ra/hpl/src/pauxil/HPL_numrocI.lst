@@ -1,0 +1,305 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_numrocI.c
+Compiled : 2016-03-19  13:19:38
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pauxil/HPL_numrocI.o
+           -c ../../../src/pauxil/HPL_numrocI.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_numrocI.c
+Date     : 03/19/2016  13:19:38
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     There are no optimizations or loops to mark
+
+
+    1.    /* 
+    2.     * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.     *    HPL - 2.0 - September 10, 2008                          
+    4.     *    Antoine P. Petitet                                                
+    5.     *    University of Tennessee, Knoxville                                
+    6.     *    Innovative Computing Laboratory                                 
+    7.     *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.     *                                                                      
+    9.     * -- Copyright notice and Licensing terms:                             
+   10.     *                                                                      
+   11.     * Redistribution  and  use in  source and binary forms, with or without
+   12.     * modification, are  permitted provided  that the following  conditions
+   13.     * are met:                                                             
+   14.     *                                                                      
+   15.     * 1. Redistributions  of  source  code  must retain the above copyright
+   16.     * notice, this list of conditions and the following disclaimer.        
+   17.     *                                                                      
+   18.     * 2. Redistributions in binary form must reproduce  the above copyright
+   19.     * notice, this list of conditions,  and the following disclaimer in the
+   20.     * documentation and/or other materials provided with the distribution. 
+   21.     *                                                                      
+   22.     * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.     * software must display the following acknowledgement:                 
+   24.     * This  product  includes  software  developed  at  the  University  of
+   25.     * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.     *                                                                      
+   27.     * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.     * names  of  its  contributors  may  not  be used to endorse or promote
+   29.     * products  derived   from   this  software  without  specific  written
+   30.     * permission.                                                          
+   31.     *                                                                      
+   32.     * -- Disclaimer:                                                       
+   33.     *                                                                      
+   34.     * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.     * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.     * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.     * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.     * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.     * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.     * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.     * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.     * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.     * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.     * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.     * ---------------------------------------------------------------------
+   46.     */ 
+   47.    /*
+   48.     * Include files
+   49.     */
+   50.    #include "hpl.h"
+   51.    
+   52.    #ifdef HPL_STDC_HEADERS
+   53.    int HPL_numrocI
+   54.    (
+   55.       const int                        N,
+   56.       const int                        I,
+   57.       const int                        INB,
+   58.       const int                        NB,
+   59.       const int                        PROC,
+   60.       const int                        SRCPROC,
+   61.       const int                        NPROCS
+   62.    )
+   63.    #else
+   64.    int HPL_numrocI
+   65.    ( N, I, INB, NB, PROC, SRCPROC, NPROCS )
+   66.       const int                        N;
+   67.       const int                        I;
+   68.       const int                        INB;
+   69.       const int                        NB;
+   70.       const int                        PROC;
+   71.       const int                        SRCPROC;
+   72.       const int                        NPROCS;
+   73.    #endif
+   74.    {
+   75.    /* 
+   76.     * Purpose
+   77.     * =======
+   78.     *
+   79.     * HPL_numrocI returns  the  local number of matrix rows/columns process
+   80.     * PROC  will  get  if  we give out  N rows/columns starting from global
+   81.     * index I.
+   82.     *
+   83.     * Arguments
+   84.     * =========
+   85.     *
+   86.     * N       (input)                       const int
+   87.     *         On entry, N  specifies the number of rows/columns being dealt
+   88.     *         out. N must be at least zero.
+   89.     *
+   90.     * I       (input)                       const int
+   91.     *         On entry, I  specifies the global index of the matrix  entry
+   92.     *         I must be at least zero.
+   93.     *
+   94.     * INB     (input)                       const int
+   95.     *         On entry,  INB  specifies  the size of the first block of th
+   96.     *         global matrix. INB must be at least one.
+   97.     *
+   98.     * NB      (input)                       const int
+   99.     *         On entry,  NB specifies the blocking factor used to partition
+  100.     *         and distribute the matrix A. NB must be larger than one.
+  101.     *
+  102.     * PROC    (input)                       const int
+  103.     *         On entry, PROC specifies  the coordinate of the process whos
+  104.     *         local portion is determined.  PROC must be at least zero  an
+  105.     *         strictly less than NPROCS.
+  106.     *
+  107.     * SRCPROC (input)                       const int
+  108.     *         On entry,  SRCPROC  specifies  the coordinate of the  proces
+  109.     *         that possesses the first row or column of the matrix. SRCPRO
+  110.     *         must be at least zero and strictly less than NPROCS.
+  111.     *
+  112.     * NPROCS  (input)                       const int
+  113.     *         On entry,  NPROCS  specifies the total number of process row
+  114.     *         or columns over which the matrix is distributed.  NPROCS mus
+  115.     *         be at least one.
+  116.     *
+  117.     * ---------------------------------------------------------------------
+  118.     */ 
+  119.    /*
+  120.     * .. Local Variables ..
+  121.     */
+  122.       int                        ilocblk, inb, mydist, nblocks, srcproc;
+  123.    /* ..
+  124.     * .. Executable Statements ..
+  125.     */
+  126.       if( ( SRCPROC == -1 ) || ( NPROCS == 1 ) )
+  127.    /*
+  128.     * The data is not distributed, or there is just one process in this di-
+  129.     * mension of the grid.
+  130.     */
+  131.          return( N );
+  132.    /*
+  133.     * Compute coordinate of process owning I and corresponding INB
+  134.     */
+  135.       srcproc = SRCPROC;
+  136.    
+  137.       if( ( inb = INB - I ) <= 0 )
+  138.       {
+  139.    /*
+  140.     * I is not in the first block, find out which process has it and update
+  141.     * the size of first block
+  142.     */
+  143.          srcproc += ( nblocks = (-inb) / NB + 1 ); 
+  144.          srcproc -= ( srcproc / NPROCS ) * NPROCS;
+  145.          inb     += nblocks * NB;
+  146.       }
+  147.    /*
+  148.     * Now  everything  is  just like  N, I=0, INB, NB, srcproc, NPROCS. The
+  149.     * discussion goes as follows:  compute my distance from the source pro-
+  150.     * cess  so that within this process coordinate system,  the source pro-
+  151.     * cess is the process such that mydist = 0, or PROC == srcproc.
+  152.     *
+  153.     * Find  out  how  many  full  blocks are globally (nblocks) and locally
+  154.     * (ilocblk) in those N entries. Then remark that
+  155.     *
+  156.     * when  mydist < nblocks - ilocblk*NPROCS, I own ilocblk+1 full blocks,
+  157.     * when  mydist > nblocks - ilocblk*NPROCS, I own ilocblk   full blocks,
+  158.     * when  mydist = nblocks - ilocblk*NPROCS, either the last block is not
+  159.     * full and I own it,  or the last block is full and I am the first pro-
+  160.     * cess owning only ilocblk full blocks.
+  161.     */
+  162.       if( PROC == srcproc )
+  163.       {
+  164.    /*
+  165.     * I am the source process, i.e. I own I (mydist=0).  When N <= INB, the
+  166.     * answer is simply N.
+  167.     */
+  168.          if( N <= inb ) return( N );
+  169.    /*
+  170.     * Find  out  how  many  full  blocks are globally (nblocks) and locally
+  171.     * (ilocblk) in those N entries.
+  172.     */
+  173.          nblocks = ( N - inb ) / NB + 1;
+  174.    /*
+  175.     * Since  mydist = 0 and nblocks - ilocblk * NPROCS >= 0, there are only
+  176.     * two possible cases:
+  177.     *
+  178.     *   1) When mydist = nblocks - ilocblk * NPROCS = 0, that is NPROCS di-
+  179.     *      vides the global number of full blocks,  then the source process
+  180.     *      srcproc owns one more block than the other processes;  and N can
+  181.     *      be rewritten as N = INB + (nblocks-1) * NB + LNB  with  LNB >= 0
+  182.     *      size of the last block. Similarly, the local value Np correspon-
+  183.     *      ding to N can be written as  Np = INB + (ilocblk-1) * NB + LNB =
+  184.     *      N + ( ilocblk-1 - (nblocks-1) )*NB.  Note  that this case cannot
+  185.     *      happen when ilocblk is zero, since nblocks is at least one.
+  186.     *
+  187.     *   2) mydist = 0 < nblocks - ilocblk * NPROCS, the source process only
+  188.     *      owns full blocks,  and  therefore Np = INB + ilocblk * NB.  Note
+  189.     *      that when ilocblk is zero, Np is just INB.
+  190.     */
+  191.          if( nblocks < NPROCS ) return( inb );
+  192.     
+  193.          ilocblk = nblocks / NPROCS;
+  194.          return( ( nblocks - ilocblk * NPROCS ) ? inb + ilocblk * NB :
+  195.                  N + ( ilocblk - nblocks ) * NB );
+  196.       }
+  197.       else
+  198.       {
+  199.    /*
+  200.     * I am not the source process. When N <= INB, the answer is simply 0.
+  201.     */
+  202.          if( N <= inb ) return( 0 );
+  203.    /*
+  204.     * Find  out  how  many  full  blocks are globally (nblocks) and locally
+  205.     * (ilocblk) in those N entries
+  206.     */
+  207.          nblocks = ( N - inb ) / NB + 1;
+  208.    /*
+  209.     * Compute  my distance from the source process so that within this pro-
+  210.     * cess coordinate system,  the source  process is the process such that
+  211.     * mydist=0.
+  212.     */
+  213.          if( ( mydist = PROC - srcproc ) < 0 ) mydist += NPROCS;
+  214.    /*
+  215.     * When mydist < nblocks - ilocblk*NPROCS, I own ilocblk + 1 full blocks
+  216.     * of size NB since I am not the source process,
+  217.     *
+  218.     * when mydist > nblocks - ilocblk * NPROCS, I own ilocblk   full blocks
+  219.     * of size NB since I am not the source process,
+  220.     *
+  221.     * when mydist = nblocks - ilocblk*NPROCS,
+  222.     * either the last block is not full and I own it, in which case
+  223.     *    N = INB + (nblocks - 1)*NB + LNB with  LNB  the  size  of the last
+  224.     *    block such that NB > LNB > 0;  the local value Np corresponding to
+  225.     *    N is given by  Np = ilocblk*NB+LNB = N-INB+(ilocblk-nblocks+1)*NB;
+  226.     * or the  last  block  is  full  and I am the first process owning only
+  227.     *    ilocblk full blocks of size NB, that is N = INB+(nblocks-1)*NB and
+  228.     *    Np = ilocblk * NB = N - INB + (ilocblk-nblocks+1) * NB.
+  229.     */
+  230.          if( nblocks < NPROCS )
+  231.             return( ( mydist < nblocks ) ? NB : ( ( mydist > nblocks ) ? 0 :
+  232.                     N - inb + NB * ( 1 - nblocks ) ) );
+  233.     
+  234.          ilocblk = nblocks / NPROCS;
+  235.          mydist -= nblocks - ilocblk * NPROCS;
+  236.          return( ( mydist < 0 ) ? ( ilocblk + 1 ) * NB :
+  237.                  ( ( mydist > 0 ) ? ilocblk * NB :
+  238.                    N - inb + NB * ( ilocblk - nblocks + 1 ) ) );
+  239.       }
+  240.    /*
+  241.     * End of HPL_numrocI
+  242.     */
+  243.    }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

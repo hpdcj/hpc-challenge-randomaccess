@@ -1,0 +1,382 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdgesvK2.c
+Compiled : 2016-03-19  13:20:02
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_pdgesvK2.o
+           -c ../../../src/pgesv/HPL_pdgesvK2.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pdgesvK2.c
+Date     : 03/19/2016  13:20:02
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.              /* 
+    2.               * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.               *    HPL - 2.0 - September 10, 2008                          
+    4.               *    Antoine P. Petitet                                                
+    5.               *    University of Tennessee, Knoxville                                
+    6.               *    Innovative Computing Laboratory                                 
+    7.               *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.               *                                                                      
+    9.               * -- Copyright notice and Licensing terms:                             
+   10.               *                                                                      
+   11.               * Redistribution  and  use in  source and binary forms, with or without
+   12.               * modification, are  permitted provided  that the following  conditions
+   13.               * are met:                                                             
+   14.               *                                                                      
+   15.               * 1. Redistributions  of  source  code  must retain the above copyright
+   16.               * notice, this list of conditions and the following disclaimer.        
+   17.               *                                                                      
+   18.               * 2. Redistributions in binary form must reproduce  the above copyright
+   19.               * notice, this list of conditions,  and the following disclaimer in the
+   20.               * documentation and/or other materials provided with the distribution. 
+   21.               *                                                                      
+   22.               * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.               * software must display the following acknowledgement:                 
+   24.               * This  product  includes  software  developed  at  the  University  of
+   25.               * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.               *                                                                      
+   27.               * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.               * names  of  its  contributors  may  not  be used to endorse or promote
+   29.               * products  derived   from   this  software  without  specific  written
+   30.               * permission.                                                          
+   31.               *                                                                      
+   32.               * -- Disclaimer:                                                       
+   33.               *                                                                      
+   34.               * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.               * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.               * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.               * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.               * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.               * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.               * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.               * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.               * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.               * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.               * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.               * ---------------------------------------------------------------------
+   46.               */ 
+   47.              /*
+   48.               * Include files
+   49.               */
+   50.              #include "hpl.h"
+   51.              
+   52.              #ifdef HPL_STDC_HEADERS
+   53.              void HPL_pdgesvK2
+   54.              (
+   55.                 HPL_T_grid *                     GRID,
+   56.                 HPL_T_palg *                     ALGO,
+   57.                 HPL_T_pmat *                     A
+   58.              )
+   59.              #else
+   60.              void HPL_pdgesvK2
+   61.              ( GRID, ALGO, A )
+   62.                 HPL_T_grid *                     GRID;
+   63.                 HPL_T_palg *                     ALGO;
+   64.                 HPL_T_pmat *                     A;
+   65.              #endif
+   66.              {
+   67.              /* 
+   68.               * Purpose
+   69.               * =======
+   70.               *
+   71.               * HPL_pdgesvK2 factors a N+1-by-N matrix using LU factorization with row
+   72.               * partial pivoting.  The main algorithm  is the "right looking" variant
+   73.               * with look-ahead.  The  lower  triangular factor is left unpivoted and
+   74.               * the pivots are not returned. The right hand side is the N+1 column of
+   75.               * the coefficient matrix.
+   76.               *
+   77.               * Arguments
+   78.               * =========
+   79.               *
+   80.               * GRID    (local input)                 HPL_T_grid *
+   81.               *         On entry,  GRID  points  to the data structure containing the
+   82.               *         process grid information.
+   83.               *
+   84.               * ALGO    (global input)                HPL_T_palg *
+   85.               *         On entry,  ALGO  points to  the data structure containing the
+   86.               *         algorithmic parameters.
+   87.               *
+   88.               * A       (local input/output)          HPL_T_pmat *
+   89.               *         On entry, A points to the data structure containing the local
+   90.               *         array information.
+   91.               *
+   92.               * ---------------------------------------------------------------------
+   93.               */ 
+   94.              /*
+   95.               * .. Local Variables ..
+   96.               */
+   97.                 HPL_T_panel                * p, * * panel = NULL;
+   98.                 HPL_T_UPD_FUN              HPL_pdupdate; 
+   99.                 int                        N, depth, icurcol=0, j, jb, jj=0, jstart,
+  100.                                            k, mycol, n, nb, nn, npcol, nq,
+  101.                                            tag=MSGID_BEGIN_FACT, test=HPL_KEEP_TESTING;
+  102.              /* ..
+  103.               * .. Executable Statements ..
+  104.               */
+  105.                 mycol = GRID->mycol; npcol        = GRID->npcol;
+  106.                 depth = ALGO->depth; HPL_pdupdate = ALGO->upfun;
+  107.                 N     = A->n;        nb           = A->nb;
+  108.              
+  109.                 if( N <= 0 ) return;
+  110.              /*
+  111.               * Allocate a panel list of length depth + 1 (depth >= 1)
+  112.               */
+  113.                 panel = (HPL_T_panel **)malloc( (size_t)(depth+1) * sizeof( HPL_T_panel *) );
+  114.                 if( panel == NULL )
+  115.  +              { HPL_pabort( __LINE__, "HPL_pdgesvK2", "Memory allocation failed" ); }
+  116.              /*
+  117.               * Create and initialize the first depth panels
+  118.               */
+  119.  +              nq = HPL_numroc( N+1, nb, nb, mycol, 0, npcol ); nn = N; jstart = 0;
+  120.              
+  121.  + 1-------<    for( k = 0; k < depth; k++ )
+  122.    1            {
+  123.    1               jb = Mmin( nn, nb );
+  124.  + 1               HPL_pdpanel_new( GRID, ALGO, nn, nn+1, jb, A, jstart, jstart,
+  125.    1                                tag, &panel[k] );
+  126.    1               nn -= jb; jstart += jb;
+  127.    1               if( mycol == icurcol ) { jj += jb; nq -= jb; }
+  128.    1               icurcol = MModAdd1( icurcol, npcol );
+  129.    1               tag     = MNxtMgid( tag, MSGID_BEGIN_FACT, MSGID_END_FACT );
+  130.    1------->    }
+  131.              /*
+  132.               * Create last depth+1 panel
+  133.               */
+  134.  +              HPL_pdpanel_new( GRID, ALGO, nn, nn+1, Mmin( nn, nb ), A, jstart,
+  135.                                  jstart, tag, &panel[depth] );
+  136.                 tag = MNxtMgid( tag, MSGID_BEGIN_FACT, MSGID_END_FACT );
+  137.              /*
+  138.               * Initialize the lookahead - Factor jstart columns: panel[0..depth-1]
+  139.               */
+  140.  + 1-------<    for( k = 0, j = 0; k < depth; k++ )
+  141.    1            {
+  142.    1               jb = jstart - j; jb = Mmin( jb, nb ); j += jb;
+  143.    1         /*
+  144.    1          * Factor and broadcast k-th panel
+  145.    1          */
+  146.  + 1               HPL_pdfact(         panel[k] );
+  147.  + 1               (void) HPL_binit(   panel[k] );
+  148.  + 1 2-----<       do
+  149.  + 1 2             { (void) HPL_bcast( panel[k], &test ); }
+  150.    1 2----->       while( test != HPL_SUCCESS );
+  151.  + 1               (void) HPL_bwait(   panel[k] );
+  152.    1         /*
+  153.    1          * Partial update of the depth-k-1 panels in front of me
+  154.    1          */
+  155.    1               if( k < depth - 1 )
+  156.    1               {
+  157.  + 1                  nn = HPL_numrocI( jstart-j, j, nb, nb, mycol, 0, npcol );
+  158.  + 1                  HPL_pdupdate( NULL, NULL, panel[k], nn );
+  159.    1               }
+  160.    1------->    }
+  161.              /*
+  162.               * Main loop over the remaining columns of A
+  163.               */
+  164.  + 1-------<    for( j = jstart; j < N; j += nb )
+  165.    1            {
+  166.    1               n = N - j; jb = Mmin( n, nb );
+  167.    1         /*
+  168.    1          * Initialize current panel - Finish latest update, Factor and broadcast
+  169.    1          * current panel
+  170.    1          */
+  171.  + 1               (void) HPL_pdpanel_free( panel[depth] );
+  172.  + 1               HPL_pdpanel_init( GRID, ALGO, n, n+1, jb, A, j, j, tag, panel[depth] );
+  173.    1         
+  174.    1               if( mycol == icurcol )
+  175.    1               {
+  176.  + 1                  nn = HPL_numrocI( jb, j, nb, nb, mycol, 0, npcol );
+  177.  + 1 2-----<          for( k = 0; k < depth; k++ )   /* partial updates 0..depth-1 */
+  178.  + 1 2 ---->             (void) HPL_pdupdate( NULL, NULL, panel[k], nn );
+  179.  + 1                  HPL_pdfact(       panel[depth] );    /* factor current panel */
+  180.    1               }
+  181.    1               else { nn = 0; }
+  182.    1                   /* Finish the latest update and broadcast the current panel */
+  183.  + 1               (void) HPL_binit( panel[depth] );
+  184.  + 1               HPL_pdupdate( panel[depth], &test, panel[0], nq-nn );
+  185.  + 1               (void) HPL_bwait( panel[depth] );
+  186.    1         /*
+  187.    1          * Circular  of the panel pointers:
+  188.    1          * xtmp = x[0]; for( k=0; k < depth; k++ ) x[k] = x[k+1]; x[d] = xtmp;
+  189.    1          *
+  190.    1          * Go to next process row and column - update the message ids for broadcast
+  191.    1          */
+  192.    1 Vr2--<>       p = panel[0]; for( k = 0; k < depth; k++ ) panel[k] = panel[k+1];
+  193.    1               panel[depth] = p;
+  194.    1         
+  195.    1               if( mycol == icurcol ) { jj += jb; nq -= jb; }
+  196.    1               icurcol = MModAdd1( icurcol, npcol );
+  197.    1               tag     = MNxtMgid( tag, MSGID_BEGIN_FACT, MSGID_END_FACT );
+  198.    1------->    }
+  199.              /*
+  200.               * Clean-up: Finish updates - release panels and panel list
+  201.               */
+  202.  +              nn = HPL_numrocI( 1, N, nb, nb, mycol, 0, npcol );
+  203.  + 1-------<    for( k = 0; k < depth; k++ )
+  204.    1            {
+  205.  + 1               (void) HPL_pdupdate( NULL, NULL, panel[k], nn );
+  206.  + 1               (void) HPL_pdpanel_disp(  &panel[k] );
+  207.    1------->    }
+  208.  +              (void) HPL_pdpanel_disp( &panel[depth] );
+  209.              
+  210.                 if( panel ) free( panel );
+  211.              /*
+  212.               * End of HPL_pdgesvK2
+  213.               */
+  214.              }
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 115 
+  "HPL_pabort" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 119 
+  "HPL_numroc" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 121 
+  A loop was not vectorized because it contains a call to function "HPL_pdpanel_new" on line 124.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 124 
+  "HPL_pdpanel_new" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 134 
+  "HPL_pdpanel_new" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 140 
+  A loop was not vectorized because it contains a call to function "HPL_pdfact" on line 146.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 146 
+  "HPL_pdfact" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 147 
+  "HPL_binit" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 148 
+  A loop was not vectorized because it contains a call to function "HPL_bcast" on line 149.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 149 
+  "HPL_bcast" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 151 
+  "HPL_bwait" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 157 
+  "HPL_numrocI" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 158 
+  "HPL_pdupdate" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 164 
+  A loop was not vectorized because it contains a call to function "HPL_pdpanel_free" on line 171.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 171 
+  "HPL_pdpanel_free" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 172 
+  "HPL_pdpanel_init" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 176 
+  "HPL_numrocI" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 177 
+  A loop was not vectorized because it contains a call to function "HPL_pdupdate" on line 178.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 178 
+  "HPL_pdupdate" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 179 
+  "HPL_pdfact" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 183 
+  "HPL_binit" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 184 
+  "HPL_pdupdate" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 185 
+  "HPL_bwait" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6005 CC: SCALAR File = HPL_pdgesvK2.c, Line = 192 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = HPL_pdgesvK2.c, Line = 192 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 202 
+  "HPL_numrocI" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdgesvK2.c, Line = 203 
+  A loop was not vectorized because it contains a call to function "HPL_pdupdate" on line 205.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 205 
+  "HPL_pdupdate" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 206 
+  "HPL_pdpanel_disp" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdgesvK2.c, Line = 208 
+  "HPL_pdpanel_disp" (called from "HPL_pdgesvK2") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

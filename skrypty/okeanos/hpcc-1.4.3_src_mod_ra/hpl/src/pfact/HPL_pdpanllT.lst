@@ -1,0 +1,358 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_pdpanllT.c
+Compiled : 2016-03-19  13:19:52
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pfact/HPL_pdpanllT.o
+           -c ../../../src/pfact/HPL_pdpanllT.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pfact/HPL_pdpanllT.c
+Date     : 03/19/2016  13:19:52
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* 
+    2.          * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.          *    HPL - 2.0 - September 10, 2008                          
+    4.          *    Antoine P. Petitet                                                
+    5.          *    University of Tennessee, Knoxville                                
+    6.          *    Innovative Computing Laboratory                                 
+    7.          *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.          *                                                                      
+    9.          * -- Copyright notice and Licensing terms:                             
+   10.          *                                                                      
+   11.          * Redistribution  and  use in  source and binary forms, with or without
+   12.          * modification, are  permitted provided  that the following  conditions
+   13.          * are met:                                                             
+   14.          *                                                                      
+   15.          * 1. Redistributions  of  source  code  must retain the above copyright
+   16.          * notice, this list of conditions and the following disclaimer.        
+   17.          *                                                                      
+   18.          * 2. Redistributions in binary form must reproduce  the above copyright
+   19.          * notice, this list of conditions,  and the following disclaimer in the
+   20.          * documentation and/or other materials provided with the distribution. 
+   21.          *                                                                      
+   22.          * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.          * software must display the following acknowledgement:                 
+   24.          * This  product  includes  software  developed  at  the  University  of
+   25.          * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.          *                                                                      
+   27.          * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.          * names  of  its  contributors  may  not  be used to endorse or promote
+   29.          * products  derived   from   this  software  without  specific  written
+   30.          * permission.                                                          
+   31.          *                                                                      
+   32.          * -- Disclaimer:                                                       
+   33.          *                                                                      
+   34.          * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.          * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.          * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.          * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.          * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.          * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.          * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.          * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.          * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.          * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.          * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.          * ---------------------------------------------------------------------
+   46.          */ 
+   47.         /*
+   48.          * Include files
+   49.          */
+   50.         #include "hpl.h"
+   51.         
+   52.         #ifdef HPL_STDC_HEADERS
+   53.         void HPL_pdpanllT
+   54.         (
+   55.            HPL_T_panel *                    PANEL,
+   56.            const int                        M,
+   57.            const int                        N,
+   58.            const int                        ICOFF,
+   59.            double *                         WORK
+   60.         )
+   61.         #else
+   62.         void HPL_pdpanllT
+   63.         ( PANEL, M, N, ICOFF, WORK )
+   64.            HPL_T_panel *                    PANEL;
+   65.            const int                        M;
+   66.            const int                        N;
+   67.            const int                        ICOFF;
+   68.            double *                         WORK;
+   69.         #endif
+   70.         {
+   71.         /* 
+   72.          * Purpose
+   73.          * =======
+   74.          *
+   75.          * HPL_pdpanllT factorizes  a panel of columns that is a sub-array of a
+   76.          * larger one-dimensional panel A  using the Left-looking variant of the
+   77.          * usual one-dimensional algorithm.  The lower triangular N0-by-N0 upper
+   78.          * block of the panel is stored in transpose form.
+   79.          *  
+   80.          * Bi-directional  exchange  is  used  to  perform  the  swap::broadcast
+   81.          * operations  at once  for one column in the panel.  This  results in a
+   82.          * lower number of slightly larger  messages than usual.  On P processes
+   83.          * and assuming bi-directional links,  the running time of this function
+   84.          * can be approximated by (when N is equal to N0):
+   85.          *  
+   86.          *    N0 * log_2( P ) * ( lat + ( 2*N0 + 4 ) / bdwth ) +
+   87.          *    N0^2 * ( M - N0/3 ) * gam2-3
+   88.          *  
+   89.          * where M is the local number of rows of  the panel, lat and bdwth  are
+   90.          * the latency and bandwidth of the network for  double  precision  real
+   91.          * words, and   gam2-3  is an estimate of the  Level 2 and Level 3  BLAS
+   92.          * rate of execution. The  recursive  algorithm  allows indeed to almost
+   93.          * achieve  Level 3 BLAS  performance  in the panel factorization.  On a
+   94.          * large  number of modern machines,  this  operation is however latency
+   95.          * bound,  meaning  that its cost can  be estimated  by only the latency
+   96.          * portion N0 * log_2(P) * lat.  Mono-directional links will double this
+   97.          * communication cost.
+   98.          *  
+   99.          * Note that  one  iteration of the the main loop is unrolled. The local
+  100.          * computation of the absolute value max of the next column is performed
+  101.          * just after its update by the current column. This allows to bring the
+  102.          * current column only  once through  cache at each  step.  The  current
+  103.          * implementation  does not perform  any blocking  for  this sequence of
+  104.          * BLAS operations, however the design allows for plugging in an optimal
+  105.          * (machine-specific) specialized  BLAS-like kernel.  This idea has been
+  106.          * suggested to us by Fred Gustavson, IBM T.J. Watson Research Center.
+  107.          *
+  108.          * Arguments
+  109.          * =========
+  110.          *
+  111.          * PANEL   (local input/output)          HPL_T_panel *
+  112.          *         On entry,  PANEL  points to the data structure containing the
+  113.          *         panel information.
+  114.          *
+  115.          * M       (local input)                 const int
+  116.          *         On entry,  M specifies the local number of rows of sub(A).
+  117.          *
+  118.          * N       (local input)                 const int
+  119.          *         On entry,  N specifies the local number of columns of sub(A).
+  120.          *
+  121.          * ICOFF   (global input)                const int
+  122.          *         On entry, ICOFF specifies the row and column offset of sub(A)
+  123.          *         in A.
+  124.          *
+  125.          * WORK    (local workspace)             double *
+  126.          *         On entry, WORK  is a workarray of size at least 2*(4+2*N0).
+  127.          *
+  128.          * ---------------------------------------------------------------------
+  129.          */ 
+  130.         /*
+  131.          * .. Local Variables ..
+  132.          */
+  133.            double                     * A, * L1, * L1ptr;
+  134.         #ifdef HPL_CALL_VSIPL
+  135.            vsip_mview_d               * Av0, * Av1, * Yv1, * Xv0, * Xv1;
+  136.         #endif
+  137.            int                        Mm1, Nm1, curr, ii, iip1, jj, kk, lda,
+  138.                                       m=M, n0;
+  139.         /* ..
+  140.          * .. Executable Statements ..
+  141.          */
+  142.         #ifdef HPL_DETAILED_TIMING
+  143.            HPL_ptimer( HPL_TIMING_PFACT );
+  144.         #endif
+  145.            A    = PANEL->A;   lda = PANEL->lda;
+  146.            L1   = PANEL->L1;  n0  = PANEL->jb;
+  147.            curr = (int)( PANEL->grid->myrow == PANEL->prow );
+  148.         
+  149.            Nm1 = N - 1; jj = ICOFF;
+  150.            if( curr != 0 ) { ii = ICOFF; iip1 = ii+1; Mm1 = m-1; }
+  151.            else            { ii = 0;     iip1 = ii;   Mm1 = m;   }
+  152.         #ifdef HPL_CALL_VSIPL
+  153.         /*
+  154.          * Admit the blocks
+  155.          */
+  156.            (void) vsip_blockadmit_d( PANEL->Ablock,  VSIP_TRUE );
+  157.            (void) vsip_blockadmit_d( PANEL->L1block, VSIP_TRUE );
+  158.         /*
+  159.          * Create the matrix views
+  160.          */
+  161.            Av0 = vsip_mbind_d( PANEL->Ablock,  0, 1, lda,       lda, PANEL->pmat->nq );
+  162.            Xv0 = vsip_mbind_d( PANEL->L1block, 0, 1, PANEL->jb, PANEL->jb, PANEL->jb );
+  163.         #endif
+  164.         /*
+  165.          * Find local absolute value max in first column and initialize WORK[0:3]
+  166.          */
+  167.  +         HPL_dlocmax( PANEL, m, ii, jj, WORK );
+  168.         
+  169.  + 1--<    while( Nm1 > 0 )
+  170.    1       {
+  171.    1    /*
+  172.    1     * Swap and broadcast the current row
+  173.    1     */
+  174.  + 1          HPL_pdmxswp(  PANEL, m, ii, jj, WORK );
+  175.  + 1          HPL_dlocswpT( PANEL,    ii, jj, WORK );
+  176.    1    
+  177.    1          L1ptr = Mptr( L1, jj+1, ICOFF, n0 ); kk = jj + 1 - ICOFF;
+  178.  + 1          HPL_dtrsv( HplColumnMajor, HplUpper, HplTrans,   HplUnit, kk,
+  179.    1                     Mptr( L1, ICOFF, ICOFF, n0 ), n0, L1ptr, n0 );
+  180.    1    /*
+  181.    1     * Scale  current column by its absolute value max entry  -  Update  and 
+  182.    1     * find local  absolute value max  in next column (Only one pass through 
+  183.    1     * cache for each next column).  This sequence of operations could bene-
+  184.    1     * fit from a specialized  blocked implementation.
+  185.    1     */ 
+  186.    1          if( WORK[0] != HPL_rzero )
+  187.  + 1             HPL_dscal( Mm1, HPL_rone / WORK[0], Mptr( A, iip1, jj, lda ), 1 );
+  188.    1    #ifdef HPL_CALL_VSIPL
+  189.    1    /*
+  190.    1     * Create the matrix subviews
+  191.    1     */
+  192.    1          Av1 = vsip_msubview_d( Av0, PANEL->ii+iip1, PANEL->jj+ICOFF, Mm1, kk );
+  193.    1          Xv1 = vsip_msubview_d( Xv0, jj+1,         ICOFF,             1,   kk );
+  194.    1          Yv1 = vsip_msubview_d( Av0, PANEL->ii+iip1, PANEL->jj+jj+1,  Mm1,  1 );
+  195.    1    
+  196.    1          vsip_gemp_d( -HPL_rone, Av1, VSIP_MAT_NTRANS, Xv1, VSIP_MAT_TRANS,
+  197.    1                       HPL_rone, Yv1 );
+  198.    1    /*
+  199.    1     * Destroy the matrix subviews
+  200.    1     */
+  201.    1          (void) vsip_mdestroy_d( Yv1 );
+  202.    1          (void) vsip_mdestroy_d( Xv1 );
+  203.    1          (void) vsip_mdestroy_d( Av1 );
+  204.    1    #else
+  205.  + 1          HPL_dgemv( HplColumnMajor, HplNoTrans, Mm1, kk,  -HPL_rone,
+  206.    1                     Mptr( A, iip1, ICOFF, lda ), lda, L1ptr, n0,
+  207.    1                     HPL_rone, Mptr( A, iip1, jj+1, lda ),  1 );
+  208.    1    #endif
+  209.  + 1          HPL_dlocmax( PANEL, Mm1, iip1, jj+1, WORK );
+  210.    1          if( curr != 0 )
+  211.    1          {
+  212.  + 1             HPL_dcopy( kk, L1ptr, n0, Mptr( A, ICOFF, jj+1, lda ), 1 );
+  213.    1             ii = iip1; iip1++; m = Mm1; Mm1--;
+  214.    1          }
+  215.    1          Nm1--; jj++;
+  216.    1-->    }
+  217.         /*
+  218.          * Swap and broadcast last row - Scale last column by its absolute value
+  219.          * max entry
+  220.          */ 
+  221.  +         HPL_pdmxswp(  PANEL, m, ii, jj, WORK );
+  222.  +         HPL_dlocswpT( PANEL,    ii, jj, WORK );
+  223.            if( WORK[0] != HPL_rzero )
+  224.  +            HPL_dscal( Mm1, HPL_rone / WORK[0], Mptr( A, iip1, jj, lda ), 1 );
+  225.         
+  226.         #ifdef HPL_CALL_VSIPL
+  227.         /*
+  228.          * Release the blocks
+  229.          */
+  230.            (void) vsip_blockrelease_d( vsip_mgetblock_d( Xv0 ), VSIP_TRUE );
+  231.            (void) vsip_blockrelease_d( vsip_mgetblock_d( Av0 ), VSIP_TRUE );
+  232.         /*
+  233.          * Destroy the matrix views
+  234.          */
+  235.            (void) vsip_mdestroy_d( Xv0 );
+  236.            (void) vsip_mdestroy_d( Av0 );
+  237.         #endif
+  238.         #ifdef HPL_DETAILED_TIMING
+  239.            HPL_ptimer( HPL_TIMING_PFACT );
+  240.         #endif
+  241.         /*
+  242.          * End of HPL_pdpanllT
+  243.          */
+  244.         }
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 167 
+  "HPL_dlocmax" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdpanllT.c, Line = 169 
+  A loop was not vectorized because it contains a call to function "HPL_pdmxswp" on line 174.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 174 
+  "HPL_pdmxswp" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 175 
+  "HPL_dlocswpT" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 178 
+  "HPL_dtrsv" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 187 
+  "HPL_dscal" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 205 
+  "HPL_dgemv" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 209 
+  "HPL_dlocmax" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 212 
+  "HPL_dcopy" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 221 
+  "HPL_pdmxswp" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 222 
+  "HPL_dlocswpT" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdpanllT.c, Line = 224 
+  "HPL_dscal" (called from "HPL_pdpanllT") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

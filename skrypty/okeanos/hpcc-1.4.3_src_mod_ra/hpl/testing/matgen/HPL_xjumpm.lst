@@ -1,0 +1,254 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/matgen/HPL_xjumpm.c
+Compiled : 2016-03-19  13:20:03
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../testing/matgen/HPL_xjumpm.o
+           -c ../../../testing/matgen/HPL_xjumpm.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/matgen/HPL_xjumpm.c
+Date     : 03/19/2016  13:20:03
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* 
+    2.          * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.          *    HPL - 2.0 - September 10, 2008                          
+    4.          *    Antoine P. Petitet                                                
+    5.          *    University of Tennessee, Knoxville                                
+    6.          *    Innovative Computing Laboratory                                 
+    7.          *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.          *                                                                      
+    9.          * -- Copyright notice and Licensing terms:                             
+   10.          *                                                                      
+   11.          * Redistribution  and  use in  source and binary forms, with or without
+   12.          * modification, are  permitted provided  that the following  conditions
+   13.          * are met:                                                             
+   14.          *                                                                      
+   15.          * 1. Redistributions  of  source  code  must retain the above copyright
+   16.          * notice, this list of conditions and the following disclaimer.        
+   17.          *                                                                      
+   18.          * 2. Redistributions in binary form must reproduce  the above copyright
+   19.          * notice, this list of conditions,  and the following disclaimer in the
+   20.          * documentation and/or other materials provided with the distribution. 
+   21.          *                                                                      
+   22.          * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.          * software must display the following acknowledgement:                 
+   24.          * This  product  includes  software  developed  at  the  University  of
+   25.          * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.          *                                                                      
+   27.          * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.          * names  of  its  contributors  may  not  be used to endorse or promote
+   29.          * products  derived   from   this  software  without  specific  written
+   30.          * permission.                                                          
+   31.          *                                                                      
+   32.          * -- Disclaimer:                                                       
+   33.          *                                                                      
+   34.          * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.          * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.          * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.          * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.          * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.          * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.          * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.          * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.          * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.          * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.          * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.          * ---------------------------------------------------------------------
+   46.          */ 
+   47.         /*
+   48.          * Include files
+   49.          */
+   50.         #include "hpl.h"
+   51.         
+   52.         #ifdef HPL_STDC_HEADERS
+   53.         void HPL_xjumpm
+   54.         (
+   55.            const int                        JUMPM,
+   56.            int *                            MULT,
+   57.            int *                            IADD,
+   58.            int *                            IRANN,
+   59.            int *                            IRANM,
+   60.            int *                            IAM,
+   61.            int *                            ICM
+   62.         )
+   63.         #else
+   64.         void HPL_xjumpm
+   65.         ( JUMPM, MULT, IADD, IRANN, IRANM, IAM, ICM )
+   66.            const int                        JUMPM;
+   67.            int *                            MULT;
+   68.            int *                            IADD;
+   69.            int *                            IRANN;
+   70.            int *                            IRANM;
+   71.            int *                            IAM;
+   72.            int *                            ICM;
+   73.         #endif
+   74.         {
+   75.         /* 
+   76.          * Purpose
+   77.          * =======
+   78.          *
+   79.          * HPL_xjumpm computes  the constants  A and C  to jump JUMPM numbers in
+   80.          * the random sequence: X(n+JUMPM) = A*X(n)+C.  The constants encoded in
+   81.          * MULT and IADD  specify  how to jump from one entry in the sequence to
+   82.          * the next.
+   83.          *
+   84.          * Arguments
+   85.          * =========
+   86.          *
+   87.          * JUMPM   (local input)                 const int
+   88.          *         On entry,  JUMPM  specifies  the  number  of entries  in  the
+   89.          *         sequence to jump over. When JUMPM is less or equal than zero,
+   90.          *         A and C are not computed, IRANM is set to IRANN corresponding
+   91.          *         to a jump of size zero.
+   92.          *
+   93.          * MULT    (local input)                 int *
+   94.          *         On entry, MULT is an array of dimension 2,  that contains the
+   95.          *         16-lower  and 15-higher bits of the constant  a  to jump from
+   96.          *         X(n) to X(n+1) = a*X(n) + c in the random sequence.
+   97.          *
+   98.          * IADD    (local input)                 int *
+   99.          *         On entry, IADD is an array of dimension 2,  that contains the
+  100.          *         16-lower  and 15-higher bits of the constant  c  to jump from
+  101.          *         X(n) to X(n+1) = a*X(n) + c in the random sequence.
+  102.          *
+  103.          * IRANN   (local input)                 int *
+  104.          *         On entry, IRANN is an array of dimension 2. that contains the
+  105.          *         16-lower and 15-higher bits of the encoding of X(n).
+  106.          *
+  107.          * IRANM   (local output)                int *
+  108.          *         On entry,  IRANM  is an array of dimension 2.   On exit, this
+  109.          *         array  contains respectively  the 16-lower and 15-higher bits
+  110.          *         of the encoding of X(n+JUMPM).
+  111.          *
+  112.          * IAM     (local output)                int *
+  113.          *         On entry, IAM is an array of dimension 2. On exit, when JUMPM
+  114.          *         is  greater  than  zero,  this  array  contains  the  encoded
+  115.          *         constant  A  to jump from  X(n) to  X(n+JUMPM)  in the random
+  116.          *         sequence. IAM(0:1)  contains  respectively  the  16-lower and
+  117.          *         15-higher  bits  of this constant  A. When  JUMPM  is less or
+  118.          *         equal than zero, this array is not referenced.
+  119.          *
+  120.          * ICM     (local output)                int *
+  121.          *         On entry, ICM is an array of dimension 2. On exit, when JUMPM
+  122.          *         is  greater  than  zero,  this  array  contains  the  encoded
+  123.          *         constant  C  to jump from  X(n)  to  X(n+JUMPM) in the random
+  124.          *         sequence. ICM(0:1)  contains  respectively  the  16-lower and
+  125.          *         15-higher  bits  of this constant  C. When  JUMPM  is less or
+  126.          *         equal than zero, this array is not referenced.
+  127.          *
+  128.          * ---------------------------------------------------------------------
+  129.          */ 
+  130.         /*
+  131.          * .. Local Variables ..
+  132.          */
+  133.            int                        j[2], k;
+  134.         /* ..
+  135.          * .. Executable Statements ..
+  136.          */
+  137.            if( JUMPM > 0 )
+  138.            {
+  139.               IAM[0] = MULT[0]; IAM[1] = MULT[1];   /* IAM   = MULT;          */
+  140.               ICM[0] = IADD[0]; ICM[1] = IADD[1];   /* ICM   = IADD;          */
+  141.  + 1--<       for( k = 1; k <= JUMPM-1; k++ )
+  142.    1          {
+  143.  + 1             HPL_lmul( IAM, MULT, j );          /* j     = IAM   * MULT;  */
+  144.    1             IAM[0] = j[0]; IAM[1] = j[1];      /* IAM   = j;             */
+  145.  + 1             HPL_lmul( ICM, MULT, j );          /* j     = ICM   * MULT;  */
+  146.  + 1             HPL_ladd( IADD, j, ICM );          /* ICM   = IADD  + j;     */
+  147.    1-->       }
+  148.  +            HPL_lmul( IRANN, IAM, j );            /* j     = IRANN * IAM;   */
+  149.  +            HPL_ladd( j, ICM, IRANM );            /* IRANM = j     + ICM;   */
+  150.            }
+  151.            else
+  152.            {                                        /* IRANM = IRANN          */
+  153.               IRANM[0] = IRANN[0]; IRANM[1] = IRANN[1];
+  154.            }
+  155.         /*
+  156.          * End of HPL_xjumpm
+  157.          */
+  158.         }
+
+CC-6287 CC: VECTOR File = HPL_xjumpm.c, Line = 141 
+  A loop was not vectorized because it contains a call to function "HPL_lmul" on line 143.
+
+CC-3021 CC: IPA File = HPL_xjumpm.c, Line = 143 
+  "HPL_lmul" (called from "HPL_xjumpm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_xjumpm.c, Line = 145 
+  "HPL_lmul" (called from "HPL_xjumpm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_xjumpm.c, Line = 146 
+  "HPL_ladd" (called from "HPL_xjumpm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_xjumpm.c, Line = 148 
+  "HPL_lmul" (called from "HPL_xjumpm") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_xjumpm.c, Line = 149 
+  "HPL_ladd" (called from "HPL_xjumpm") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

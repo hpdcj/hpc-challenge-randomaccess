@@ -1,0 +1,368 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx0.c
+Compiled : 2016-03-19  13:19:55
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_plindx0.o
+           -c ../../../src/pgesv/HPL_plindx0.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_plindx0.c
+Date     : 03/19/2016  13:19:55
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.           /* 
+    2.            * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.            *    HPL - 2.0 - September 10, 2008                          
+    4.            *    Antoine P. Petitet                                                
+    5.            *    University of Tennessee, Knoxville                                
+    6.            *    Innovative Computing Laboratory                                 
+    7.            *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.            *                                                                      
+    9.            * -- Copyright notice and Licensing terms:                             
+   10.            *                                                                      
+   11.            * Redistribution  and  use in  source and binary forms, with or without
+   12.            * modification, are  permitted provided  that the following  conditions
+   13.            * are met:                                                             
+   14.            *                                                                      
+   15.            * 1. Redistributions  of  source  code  must retain the above copyright
+   16.            * notice, this list of conditions and the following disclaimer.        
+   17.            *                                                                      
+   18.            * 2. Redistributions in binary form must reproduce  the above copyright
+   19.            * notice, this list of conditions,  and the following disclaimer in the
+   20.            * documentation and/or other materials provided with the distribution. 
+   21.            *                                                                      
+   22.            * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.            * software must display the following acknowledgement:                 
+   24.            * This  product  includes  software  developed  at  the  University  of
+   25.            * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.            *                                                                      
+   27.            * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.            * names  of  its  contributors  may  not  be used to endorse or promote
+   29.            * products  derived   from   this  software  without  specific  written
+   30.            * permission.                                                          
+   31.            *                                                                      
+   32.            * -- Disclaimer:                                                       
+   33.            *                                                                      
+   34.            * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.            * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.            * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.            * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.            * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.            * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.            * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.            * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.            * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.            * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.            * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.            * ---------------------------------------------------------------------
+   46.            */ 
+   47.           /*
+   48.            * Include files
+   49.            */
+   50.           #include "hpl.h"
+   51.           
+   52.           #ifdef HPL_STDC_HEADERS
+   53.           void HPL_plindx0
+   54.           (
+   55.              HPL_T_panel *                    PANEL,
+   56.              const int                        K,
+   57.              int *                            IPID,
+   58.              int *                            LINDXA,
+   59.              int *                            LINDXAU,
+   60.              int *                            LLEN
+   61.           )
+   62.           #else
+   63.           void HPL_plindx0
+   64.           ( PANEL, K, IPID, LINDXA, LINDXAU, LLEN )
+   65.              HPL_T_panel *                    PANEL;
+   66.              const int                        K;
+   67.              int *                            IPID;
+   68.              int *                            LINDXA;
+   69.              int *                            LINDXAU;
+   70.              int *                            LLEN;
+   71.           #endif
+   72.           {
+   73.           /* 
+   74.            * Purpose
+   75.            * =======
+   76.            *
+   77.            * HPL_plindx0 computes two local arrays  LINDXA and  LINDXAU  containing
+   78.            * the  local  source and final destination position  resulting from the
+   79.            * application of row interchanges.
+   80.            *  
+   81.            * On entry, the array  IPID  of length K is such that the row of global
+   82.            * index  IPID(i)  should be mapped onto row of global index  IPID(i+1).
+   83.            * Let  IA  be the global index of the first row to be swapped. For k in
+   84.            * [0..K/2), the row of global index IPID(2*k) should be mapped onto the
+   85.            * row of global index  IPID(2*k+1).  The question then, is to determine
+   86.            * which rows should ultimately be part of U.
+   87.            *  
+   88.            * First, some rows of the process ICURROW  may be swapped locally.  One
+   89.            * of this row belongs to U, the other one belongs to my local  piece of
+   90.            * A.  The other  rows of the current block are swapped with remote rows
+   91.            * and are thus not part of U. These rows however should be sent  along,
+   92.            * and  grabbed by the other processes  as we  progress in the  exchange
+   93.            * phase.
+   94.            *  
+   95.            * So, assume that I am  ICURROW  and consider a row of index  IPID(2*i)
+   96.            * that I own. If I own IPID(2*i+1) as well and IPID(2*i+1) - IA is less
+   97.            * than N,  this row is locally swapped and should be copied into  U  at
+   98.            * the position IPID(2*i+1) - IA. No row will be exchanged for this one.
+   99.            * If IPID(2*i+1)-IA is greater than N, then the row IPID(2*i) should be
+  100.            * locally copied into my local piece of A at the position corresponding
+  101.            * to the row of global index IPID(2*i+1).
+  102.            *  
+  103.            * If the process  ICURROW does not own  IPID(2*i+1), then row IPID(2*i)
+  104.            * is to be swapped away and strictly speaking does not belong to U, but
+  105.            * to  A  remotely.  Since this  process will however send this array U,
+  106.            * this row is  copied into  U, exactly where the row IPID(2*i+1) should
+  107.            * go. For this, we search IPID for k1, such that IPID(2*k1) is equal to
+  108.            * IPID(2*i+1); and row  IPID(2*i) is to be copied in U  at the position
+  109.            * IPID(2*k1+1)-IA.
+  110.            *  
+  111.            * It is thus  important to put the rows that go into U, i.e., such that
+  112.            * IPID(2*i+1) - IA is less than N at the begining of the array IPID. By
+  113.            * doing so,  U  is formed, and the local copy  is performed in just one
+  114.            * sweep.
+  115.            *  
+  116.            * Two lists  LINDXA  and  LINDXAU are built.  LINDXA contains the local
+  117.            * index of the rows I have that should be copied. LINDXAU  contains the
+  118.            * local destination information: if LINDXAU(k) >= 0, row LINDXA(k) of A
+  119.            * is to be copied in U at position LINDXAU(k). Otherwise, row LINDXA(k)
+  120.            * of A should be locally copied into A(-LINDXAU(k),:).  In the  process
+  121.            * ICURROW, the initial packing algorithm proceeds as follows.
+  122.            *  
+  123.            *   for all entries in IPID,
+  124.            *      if IPID(2*i) is in ICURROW,
+  125.            *         if IPID(2*i+1) is in ICURROW,
+  126.            *            if( IPID(2*i+1) - IA < N )
+  127.            *             save corresponding local position
+  128.            *             of this row (LINDXA);
+  129.            *             save local position (LINDXAU) in U
+  130.            *             where this row goes;
+  131.            *             [copy row IPID(2*i) in U at position
+  132.            *             IPID(2*i+1)-IA; ];
+  133.            *            else
+  134.            *             save corresponding local position of
+  135.            *             this row (LINDXA);
+  136.            *             save local position (-LINDXAU) in A
+  137.            *             where this row goes;
+  138.            *             [copy row IPID(2*i) in my piece of A
+  139.            *             at IPID(2*i+1);]
+  140.            *            end if
+  141.            *         else
+  142.            *            find k1 such that IPID(2*k1) = IPID(2*i+1);
+  143.            *            copy row IPID(2*i) in U at position
+  144.            *            IPID(2*k1+1)-IA;
+  145.            *            save corresponding local position of this
+  146.            *            row (LINDXA);
+  147.            *            save local position (LINDXAU) in U where
+  148.            *            this row goes;
+  149.            *         end if
+  150.            *      end if
+  151.            *   end for
+  152.            *  
+  153.            * Second, if I am not the current row process  ICURROW, all source rows
+  154.            * in IPID that I own are part of U. Indeed,  they  are swapped with one
+  155.            * row  of  the  current  block  of rows,  and  the  main  factorization
+  156.            * algorithm proceeds one row after each other.  The processes different
+  157.            * from ICURROW,  should  exchange and accumulate  those rows until they
+  158.            * receive some data previously owned by the process ICURROW.
+  159.            *  
+  160.            * In processes different from  ICURROW,  the  initial packing algorithm
+  161.            * proceeds as follows.  Consider a row of global index IPID(2*i) that I
+  162.            * own. When I will be receiving data previously owned by ICURROW, i.e.,
+  163.            * U, row IPID(2*i) should  replace the row in U at pos. IPID(2*i+1)-IA,
+  164.            * and  this particular row of U should be first copied into my piece of
+  165.            * A, at A(il,:),  where  il is the  local row  index  corresponding  to
+  166.            * IPID(2*i). Now,initially, this row will be packed into workspace, say
+  167.            * as the kth row of  that  work array.  The  following  algorithm  sets
+  168.            * LINDXAU[k] to IPID(2*i+1)-IA, that is the position in U where the row
+  169.            * should be copied. LINDXA(k) stores the local index in  A  where  this
+  170.            * row of U should be copied, i.e il.
+  171.            *  
+  172.            *   for all entries in IPID,
+  173.            *      if IPID(2*i) is not in ICURROW,
+  174.            *         copy row IPID(2*i) in work array;
+  175.            *         save corresponding local position
+  176.            *         of this row (LINDXA);
+  177.            *         save position (LINDXAU) in U where
+  178.            *         this row should be copied;
+  179.            *      end if
+  180.            *   end for
+  181.            *  
+  182.            * Since we are at it, we also globally figure  out  how many rows every
+  183.            * process has. That is necessary, because it would rather be cumbersome
+  184.            * to  figure it on  the fly  during the  bi-directional exchange phase.
+  185.            * This information is kept in the array  LLEN  of size NPROW. Also note
+  186.            * that the arrays LINDXA and LINDXAU are of max length equal to 2*N.
+  187.            *
+  188.            * Arguments
+  189.            * =========
+  190.            *
+  191.            * PANEL   (local input/output)          HPL_T_panel *
+  192.            *         On entry,  PANEL  points to the data structure containing the
+  193.            *         panel information.
+  194.            *
+  195.            * K       (global input)                const int
+  196.            *         On entry, K specifies the number of entries in IPID.  K is at
+  197.            *         least 2*N, and at most 4*N.
+  198.            *
+  199.            * IPID    (global input)                int *
+  200.            *         On entry,  IPID  is an array of length K. The first K entries
+  201.            *         of that array contain the src and final destination resulting
+  202.            *         from the application of the interchanges.
+  203.            *
+  204.            * LINDXA  (local output)                int *
+  205.            *         On entry, LINDXA  is an array of dimension 2*N. On exit, this
+  206.            *         array contains the local indexes of the rows of A I have that
+  207.            *         should be copied into U.
+  208.            *
+  209.            * LINDXAU (local output)                int *
+  210.            *         On exit, LINDXAU  is an array of dimension 2*N. On exit, this
+  211.            *         array contains  the local destination  information encoded as
+  212.            *         follows.  If LINDXAU(k) >= 0, row  LINDXA(k)  of A  is  to be
+  213.            *         copied in U at position LINDXAU(k).  Otherwise, row LINDXA(k)
+  214.            *         of A should be locally copied into A(-LINDXAU(k),:).
+  215.            *
+  216.            * LLEN    (global output)               int *
+  217.            *         On entry,  LLEN  is  an array  of length  NPROW.  On exit, it
+  218.            *         contains how many rows every process has.
+  219.            *
+  220.            * ---------------------------------------------------------------------
+  221.            */ 
+  222.           /*
+  223.            * .. Local Variables ..
+  224.            */
+  225.              int                        dst, dstrow, fndd, i, ia, icurrow, il,
+  226.                                         ip=0, iroff, j, jb, myrow, nb, nprow,
+  227.                                         src, srcrow;
+  228.           /* ..
+  229.            * .. Executable Statements ..
+  230.            */
+  231.           /*
+  232.            * Compute the local arrays  LINDXA  and  LINDXAU  containing  the local
+  233.            * source and final destination position resulting from  the application
+  234.            * of N interchanges.
+  235.            */
+  236.              myrow   = PANEL->grid->myrow; nprow = PANEL->grid->nprow;
+  237.              icurrow = PANEL->prow;        jb    = PANEL->jb;
+  238.              nb      = PANEL->nb;          ia    = PANEL->ia;
+  239.              iroff   = PANEL->ii;
+  240.           
+  241.    A---<>    for( i = 0; i < nprow; i++ ) LLEN[i] = 0;
+  242.           
+  243.  + 1----<    for( i = 0; i < K; i += 2 )
+  244.    1         {
+  245.    1            src = IPID[i];
+  246.    1            Mindxg2p( src, nb, nb, srcrow, 0, nprow ); LLEN[ srcrow ]++;
+  247.    1      
+  248.    1            if( myrow == srcrow )
+  249.    1            {
+  250.    1               Mindxg2l( il, src, nb, nb, myrow, 0, nprow );
+  251.    1               LINDXA[ip] = il - iroff; dst = IPID[i+1];
+  252.    1      
+  253.    1               if( myrow == icurrow )
+  254.    1               {
+  255.    1                  Mindxg2p( dst, nb, nb, dstrow, 0, nprow );
+  256.    1                  if( dstrow == icurrow )
+  257.    1                  {
+  258.    1                     if( dst - ia < jb ) { LINDXAU[ip] = dst - ia; }
+  259.    1                     else
+  260.    1                     {
+  261.    1                        Mindxg2l( il, dst, nb, nb, myrow, 0, nprow );
+  262.    1                        LINDXAU[ip] = iroff - il;
+  263.    1                     }
+  264.    1                  }
+  265.    1                  else
+  266.    1                  {
+  267.    1                     j = 0;
+  268.  + 1 2--<                do { fndd = ( dst == IPID[j] ); j+=2; }
+  269.    1 2-->                while( !fndd && ( j < K ) );
+  270.    1                     LINDXAU[ip] = IPID[j-1] - ia;
+  271.    1                  }
+  272.    1               }
+  273.    1               else { LINDXAU[ip] = dst - ia; }
+  274.    1      
+  275.    1               ip++;
+  276.    1            }
+  277.    1---->    }
+  278.           /*
+  279.            * End of HPL_plindx0
+  280.            */
+  281.           }
+
+CC-6202 CC: VECTOR File = HPL_plindx0.c, Line = 241 
+  A loop was replaced by a library call.
+
+CC-6254 CC: VECTOR File = HPL_plindx0.c, Line = 243 
+  A loop was not vectorized because a recurrence was found on "LLEN" at line 246.
+
+CC-6334 CC: VECTOR File = HPL_plindx0.c, Line = 268 
+  A loop was not vectorized because it contains multiple potential exits.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

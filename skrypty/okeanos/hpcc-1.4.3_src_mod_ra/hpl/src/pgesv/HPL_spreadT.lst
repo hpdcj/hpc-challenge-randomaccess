@@ -1,0 +1,471 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_spreadT.c
+Compiled : 2016-03-19  13:19:58
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_spreadT.o
+           -c ../../../src/pgesv/HPL_spreadT.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_spreadT.c
+Date     : 03/19/2016  13:19:58
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.          /* 
+    2.           * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.           *    HPL - 2.0 - September 10, 2008                          
+    4.           *    Antoine P. Petitet                                                
+    5.           *    University of Tennessee, Knoxville                                
+    6.           *    Innovative Computing Laboratory                                 
+    7.           *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.           *                                                                      
+    9.           * -- Copyright notice and Licensing terms:                             
+   10.           *                                                                      
+   11.           * Redistribution  and  use in  source and binary forms, with or without
+   12.           * modification, are  permitted provided  that the following  conditions
+   13.           * are met:                                                             
+   14.           *                                                                      
+   15.           * 1. Redistributions  of  source  code  must retain the above copyright
+   16.           * notice, this list of conditions and the following disclaimer.        
+   17.           *                                                                      
+   18.           * 2. Redistributions in binary form must reproduce  the above copyright
+   19.           * notice, this list of conditions,  and the following disclaimer in the
+   20.           * documentation and/or other materials provided with the distribution. 
+   21.           *                                                                      
+   22.           * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.           * software must display the following acknowledgement:                 
+   24.           * This  product  includes  software  developed  at  the  University  of
+   25.           * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.           *                                                                      
+   27.           * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.           * names  of  its  contributors  may  not  be used to endorse or promote
+   29.           * products  derived   from   this  software  without  specific  written
+   30.           * permission.                                                          
+   31.           *                                                                      
+   32.           * -- Disclaimer:                                                       
+   33.           *                                                                      
+   34.           * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.           * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.           * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.           * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.           * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.           * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.           * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.           * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.           * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.           * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.           * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.           * ---------------------------------------------------------------------
+   46.           */ 
+   47.          /*
+   48.           * Include files
+   49.           */
+   50.          #include "hpl.h"
+   51.          
+   52.          #ifdef HPL_STDC_HEADERS
+   53.          void HPL_spreadT
+   54.          (
+   55.             HPL_T_panel *                    PBCST,
+   56.             int *                            IFLAG,
+   57.             HPL_T_panel *                    PANEL,
+   58.             const enum HPL_SIDE              SIDE,
+   59.             const int                        N,
+   60.             double *                         U,
+   61.             const int                        LDU,
+   62.             const int                        SRCDIST,
+   63.             const int *                      IPLEN,
+   64.             const int *                      IPMAP,
+   65.             const int *                      IPMAPM1
+   66.          )
+   67.          #else
+   68.          void HPL_spreadT
+   69.          ( PBCST, IFLAG, PANEL, SIDE, N, U, LDU, SRCDIST, IPLEN, IPMAP, IPMAPM1 )
+   70.             HPL_T_panel *                    PBCST;
+   71.             int *                            IFLAG;
+   72.             HPL_T_panel *                    PANEL;
+   73.             const enum HPL_SIDE              SIDE;
+   74.             const int                        N;
+   75.             double *                         U;
+   76.             const int                        LDU;
+   77.             const int                        SRCDIST;
+   78.             const int *                      IPLEN;
+   79.             const int *                      IPMAP;
+   80.             const int *                      IPMAPM1;
+   81.          #endif
+   82.          {
+   83.          /* 
+   84.           * Purpose
+   85.           * =======
+   86.           *
+   87.           * HPL_spreadT spreads  the local array containing local pieces of U, so
+   88.           * that on exit to this function,  a piece of  U  is contained in every
+   89.           * process row.  The array  IPLEN  contains the number of columns of U,
+   90.           * that should be spread on any given process row.  This function  also
+   91.           * probes for the presence of  the column panel  PBCST.  If  available,
+   92.           * this  panel will be forwarded.  If  PBCST  is  NULL  on input,  this
+   93.           * probing mechanism will be disabled.
+   94.           *
+   95.           * Arguments
+   96.           * =========
+   97.           *
+   98.           * PBCST   (local input/output)          HPL_T_panel *
+   99.           *         On entry,  PBCST  points to the data structure containing the
+  100.           *         panel (to be broadcast) information.
+  101.           *
+  102.           * IFLAG   (local input/output)          int *
+  103.           *         On entry, IFLAG  indicates  whether or not  the broadcast has
+  104.           *         already been completed.  If not,  probing will occur, and the
+  105.           *         outcome will be contained in IFLAG on exit.
+  106.           *
+  107.           * PANEL   (local input/output)          HPL_T_panel *
+  108.           *         On entry,  PANEL  points to the data structure containing the
+  109.           *         panel (to be spread) information.
+  110.           *
+  111.           * SIDE    (global input)                const enum HPL_SIDE
+  112.           *         On entry, SIDE specifies whether the local piece of U located
+  113.           *         in process IPMAP[SRCDIST] should be spread to the right or to
+  114.           *         the left. This feature is used by the equilibration process.
+  115.           *
+  116.           * N       (global input)                const int
+  117.           *         On entry,  N  specifies the local number of rows of U. N must
+  118.           *         be at least zero.
+  119.           *
+  120.           * U       (local input/output)          double *
+  121.           *         On entry,  U  is an array of dimension (LDU,*) containing the
+  122.           *         local pieces of U.
+  123.           *
+  124.           * LDU     (local input)                 const int
+  125.           *         On entry, LDU specifies the local leading dimension of U. LDU
+  126.           *         should be at least MAX(1,N).
+  127.           *
+  128.           * SRCDIST (local input)                 const int
+  129.           *         On entry,  SRCDIST  specifies the source process that spreads
+  130.           *         its piece of U.
+  131.           *
+  132.           * IPLEN   (global input)                const int *
+  133.           *         On entry, IPLEN is an array of dimension NPROW+1.  This array
+  134.           *         is such that IPLEN[i+1] - IPLEN[i] is the number of rows of U
+  135.           *         in each process before process IPMAP[i], with the  convention
+  136.           *         that IPLEN[nprow] is the total number of rows. In other words
+  137.           *         IPLEN[i+1] - IPLEN[i]  is  the local number of rows of U that
+  138.           *         should be moved to process IPMAP[i].
+  139.           *
+  140.           * IPMAP   (global input)                const int *
+  141.           *         On entry, IPMAP is an array of dimension  NPROW.  This  array
+  142.           *         contains  the  logarithmic mapping of the processes. In other
+  143.           *         words, IPMAP[myrow]  is the absolute coordinate of the sorted
+  144.           *         process.
+  145.           *
+  146.           * IPMAPM1 (global input)                const int *
+  147.           *         On entry,  IPMAPM1 is an array of dimension NPROW. This array
+  148.           *         contains  the inverse of the logarithmic mapping contained in
+  149.           *         IPMAP: For i in [0.. NPROW) IPMAPM1[IPMAP[i]] = i.
+  150.           *
+  151.           * ---------------------------------------------------------------------
+  152.           */ 
+  153.          /*
+  154.           * .. Local Variables ..
+  155.           */
+  156.          #if 0
+  157.             MPI_Datatype              type;
+  158.          #endif
+  159.             MPI_Status                status;
+  160.             MPI_Comm                  comm;
+  161.             unsigned int              ip2=1, mask=1, mydist, mydist2;
+  162.             int                       Cmsgid=MSGID_BEGIN_PFACT, ibuf,
+  163.                                       ierr=MPI_SUCCESS, il, k, lbuf, lgth, myrow,
+  164.                                       npm1, nprow, partner;
+  165.          /* ..
+  166.           * .. Executable Statements ..
+  167.           */
+  168.             myrow = PANEL->grid->myrow;    nprow = PANEL->grid->nprow;
+  169.             comm  = PANEL->grid->col_comm;
+  170.          /*
+  171.           * Spread U
+  172.           */
+  173.             if( SIDE == HplLeft )
+  174.             {
+  175.                nprow = ( npm1 = SRCDIST ) + 1;
+  176.                if( ( ( mydist = (unsigned int)(IPMAPM1[myrow]) ) >
+  177.                        (unsigned int)(SRCDIST) ) || ( npm1 == 0 ) ) return;
+  178.          
+  179.  + 1--<>       k = npm1; while( k > 1 ) { k >>= 1; ip2 <<= 1; mask <<= 1; mask++; }
+  180.                mydist2 = ( mydist = npm1 - mydist ); il = npm1 - ip2;
+  181.                lgth    = IPLEN[nprow];
+  182.          
+  183.  + 1---<       do
+  184.    1           {
+  185.    1              mask ^= ip2;
+  186.    1     
+  187.    1              if( ( mydist & mask ) == 0 )
+  188.    1              {
+  189.    1                 lbuf = IPLEN[il+1] - ( ibuf = IPLEN[il-Mmin(il, (int)(ip2))] );
+  190.    1     
+  191.    1                 if( lbuf > 0 )
+  192.    1                 {
+  193.    1                    partner = mydist ^ ip2;
+  194.    1     
+  195.    1                    if( mydist & ip2 )
+  196.    1                    {
+  197.    1     #if 0
+  198.    1                       if( ierr == MPI_SUCCESS )
+  199.    1                       {
+  200.    1                          if( LDU == N )
+  201.    1                             ierr = MPI_Type_contiguous( lbuf*LDU, MPI_DOUBLE,
+  202.    1                                                         &type );
+  203.    1                          else
+  204.    1                             ierr = MPI_Type_vector( lbuf, N, LDU, MPI_DOUBLE,
+  205.    1                                                     &type );
+  206.    1                       }
+  207.    1                       if( ierr == MPI_SUCCESS )
+  208.    1                          ierr =   MPI_Type_commit( &type );
+  209.    1                       if( ierr == MPI_SUCCESS )
+  210.    1                          ierr =   MPI_Recv( Mptr( U, 0, ibuf, LDU ), 1, type,
+  211.    1                                             IPMAP[npm1-partner], Cmsgid, comm,
+  212.    1                                             &status );
+  213.    1                       if( ierr == MPI_SUCCESS )
+  214.    1                          ierr =   MPI_Type_free( &type );
+  215.    1     #else
+  216.    1     /*
+  217.    1      * In our case, LDU is N - do not use the MPI Datatypes
+  218.    1      */
+  219.    1                       if( ierr == MPI_SUCCESS )
+  220.    1                          ierr =   MPI_Recv( Mptr( U, 0, ibuf, LDU ), lbuf*N,
+  221.    1                                             MPI_DOUBLE, IPMAP[npm1-partner],
+  222.    1                                             Cmsgid, comm, &status );
+  223.    1     #endif
+  224.    1                    }
+  225.    1                    else if( partner < nprow )
+  226.    1                    {
+  227.    1     #if 0
+  228.    1                       if( ierr == MPI_SUCCESS )
+  229.    1                       {
+  230.    1                          if( LDU == N )
+  231.    1                             ierr = MPI_Type_contiguous( lbuf*LDU, MPI_DOUBLE,
+  232.    1                                                         &type );
+  233.    1                          else
+  234.    1                             ierr = MPI_Type_vector( lbuf, N, LDU, MPI_DOUBLE,
+  235.    1                                                     &type );
+  236.    1                       }
+  237.    1                       if( ierr == MPI_SUCCESS )
+  238.    1                          ierr =   MPI_Type_commit( &type );
+  239.    1                       if( ierr == MPI_SUCCESS )
+  240.    1                          ierr =   MPI_Send( Mptr( U, 0, ibuf, LDU ), 1, type,
+  241.    1                                             IPMAP[npm1-partner], Cmsgid, comm );
+  242.    1                       if( ierr == MPI_SUCCESS )
+  243.    1                          ierr =   MPI_Type_free( &type );
+  244.    1     #else
+  245.    1     /*
+  246.    1      * In our case, LDU is N - do not use the MPI Datatypes
+  247.    1      */
+  248.    1                       if( ierr == MPI_SUCCESS )
+  249.    1                          ierr =   MPI_Send( Mptr( U, 0, ibuf, LDU ), lbuf*N,
+  250.    1                                             MPI_DOUBLE, IPMAP[npm1-partner],
+  251.    1                                             Cmsgid, comm );
+  252.    1     #endif
+  253.    1                    }
+  254.    1                 }
+  255.    1              }
+  256.    1      
+  257.    1              if( mydist2 < ip2 ) {  ip2 >>= 1; il += ip2; }
+  258.    1              else { mydist2 -= ip2; ip2 >>= 1; il -= ip2; }
+  259.    1     /*
+  260.    1      * Probe for column panel - forward it when available
+  261.    1      */
+  262.  + 1              if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  263.    1      
+  264.    1--->       } while( ip2 > 0 );
+  265.             }
+  266.             else
+  267.             {
+  268.                npm1 = ( nprow -= SRCDIST ) - 1;
+  269.                if( ( ( mydist = (unsigned int)(IPMAPM1[myrow]) ) <
+  270.                        (unsigned int)(SRCDIST) ) || ( npm1 == 0 ) ) return;
+  271.          
+  272.  + 1--<>       k = npm1; while( k > 1 ) { k >>= 1; ip2 <<= 1; mask <<= 1; mask++; }
+  273.                mydist2 = ( mydist -= SRCDIST ); il = ip2;
+  274.          /*
+  275.           * Spread to the right - offset the IPLEN and IPMAP arrays
+  276.           */
+  277.                lgth = IPLEN[SRCDIST+nprow];
+  278.          /*
+  279.           * Spread U
+  280.           */
+  281.  + 1---<       do
+  282.    1           {
+  283.    1              mask ^= ip2;
+  284.    1     
+  285.    1              if( ( mydist & mask ) == 0 )
+  286.    1              {
+  287.    1                 k    = il + ip2; ibuf = IPLEN[SRCDIST+il];
+  288.    1                 lbuf = ( k >= nprow ? lgth : IPLEN[SRCDIST+k] ) - ibuf;
+  289.    1     
+  290.    1                 if( lbuf > 0 )
+  291.    1                 {
+  292.    1                    partner = mydist ^ ip2;
+  293.    1     
+  294.    1                    if( mydist & ip2 )
+  295.    1                    {
+  296.    1     #if 0
+  297.    1                       if( ierr == MPI_SUCCESS )
+  298.    1                       {
+  299.    1                          if( LDU == N )
+  300.    1                             ierr = MPI_Type_contiguous( lbuf*LDU, MPI_DOUBLE,
+  301.    1                                                         &type );
+  302.    1                          else
+  303.    1                             ierr = MPI_Type_vector( lbuf, N, LDU, MPI_DOUBLE,
+  304.    1                                                     &type );
+  305.    1                       }
+  306.    1                       if( ierr == MPI_SUCCESS )
+  307.    1                          ierr =   MPI_Type_commit( &type );
+  308.    1                       if( ierr == MPI_SUCCESS )
+  309.    1                          ierr =   MPI_Recv( Mptr( U, 0, ibuf, LDU ), 1, type,
+  310.    1                                             IPMAP[SRCDIST+partner], Cmsgid,
+  311.    1                                             comm, &status );
+  312.    1                       if( ierr == MPI_SUCCESS )
+  313.    1                          ierr =   MPI_Type_free( &type );
+  314.    1     #else
+  315.    1     /*
+  316.    1      * In our case, LDU is N - do not use the MPI Datatypes
+  317.    1      */
+  318.    1                       if( ierr == MPI_SUCCESS )
+  319.    1                          ierr =   MPI_Recv( Mptr( U, 0, ibuf, LDU ), lbuf*N,
+  320.    1                                             MPI_DOUBLE, IPMAP[SRCDIST+partner],
+  321.    1                                             Cmsgid, comm, &status );
+  322.    1     #endif
+  323.    1                    }
+  324.    1                    else if( partner < nprow )
+  325.    1                    {
+  326.    1     #if 0
+  327.    1                       if( ierr == MPI_SUCCESS )
+  328.    1                       {
+  329.    1                          if( LDU == N )
+  330.    1                             ierr = MPI_Type_contiguous( lbuf*LDU, MPI_DOUBLE,
+  331.    1                                                         &type );
+  332.    1                          else
+  333.    1                             ierr = MPI_Type_vector( lbuf, N, LDU, MPI_DOUBLE,
+  334.    1                                                     &type );
+  335.    1                       }
+  336.    1                       if( ierr == MPI_SUCCESS )
+  337.    1                          ierr =   MPI_Type_commit( &type );
+  338.    1                       if( ierr == MPI_SUCCESS )
+  339.    1                          ierr =   MPI_Send( Mptr( U, 0, ibuf, LDU ), 1, type,
+  340.    1                                             IPMAP[SRCDIST+partner], Cmsgid,
+  341.    1                                             comm );
+  342.    1                       if( ierr == MPI_SUCCESS )
+  343.    1                          ierr =   MPI_Type_free( &type );
+  344.    1     #else
+  345.    1     /*
+  346.    1      * In our case, LDU is N - do not use the MPI Datatypes
+  347.    1      */
+  348.    1                       if( ierr == MPI_SUCCESS )
+  349.    1                          ierr =   MPI_Send( Mptr( U, 0, ibuf, LDU ), lbuf*N,
+  350.    1                                             MPI_DOUBLE, IPMAP[SRCDIST+partner],
+  351.    1                                             Cmsgid, comm );
+  352.    1     #endif
+  353.    1                    }
+  354.    1                 }
+  355.    1              }
+  356.    1      
+  357.    1              if( mydist2 < ip2 ) {  ip2 >>= 1; il -= ip2; }
+  358.    1              else { mydist2 -= ip2; ip2 >>= 1; il += ip2; }
+  359.    1     /*
+  360.    1      * Probe for column panel - forward it when available
+  361.    1      */
+  362.  + 1              if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  363.    1      
+  364.    1--->       } while( ip2 > 0 );
+  365.             }
+  366.          
+  367.             if( ierr != MPI_SUCCESS )
+  368.  +          { HPL_pabort( __LINE__, "HPL_spreadT", "MPI call failed" ); }
+  369.          /*
+  370.           * End of HPL_spreadT
+  371.           */
+  372.          }
+
+CC-6254 CC: VECTOR File = HPL_spreadT.c, Line = 179 
+  A loop was not vectorized because a recurrence was found on "ip2" at line 179.
+
+CC-6287 CC: VECTOR File = HPL_spreadT.c, Line = 183 
+  A loop was not vectorized because it contains a call to function "HPL_bcast" on line 262.
+
+CC-3021 CC: IPA File = HPL_spreadT.c, Line = 262 
+  "HPL_bcast" (called from "HPL_spreadT") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_spreadT.c, Line = 272 
+  A loop was not vectorized because a recurrence was found on "ip2" at line 272.
+
+CC-6287 CC: VECTOR File = HPL_spreadT.c, Line = 281 
+  A loop was not vectorized because it contains a call to function "HPL_bcast" on line 362.
+
+CC-3021 CC: IPA File = HPL_spreadT.c, Line = 362 
+  "HPL_bcast" (called from "HPL_spreadT") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_spreadT.c, Line = 368 
+  "HPL_pabort" (called from "HPL_spreadT") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

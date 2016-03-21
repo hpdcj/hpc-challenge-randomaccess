@@ -1,0 +1,333 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/pmatgen/HPL_pdmatgen.c
+Compiled : 2016-03-19  13:20:05
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../testing/pmatgen/HPL_pdmatgen.o
+           -c ../../../testing/pmatgen/HPL_pdmatgen.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../testing/pmatgen/HPL_pdmatgen.c
+Date     : 03/19/2016  13:20:05
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                /* 
+    2.                 * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.                 *    HPL - 2.0 - September 10, 2008                          
+    4.                 *    Antoine P. Petitet                                                
+    5.                 *    University of Tennessee, Knoxville                                
+    6.                 *    Innovative Computing Laboratory                                 
+    7.                 *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.                 *                                                                      
+    9.                 * -- Copyright notice and Licensing terms:                             
+   10.                 *                                                                      
+   11.                 * Redistribution  and  use in  source and binary forms, with or without
+   12.                 * modification, are  permitted provided  that the following  conditions
+   13.                 * are met:                                                             
+   14.                 *                                                                      
+   15.                 * 1. Redistributions  of  source  code  must retain the above copyright
+   16.                 * notice, this list of conditions and the following disclaimer.        
+   17.                 *                                                                      
+   18.                 * 2. Redistributions in binary form must reproduce  the above copyright
+   19.                 * notice, this list of conditions,  and the following disclaimer in the
+   20.                 * documentation and/or other materials provided with the distribution. 
+   21.                 *                                                                      
+   22.                 * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.                 * software must display the following acknowledgement:                 
+   24.                 * This  product  includes  software  developed  at  the  University  of
+   25.                 * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.                 *                                                                      
+   27.                 * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.                 * names  of  its  contributors  may  not  be used to endorse or promote
+   29.                 * products  derived   from   this  software  without  specific  written
+   30.                 * permission.                                                          
+   31.                 *                                                                      
+   32.                 * -- Disclaimer:                                                       
+   33.                 *                                                                      
+   34.                 * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.                 * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.                 * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.                 * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.                 * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.                 * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.                 * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.                 * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.                 * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.                 * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.                 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.                 * ---------------------------------------------------------------------
+   46.                 */ 
+   47.                /*
+   48.                 * Include files
+   49.                 */
+   50.                #include "hpl.h"
+   51.                
+   52.                #ifdef HPL_STDC_HEADERS
+   53.                void HPL_pdmatgen
+   54.                (
+   55.                   const HPL_T_grid *               GRID,
+   56.                   const int                        M,
+   57.                   const int                        N,
+   58.                   const int                        NB,
+   59.                   double *                         A,
+   60.                   const int                        LDA,
+   61.                   const int                        ISEED
+   62.                )
+   63.                #else
+   64.                void HPL_pdmatgen
+   65.                ( GRID, M, N, NB, A, LDA, ISEED )
+   66.                   const HPL_T_grid *               GRID;
+   67.                   const int                        M;
+   68.                   const int                        N;
+   69.                   const int                        NB;
+   70.                   double *                         A;
+   71.                   const int                        LDA;
+   72.                   const int                        ISEED;
+   73.                #endif
+   74.                {
+   75.                /* 
+   76.                 * Purpose
+   77.                 * =======
+   78.                 *
+   79.                 * HPL_pdmatgen generates (or regenerates) a parallel random matrix A.
+   80.                 *  
+   81.                 * The  pseudo-random  generator uses the linear congruential algorithm:
+   82.                 * X(n+1) = (a * X(n) + c) mod m  as  described  in the  Art of Computer
+   83.                 * Programming, Knuth 1973, Vol. 2.
+   84.                 *
+   85.                 * Arguments
+   86.                 * =========
+   87.                 *
+   88.                 * GRID    (local input)                 const HPL_T_grid *
+   89.                 *         On entry,  GRID  points  to the data structure containing the
+   90.                 *         process grid information.
+   91.                 *
+   92.                 * M       (global input)                const int
+   93.                 *         On entry,  M  specifies  the number  of rows of the matrix A.
+   94.                 *         M must be at least zero.
+   95.                 *
+   96.                 * N       (global input)                const int
+   97.                 *         On entry,  N specifies the number of columns of the matrix A.
+   98.                 *         N must be at least zero.
+   99.                 *
+  100.                 * NB      (global input)                const int
+  101.                 *         On entry,  NB specifies the blocking factor used to partition
+  102.                 *         and distribute the matrix A. NB must be larger than one.
+  103.                 *
+  104.                 * A       (local output)                double *
+  105.                 *         On entry,  A  points  to an array of dimension (LDA,LocQ(N)).
+  106.                 *         On exit, this array contains the coefficients of the randomly
+  107.                 *         generated matrix.
+  108.                 *
+  109.                 * LDA     (local input)                 const int
+  110.                 *         On entry, LDA specifies the leading dimension of the array A.
+  111.                 *         LDA must be at least max(1,LocP(M)).
+  112.                 *
+  113.                 * ISEED   (global input)                const int
+  114.                 *         On entry, ISEED  specifies  the  seed  number to generate the
+  115.                 *         matrix A. ISEED must be at least zero.
+  116.                 *
+  117.                 * ---------------------------------------------------------------------
+  118.                 */ 
+  119.                /*
+  120.                 * .. Local Variables ..
+  121.                 */
+  122.                   int                        iadd [2], ia1  [2], ia2  [2], ia3  [2],
+  123.                                              ia4  [2], ia5  [2], ib1  [2], ib2  [2],
+  124.                                              ib3  [2], ic1  [2], ic2  [2], ic3  [2],
+  125.                                              ic4  [2], ic5  [2], iran1[2], iran2[2],
+  126.                                              iran3[2], iran4[2], itmp1[2], itmp2[2],
+  127.                                              itmp3[2], jseed[2], mult [2];
+  128.                   int                        ib, iblk, ik, jb, jblk, jk, jump1, jump2,
+  129.                                              jump3, jump4, jump5, jump6, jump7, lmb,
+  130.                                              lnb, mblks, mp, mycol, myrow, nblks,
+  131.                                              npcol, nprow, nq;
+  132.                /* ..
+  133.                 * .. Executable Statements ..
+  134.                 */
+  135.  +                (void) HPL_grid_info( GRID, &nprow, &npcol, &myrow, &mycol );
+  136.                
+  137.                   mult [0] = HPL_MULT0; mult [1] = HPL_MULT1;
+  138.                   iadd [0] = HPL_IADD0; iadd [1] = HPL_IADD1;
+  139.                   jseed[0] = ISEED;     jseed[1] = 0;
+  140.                /*
+  141.                 * Generate an M by N matrix starting in process (0,0)
+  142.                 */
+  143.                   Mnumroc( mp, M, NB, NB, myrow, 0, nprow );
+  144.                   Mnumroc( nq, N, NB, NB, mycol, 0, npcol );
+  145.                
+  146.                   if( ( mp <= 0 ) || ( nq <= 0 ) ) return;
+  147.                /*
+  148.                 * Local number of blocks and size of the last one
+  149.                 */
+  150.                   mblks = ( mp + NB - 1 ) / NB; lmb = mp - ( ( mp - 1 ) / NB ) * NB;
+  151.                   nblks = ( nq + NB - 1 ) / NB; lnb = nq - ( ( nq - 1 ) / NB ) * NB;
+  152.                /*
+  153.                 * Compute multiplier/adder for various jumps in random sequence
+  154.                 */
+  155.                   jump1 = 1;  jump2 = nprow * NB; jump3 = M; jump4 = npcol * NB;
+  156.                   jump5 = NB; jump6 = mycol;      jump7 = myrow * NB;
+  157.                
+  158.  +                HPL_xjumpm( jump1, mult, iadd, jseed, iran1, ia1,   ic1   );
+  159.  +                HPL_xjumpm( jump2, mult, iadd, iran1, itmp1, ia2,   ic2   );
+  160.  +                HPL_xjumpm( jump3, mult, iadd, iran1, itmp1, ia3,   ic3   );
+  161.  +                HPL_xjumpm( jump4, ia3,  ic3,  iran1, itmp1, ia4,   ic4   );
+  162.  +                HPL_xjumpm( jump5, ia3,  ic3,  iran1, itmp1, ia5,   ic5   );
+  163.  +                HPL_xjumpm( jump6, ia5,  ic5,  iran1, itmp3, itmp1, itmp2 );
+  164.  +                HPL_xjumpm( jump7, mult, iadd, itmp3, iran1, itmp1, itmp2 );
+  165.  +                HPL_setran( 0, iran1 ); HPL_setran( 1, ia1 ); HPL_setran( 2, ic1 );
+  166.                /*
+  167.                 * Save value of first number in sequence
+  168.                 */
+  169.                   ib1[0] = iran1[0]; ib1[1] = iran1[1];
+  170.                   ib2[0] = iran1[0]; ib2[1] = iran1[1];
+  171.                   ib3[0] = iran1[0]; ib3[1] = iran1[1];
+  172.                
+  173.  + 1---------<    for( jblk = 0; jblk < nblks; jblk++ )
+  174.    1              {
+  175.    1                 jb = ( jblk == nblks - 1 ? lnb : NB );
+  176.  + 1 2-------<       for( jk = 0; jk < jb; jk++ )
+  177.    1 2               {
+  178.  + 1 2 3-----<          for( iblk = 0; iblk < mblks; iblk++ )
+  179.    1 2 3                {
+  180.    1 2 3                   ib = ( iblk == mblks - 1 ? lmb : NB );
+  181.  + 1 2 3 4--<>             for( ik = 0; ik < ib; A++, ik++ ) *A = HPL_rand();
+  182.  + 1 2 3                   HPL_jumpit( ia2, ic2, ib1, iran2 );
+  183.    1 2 3                   ib1[0] = iran2[0]; ib1[1] = iran2[1];
+  184.    1 2 3----->          }
+  185.    1 2                  A += LDA - mp;
+  186.  + 1 2                  HPL_jumpit( ia3, ic3, ib2, iran3 );
+  187.    1 2                  ib1[0] = iran3[0]; ib1[1] = iran3[1];
+  188.    1 2                  ib2[0] = iran3[0]; ib2[1] = iran3[1];
+  189.    1 2------->       }
+  190.  + 1                 HPL_jumpit( ia4, ic4, ib3, iran4 );
+  191.    1                 ib1[0] = iran4[0]; ib1[1] = iran4[1];
+  192.    1                 ib2[0] = iran4[0]; ib2[1] = iran4[1];
+  193.    1                 ib3[0] = iran4[0]; ib3[1] = iran4[1];
+  194.    1--------->    }
+  195.                /*
+  196.                 * End of HPL_pdmatgen
+  197.                 */
+  198.                }
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 135 
+  "HPL_grid_info" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 158 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 159 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 160 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 161 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 162 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 163 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 164 
+  "HPL_xjumpm" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 165 
+  "HPL_setran" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 165 
+  "HPL_setran" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 165 
+  "HPL_setran" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdmatgen.c, Line = 173 
+  A loop was not vectorized because it contains a call to function "HPL_rand" on line 181.
+
+CC-6287 CC: VECTOR File = HPL_pdmatgen.c, Line = 176 
+  A loop was not vectorized because it contains a call to function "HPL_rand" on line 181.
+
+CC-6287 CC: VECTOR File = HPL_pdmatgen.c, Line = 178 
+  A loop was not vectorized because it contains a call to function "HPL_rand" on line 181.
+
+CC-6287 CC: VECTOR File = HPL_pdmatgen.c, Line = 181 
+  A loop was not vectorized because it contains a call to function "HPL_rand" on line 181.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 181 
+  "HPL_rand" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 182 
+  "HPL_jumpit" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 186 
+  "HPL_jumpit" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdmatgen.c, Line = 190 
+  "HPL_jumpit" (called from "HPL_pdmatgen") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

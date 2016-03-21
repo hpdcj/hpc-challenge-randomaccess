@@ -1,0 +1,330 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_rollN.c
+Compiled : 2016-03-19  13:19:58
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_rollN.o -c ../../../src/pgesv/HPL_rollN.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_rollN.c
+Date     : 03/19/2016  13:19:58
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.         /* 
+    2.          * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.          *    HPL - 2.0 - September 10, 2008                          
+    4.          *    Antoine P. Petitet                                                
+    5.          *    University of Tennessee, Knoxville                                
+    6.          *    Innovative Computing Laboratory                                 
+    7.          *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.          *                                                                      
+    9.          * -- Copyright notice and Licensing terms:                             
+   10.          *                                                                      
+   11.          * Redistribution  and  use in  source and binary forms, with or without
+   12.          * modification, are  permitted provided  that the following  conditions
+   13.          * are met:                                                             
+   14.          *                                                                      
+   15.          * 1. Redistributions  of  source  code  must retain the above copyright
+   16.          * notice, this list of conditions and the following disclaimer.        
+   17.          *                                                                      
+   18.          * 2. Redistributions in binary form must reproduce  the above copyright
+   19.          * notice, this list of conditions,  and the following disclaimer in the
+   20.          * documentation and/or other materials provided with the distribution. 
+   21.          *                                                                      
+   22.          * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.          * software must display the following acknowledgement:                 
+   24.          * This  product  includes  software  developed  at  the  University  of
+   25.          * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.          *                                                                      
+   27.          * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.          * names  of  its  contributors  may  not  be used to endorse or promote
+   29.          * products  derived   from   this  software  without  specific  written
+   30.          * permission.                                                          
+   31.          *                                                                      
+   32.          * -- Disclaimer:                                                       
+   33.          *                                                                      
+   34.          * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.          * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.          * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.          * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.          * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.          * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.          * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.          * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.          * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.          * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.          * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.          * ---------------------------------------------------------------------
+   46.          */ 
+   47.         /*
+   48.          * Include files
+   49.          */
+   50.         #include "hpl.h"
+   51.         
+   52.         #define   I_SEND    0
+   53.         #define   I_RECV    1
+   54.         
+   55.         #ifdef HPL_STDC_HEADERS
+   56.         void HPL_rollN
+   57.         (
+   58.            HPL_T_panel *                    PBCST,
+   59.            int *                            IFLAG,
+   60.            HPL_T_panel *                    PANEL,
+   61.            const int                        N,
+   62.            double *                         U,
+   63.            const int                        LDU,
+   64.            const int *                      IPLEN,
+   65.            const int *                      IPMAP,
+   66.            const int *                      IPMAPM1
+   67.         )
+   68.         #else
+   69.         void HPL_rollN
+   70.         ( PBCST, IFLAG, PANEL, N, U, LDU, IPLEN, IPMAP, IPMAPM1 )
+   71.            HPL_T_panel *                    PBCST;
+   72.            int *                            IFLAG;
+   73.            HPL_T_panel *                    PANEL;
+   74.            const int                        N;
+   75.            double *                         U;
+   76.            const int                        LDU;
+   77.            const int *                      IPLEN;
+   78.            const int *                      IPMAP;
+   79.            const int *                      IPMAPM1;
+   80.         #endif
+   81.         {
+   82.         /* 
+   83.          * Purpose
+   84.          * =======
+   85.          *
+   86.          * HPL_rollN rolls the local arrays containing the local pieces of U, so
+   87.          * that on exit to this function  U  is replicated in every process row.
+   88.          * In addition, this function probe for the presence of the column panel
+   89.          * and forwards it when available.
+   90.          *
+   91.          * Arguments
+   92.          * =========
+   93.          *
+   94.          * PBCST   (local input/output)          HPL_T_panel *
+   95.          *         On entry,  PBCST  points to the data structure containing the
+   96.          *         panel (to be broadcast) information.
+   97.          *
+   98.          * IFLAG   (local input/output)          int *
+   99.          *         On entry, IFLAG  indicates  whether or not  the broadcast has
+  100.          *         already been completed.  If not,  probing will occur, and the
+  101.          *         outcome will be contained in IFLAG on exit.
+  102.          *
+  103.          * PANEL   (local input/output)          HPL_T_panel *
+  104.          *         On entry,  PANEL  points to the data structure containing the
+  105.          *         panel (to be rolled) information.
+  106.          *
+  107.          * N       (local input)                 const int
+  108.          *         On entry, N specifies the number of columns of  U.  N must be
+  109.          *         at least zero.
+  110.          *
+  111.          * U       (local input/output)          double *
+  112.          *         On entry,  U  is an array of dimension (LDU,*) containing the
+  113.          *         local pieces of U in each process row.
+  114.          *
+  115.          * LDU     (local input)                 const int
+  116.          *         On entry, LDU specifies the local leading dimension of U. LDU
+  117.          *         should be at least  MAX(1,IPLEN[NPROW]).
+  118.          *
+  119.          * IPLEN   (global input)                const int *
+  120.          *         On entry, IPLEN is an array of dimension NPROW+1.  This array
+  121.          *         is such that IPLEN[i+1] - IPLEN[i] is the number of rows of U
+  122.          *         in each process row.
+  123.          *
+  124.          * IPMAP   (global input)                const int *
+  125.          *         On entry, IMAP  is an array of dimension  NPROW.  This  array
+  126.          *         contains  the  logarithmic mapping of the processes. In other
+  127.          *         words,  IMAP[myrow]  is the absolute coordinate of the sorted
+  128.          *         process.
+  129.          *
+  130.          * IPMAPM1 (global input)                const int *
+  131.          *         On entry,  IMAPM1  is an array of dimension NPROW. This array
+  132.          *         contains  the inverse of the logarithmic mapping contained in
+  133.          *         IMAP: For i in [0.. NPROW) IMAPM1[IMAP[i]] = i.
+  134.          *
+  135.          * ---------------------------------------------------------------------
+  136.          */ 
+  137.         /*
+  138.          * .. Local Variables ..
+  139.          */
+  140.            MPI_Datatype               type[2];
+  141.            MPI_Status                 status;
+  142.            MPI_Request                request;
+  143.            MPI_Comm                   comm;
+  144.            int                        Cmsgid=MSGID_BEGIN_PFACT, ibufR, ibufS,
+  145.                                       ierr=MPI_SUCCESS, il, k, l, lengthR,
+  146.                                       lengthS, mydist, myrow, next, npm1, nprow,
+  147.                                       partner, prev;
+  148.         /* ..
+  149.          * .. Executable Statements ..
+  150.          */
+  151.            if( N <= 0 ) return;
+  152.         
+  153.            npm1 = ( nprow = PANEL->grid->nprow ) - 1; myrow = PANEL->grid->myrow;
+  154.            comm = PANEL->grid->col_comm;
+  155.         /*
+  156.          * Rolling phase
+  157.          */
+  158.            mydist = IPMAPM1[myrow];
+  159.            prev   = IPMAP[MModSub1( mydist, nprow )];
+  160.            next   = IPMAP[MModAdd1( mydist, nprow )];
+  161.          
+  162.  + 1--<    for( k = 0; k < npm1; k++ )
+  163.    1       {
+  164.    1          l = (int)( (unsigned int)(k) >> 1 );
+  165.    1     
+  166.    1          if( ( ( mydist + k ) & 1 ) != 0 )
+  167.    1          {
+  168.    1             il      = MModAdd( mydist, l,   nprow );
+  169.    1             lengthS = IPLEN[il+1] - ( ibufS = IPLEN[il] ); 
+  170.    1             il      = MModSub( mydist, l+1, nprow );
+  171.    1             lengthR = IPLEN[il+1] - ( ibufR = IPLEN[il] ); partner = prev;
+  172.    1          }
+  173.    1          else
+  174.    1          {
+  175.    1             il    = MModSub( mydist, l,   nprow );
+  176.    1             lengthS = IPLEN[il+1] - ( ibufS = IPLEN[il] ); 
+  177.    1             il    = MModAdd( mydist, l+1, nprow );
+  178.    1             lengthR = IPLEN[il+1] - ( ibufR = IPLEN[il] ); partner = next;
+  179.    1          }
+  180.    1     
+  181.    1          if( lengthR > 0 )
+  182.    1          {
+  183.    1             if( ierr == MPI_SUCCESS )
+  184.  + 1                ierr =   MPI_Type_vector( N, lengthR, LDU, MPI_DOUBLE,
+  185.    1                                          &type[I_RECV] );
+  186.    1             if( ierr == MPI_SUCCESS )
+  187.  + 1                ierr =   MPI_Type_commit( &type[I_RECV] );
+  188.    1             if( ierr == MPI_SUCCESS )
+  189.    1                ierr =   MPI_Irecv( Mptr( U, ibufR, 0, LDU ), 1, type[I_RECV],
+  190.    1                                    partner, Cmsgid, comm, &request );
+  191.    1          }
+  192.    1     
+  193.    1          if( lengthS > 0 )
+  194.    1          {
+  195.    1             if( ierr == MPI_SUCCESS )
+  196.  + 1                ierr =   MPI_Type_vector( N, lengthS, LDU, MPI_DOUBLE,
+  197.    1                                          &type[I_SEND] );
+  198.    1             if( ierr == MPI_SUCCESS )
+  199.  + 1                ierr =   MPI_Type_commit( &type[I_SEND] );
+  200.    1             if( ierr == MPI_SUCCESS )
+  201.    1                ierr =   MPI_Send( Mptr( U, ibufS, 0, LDU ), 1, type[I_SEND],
+  202.    1                                   partner, Cmsgid, comm );
+  203.    1             if( ierr == MPI_SUCCESS )
+  204.  + 1                ierr =   MPI_Type_free(   &type[I_SEND] );
+  205.    1          }
+  206.    1    
+  207.    1          if( lengthR > 0 )
+  208.    1          {
+  209.    1             if( ierr == MPI_SUCCESS )
+  210.    1                ierr =   MPI_Wait( &request, &status );
+  211.    1             if( ierr == MPI_SUCCESS )
+  212.  + 1                ierr =   MPI_Type_free(   &type[I_RECV] );
+  213.    1          }
+  214.    1    /*
+  215.    1     * Probe for column panel - forward it when available
+  216.    1     */
+  217.  + 1          if( *IFLAG == HPL_KEEP_TESTING ) (void) HPL_bcast( PBCST, IFLAG );
+  218.    1-->    }
+  219.         
+  220.            if( ierr != MPI_SUCCESS )
+  221.  +         { HPL_pabort( __LINE__, "HPL_rollN", "MPI call failed" ); }
+  222.         /*
+  223.          * End of HPL_rollN
+  224.          */
+  225.         }
+
+CC-6287 CC: VECTOR File = HPL_rollN.c, Line = 162 
+  A loop was not vectorized because it contains a call to function "MPI_Type_vector" on line 184.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 184 
+  "MPI_Type_vector" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 187 
+  "MPI_Type_commit" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 196 
+  "MPI_Type_vector" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 199 
+  "MPI_Type_commit" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 204 
+  "MPI_Type_free" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 212 
+  "MPI_Type_free" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 217 
+  "HPL_bcast" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_rollN.c, Line = 221 
+  "HPL_pabort" (called from "HPL_rollN") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,0 +1,304 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_pdlaprnt.c
+Compiled : 2016-03-19  13:19:45
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pauxil/HPL_pdlaprnt.o
+           -c ../../../src/pauxil/HPL_pdlaprnt.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_pdlaprnt.c
+Date     : 03/19/2016  13:19:45
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.             /* 
+    2.              * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.              *    HPL - 2.0 - September 10, 2008                          
+    4.              *    Antoine P. Petitet                                                
+    5.              *    University of Tennessee, Knoxville                                
+    6.              *    Innovative Computing Laboratory                                 
+    7.              *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.              *                                                                      
+    9.              * -- Copyright notice and Licensing terms:                             
+   10.              *                                                                      
+   11.              * Redistribution  and  use in  source and binary forms, with or without
+   12.              * modification, are  permitted provided  that the following  conditions
+   13.              * are met:                                                             
+   14.              *                                                                      
+   15.              * 1. Redistributions  of  source  code  must retain the above copyright
+   16.              * notice, this list of conditions and the following disclaimer.        
+   17.              *                                                                      
+   18.              * 2. Redistributions in binary form must reproduce  the above copyright
+   19.              * notice, this list of conditions,  and the following disclaimer in the
+   20.              * documentation and/or other materials provided with the distribution. 
+   21.              *                                                                      
+   22.              * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.              * software must display the following acknowledgement:                 
+   24.              * This  product  includes  software  developed  at  the  University  of
+   25.              * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.              *                                                                      
+   27.              * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.              * names  of  its  contributors  may  not  be used to endorse or promote
+   29.              * products  derived   from   this  software  without  specific  written
+   30.              * permission.                                                          
+   31.              *                                                                      
+   32.              * -- Disclaimer:                                                       
+   33.              *                                                                      
+   34.              * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.              * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.              * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.              * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.              * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.              * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.              * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.              * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.              * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.              * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.              * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.              * ---------------------------------------------------------------------
+   46.              */ 
+   47.             /*
+   48.              * Include files
+   49.              */
+   50.             #include "hpl.h"
+   51.             
+   52.             #ifdef HPL_STDC_HEADERS
+   53.             void HPL_pdlaprnt
+   54.             (
+   55.                const HPL_T_grid *               GRID,
+   56.                const int                        M,
+   57.                const int                        N,
+   58.                const int                        NB,
+   59.                double *                         A,
+   60.                const int                        LDA,
+   61.                const int                        IAROW,
+   62.                const int                        IACOL,
+   63.                const char *                     CMATNM
+   64.             )
+   65.             #else
+   66.             void HPL_pdlaprnt
+   67.             ( GRID, M, N, NB, A, LDA, IAROW, IACOL, CMATNM )
+   68.                const HPL_T_grid *               GRID;
+   69.                const int                        M;
+   70.                const int                        N;
+   71.                const int                        NB;
+   72.                double *                         A;
+   73.                const int                        LDA;
+   74.                const int                        IAROW;
+   75.                const int                        IACOL;
+   76.                const char *                     CMATNM;
+   77.             #endif
+   78.             {
+   79.             /* 
+   80.              * Purpose
+   81.              * =======
+   82.              *
+   83.              * HPL_pdlaprnt prints  to  standard  error a distributed matrix A. The
+   84.              * local pieces of  A  are sent to the process of coordinates  (0,0)  in
+   85.              * the grid and then printed.
+   86.              *
+   87.              * Arguments
+   88.              * =========
+   89.              *
+   90.              * GRID    (local input)                 const HPL_T_grid *
+   91.              *         On entry,  GRID  points  to the data structure containing the
+   92.              *         process grid information.
+   93.              *
+   94.              * M       (global input)                const int
+   95.              *         On entry,  M  specifies the number of rows of the coefficient
+   96.              *         matrix A. M must be at least zero.
+   97.              *
+   98.              * N       (global input)                const int
+   99.              *         On  entry,   N   specifies  the  number  of  columns  of  the
+  100.              *         coefficient matrix A. N must be at least zero.
+  101.              *
+  102.              * NB      (global input)                const int
+  103.              *         On entry,  NB specifies the blocking factor used to partition
+  104.              *         and distribute the matrix. NB must be larger than one.
+  105.              *
+  106.              * A       (local input)                 double *
+  107.              *         On entry,  A  points to an  array of dimension (LDA,LocQ(N)).
+  108.              *         This array contains the coefficient matrix to be printed.
+  109.              *
+  110.              * LDA     (local input)                 const int
+  111.              *         On entry, LDA specifies the leading dimension of the array A.
+  112.              *         LDA must be at least max(1,LocP(M)).
+  113.              *
+  114.              * IAROW   (global input)                const int
+  115.              *         On entry,  IAROW  specifies the row process coordinate owning
+  116.              *         the  first row of A.  IAROW  must be  larger than or equal to
+  117.              *         zero and less than NPROW.
+  118.              *
+  119.              * IACOL   (global input)                const int
+  120.              *         On entry,  IACOL  specifies  the  column  process  coordinate
+  121.              *         owning the  first column  of A. IACOL  must be larger than or
+  122.              *         equal to zero and less than NPCOL.
+  123.              *
+  124.              * CMATNM  (global input)                const char *
+  125.              *         On entry, CMATNM is the name of the matrix to be printed.
+  126.              *
+  127.              * ---------------------------------------------------------------------
+  128.              */ 
+  129.             /*
+  130.              * .. Local Variables ..
+  131.              */
+  132.                MPI_Comm                   Acomm;
+  133.                double                     * buf = NULL;
+  134.                int                        h, i, ib, icurcol=IACOL, icurrow=IAROW,
+  135.                                           ii=0, j, jb, jj=0, mycol, myrow, npcol,
+  136.                                           nprow, src;
+  137.             /* ..
+  138.              * .. Executable Statements ..
+  139.              */
+  140.  +             (void) HPL_grid_info( GRID, &nprow, &npcol, &myrow, &mycol );
+  141.                Acomm = GRID->all_comm; 
+  142.                if( ( myrow == 0 ) && ( mycol == 0 ) )
+  143.                   buf = (double*)malloc( (size_t)(NB) * sizeof( double ) );
+  144.             
+  145.  + 1------<    for( j = 0; j < N; j += NB )
+  146.    1           {
+  147.    1              jb = N-j; jb = Mmin( jb, NB );
+  148.  + 1 2----<       for( h = 0; h < jb; h++ )
+  149.    1 2            {
+  150.  + 1 2               (void) HPL_barrier( Acomm );
+  151.    1 2      
+  152.  + 1 2 3--<          for( i = 0; i < M; i += NB )
+  153.    1 2 3             {
+  154.    1 2 3                ib = M-i; ib = Mmin( ib, NB );
+  155.    1 2 3                if( ( icurrow == 0 ) && ( icurcol == 0 ) )
+  156.    1 2 3                {
+  157.    1 2 3                   if( ( myrow == 0 ) && ( mycol == 0 ) )
+  158.  + 1 2 3                      HPL_dlaprnt( ib, 1, Mptr( A, ii, jj+h, LDA ), i+1,
+  159.    1 2 3                                   j+h+1, LDA, CMATNM );
+  160.    1 2 3                }
+  161.    1 2 3                else
+  162.    1 2 3                {
+  163.    1 2 3                   if( ( myrow == icurrow ) && ( mycol == icurcol ) )
+  164.    1 2 3                   {
+  165.  + 1 2 3                      (void) HPL_send( Mptr( A, ii, jj+h, LDA ), ib, 0,
+  166.    1 2 3                                       9000+(j+h)*M+i, Acomm );
+  167.    1 2 3                   }
+  168.    1 2 3                   else if( ( myrow == 0 ) && ( mycol == 0 ) )
+  169.    1 2 3                   {
+  170.  + 1 2 3                      src = HPL_pnum( GRID, icurrow, icurcol );
+  171.  + 1 2 3                      (void) HPL_recv( buf, ib, src, 9000+(j+h)*M+i,
+  172.    1 2 3                                       Acomm );
+  173.  + 1 2 3                      HPL_dlaprnt( ib, 1, buf, i+1, j+h+1, NB, CMATNM );
+  174.    1 2 3                   }
+  175.    1 2 3                }
+  176.    1 2 3                if( myrow == icurrow ) ii += ib;
+  177.    1 2 3                icurrow = MModAdd1( icurrow, nprow );
+  178.  + 1 2 3                (void) HPL_barrier( Acomm );
+  179.    1 2 3-->          }
+  180.    1 2               ii = 0; icurrow = IAROW;
+  181.    1 2---->       }
+  182.    1              if( mycol == icurcol ) jj += jb;
+  183.    1              icurcol = MModAdd1( icurcol, npcol );
+  184.  + 1              (void) HPL_barrier( Acomm );
+  185.    1------>    }
+  186.                if( ( myrow == 0 ) && ( mycol == 0 ) && ( buf ) ) free( buf );
+  187.             /*
+  188.              * End of HPL_pdlaprnt
+  189.              */
+  190.             }
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 140 
+  "HPL_grid_info" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdlaprnt.c, Line = 145 
+  A loop was not vectorized because it contains a call to function "HPL_barrier" on line 150.
+
+CC-6287 CC: VECTOR File = HPL_pdlaprnt.c, Line = 148 
+  A loop was not vectorized because it contains a call to function "HPL_barrier" on line 150.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 150 
+  "HPL_barrier" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = HPL_pdlaprnt.c, Line = 152 
+  A loop was not vectorized because it contains a call to function "HPL_dlaprnt" on line 158.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 158 
+  "HPL_dlaprnt" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 165 
+  "HPL_send" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 170 
+  "HPL_pnum" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 171 
+  "HPL_recv" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 173 
+  "HPL_dlaprnt" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 178 
+  "HPL_barrier" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlaprnt.c, Line = 184 
+  "HPL_barrier" (called from "HPL_pdlaprnt") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

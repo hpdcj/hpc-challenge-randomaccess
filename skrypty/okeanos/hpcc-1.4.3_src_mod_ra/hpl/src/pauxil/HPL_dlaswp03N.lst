@@ -1,0 +1,290 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_dlaswp03N.c
+Compiled : 2016-03-19  13:19:41
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pauxil/HPL_dlaswp03N.o
+           -c ../../../src/pauxil/HPL_dlaswp03N.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_dlaswp03N.c
+Date     : 03/19/2016  13:19:42
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.               /* 
+    2.                * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.                *    HPL - 2.0 - September 10, 2008                          
+    4.                *    Antoine P. Petitet                                                
+    5.                *    University of Tennessee, Knoxville                                
+    6.                *    Innovative Computing Laboratory                                 
+    7.                *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.                *                                                                      
+    9.                * -- Copyright notice and Licensing terms:                             
+   10.                *                                                                      
+   11.                * Redistribution  and  use in  source and binary forms, with or without
+   12.                * modification, are  permitted provided  that the following  conditions
+   13.                * are met:                                                             
+   14.                *                                                                      
+   15.                * 1. Redistributions  of  source  code  must retain the above copyright
+   16.                * notice, this list of conditions and the following disclaimer.        
+   17.                *                                                                      
+   18.                * 2. Redistributions in binary form must reproduce  the above copyright
+   19.                * notice, this list of conditions,  and the following disclaimer in the
+   20.                * documentation and/or other materials provided with the distribution. 
+   21.                *                                                                      
+   22.                * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.                * software must display the following acknowledgement:                 
+   24.                * This  product  includes  software  developed  at  the  University  of
+   25.                * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.                *                                                                      
+   27.                * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.                * names  of  its  contributors  may  not  be used to endorse or promote
+   29.                * products  derived   from   this  software  without  specific  written
+   30.                * permission.                                                          
+   31.                *                                                                      
+   32.                * -- Disclaimer:                                                       
+   33.                *                                                                      
+   34.                * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.                * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.                * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.                * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.                * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.                * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.                * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.                * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.                * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.                * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.                * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.                * ---------------------------------------------------------------------
+   46.                */ 
+   47.               /*
+   48.                * Include files
+   49.                */
+   50.               #include "hpl.h"
+   51.               /*
+   52.                * Define default value for unrolling factor
+   53.                */
+   54.               #ifndef HPL_LASWP03N_DEPTH
+   55.               #define    HPL_LASWP03N_DEPTH       32
+   56.               #define    HPL_LASWP03N_LOG2_DEPTH   5
+   57.               #endif
+   58.               
+   59.               #ifdef HPL_STDC_HEADERS
+   60.               void HPL_dlaswp03N
+   61.               (
+   62.                  const int                        M,
+   63.                  const int                        N,
+   64.                  double *                         U,
+   65.                  const int                        LDU,
+   66.                  const double *                   W0,
+   67.                  const double *                   W,
+   68.                  const int                        LDW
+   69.               )
+   70.               #else
+   71.               void HPL_dlaswp03N
+   72.               ( M, N, U, LDU, W0, W, LDW )
+   73.                  const int                        M;
+   74.                  const int                        N;
+   75.                  double *                         U;
+   76.                  const int                        LDU;
+   77.                  const double *                   W0;
+   78.                  const double *                   W;
+   79.                  const int                        LDW;
+   80.               #endif
+   81.               {
+   82.               /* 
+   83.                * Purpose
+   84.                * =======
+   85.                *
+   86.                * HPL_dlaswp03N copies columns of  W  into  rows  of an  array  U.  The
+   87.                * destination in U of these columns contained in W is stored within W0.
+   88.                *
+   89.                * Arguments
+   90.                * =========
+   91.                *
+   92.                * M       (local input)                 const int
+   93.                *         On entry, M  specifies  the  number  of columns of  W  stored
+   94.                *         contiguously that should be copied into U. M must be at least
+   95.                *         zero.
+   96.                *
+   97.                * N       (local input)                 const int
+   98.                *         On entry,  N  specifies  the  length of columns of  W  stored
+   99.                *         contiguously that should be copied into U. N must be at least
+  100.                *         zero.
+  101.                *
+  102.                * U       (local input/output)          double *
+  103.                *         On entry, U points to an array of dimension (LDU,N).  Columns
+  104.                *         of W are copied as rows within this array U at  the positions
+  105.                *         specified in W0.
+  106.                *
+  107.                * LDU     (local input)                 const int
+  108.                *         On entry, LDU specifies the leading dimension of the array U.
+  109.                *         LDU must be at least MAX(1,M).
+  110.                *
+  111.                * W0      (local input)                 const double *
+  112.                *         On entry,  W0  is an array of size (M-1)*LDW+1, that contains
+  113.                *         the destination offset  in U where the columns of W should be
+  114.                *         copied.
+  115.                *
+  116.                * W       (local input)                 const double *
+  117.                *         On entry, W  is an array of size (LDW,M),  that contains data
+  118.                *         to be copied into U. For i in [0..M),  entries W(:,i)  should
+  119.                *         be copied into the row or column W0(i*LDW) of U.
+  120.                *
+  121.                * LDW     (local input)                 const int
+  122.                *         On entry, LDW specifies the leading dimension of the array W.
+  123.                *         LDW must be at least MAX(1,N+1).
+  124.                *
+  125.                * ---------------------------------------------------------------------
+  126.                */ 
+  127.               /*
+  128.                * .. Local Variables ..
+  129.                */
+  130.                  const double               * w = W, * w0;
+  131.                  double                     * u0;
+  132.                  const int                  incU = (int)( (unsigned int)(LDU) <<
+  133.                                                           HPL_LASWP03N_LOG2_DEPTH );
+  134.                  int                        nr, nu;
+  135.                  register int               i, j;
+  136.               /* ..
+  137.                * .. Executable Statements ..
+  138.                */
+  139.                  if( ( M <= 0 ) || ( N <= 0 ) ) return;
+  140.               
+  141.                  nr = N - ( nu = (int)( ( (unsigned int)(N) >> HPL_LASWP03N_LOG2_DEPTH ) <<
+  142.                                         HPL_LASWP03N_LOG2_DEPTH ) );
+  143.               
+  144.  + 1--------<    for( j = 0; j < nu;
+  145.    1                  j += HPL_LASWP03N_DEPTH, U += incU, w += HPL_LASWP03N_DEPTH )
+  146.    1             {
+  147.  + 1 2------<       for( i = 0; i < M; i++ )
+  148.    1 2              {
+  149.    1 2                 u0 = U + (size_t)(*( W0 + (size_t)(i) * (size_t)(LDW) )); 
+  150.    1 2                 w0 = w + (size_t)(i) * (size_t)(LDW);
+  151.    1 2        
+  152.    1 2                 *u0 = w0[ 0]; u0 += LDU;
+  153.    1 2        #if ( HPL_LASWP03N_DEPTH >  1 )
+  154.    1 2                 *u0 = w0[ 1]; u0 += LDU;
+  155.    1 2        #endif
+  156.    1 2        #if ( HPL_LASWP03N_DEPTH >  2 )
+  157.    1 2                 *u0 = w0[ 2]; u0 += LDU; *u0 = w0[ 3]; u0 += LDU;
+  158.    1 2        #endif
+  159.    1 2        #if ( HPL_LASWP03N_DEPTH >  4 )
+  160.    1 2                 *u0 = w0[ 4]; u0 += LDU; *u0 = w0[ 5]; u0 += LDU;
+  161.    1 2                 *u0 = w0[ 6]; u0 += LDU; *u0 = w0[ 7]; u0 += LDU;
+  162.    1 2        #endif
+  163.    1 2        #if ( HPL_LASWP03N_DEPTH >  8 )
+  164.    1 2                 *u0 = w0[ 8]; u0 += LDU; *u0 = w0[ 9]; u0 += LDU;
+  165.    1 2                 *u0 = w0[10]; u0 += LDU; *u0 = w0[11]; u0 += LDU;
+  166.    1 2                 *u0 = w0[12]; u0 += LDU; *u0 = w0[13]; u0 += LDU;
+  167.    1 2                 *u0 = w0[14]; u0 += LDU; *u0 = w0[15]; u0 += LDU;
+  168.    1 2        #endif
+  169.    1 2        #if ( HPL_LASWP03N_DEPTH > 16 )
+  170.    1 2                 *u0 = w0[16]; u0 += LDU; *u0 = w0[17]; u0 += LDU;
+  171.    1 2                 *u0 = w0[18]; u0 += LDU; *u0 = w0[19]; u0 += LDU;
+  172.    1 2                 *u0 = w0[20]; u0 += LDU; *u0 = w0[21]; u0 += LDU;
+  173.    1 2                 *u0 = w0[22]; u0 += LDU; *u0 = w0[23]; u0 += LDU;
+  174.    1 2                 *u0 = w0[24]; u0 += LDU; *u0 = w0[25]; u0 += LDU;
+  175.    1 2                 *u0 = w0[26]; u0 += LDU; *u0 = w0[27]; u0 += LDU;
+  176.    1 2                 *u0 = w0[28]; u0 += LDU; *u0 = w0[29]; u0 += LDU;
+  177.    1 2                 *u0 = w0[30]; u0 += LDU; *u0 = w0[31]; u0 += LDU;
+  178.    1 2        #endif
+  179.    1 2------>       }
+  180.    1-------->    }
+  181.               
+  182.                  if( nr )
+  183.                  {
+  184.  + 1--------<       for( i = 0; i < M; i++ )
+  185.    1                {
+  186.    1                   u0 = U + (size_t)(*( W0 + (size_t)(i) * (size_t)(LDW) )); 
+  187.    1                   w0 = w + (size_t)(i) * (size_t)(LDW);
+  188.  + 1 Vpr2--<>          for( j = 0; j < nr; j++, u0 += LDU ) { *u0 = w0[j]; }
+  189.    1-------->       }
+  190.                  }
+  191.               /*
+  192.                * End of HPL_dlaswp03N
+  193.                */
+  194.               } 
+
+CC-6291 CC: VECTOR File = HPL_dlaswp03N.c, Line = 144 
+  A loop was not vectorized because a recurrence was found between "W0" at line 149 and "u0" at line 152.
+
+CC-6291 CC: VECTOR File = HPL_dlaswp03N.c, Line = 147 
+  A loop was not vectorized because a recurrence was found between "W0" at line 149 and "u0" at line 152.
+
+CC-6294 CC: VECTOR File = HPL_dlaswp03N.c, Line = 184 
+  A loop was not vectorized because a better candidate was found at line 188.
+
+CC-6005 CC: SCALAR File = HPL_dlaswp03N.c, Line = 188 
+  A loop was unrolled 2 times.
+
+CC-6381 CC: VECTOR File = HPL_dlaswp03N.c, Line = 188 
+  A loop was vector pipelined.
+
+CC-6209 CC: VECTOR File = HPL_dlaswp03N.c, Line = 188 
+  A loop was partially vectorized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

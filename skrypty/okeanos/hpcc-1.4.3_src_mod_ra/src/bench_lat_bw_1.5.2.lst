@@ -1,0 +1,1852 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/bench_lat_bw_1.5.2.c
+Compiled : 2016-03-19  13:20:21
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../src/bench_lat_bw_1.5.2.o
+           -c ../../../../src/bench_lat_bw_1.5.2.c -I ../../../../include
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/bench_lat_bw_1.5.2.c
+Date     : 03/19/2016  13:20:22
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.                 /*
+    2.                  * Bandwidth-Latency-Benchmark
+    3.                  *
+    4.                  * Authors: Rolf Rabenseifner
+    5.                  *          Gerrit Schulz
+    6.                  *          Michael Speck
+    7.                  *
+    8.                  * Copyright (c) 2003 HLRS, University of Stuttgart
+    9.                  *
+   10.                  */
+   11.                 
+   12.                 /* -----------------------------------------------------------------------
+   13.                  *
+   14.                  * This Bandwidth-Latency-Benchmark measures three types of latency and
+   15.                  * bandwidth:
+   16.                  *
+   17.                  *  - Maximal latency and minimal bandwidth over a set of independently
+   18.                  *    running ping-pong benchmarks. If there is enough benchmarking time,
+   19.                  *    then each process makes a ping-pong benchmark with each other
+   20.                  *    process, otherwise only a subset of process-pairs is used.
+   21.                  *    (Additionally, minimal and average latency and maximal and average
+   22.                  *    bandwidth is also reported.)
+   23.                  *
+   24.                  *  - Bandwidth per process (and latency) of a ring pattern, i.e.,
+   25.                  *    each process sends in parallel a message to its neighbor in a ring.
+   26.                  *    The ring is build by the sequence of the ranks in MPI_COMM_WORLD
+   27.                  *    (naturally ordered ring).
+   28.                  *
+   29.                  *  - Bandwidth and latency of 10 (or 30) different and randomly ordered rings.
+   30.                  *
+   31.                  * The major results are:
+   32.                  *
+   33.                  *  - maximal ping pong latency,
+   34.                  *  - average latency of parallel communication in randomly ordered rings,
+   35.                  *  - minimal ping pong bandwidth,
+   36.                  *  - bandwidth per process in the naturally ordered ring,
+   37.                  *  - average bandwidth per process in randomly ordered rings.
+   38.                  *
+   39.                  * These five numbers characterize the strength or weakness of a network.
+   40.                  * For example, the ratio ping pong bandwidth : naturally-ordered-ring
+   41.                  * bandwidth : random-ring bandwidth, may be
+   42.                  *  - on a torus network (e.g. T3E):   1 : 1/2 : 1/5
+   43.                  *  - on a bus connecting n CPUs:      1 : 1/n : 1/n
+   44.                  *  - on a shared memory vector sys.:  1 : 1/2 : 1/2
+   45.                  *  - on a full cross-bar:             1 : 1   : 1   (1 MPI process per node)
+   46.                  *
+   47.                  * The set of ping-pong measurements is based on an idea of Jack Dongarra
+   48.                  * communicated with the authors at the EuroPVM/MPI 2003 conference.
+   49.                  * The ring benchmark is based on the ideas of the effective bandwidth
+   50.                  * benchmark ( www.hlrs.de/mpi/b_eff ).
+   51.                  *
+   52.                  * All measurements are done by repeating the communication pattern
+   53.                  * several times (see arguments "number_of_measurements") and using
+   54.                  * the minimal execution time.
+   55.                  * Each pattern (ping pong, naturally, or randomly ordered ring) is
+   56.                  * benchmarked by repeating the pattern in a loop (see argument
+   57.                  * "loop_length") and starting the time measurement (with MPI_Wtime)
+   58.                  * after a first additional and non-measured iteration and ending
+   59.                  * the time measurement after the end of this loop.
+   60.                  * All latency measurements are done with 8 byte messages, and bandwidth
+   61.                  * measurements with 2,000,000 bytes.
+   62.                  * Ping pong benchmarking is done with MPI standard send and receive,
+   63.                  * the ring patterns are communicated in both directions using the
+   64.                  * best result of two implementations: (a) with two calls to MPI_Sendrecv
+   65.                  * and (b) with two non-blocking receives and two non-blocking sends
+   66.                  * (two allow duplex usage of the network links).
+   67.                  *
+   68.                  * The benchmarking routine bench_lat_bw() has 2 input arguments:
+   69.                  *
+   70.                  *  - The maximal execution time (in seconds) that should be used for
+   71.                  *    measuring the latency of all ping pong pairs (e.g. on a T3E,
+   72.                  *    (, and
+   73.                  *  - the maximal time that should be used for the ping pong bandwidth.
+   74.                  *
+   75.                  * Additionally, the benchmark needs 4 GB / random-ring-bandwidth,
+   76.                  * e.g., 400 sec (40 sec) if the bandwidth is 10 MB/s (100 MB/s),
+   77.                  * and additionally 3000 * random-ring-latency, e.g., 30 sec (3 sec)
+   78.                  * if the latency is 10 msec (1 msec).
+   79.                  *
+   80.                  * All arguments are in sec or in byte/sec. The printing routine
+   81.                  * reports on stdout all latency values in milli sec (msec) and
+   82.                  * all bandwidth values in MB/s (with 1 MB/s = 10**6 byte/sec)
+   83.                  *
+   84.                  * -----------------------------------------------------------------------
+   85.                  *
+   86.                  * Typical output on a Cray T3E:
+   87.                  * -----------------------------
+   88.                  *
+   89.                  *    ------------------------------------------------------------------
+   90.                  *    Latency-Bandwidth-Benchmark R1.5 (c) HLRS, University of Stuttgart
+   91.                  *
+   92.                  *    Major Benchmark results:
+   93.                  *    ------------------------
+   94.                  *
+   95.                  *    Max Ping Pong Latency:                 0.005209 msecs
+   96.                  *    Randomly Ordered Ring Latency:         0.007956 msecs
+   97.                  *    Min Ping Pong Bandwidth:             314.025708 MB/s
+   98.                  *    Naturally Ordered Ring Bandwidth:    147.600097 MB/s
+   99.                  *    Randomly  Ordered Ring Bandwidth:     61.096556 MB/s
+  100.                  *
+  101.                  *    ------------------------------------------------------------------
+  102.                  *
+  103.                  *    Detailed benchmark results:
+  104.                  *    Ping Pong:
+  105.                  *    Latency   min / avg / max:   0.004268 /   0.004588 /   0.005209 msecs
+  106.                  *    Bandwidth min / avg / max:    314.026 /    318.653 /    324.822 MByte/s
+  107.                  *    Ring:
+  108.                  *    On naturally ordered ring: latency=      0.008512 msec, bandwidth=    147.600097 MB/s
+  109.                  *    On randomly  ordered ring: latency=      0.007956 msec, bandwidth=     61.096556 MB/s
+  110.                  *
+  111.                  *    ------------------------------------------------------------------
+  112.                  *
+  113.                  *    Benchmark conditions:
+  114.                  *     The latency   measurements were done with        8 bytes
+  115.                  *     The bandwidth measurements were done with  4000000 bytes
+  116.                  *     The ring communication was done in both directions on 64 processes
+  117.                  *     The Ping Pong measurements were done on
+  118.                  *      -        4032 pairs of processes for latency benchmarking, and
+  119.                  *      -         462 pairs of processes for bandwidth benchmarking,
+  120.                  *     out of 64*(64-1) =       4032 possible combinations on 64 processes.
+  121.                  *     (1 MB/s = 10**6 byte/sec)
+  122.                  *
+  123.                  *    ------------------------------------------------------------------
+  124.                  *
+  125.                  * Typical output on a NEC SX-5 (shared memory)
+  126.                  * --------------------------------------------
+  127.                  *
+  128.                  *    ------------------------------------------------------------------
+  129.                  *    Latency-Bandwidth-Benchmark R1.5 (c) HLRS, University of Stuttgart
+  130.                  *
+  131.                  *    Major Benchmark results:
+  132.                  *    ------------------------
+  133.                  *
+  134.                  *    Max Ping Pong Latency:                 0.005688 msecs
+  135.                  *    Randomly Ordered Ring Latency:         0.007819 msecs
+  136.                  *    Min Ping Pong Bandwidth:            7875.941147 MB/s
+  137.                  *    Naturally Ordered Ring Bandwidth:   4182.560664 MB/s
+  138.                  *    Randomly  Ordered Ring Bandwidth:   4393.213906 MB/s
+  139.                  *
+  140.                  *    ------------------------------------------------------------------
+  141.                  *
+  142.                  *    Detailed benchmark results:
+  143.                  *    Ping Pong:
+  144.                  *    Latency   min / avg / max:   0.005595 /   0.005629 /   0.005688 msecs
+  145.                  *    Bandwidth min / avg / max:   7875.941 /   7912.086 /   7928.861 MByte/s
+  146.                  *    Ring:
+  147.                  *    On naturally ordered ring: latency=      0.009812 msec, bandwidth=   4182.560664 MB/s
+  148.                  *    On randomly  ordered ring: latency=      0.007819 msec, bandwidth=   4393.213906 MB/s
+  149.                  *
+  150.                  *    ------------------------------------------------------------------
+  151.                  *
+  152.                  *    Benchmark conditions:
+  153.                  *     The latency   measurements were done with        8 bytes
+  154.                  *     The bandwidth measurements were done with  4000000 bytes
+  155.                  *     The ring communication was done in both directions on 6 processes
+  156.                  *     The Ping Pong measurements were done on
+  157.                  *      -  30 pairs of processes for latency benchmarking, and
+  158.                  *      -  30 pairs of processes for bandwidth benchmarking,
+  159.                  *     out of 6*(6-1) =         30 possible combinations on 6 processes.
+  160.                  *     (1 MB/s = 10**6 byte/sec)
+  161.                  *
+  162.                  *    ------------------------------------------------------------------
+  163.                  *
+  164.                  *
+  165.                  * -----------------------------------------------------------------------
+  166.                  *
+  167.                  * Updates
+  168.                  * - from 1.5.1.0 to 1.5.1.1:  additional arguments in params
+  169.                  * - bench_lat_bw_1.5.1.1.c = used as hpcc0.6beta/src/bench_lat_bw_1.5.1.c
+  170.                  * - from 1.5.1.1 to 1.5.1.2:  only pretty print, without any TAB
+  171.                  * - from 1.5.1.2 to 1.5.2     fixed bug in usage of loop_length_proposal and loop_length
+  172.                  *
+  173.                  * ----------------------------------------------------------------------- */
+  174.                 
+  175.                 #include <hpcc.h>
+  176.                 
+  177.                 /* global vars */
+  178.                 FILE   *OutFile;
+  179.                 double wtick;
+  180.                 
+  181.                 #define WTICK_FACTOR 10
+  182.                 
+  183.                 /* Message Tags */
+  184.                 #define PING 100
+  185.                 #define PONG 101
+  186.                 #define NEXT_CLIENT 102
+  187.                 #define TO_RIGHT 200
+  188.                 #define TO_LEFT  201
+  189.                 
+  190.                 #ifndef CHECK_LEVEL
+  191.                 #  define CHECK_LEVEL 1
+  192.                 #endif
+  193.                 
+  194.                 #ifndef DEBUG_LEVEL
+  195.                 #  define DEBUG_LEVEL 2
+  196.                 #endif
+  197.                 
+  198.                 typedef struct {
+  199.                   int    msglen;
+  200.                   double ring_lat;
+  201.                   double ring_bwidth;
+  202.                   double rand_lat;
+  203.                   double rand_bwidth;
+  204.                 } BenchmarkResult;
+  205.                 
+  206.                 /* measurement results, used only on rank 0 */
+  207.                 
+  208.                 static void
+  209.                 SumLongLong(void *invec, void *inoutvec, int *len, MPI_Datatype *datatype) {
+  210.                   int i, n = *len; long long *invecll = (long long *)invec, *inoutvecll = (long long *)inoutvec;
+  211.    Vr2-------<>   for (i = n; i; i--, invecll++, inoutvecll++) *inoutvecll += *invecll;
+  212.                 }
+  213.                 
+  214.                 /* -----------------------------------------------------------------------
+  215.                  * Routine: cross_ping_pong_set()
+  216.                  *
+  217.                  * Task: PingPong benchmark
+  218.                  *       to compute minimum, maximum and average latency and bandwidth
+  219.                  *       over the connections on all (some) pairs of processes.
+  220.                  *
+  221.                  * Input:
+  222.                  *   client_rank_low, client_rank_high, client_rank_stride,
+  223.                  *   server_rank_low, server_rank_high, server_rank_stride,
+  224.                  *   flag  -1 = only client_rank  < server_rank
+  225.                  *          0 = only client_rank != server_rank
+  226.                  *         +1 = only client_rank  > server_rank
+  227.                  *   msg_length
+  228.                  *   loop_length
+  229.                  *   number_of_measurements
+  230.                  *
+  231.                  * Output:
+  232.                  *   latency_min, latency_avg, latency_max
+  233.                  *   bandwidth_min, bandwidth_avg, bandwidth_max (if msg_length > 0)
+  234.                  *   (min, max, avg are done over all pairs of processes)
+  235.                  *   (after minimum of the latency over all measurements of same pair)
+  236.                  *
+  237.                  * Task:
+  238.                  *
+  239.                  *   Overview:
+  240.                  *     - initialization:
+  241.                  *         Client/Server_rank_low, .._rank_high and .._rank_stride define a set
+  242.                  *         of client ranks and a set of server ranks.
+  243.                  *         Client_rank_high is lowered and server_rank_low is enlarged
+  244.                  *         if a multiple of the strides does not fit.
+  245.                  *     - execution of the ping-pong benchmarks:
+  246.                  *         Between each pair of client and server rank (out of the sets)
+  247.                  *         a ping pong benchmark with a fixed message length is done.
+  248.                  *         All ping_pong benchmarks are serialized, i.e., never two
+  249.                  *         process pairs are benchmarked at the same time.
+  250.                  *         To achieve a minimum of disturbance, each process not involved in
+  251.                  *         a ping pong must be in the status of waiting for a message.
+  252.                  *         This principle is fulfilled by sending additional token messages
+  253.                  *         from a previous client process to the next client process.
+  254.                  *     - evaluation:
+  255.                  *         All benchmark results must be stored locally before a total
+  256.                  *         evaluation can be done, because in the execution sequence,
+  257.                  *         the iteration over the number_of_measurements is the outer-most
+  258.                  *         loop, while in the evaluation this loop is the inner-most.
+  259.                  *
+  260.                  *   Execution a sequence of the ping pong benchmarks:
+  261.                  *     for (i_meas=0; i_meas < number_of_measurements; i_meas++)
+  262.                  *     {
+  263.                  *       for (client_rank=client_rank_low; client_rank <= client_rank_high; client_rank++client_rank_stride)
+  264.                  *       {
+  265.                  *         // the following message receives a token indicating the right to send messages to server processes
+  266.                  *         if ((myrank == client_rank) && (client_rank > client_rank_low))
+  267.                  *           MPI_Recv( >>>.... from client_rank-client_rank_stride );
+  268.                  *         for (server_rank=server_rank_low; server_rank <= server_rank_high; server_rank++server_rank_stride)
+  269.                  *         {
+  270.                  *           if ( (flag<0   ? client_rank < server_rank :
+  271.                  *                 (flag>0  ? client_rank > server_rank : client_rank != server_rank ) ) )
+  272.                  *           {
+  273.                  *             PingPongLoop(...);
+  274.                  *           }
+  275.                  *         }
+  276.                  *         // the following message sends a token indicating the right to send messages to server processes
+  277.                  *         if ((myrank == client_rank) && (client_rank < client_rank_high))
+  278.                  *           MPI_Send( >>>.... from client_rank+client_rank_stride );
+  279.                  *         MPI_Bcast( >>> ... root=client_rank_high );
+  280.                  *       }
+  281.                  *     }
+  282.                  *
+  283.                  *     with PingPongLoop(...)
+  284.                  *             {
+  285.                  *               if (myrank == client_rank)
+  286.                  *               {
+  287.                  *                 for (i_loop=-1; i_loop < loop_length; i_loop++)
+  288.                  *                 {
+  289.                  *                   if (i_loop==0) start_time=MPI_Wtime();
+  290.                  *                   >>> send ping from client_rank to server_rank
+  291.                  *                   >>> recv pong from server_rank
+  292.                  *                 }
+  293.                  *                 end_time=MPI_Wtime();
+  294.                  *                 lat_one_meas = end_time-start_time;
+  295.                  *                 bw_one_meas  = message_length/lat_one_meas;
+  296.                  *                 >>> store measurement results in the list
+  297.                  *               }
+  298.                  *               if (myrank == server_rank)
+  299.                  *               {
+  300.                  *                 for (i_loop=-1; i_loop < loop_length; i_loop++)
+  301.                  *                 {
+  302.                  *                   >>> recv ping from client_rank
+  303.                  *                   >>> send pong from server_rank to client_rank
+  304.                  *                 }
+  305.                  *               }
+  306.                  *             }
+  307.                  *
+  308.                  *
+  309.                  *   Evaluation sequence:
+  310.                  *      latency_min/avg/max
+  311.                  *       = min/avg/max over all process pairs
+  312.                  *           of (min over all measurements of lat_one_meas)
+  313.                  *      bandwidth_min/avg/max
+  314.                  *       = min/avg/max over all process pairs
+  315.                  *           of (msg_length / (min over all measurements of lat_one_meas))
+  316.                  *
+  317.                  *   Caution: Execution and evaluation sequence are different.
+  318.                  *            Therefore, each client has to store all measurement results
+  319.                  *            for all pairs locally, before it can calculate the evaluation
+  320.                  *            sequence (after all ping-pongs were done).
+  321.                  *
+  322.                  * Remarks:
+  323.                  *   - With using the tokens, there is never a message outstanding
+  324.                  *     that i not part of a currently running PingPong.
+  325.                  *   - Processes not involved in a current PingPong are waiting
+  326.                  *     for the first ping message (if their next role is to be a server process)
+  327.                  *     or for the token (if their next role is to be a client process).
+  328.                  *   - At the beginning, a barrier is called
+  329.                  *   - At the end, the last client process initiates a Bcast.
+  330.                  *
+  331.                  * Communication scheme:
+  332.                  *
+  333.                  *   Example with client and server rank_low=0, rank_high=11, and rank_stride=3
+  334.                  *   and flag=0
+  335.                  *
+  336.                  *   Rank:    0    1    2    3    4    5    6    7    8    9   10   11
+  337.                  *
+  338.                  *   Role:    C              C              C              C
+  339.                  *                      S              S              S              S
+  340.                  *
+  341.                  *   Protcol: ------------------------BARRIER-------------------------
+  342.                  *            C==<======S
+  343.                  *            C==<=====================S
+  344.                  *            C==<====================================S
+  345.                  *            C==<===================================================S
+  346.                  *            s------------->r
+  347.                  *                      S=>==C
+  348.                  *                           C==<======S
+  349.                  *                           C==<=====================S
+  350.                  *                           C==<====================================S
+  351.                  *                           s------------->r
+  352.                  *                      S================>==C
+  353.                  *                                     S=>==C
+  354.                  *                                          C==<======S
+  355.                  *                                          C==<=====================S
+  356.                  *                                          s------------->r
+  357.                  *                      S===============================>==C
+  358.                  *                                     S================>==C
+  359.                  *                                                    S=>==C
+  360.                  *                                                         C===<=====S
+  361.                  *            --------------------------------------------Bcast-------
+  362.                  *
+  363.                  *    With
+  364.                  *    --BARRIER--    MPI_Barrier(MPI_COMM_WORLD)
+  365.                  *    C==<======S    Client Server Ping Pong Loop, with client_rank < server_rank,
+  366.                  *                   executed only if (flag <= 0)
+  367.                  *    S======>==C    Client Server Ping Pong Loop, with client_rank > server_rank,
+  368.                  *                   executed only if (flag >= 0)
+  369.                  *    -----Bcast-    MPI_Bcast(MPI_COMM_WORLD) with root = last client rank
+  370.                  *
+  371.                  * ----------------------------------------------------------------------- */
+  372.                 static
+  373.                 void cross_ping_pong_set(
+  374.                   int client_rank_low,
+  375.                   int client_rank_high,
+  376.                   int client_rank_stride,
+  377.                   int server_rank_low,
+  378.                   int server_rank_high,
+  379.                   int server_rank_stride,
+  380.                   int msg_length,
+  381.                   int loop_length,
+  382.                   int number_of_measurements,
+  383.                   int flag,
+  384.                   double *latency_min,
+  385.                   double *latency_avg,
+  386.                   double *latency_max,
+  387.                   double *bandwidth_min,
+  388.                   double *bandwidth_avg,
+  389.                   double *bandwidth_max,
+  390.                   long long *total_number_of_pairs)
+  391.                 {
+  392.                   MPI_Status status;
+  393.                   int    client_rank, server_rank;
+  394.                   int    i_meas;
+  395.                   int    i_loop, i;
+  396.                   unsigned char *sndbuf, *rcvbuf;
+  397.                   double end_time, start_time, lat_one_meas;
+  398.                   double *local_results;
+  399.                   double lat, bw;
+  400.                   int    result_index;
+  401.                   long long number_of_results;
+  402.                   int    size, myrank;
+  403.                   double loc_latency_min;
+  404.                   double loc_latency_avg;
+  405.                   double loc_latency_max;
+  406.                   double loc_bandwidth_min;
+  407.                   double loc_bandwidth_avg;
+  408.                   double loc_bandwidth_max;
+  409.                   MPI_Op sumll;
+  410.                   int meas_ok;
+  411.                 #if (CHECK_LEVEL >= 1)
+  412.                   register int base;
+  413.                 #endif
+  414.                 
+  415.                   /* get number of processors and own rank */
+  416.  +                MPI_Comm_size(MPI_COMM_WORLD, &size);
+  417.  +                MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  418.                 
+  419.                   /* check the benchmark parameter */
+  420.                   if (client_rank_low < 0) client_rank_low = 0;
+  421.                   if (client_rank_high >= size) client_rank_high = size-1;
+  422.                   client_rank_high = (client_rank_high-client_rank_low) /
+  423.                                       client_rank_stride*client_rank_stride + client_rank_low;
+  424.                   if (server_rank_low < 0) server_rank_low = 0;
+  425.                   if (server_rank_high >= size) server_rank_high = size-1;
+  426.                   server_rank_low = server_rank_high -
+  427.                         (server_rank_high-server_rank_low)/server_rank_stride*server_rank_stride;
+  428.                 
+  429.                   local_results = (double *) malloc( ((server_rank_high -
+  430.                         server_rank_low)/server_rank_stride+1) * number_of_measurements *
+  431.                         sizeof(double) );
+  432.                 
+  433.                   /* set the initial result index*/
+  434.                   result_index = 0;
+  435.                 
+  436.                   /* get memory for the send/recv buffer */
+  437.                   sndbuf = (unsigned char *) malloc (msg_length);
+  438.                   rcvbuf = (unsigned char *) malloc (msg_length);
+  439.                 
+  440.                   number_of_results = 0;
+  441.                 
+  442.                   /* do the measurements */
+  443.  + 1----------<   for (i_meas=0; i_meas < number_of_measurements; i_meas++)
+  444.    1              {
+  445.    1                result_index = 0;
+  446.  + 1 2--------<     for (client_rank=client_rank_low; client_rank <= client_rank_high;
+  447.    1 2                   client_rank += client_rank_stride)
+  448.    1 2              {
+  449.    1 2                /* the following message receives a token indicating the right to send
+  450.    1 2                 * messages to server processes
+  451.    1 2                 */
+  452.    1 2                if ((myrank == client_rank) && (client_rank > client_rank_low))
+  453.    1 2                    MPI_Recv (rcvbuf, 0, MPI_BYTE, client_rank - client_rank_stride,
+  454.    1 2                              NEXT_CLIENT, MPI_COMM_WORLD, &status);
+  455.    1 2          
+  456.    1 2                /* measurement loop */
+  457.  + 1 2 3------<       for (server_rank = server_rank_low; server_rank <= server_rank_high;
+  458.    1 2 3                   server_rank += server_rank_stride)
+  459.    1 2 3              {
+  460.    1 2 3                if (((flag <= 0) && (server_rank > client_rank)) ||
+  461.    1 2 3                    ((flag >= 0) && (server_rank < client_rank)))
+  462.    1 2 3                    {
+  463.    1 2 3                      if (server_rank==client_rank) fprintf( OutFile, "ALARM\n");
+  464.    1 2 3                      if (myrank == client_rank)
+  465.    1 2 3                      {
+  466.    1 2 3        
+  467.  + 1 2 3 4----<                 do
+  468.    1 2 3 4                      {
+  469.    1 2 3 4                        meas_ok = 0;
+  470.    1 2 3 4                        /* communicate loop_length to server_rank */
+  471.    1 2 3 4                        MPI_Send (&loop_length, 1, MPI_INT,
+  472.    1 2 3 4                                  server_rank, PING, MPI_COMM_WORLD);
+  473.    1 2 3 4      
+  474.  + 1 2 3 4 5--<                   for (i_loop = -1; i_loop < loop_length; i_loop++)
+  475.    1 2 3 4 5                      {
+  476.  + 1 2 3 4 5                        if (i_loop == 0) start_time = MPI_Wtime ();
+  477.    1 2 3 4 5                        /* send ping from client_rank to server_rank */
+  478.    1 2 3 4 5    #if (CHECK_LEVEL >= 1)
+  479.    1 2 3 4 5                        base = (i_loop + myrank + 1)&0x7f; /* = mod 128 */
+  480.    1 2 3 4 5                        sndbuf[0] = base; sndbuf[msg_length-1] = base+1;
+  481.    1 2 3 4 5    # if (CHECK_LEVEL >= 2)
+  482.    1 2 3 4 5                        /* check the check: use a wrong value on process 1 */
+  483.    1 2 3 4 5                        if (myrank == 1) sndbuf[0] = sndbuf[0] + 11;
+  484.    1 2 3 4 5    # endif
+  485.    1 2 3 4 5    #endif
+  486.    1 2 3 4 5                        MPI_Send (sndbuf, msg_length, MPI_BYTE,
+  487.    1 2 3 4 5                                  server_rank, PING, MPI_COMM_WORLD);
+  488.    1 2 3 4 5                        /* recv pong from server_rank */
+  489.    1 2 3 4 5                        MPI_Recv (rcvbuf, msg_length, MPI_BYTE,
+  490.    1 2 3 4 5                                  server_rank, PONG, MPI_COMM_WORLD, &status);
+  491.    1 2 3 4 5    #if (CHECK_LEVEL >= 1)
+  492.    1 2 3 4 5                        /* check returned values must be +13 of origin */
+  493.    1 2 3 4 5                        if (rcvbuf[0] != base+13 || rcvbuf[msg_length-1] != base + 14 )
+  494.    1 2 3 4 5                        {
+  495.    1 2 3 4 5                            fprintf( OutFile,  "[%d]: ERROR: expected %u and %u as first and last byte, but got %u and %u instead\n",
+  496.    1 2 3 4 5                            myrank, base+13, base+14,
+  497.  + 1 2 3 4 5                            rcvbuf[0], rcvbuf[msg_length-1] ); fflush( OutFile );
+  498.    1 2 3 4 5                        }
+  499.    1 2 3 4 5    #endif
+  500.    1 2 3 4 5-->                   }
+  501.  + 1 2 3 4                        end_time = MPI_Wtime ();
+  502.    1 2 3 4                        lat_one_meas = end_time - start_time;
+  503.    1 2 3 4      
+  504.    1 2 3 4                        if (lat_one_meas < WTICK_FACTOR * wtick)
+  505.    1 2 3 4                        {
+  506.    1 2 3 4                          if (loop_length == 1) loop_length = 2;
+  507.    1 2 3 4                          else loop_length = loop_length * 1.5;
+  508.    1 2 3 4                        }
+  509.    1 2 3 4                        else meas_ok = 1;
+  510.    1 2 3 4                        MPI_Send (&meas_ok, 1, MPI_INT, server_rank, PING, MPI_COMM_WORLD);
+  511.    1 2 3 4                      }
+  512.    1 2 3 4---->                 while (!meas_ok);
+  513.    1 2 3        
+  514.    1 2 3                        /*
+  515.    1 2 3                        fprintf ( OutFile, "CrossPingPong: Client = %d, Server = %d, "
+  516.    1 2 3                                "Latency = %f us \n",
+  517.    1 2 3                                 client_rank, server_rank,
+  518.    1 2 3                                (lat_one_meas * 1e6) / (2 * loop_length)); */
+  519.  + 1 2 3                        fflush (OutFile);
+  520.    1 2 3        
+  521.    1 2 3                        /* workaround to fix problems with MPI_Wtime granularity */
+  522.    1 2 3                        if (!lat_one_meas)
+  523.    1 2 3                        {
+  524.    1 2 3                          static int complain = 0;
+  525.    1 2 3                          lat_one_meas = wtick;
+  526.    1 2 3                          if (complain != loop_length)
+  527.    1 2 3                          {
+  528.    1 2 3        #define MSG "In " __FILE__ ", routine bench_lat_bw, the 3rd parameter to cross_ping_pong_controlled was %d; increase it.\n"
+  529.    1 2 3                            fprintf (stderr, MSG, loop_length);
+  530.    1 2 3                            fprintf (OutFile, MSG, loop_length);
+  531.    1 2 3        #undef MSG
+  532.    1 2 3                          }
+  533.    1 2 3                          complain = loop_length;
+  534.    1 2 3                        }
+  535.    1 2 3        
+  536.    1 2 3                        /* store measurement results in the list */
+  537.    1 2 3                        local_results [i_meas*number_of_results + result_index] = lat_one_meas / (loop_length*2);
+  538.    1 2 3                        result_index++;
+  539.    1 2 3                      }
+  540.    1 2 3                      if (myrank == server_rank)
+  541.    1 2 3                      {
+  542.  + 1 2 3 F----<                 do
+  543.    1 2 3 F                      {
+  544.    1 2 3 F                        meas_ok = 0;
+  545.    1 2 3 F                        /* recv the loop_length from client_rank */
+  546.    1 2 3 F                        MPI_Recv (&loop_length, 1, MPI_INT,
+  547.    1 2 3 F                                  client_rank, PING, MPI_COMM_WORLD, &status);
+  548.    1 2 3 F      
+  549.  + 1 2 3 F 5--<                   for (i_loop = -1; i_loop < loop_length; i_loop++)
+  550.    1 2 3 F 5                      {
+  551.    1 2 3 F 5                        /* recv ping from client_rank */
+  552.    1 2 3 F 5                        MPI_Recv (rcvbuf, msg_length, MPI_BYTE,
+  553.    1 2 3 F 5                                  client_rank, PING,
+  554.    1 2 3 F 5                                  MPI_COMM_WORLD, &status);
+  555.    1 2 3 F 5    
+  556.    1 2 3 F 5    #if (CHECK_LEVEL >= 1)
+  557.    1 2 3 F 5                        /* server returns received value + const */
+  558.    1 2 3 F 5                        sndbuf[0] =             rcvbuf[0] + 13;
+  559.    1 2 3 F 5                        sndbuf[msg_length-1] =  rcvbuf[msg_length-1] + 13;
+  560.    1 2 3 F 5    # if (CHECK_LEVEL >= 2)
+  561.    1 2 3 F 5                        /* check the check: use a wrong value on process 1 */
+  562.    1 2 3 F 5                        if (myrank == 1) sndbuf[msg_length-1] = sndbuf[msg_length-1] + 22;
+  563.    1 2 3 F 5    # endif
+  564.    1 2 3 F 5    #endif
+  565.    1 2 3 F 5    
+  566.    1 2 3 F 5                        /* send pong from server_rank to client_rank */
+  567.    1 2 3 F 5                        MPI_Send (sndbuf, msg_length, MPI_BYTE, client_rank, PONG,
+  568.    1 2 3 F 5                                  MPI_COMM_WORLD);
+  569.    1 2 3 F 5    
+  570.    1 2 3 F 5-->                   }
+  571.    1 2 3 F                        MPI_Recv (&meas_ok, 1, MPI_INT, client_rank, PING,
+  572.    1 2 3 F                                  MPI_COMM_WORLD, &status);
+  573.    1 2 3 F                      }
+  574.    1 2 3 F---->                 while(!meas_ok);
+  575.    1 2 3                      }
+  576.    1 2 3                    }
+  577.    1 2 3------>       }
+  578.    1 2          
+  579.    1 2                /* the following message sends a token indicating the right to send
+  580.    1 2                 * messages to server processes
+  581.    1 2                 */
+  582.    1 2                if ((myrank == client_rank) && (client_rank < client_rank_high))
+  583.    1 2                    MPI_Send (sndbuf, 0, MPI_BYTE, client_rank + client_rank_stride,
+  584.    1 2                              NEXT_CLIENT, MPI_COMM_WORLD);
+  585.    1 2          
+  586.  + 1 2                MPI_Bcast (sndbuf, 0, MPI_BYTE, client_rank_high, MPI_COMM_WORLD);
+  587.    1 2-------->     }
+  588.    1                number_of_results = result_index;
+  589.    1---------->   }
+  590.                 
+  591.                   /* free the send/recv buffer */
+  592.                   free (sndbuf);
+  593.                   free (rcvbuf);
+  594.                 
+  595.                   /* compute local min, max and avg on all client processes */
+  596.                   /* gather minimal latency for all indexes in first measurement of all measurements */
+  597.    V----------<   for ( i = 0; i < number_of_results; i++ )
+  598.    V r4-------<     for (i_meas = 1; i_meas < number_of_measurements; i_meas++)
+  599.    V r4               if ( local_results[i_meas*number_of_results+i] < local_results[i] )
+  600.    V r4------>>         local_results[i] = local_results[i_meas*number_of_results+i];
+  601.                 
+  602.                   loc_latency_min = 1e99;
+  603.                   loc_latency_avg = 0;
+  604.                   loc_latency_max = 0;
+  605.                   loc_bandwidth_min = 1e99;
+  606.                   loc_bandwidth_avg = 0;
+  607.                   loc_bandwidth_max = 0;
+  608.  + r2---------<   for (i=0; i < number_of_results; i++)
+  609.    r2             {
+  610.    r2               lat = local_results[i];  bw = msg_length / lat;
+  611.    r2           #if (DEBUG_LEVEL >= 3)
+  612.    r2               if ((myrank == 0) || (DEBUG_LEVEL >= 4)) {
+  613.    r2                 fprintf ( OutFile, "[%d] i=%d, lat=%10.6fms, bw=%10.6fMB/s\n", myrank, i, lat*1e3, bw/1e6); fflush( OutFile );
+  614.    r2               }
+  615.    r2           #endif
+  616.    r2               if (lat < (loc_latency_min))  loc_latency_min = lat;
+  617.    r2               loc_latency_avg = loc_latency_avg + lat;
+  618.    r2               if (lat > (loc_latency_max))  loc_latency_max = lat;
+  619.    r2               if (bw < (loc_bandwidth_min))  loc_bandwidth_min = bw;
+  620.    r2               loc_bandwidth_avg = loc_bandwidth_avg + bw;
+  621.    r2               if (bw > (loc_bandwidth_max))  loc_bandwidth_max = bw;
+  622.    r2--------->   }
+  623.                 #if (DEBUG_LEVEL >= 3)
+  624.                   if ((myrank == 0) || (DEBUG_LEVEL >= 4)) {
+  625.                     fprintf ( OutFile, "[%d] Latency   min / avg / max: %10.6f / %10.6f / %10.6f msecs\n",
+  626.                               myrank, loc_latency_min * 1e3, loc_latency_avg / number_of_results * 1e3, loc_latency_max * 1e3);  fflush( OutFile );
+  627.                     fprintf ( OutFile, "[%d] Bandwidth min / avg / max: %10.3f / %10.3f / %10.3f MByte/s\n\n",
+  628.                               myrank, loc_bandwidth_min / 1e6, loc_bandwidth_avg / number_of_results / 1e6, loc_bandwidth_max / 1e6);  fflush( OutFile );
+  629.                   }
+  630.                 #endif
+  631.                 
+  632.                   /* free the local result list */
+  633.                   free (local_results);
+  634.                 
+  635.                   /* send all local results to process 0 */
+  636.  +                MPI_Op_create( SumLongLong, 1, &sumll );
+  637.  +                MPI_Reduce (&number_of_results, total_number_of_pairs, 1, MPI_LONG_LONG_INT, sumll, 0,
+  638.                               MPI_COMM_WORLD);
+  639.  +                MPI_Op_free( &sumll );
+  640.  +                MPI_Reduce (&loc_latency_min, latency_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+  641.  +                MPI_Reduce (&loc_latency_avg, latency_avg, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  642.  +                MPI_Reduce (&loc_latency_max, latency_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+  643.  +                MPI_Reduce (&loc_bandwidth_min, bandwidth_min, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
+  644.  +                MPI_Reduce (&loc_bandwidth_avg, bandwidth_avg, 1, MPI_DOUBLE, MPI_SUM, 0, MPI_COMM_WORLD);
+  645.  +                MPI_Reduce (&loc_bandwidth_max, bandwidth_max, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+  646.                 
+  647.                   /* compute global average on process 0 */
+  648.                   if ((myrank == 0) && (*total_number_of_pairs > 0))
+  649.                   {
+  650.                     *latency_avg= *latency_avg / (*total_number_of_pairs);
+  651.                     *bandwidth_avg= *bandwidth_avg / (*total_number_of_pairs);
+  652.                   }
+  653.                 
+  654.                 #if (DEBUG_LEVEL >= 2)
+  655.                   /* print the results */
+  656.                     if (myrank == 0)
+  657.                     {
+  658.                       fprintf ( OutFile, "Message Length: %d\n", msg_length);
+  659.                       fprintf ( OutFile, "Latency   min / avg / max: %10.6f / %10.6f / %10.6f msecs\n",
+  660.                               *latency_min * 1e3, *latency_avg * 1e3, *latency_max * 1e3);
+  661.                       fprintf ( OutFile, "Bandwidth min / avg / max: %10.3f / %10.3f / %10.3f MByte/s\n\n",
+  662.                               *bandwidth_min / 1e6, *bandwidth_avg / 1e6, *bandwidth_max / 1e6);
+  663.  +                    fflush( OutFile );
+  664.                     }
+  665.                 #endif
+  666.                 }
+  667.                 
+  668.                 /* -----------------------------------------------------------------------
+  669.                  * Routine: cross_ping_pong_controlled()
+  670.                  *
+  671.                  * Task: Choose a set of input arguments for PingPongSet
+  672.                  *       to benchmark the minimal/average/maximal latency and
+  673.                  *       bandwidth of a system based on a given amount of time.
+  674.                  *
+  675.                  * Input:
+  676.                  *   max_time, msg_length, loop_length, number_of_measurements
+  677.                  *
+  678.                  * Output:
+  679.                  *   latency_min,   latency_avg,   latency_max
+  680.                  *   bandwidth_min, bandwidth_avg, bandwidth_max
+  681.                  *   (min, max, avg are done over all pairs of processes)
+  682.                  *
+  683.                  * Execution task:
+  684.                  *   - benchmarking latency and bandwidth for msg_length byte
+  685.                  *     of communication with client_rank=0 and server_rank=size-1
+  686.                  *   - calculating client and server rank_stride to guarantee, that
+  687.                  *     -  PingPongSet does not need more than max_time sec
+  688.                  * ----------------------------------------------------------------------- */
+  689.                 static
+  690.                 void cross_ping_pong_controlled(
+  691.                   double max_time,
+  692.                   int    msg_length,
+  693.                   int    loop_length,
+  694.                   int    number_of_measurements,
+  695.                   double *latency_min,
+  696.                   double *latency_avg,
+  697.                   double *latency_max,
+  698.                   double *bandwidth_min,
+  699.                   double *bandwidth_avg,
+  700.                   double *bandwidth_max,
+  701.                   long long *number_of_pairs
+  702.                 )
+  703.                 {
+  704.                   int    size, myrank, i;
+  705.                   double l_dum_min, l_dum_max; /* dummies */
+  706.                   double b_dum_min, b_dum_avg, b_dum_max; /* dummies */
+  707.                   long long dum_num_results; /* dummies */
+  708.                   int    stride;
+  709.                   double lat_msg;
+  710.                   int    max_pings, not_prime;
+  711.                   long long max_pairs;
+  712.                 
+  713.                   /* basic MPI initialization */
+  714.  +                MPI_Comm_size(MPI_COMM_WORLD, &size);
+  715.  +                MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  716.                 
+  717.  +                cross_ping_pong_set( 0,0,1,  size-1,size-1,1,
+  718.                                     msg_length, loop_length, number_of_measurements, 0,
+  719.                                     &l_dum_min,  &lat_msg,  &l_dum_max,
+  720.                                     &b_dum_min,  &b_dum_avg,  &b_dum_max, &dum_num_results);
+  721.                 
+  722.                   if ( myrank == 0 ) {
+  723.                     if (lat_msg*2*(loop_length+1) >= WTICK_FACTOR*wtick)
+  724.                     {
+  725.                       max_pairs = max_time / (lat_msg*2*(loop_length+1)*number_of_measurements);
+  726.                       fprintf( OutFile,  "MPI_Wtime granularity is ok.\n");
+  727.                     }
+  728.                     else
+  729.                     {
+  730.                       max_pairs = max_time / (WTICK_FACTOR*wtick*number_of_measurements);
+  731.                       fprintf( OutFile,  "Use MPI_Wtick for estimation of max pairs\n");
+  732.  +                    fflush( OutFile );
+  733.                     }
+  734.                     max_pings = (int)sqrt( (double)max_pairs );
+  735.                     if ( max_pings < 5 ) max_pings = 5;
+  736.                     stride = 1.0 * size / max_pings + 0.9;
+  737.                     if ( stride < 1 ) stride = 1;
+  738.                     if ( stride == 2) stride = 3;
+  739.                     if ( stride > 3 ) {
+  740.  + 1----------<       while ( 1 ) {
+  741.    1                    not_prime = 0;
+  742.  + 1 2--------<         for ( i = 2;  i < stride; i++ )
+  743.    1 2                    if ( (stride % i) == 0 ) {
+  744.    1 2                      not_prime = 1;
+  745.    1 2                      break;
+  746.    1 2-------->           }
+  747.    1                    if ( not_prime )
+  748.    1                      if ( stride > (size/3) ) break;
+  749.    1                      else stride++;
+  750.    1                    else
+  751.    1                      break;
+  752.    1---------->       }
+  753.                     }
+  754.                 #if (DEBUG_LEVEL >= 2)
+  755.                     fprintf( OutFile,  "message size:                         %10d\n", msg_length );
+  756.                     fprintf( OutFile,  "max time :                            %10.6f secs\n", max_time );
+  757.                     fprintf( OutFile,  "latency for msg:                      %10.6f msecs\n", lat_msg*1e3 );
+  758.                     fprintf( OutFile,  "estimation for ping pong:             %10.6f msecs\n", lat_msg*2*(loop_length+1)*number_of_measurements*1e3);
+  759.                     fprintf( OutFile,  "max number of ping pong pairs       = %10.0f\n", 1.0*max_pairs );
+  760.                     fprintf( OutFile,  "max client pings = max server pongs = %10d\n", max_pings );
+  761.                     fprintf( OutFile,  "stride for latency                  = %10d\n", stride );
+  762.  +                  fflush( OutFile );
+  763.                 #endif
+  764.                   }
+  765.  +                MPI_Bcast ( &stride, 1, MPI_INT, 0, MPI_COMM_WORLD);
+  766.  +                cross_ping_pong_set( 0, size-1, stride, 0, size-1, stride,
+  767.                                     msg_length, loop_length, number_of_measurements, 0,
+  768.                                     latency_min, latency_avg, latency_max,
+  769.                                     bandwidth_min, bandwidth_avg, bandwidth_max, number_of_pairs);
+  770.                 }
+  771.                 
+  772.                 /* -----------------------------------------------------------------------
+  773.                  * Routine: ring_lat_bw_loop()
+  774.                  *
+  775.                  *
+  776.                  * Task: Communicate to left and right partner in rand_pattern_count
+  777.                  *       random rings and the naturally ordered ring. Reduce the maximum
+  778.                  *       of all measurements over all processors to rank 0 and get the
+  779.                  *       minimal measurement on it. Compute naturally ordered and avg
+  780.                  *       randomly ordered latency and bandwidth.
+  781.                  *
+  782.                  * Input:
+  783.                  *   msglen, measurements, loop_length, rand_pattern_count
+  784.                  *
+  785.                  * Output:
+  786.                  *   result->msglen, result->ring_lat, result->rand_lat,
+  787.                  *   result->ring_bwidth, result->rand_bwidth
+  788.                  *
+  789.                  * Execution Tasks:
+  790.                  *
+  791.                  * - loop loop_length * measurements times and do Irecv,Isend to left
+  792.                  *   and right partner as well as Sendrecv and save the minimum of both
+  793.                  *   latencies for all rings.
+  794.                  * - Reduce all measurements*(rand_pattern_count+1) latencies to rank 0
+  795.                  *   and get minimal measurement on it.
+  796.                  * - Compute latencies and bandwidth. For random order the geometric average
+  797.                  * of the latency is built.
+  798.                  * ----------------------------------------------------------------------- */
+  799.                 static
+  800.                 void ring_lat_bw_loop(
+  801.                   int msglen,
+  802.                   int measurements,
+  803.                   int loop_length_proposal,
+  804.                   int rand_pattern_count,
+  805.                   BenchmarkResult *result )
+  806.                 {
+  807.                   int i_meas, i_pat, i_loop, i, j;
+  808.                   double start_time, end_time, lat_sendrecv, lat_nonblocking;
+  809.                   double *latencies; /* measurements * (rand_pattern_count+1) */
+  810.                   double *max_latencies; /* reduced from all processors with MPI_MAX on rank 0 */
+  811.                   double avg_latency; /* of random pattern rings */
+  812.                   int *ranks; /* communication pattern, order of processors */
+  813.                   int size, myrank, left_rank, right_rank;
+  814.                   MPI_Request requests[4];
+  815.                   MPI_Status statuses[4];
+  816.                   unsigned char *sndbuf_left, *sndbuf_right, *rcvbuf_left, *rcvbuf_right;
+  817.                   long seedval;
+  818.                   double rcp = 1.0 / RAND_MAX;
+  819.                   int loop_length;
+  820.                   int meas_ok, meas_ok_recv;
+  821.                 #if (CHECK_LEVEL >= 1)
+  822.                   register int base;
+  823.                 #endif
+  824.                 
+  825.                   /* get number of processors and own rank */
+  826.  +                MPI_Comm_size(MPI_COMM_WORLD, &size);
+  827.  +                MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+  828.                 
+  829.                   /* alloc memory and init with 0 */
+  830.                   latencies     = (double *)malloc( measurements * (rand_pattern_count+1) * sizeof( *latencies ) );
+  831.                   max_latencies = (double *)malloc( measurements * (rand_pattern_count+1) * sizeof( *max_latencies ) );
+  832.                   ranks = (int *)malloc( size * sizeof( *ranks ) );
+  833.                   sndbuf_left  = (unsigned char *)malloc( msglen );
+  834.                   sndbuf_right = (unsigned char *)malloc( msglen );
+  835.                   rcvbuf_left  = (unsigned char *)malloc( msglen );
+  836.                   rcvbuf_right = (unsigned char *)malloc( msglen );
+  837.                 
+  838.                   /* init pseudo-random with time seed */
+  839.  +                seedval=(long)(time((time_t *) 0));
+  840.                 #if (DEBUG_LEVEL >= 3)
+  841.                   if (myrank==0) { fprintf( OutFile, "seedval = %ld\n",seedval); fflush( OutFile ); }
+  842.                 #endif
+  843.                 
+  844.                   /* benchmark */
+  845.  + 1----------<   for ( i_meas = 0; i_meas < measurements; i_meas++ ) {
+  846.  + 1                srand(seedval);
+  847.  + 1 2--------<     for ( i_pat = 0; i_pat < rand_pattern_count+1; i_pat++ ) {
+  848.    1 2                /* build pattern at rank 0 and broadcast to all */
+  849.    1 2                if ( myrank == 0 ) {
+  850.    1 2                  if (i_pat>0) { /* random pattern */
+  851.  + 1 2 F-----<>           for (i=0; i<size; i++) ranks[i] = -1;
+  852.  + 1 2 3------<           for (i=0; i<size; i++) {
+  853.  + 1 2 3                    j = (int)(rand() * rcp * size);
+  854.  + 1 2 3 4---<>             while (ranks[j] != -1) j = (j+1) % size;
+  855.    1 2 3                    ranks[j] = i;
+  856.    1 2 3------>           }
+  857.    1 2                  }
+  858.    1 2                  else { /* naturally ordered ring */
+  859.  + 1 2 F-----<>           for (i=0; i<size; i++) ranks[i] = i;
+  860.    1 2                  }
+  861.    1 2          #if (DEBUG_LEVEL >= 3)
+  862.    1 2                  if ( i_meas == 0 ) {
+  863.    1 2                    fprintf( OutFile, "i_pat=%3d: ",i_pat);
+  864.    1 2                    for (i=0; i<size; i++) fprintf( OutFile, " %2d",ranks[i]);
+  865.    1 2                    fprintf( OutFile,  "\n" );  fflush( OutFile );
+  866.    1 2                  }
+  867.    1 2          #endif
+  868.    1 2                }
+  869.  + 1 2                MPI_Bcast(ranks, size, MPI_INT, 0, MPI_COMM_WORLD);
+  870.    1 2          
+  871.    1 2                /* get rank of left and right partner. therefore find myself (myrank)
+  872.    1 2                 * in pattern first. */
+  873.  + 1 2 F------<       for ( i = 0; i < size; i++ )
+  874.    1 2 F                if ( ranks[i] == myrank ) { /* will definitely be found */
+  875.    1 2 F                  left_rank = ranks[(i-1+size)%size];
+  876.    1 2 F                  right_rank = ranks[(i+1)%size];
+  877.    1 2 F------>         }
+  878.    1 2          
+  879.  + 1 2 3------<       do
+  880.    1 2 3              {
+  881.    1 2 3                meas_ok = 0;
+  882.  + 1 2 3                MPI_Allreduce (&loop_length_proposal, &loop_length, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+  883.    1 2 3                loop_length_proposal = loop_length;
+  884.    1 2 3        
+  885.    1 2 3                /* loop communication */
+  886.  + 1 2 3 4----<         for ( i_loop = -1; i_loop < loop_length; i_loop++ ) {
+  887.  + 1 2 3 4                if ( i_loop == 0 ) start_time = MPI_Wtime();
+  888.    1 2 3 4      
+  889.    1 2 3 4                /* communicate to left and right partner */
+  890.    1 2 3 4      #if (CHECK_LEVEL >= 1)
+  891.    1 2 3 4                base = (i_loop + myrank + 1)&0x7f; /* = mod 128 */
+  892.    1 2 3 4                sndbuf_right[0] = base; sndbuf_right[msglen-1] = base+1;
+  893.    1 2 3 4                sndbuf_left[0]  = base+2; sndbuf_left[msglen-1]  = base+3;
+  894.    1 2 3 4      # if (CHECK_LEVEL >= 2)
+  895.    1 2 3 4                /* check the check: use a wrong value on process 1 */
+  896.    1 2 3 4                if (myrank == 1) sndbuf_right[0] = sndbuf_right[0] + 33;
+  897.    1 2 3 4                if (myrank == 1) sndbuf_left[msglen-1] = sndbuf_left[msglen-1] + 44;
+  898.    1 2 3 4      # endif
+  899.    1 2 3 4      #endif
+  900.  + 1 2 3 4                MPI_Sendrecv(
+  901.    1 2 3 4                  sndbuf_right, msglen, MPI_BYTE,
+  902.    1 2 3 4                  right_rank, TO_RIGHT,
+  903.    1 2 3 4                  rcvbuf_left, msglen, MPI_BYTE,
+  904.    1 2 3 4                  left_rank, TO_RIGHT,
+  905.    1 2 3 4                  MPI_COMM_WORLD, &(statuses[0]) );
+  906.  + 1 2 3 4                MPI_Sendrecv(
+  907.    1 2 3 4                  sndbuf_left, msglen, MPI_BYTE,
+  908.    1 2 3 4                  left_rank, TO_LEFT,
+  909.    1 2 3 4                  rcvbuf_right, msglen, MPI_BYTE,
+  910.    1 2 3 4                  right_rank, TO_LEFT,
+  911.    1 2 3 4                  MPI_COMM_WORLD, &(statuses[1]) );
+  912.    1 2 3 4      #if (CHECK_LEVEL >= 1)
+  913.    1 2 3 4                /* check whether bytes are received correctly */
+  914.    1 2 3 4                base = (i_loop + left_rank + 1)&0x7f; /* = mod 128 */
+  915.    1 2 3 4                if ( rcvbuf_left[0] != base || rcvbuf_left[msglen-1] != base+1 )
+  916.    1 2 3 4                {
+  917.    1 2 3 4                  fprintf( OutFile,  "[%d]: ERROR: from right: expected %u and %u as first and last byte, but got %u and %u instead\n",
+  918.    1 2 3 4                  myrank, base, base+1,
+  919.  + 1 2 3 4                  rcvbuf_left[0], rcvbuf_left[msglen-1] ); fflush( OutFile );
+  920.    1 2 3 4                }
+  921.    1 2 3 4                base = (i_loop + right_rank + 1)&0x7f; /* = mod 128 */
+  922.    1 2 3 4                if ( rcvbuf_right[0] != base+2 || rcvbuf_right[msglen-1] != base + 3 )
+  923.    1 2 3 4                {
+  924.    1 2 3 4                  fprintf( OutFile,  "[%d]: ERROR: from right: expected %u and %u as first and last byte, but got %u and %u instead\n",
+  925.    1 2 3 4                  myrank, base+2, base+3,
+  926.  + 1 2 3 4                  rcvbuf_right[0], rcvbuf_right[msglen-1] ); fflush( OutFile );
+  927.    1 2 3 4                }
+  928.    1 2 3 4      #endif
+  929.    1 2 3 4---->         }
+  930.  + 1 2 3                end_time = MPI_Wtime();
+  931.    1 2 3                if ((end_time-start_time) < WTICK_FACTOR * wtick)
+  932.    1 2 3                {
+  933.    1 2 3                  if (loop_length_proposal == 1) loop_length_proposal = 2;
+  934.    1 2 3                  else loop_length_proposal = loop_length_proposal * 1.5;
+  935.    1 2 3                }
+  936.    1 2 3                else meas_ok=1;
+  937.  + 1 2 3                MPI_Allreduce (&meas_ok, &meas_ok_recv, 1, MPI_INT, MPI_MAX, MPI_COMM_WORLD);
+  938.    1 2 3                meas_ok = meas_ok_recv;
+  939.    1 2 3              }
+  940.    1 2 3------>       while (!meas_ok);
+  941.    1 2                lat_sendrecv = (end_time-start_time) / (2 * loop_length);
+  942.    1 2          
+  943.    1 2                /* communication loop with non-blocking routines, and previous loop_length */
+  944.  + 1 2 3------<       for ( i_loop = -1; i_loop < loop_length; i_loop++ ) {
+  945.  + 1 2 3                if ( i_loop == 0 ) start_time = MPI_Wtime();
+  946.    1 2 3        #if (CHECK_LEVEL >= 1)
+  947.    1 2 3                /* communicate to left and right partner */
+  948.    1 2 3                base = (i_loop + myrank + 1)&0x7f; /* = mod 128 */
+  949.    1 2 3                sndbuf_right[0] = base; sndbuf_right[msglen-1] = base+1;
+  950.    1 2 3                sndbuf_left[0]  = base+2; sndbuf_left[msglen-1]  = base+3;
+  951.    1 2 3        #endif
+  952.    1 2 3                /* irecv left */
+  953.    1 2 3                MPI_Irecv(
+  954.    1 2 3                  rcvbuf_left, msglen, MPI_BYTE,
+  955.    1 2 3                  left_rank, TO_RIGHT,
+  956.    1 2 3                  MPI_COMM_WORLD, &requests[0] );
+  957.    1 2 3                /* irecv right */
+  958.    1 2 3                MPI_Irecv(
+  959.    1 2 3                  rcvbuf_right, msglen, MPI_BYTE,
+  960.    1 2 3                  right_rank, TO_LEFT,
+  961.    1 2 3                  MPI_COMM_WORLD, &requests[1] );
+  962.    1 2 3                /* isend right */
+  963.    1 2 3                MPI_Isend(
+  964.    1 2 3                  sndbuf_right, msglen, MPI_BYTE,
+  965.    1 2 3                  right_rank, TO_RIGHT,
+  966.    1 2 3                  MPI_COMM_WORLD, &requests[2] );
+  967.    1 2 3                /* isend left */
+  968.    1 2 3                MPI_Isend(
+  969.    1 2 3                  sndbuf_left, msglen, MPI_BYTE,
+  970.    1 2 3                  left_rank, TO_LEFT,
+  971.    1 2 3                  MPI_COMM_WORLD, &requests[3] );
+  972.    1 2 3                /* waitall */
+  973.    1 2 3                MPI_Waitall( 4, requests, statuses );
+  974.    1 2 3        #if (CHECK_LEVEL >= 1)
+  975.    1 2 3                /* check whether both transfers were done right */
+  976.    1 2 3                base = (i_loop + left_rank + 1)&0x7f; /* = mod 128 */
+  977.    1 2 3                if ( rcvbuf_left[0] != base || rcvbuf_left[msglen-1] != base+1 )
+  978.    1 2 3                {
+  979.    1 2 3                  fprintf( OutFile,  "[%d]: ERROR: from right: expected %u and %u as first and last byte, but got %u and %u instead\n",
+  980.    1 2 3                  myrank, base, base+1,
+  981.  + 1 2 3                  rcvbuf_left[0], rcvbuf_left[msglen-1] ); fflush( OutFile );
+  982.    1 2 3                }
+  983.    1 2 3                base = (i_loop + right_rank + 1)&0x7f; /* = mod 128 */
+  984.    1 2 3                if ( rcvbuf_right[0] != base+2 || rcvbuf_right[msglen-1] != base + 3 )
+  985.    1 2 3                {
+  986.    1 2 3                  fprintf( OutFile,  "[%d]: ERROR: from right: expected %u and %u as first and last byte, but got %u and %u instead\n",
+  987.    1 2 3                  myrank, base+2, base+3,
+  988.  + 1 2 3                  rcvbuf_right[0], rcvbuf_right[msglen-1] ); fflush( OutFile );
+  989.    1 2 3                }
+  990.    1 2 3        #endif
+  991.    1 2 3------>       }
+  992.  + 1 2                end_time = MPI_Wtime();
+  993.    1 2                lat_nonblocking = (end_time-start_time) / ( 2 * loop_length );
+  994.    1 2          
+  995.    1 2                /* workaround to fix problems with MPI_Wtime granularity */
+  996.    1 2                if (!lat_nonblocking)
+  997.    1 2                {
+  998.    1 2                  static int complain = 0;
+  999.    1 2                  lat_nonblocking = wtick;
+ 1000.    1 2                  if (complain != loop_length)
+ 1001.    1 2                  {
+ 1002.    1 2          #define MSG "In " __FILE__ ", routine bench_lat_bw, the 3rd parameter to ring_lat_bw_loop was %d; increase it.\n"
+ 1003.    1 2                    fprintf( stderr, MSG, loop_length);
+ 1004.    1 2                    fprintf( OutFile, MSG, loop_length);
+ 1005.    1 2          #undef MSG
+ 1006.    1 2                  }
+ 1007.    1 2                  complain = loop_length;
+ 1008.    1 2                }
+ 1009.    1 2          
+ 1010.    1 2                latencies[i_meas*(rand_pattern_count+1)+i_pat] =
+ 1011.    1 2                (lat_sendrecv < lat_nonblocking ? lat_sendrecv : lat_nonblocking);
+ 1012.    1 2-------->     }
+ 1013.    1---------->   }
+ 1014.                 
+ 1015.                 #if (DEBUG_LEVEL >= 5)
+ 1016.                   if ((myrank == 0) || (DEBUG_LEVEL >= 6)) {
+ 1017.                     fprintf( OutFile,  "RANK %3d: ", myrank );
+ 1018.                     for ( i = 0; i < measurements*(rand_pattern_count+1); i++ )
+ 1019.                       fprintf( OutFile,  "%e  ", latencies[i] );
+ 1020.                     fprintf( OutFile,  "\n" ); fflush( OutFile );
+ 1021.                   }
+ 1022.                 #endif
+ 1023.                 
+ 1024.                   /* reduce all vectors to get maximum vector at rank 0 */
+ 1025.  +                MPI_Reduce(
+ 1026.                     latencies, max_latencies,
+ 1027.                     measurements * (rand_pattern_count+1), MPI_DOUBLE,
+ 1028.                     MPI_MAX, 0, MPI_COMM_WORLD );
+ 1029.                 
+ 1030.                 #if (DEBUG_LEVEL >= 5)
+ 1031.                        fflush(stdout);
+ 1032.                        MPI_Barrier(MPI_COMM_WORLD);
+ 1033.                        if (myrank==0)
+ 1034.                        {
+ 1035.                          fprintf( OutFile,  "RANK ---: " );
+ 1036.                          for ( i = 0; i < measurements*(rand_pattern_count+1); i++ )
+ 1037.                            fprintf( OutFile,  "%e  ", max_latencies[i] );
+ 1038.                          fprintf( OutFile,  "\n" ); fflush( OutFile );
+ 1039.                        }
+ 1040.                 #endif
+ 1041.                 
+ 1042.                   /* get minimal measurement from vector as final measurement and compute latency and bandwidth */
+ 1043.                   if ( myrank == 0 ) {
+ 1044.                     /* reduce measurements to first minimal measurement */
+ 1045.  + 1----------<     for ( i_pat = 0; i_pat < rand_pattern_count+1; i_pat++ )
+ 1046.    1                {
+ 1047.  + 1 r4-------<       for (i_meas = 1; i_meas < measurements; i_meas++)
+ 1048.    1 r4               { /* minimal latencies over all measurements */
+ 1049.    1 r4                 if (max_latencies[i_meas*(rand_pattern_count+1)+i_pat] < max_latencies[i_pat])
+ 1050.    1 r4                   max_latencies[i_pat] = max_latencies[i_meas*(rand_pattern_count+1)+i_pat];
+ 1051.    1 r4------->       }
+ 1052.    1---------->     }
+ 1053.                 
+ 1054.                     /* get average latency of random rings by geometric means */
+ 1055.                     avg_latency = 0;
+ 1056.    Vr6--------<     for ( i_pat = 1; i_pat < rand_pattern_count+1; i_pat++ )
+ 1057.    Vr6-------->     avg_latency += log( max_latencies[i_pat] );
+ 1058.                     avg_latency = avg_latency / rand_pattern_count;
+ 1059.                     avg_latency = exp( avg_latency );
+ 1060.                 
+ 1061.                     /* compute final benchmark results */
+ 1062.                     result->msglen = msglen;
+ 1063.                     result->ring_lat = max_latencies[0];
+ 1064.                     result->ring_bwidth = msglen / max_latencies[0];
+ 1065.                     result->rand_lat = avg_latency;
+ 1066.                     result->rand_bwidth = msglen / avg_latency;
+ 1067.                   }
+ 1068.                 
+ 1069.                   /* free memory */
+ 1070.                   free( ranks );
+ 1071.                   free( latencies );
+ 1072.                   free( max_latencies );
+ 1073.                   free(sndbuf_left);
+ 1074.                   free(sndbuf_right);
+ 1075.                   free(rcvbuf_left);
+ 1076.                   free(rcvbuf_right);
+ 1077.                 #if (DEBUG_LEVEL >= 2)
+ 1078.                    if (myrank == 0)
+ 1079.                    {
+ 1080.                      fprintf( OutFile,  "Message Size:               %13d Byte\n",   result->msglen );
+ 1081.                      fprintf( OutFile,  "Natural Order Latency:      %13.6f msec\n", result->ring_lat*1e3 );
+ 1082.                      fprintf( OutFile,  "Natural Order Bandwidth:    %13.6f MB/s\n", result->ring_bwidth/1e6 );
+ 1083.                      fprintf( OutFile,  "Avg Random Order Latency:   %13.6f msec\n", result->rand_lat*1e3 );
+ 1084.                      fprintf( OutFile,  "Avg Random Order Bandwidth: %13.6f MB/s\n", result->rand_bwidth/1e6 );
+ 1085.                      fprintf( OutFile,  "\n" );
+ 1086.  +                   fflush( OutFile );
+ 1087.                    }
+ 1088.                 #endif
+ 1089.                 }
+ 1090.                 
+ 1091.                 /* -----------------------------------------------------------------------
+ 1092.                  * Routine: bench_lat_bw()
+ 1093.                  *
+ 1094.                  * Task: Run cross_ping_pong_controlled and ring_lat_bw_loop
+ 1095.                  *       with a well chosen number of loops and measurements
+ 1096.                  *       to benchmark the minimal/average/maximal latency and
+ 1097.                  *       bandwidth of a system based on a given amount of time.
+ 1098.                  *
+ 1099.                  * Input:
+ 1100.                  *   max_time_for_latency, max_time_for_bandwidth
+ 1101.                  *
+ 1102.                  * Output:
+ 1103.                  *   msg_length_for_lat, msg_length_for_bw,
+ 1104.                  *   latency_min,   latency_avg,   latency_max,
+ 1105.                  *   bandwidth_min, bandwidth_avg, bandwidth_max,
+ 1106.                  *   number_of_pairs_for_lat, number_of_pairs_for_bw,
+ 1107.                  *   (min, max, avg are done over all pairs of processes for
+ 1108.                  *    ping pong benchmarking)
+ 1109.                  *   ring_lat, ring_bw, rand_lat, rand_bw
+ 1110.                  *   (for ring benchmarking)
+ 1111.                  *
+ 1112.                  * Execution Tasks:
+ 1113.                  *   - run cross_ping_pong_controlled for 8 and 2000000 bytes
+ 1114.                  *   - run ring_lat_bw_loop for 8 and 2000000 bytes
+ 1115.                  *   - use the results from message length 8 byte for latency
+ 1116.                  *     and the results from message length 2000000 for bandwidth
+ 1117.                  * ----------------------------------------------------------------------- */
+ 1118.                 static
+ 1119.                 void bench_lat_bw(
+ 1120.                   double max_time_for_latency,   /* for ping pong */
+ 1121.                   double max_time_for_bandwidth, /* for ping pong */
+ 1122.                   int    *msg_length_for_lat,
+ 1123.                   int    *msg_length_for_bw,
+ 1124.                   double *latency_min, /* */
+ 1125.                   double *latency_avg, /* ping pong measurement latency */
+ 1126.                   double *latency_max, /* */
+ 1127.                   long long *number_of_pairs_for_lat, /* ping pong */
+ 1128.                   double *bandwidth_min, /* */
+ 1129.                   double *bandwidth_avg, /* ping pong measurement bandwidth */
+ 1130.                   double *bandwidth_max, /* */
+ 1131.                   long long *number_of_pairs_for_bw, /* ping pong */
+ 1132.                   double *ring_lat, /* naturally ordered ring latency */
+ 1133.                   double *rand_lat, /* randomly  ordered ring latency */
+ 1134.                   double *ring_bw,  /* randomly  ordered ring bandwidth */
+ 1135.                   double *rand_bw  /* naturally ordered ring bandwidth */
+ 1136.                 )
+ 1137.                 {
+ 1138.                   double l_dum_min, l_dum_avg, l_dum_max; /* dummies */
+ 1139.                   double b_dum_min, b_dum_avg, b_dum_max; /* dummies */
+ 1140.                   BenchmarkResult result_lat, result_bw;
+ 1141.                   double wtick_recv;
+ 1142.                 # if (DEBUG_LEVEL >= 1)
+ 1143.                   int size, myrank;
+ 1144.                   double wtime_total, wtime_cross_lat, wtime_cross_bw, wtime_ring_lat, wtime_ring_bw;
+ 1145.                 # endif
+ 1146.                 
+ 1147.                   *msg_length_for_lat = 8;
+ 1148.                   *msg_length_for_bw  = 2000000;
+ 1149.                 
+ 1150.                 # if (DEBUG_LEVEL >= 1)
+ 1151.  +                  MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 1152.  +                  MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+ 1153.                 # endif
+ 1154.                 
+ 1155.                   /* get the granularity of MPI_Wtime, but don't trust MPI_Wtick!! */
+ 1156.  +                wtick = MPI_Wtick();
+ 1157.                 # ifdef SET_WTICK
+ 1158.                     wtick = SET_WTICK ;
+ 1159.                 # endif
+ 1160.                   if (wtick < 0) wtick = -wtick;
+ 1161.  +                MPI_Allreduce (&wtick, &wtick_recv, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+ 1162.                   wtick = wtick_recv;
+ 1163.                 # if (DEBUG_LEVEL >= 1)
+ 1164.                   if (myrank == 0)
+ 1165.                   {
+ 1166.                     fprintf( OutFile, "MPI_Wtime granularity.\n");
+ 1167.                     fprintf( OutFile, "Max. MPI_Wtick is %f sec\n", wtick);
+ 1168.                   }
+ 1169.                 # endif
+ 1170.                   if (wtick < 1e-6) wtick = 1e-6;
+ 1171.                   if (wtick > 0.01) wtick = 0.01;
+ 1172.                 # if (DEBUG_LEVEL >= 1)
+ 1173.                   if (myrank == 0)
+ 1174.                   {
+ 1175.                     fprintf( OutFile, "wtick is set to   %f sec  \n\n", wtick);
+ 1176.  +                  fflush( OutFile );
+ 1177.                   }
+ 1178.                 # endif
+ 1179.                 
+ 1180.                   /* ping pong */
+ 1181.                   /* --------- */
+ 1182.                 
+ 1183.                 # if (DEBUG_LEVEL >= 1)
+ 1184.  +                  wtime_total     = - MPI_Wtime();
+ 1185.  +                  wtime_cross_lat = - MPI_Wtime();
+ 1186.                 # endif
+ 1187.                 
+ 1188.  +                cross_ping_pong_controlled( max_time_for_latency, *msg_length_for_lat, 8, 5,
+ 1189.                                            latency_min, latency_avg, latency_max,
+ 1190.                                            &b_dum_min, &b_dum_avg, &b_dum_max,
+ 1191.                                            number_of_pairs_for_lat );
+ 1192.                 
+ 1193.                 # if (DEBUG_LEVEL >= 1)
+ 1194.  +                  wtime_cross_lat +=  MPI_Wtime();
+ 1195.  +                  wtime_cross_bw  = - MPI_Wtime();
+ 1196.                 # endif
+ 1197.                 
+ 1198.  +                cross_ping_pong_controlled( max_time_for_bandwidth, *msg_length_for_bw, 1, 2,
+ 1199.                                            &l_dum_min, &l_dum_avg, &l_dum_max,
+ 1200.                                            bandwidth_min, bandwidth_avg, bandwidth_max,
+ 1201.                                            number_of_pairs_for_bw );
+ 1202.                 
+ 1203.                 # if (DEBUG_LEVEL >= 1)
+ 1204.  +                  wtime_cross_bw  +=  MPI_Wtime();
+ 1205.                 # endif
+ 1206.                 
+ 1207.                   /* ring */
+ 1208.                 
+ 1209.                 # if (DEBUG_LEVEL >= 1)
+ 1210.  +                  wtime_ring_lat = - MPI_Wtime();
+ 1211.                 # endif
+ 1212.                 
+ 1213.  +                ring_lat_bw_loop( *msg_length_for_lat, 8, 5, 30, &result_lat );
+ 1214.                   *ring_lat = result_lat.ring_lat;
+ 1215.                   *rand_lat = result_lat.rand_lat;
+ 1216.                 
+ 1217.                 # if (DEBUG_LEVEL >= 1)
+ 1218.  +                  wtime_ring_lat +=  MPI_Wtime();
+ 1219.  +                  wtime_ring_bw  = - MPI_Wtime();
+ 1220.                 # endif
+ 1221.                 
+ 1222.  +                ring_lat_bw_loop( *msg_length_for_bw,  3, 2, 10, &result_bw );
+ 1223.                   *ring_bw = result_bw.ring_bwidth;
+ 1224.                   *rand_bw = result_bw.rand_bwidth;
+ 1225.                 
+ 1226.                 # if (DEBUG_LEVEL >= 1)
+ 1227.  +                  wtime_ring_bw  +=  MPI_Wtime();
+ 1228.  +                  wtime_total    +=  MPI_Wtime();
+ 1229.                 # endif
+ 1230.                 
+ 1231.                 # if (DEBUG_LEVEL >= 1)
+ 1232.                     if (myrank==0)
+ 1233.                     { fprintf( OutFile, "Execution time (wall clock)      = %9.3f sec on %d processes\n", wtime_total, size);
+ 1234.                       fprintf( OutFile, " - for cross ping_pong latency   = %9.3f sec\n", wtime_cross_lat);
+ 1235.                       fprintf( OutFile, " - for cross ping_pong bandwidth = %9.3f sec\n", wtime_cross_bw );
+ 1236.                       fprintf( OutFile, " - for ring latency              = %9.3f sec\n", wtime_ring_lat);
+ 1237.                       fprintf( OutFile, " - for ring bandwidth            = %9.3f sec\n", wtime_ring_bw );
+ 1238.  +                    fflush( OutFile );
+ 1239.                     }
+ 1240.                 # endif
+ 1241.                 }
+ 1242.                 
+ 1243.                 /* -----------------------------------------------------------------------
+ 1244.                  * Routine: bench_lat_bw_print()
+ 1245.                  *
+ 1246.                  * Task: Print out the benchmark results and conditions from
+ 1247.                  *       bench_lat_bw.
+ 1248.                  *
+ 1249.                  * Input:
+ 1250.                  *  none
+ 1251.                  *
+ 1252.                  * Output:
+ 1253.                  *   none
+ 1254.                  *
+ 1255.                  * Execution Tasks:
+ 1256.                  *   - run bench_lat_bw
+ 1257.                  *   - print out the five most important values:
+ 1258.                  *      - max ping pong latency
+ 1259.                  *      - min ping pong bandwidth
+ 1260.                  *      - randomly ordered ring latency
+ 1261.                  *      - naturally ordered ring bandwidth
+ 1262.                  *      - randomly ordered ring bandwidth
+ 1263.                  *   - print all benchmark results on debug level 1
+ 1264.                  *   - print benchmark conditions:
+ 1265.                  *     - number of processors
+ 1266.                  *     - message lengths
+ 1267.                  *     - number of ping pong pairs
+ 1268.                  * ----------------------------------------------------------------------- */
+ 1269.                 static
+ 1270.                 void bench_lat_bw_print(double *MaxPingPongLatency, double *RandomlyOrderedRingLatency,
+ 1271.                   double *MinPingPongBandwidth, double *NaturallyOrderedRingBandwidth,
+ 1272.                   double *RandomlyOrderedRingBandwidth,
+ 1273.                   double *MinPingPongLatency, double *AvgPingPongLatency, double *MaxPingPongBandwidth,
+ 1274.                   double *AvgPingPongBandwidth, double *NaturallyOrderedRingLatency) {
+ 1275.                   int msg_length_for_lat;
+ 1276.                   int msg_length_for_bw;
+ 1277.                   double ring_lat, rand_lat;
+ 1278.                   double ring_bw,  rand_bw;
+ 1279.                   int size, myrank;
+ 1280.                   double max_time_for_latency;
+ 1281.                   double max_time_for_bandwidth;
+ 1282.                   double latency_min;
+ 1283.                   double latency_avg;
+ 1284.                   double latency_max;
+ 1285.                   double bandwidth_min;
+ 1286.                   double bandwidth_avg;
+ 1287.                   double bandwidth_max;
+ 1288.                   long long number_of_pairs_for_lat, number_of_pairs_for_bw;
+ 1289.                 
+ 1290.  +                MPI_Comm_size(MPI_COMM_WORLD, &size);
+ 1291.  +                MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+ 1292.                 # if (DEBUG_LEVEL >= 1)
+ 1293.                     if (myrank == 0 )
+ 1294.                     {
+ 1295.                       fprintf ( OutFile, "\n------------------------------------------------------------------\n");
+ 1296.                       fprintf ( OutFile, "Latency-Bandwidth-Benchmark R1.5.1 (c) HLRS, University of Stuttgart\n");
+ 1297.                       fprintf ( OutFile, "Written by Rolf Rabenseifner, Gerrit Schulz, and Michael Speck, Germany\n\n");
+ 1298.                       fprintf ( OutFile, "Details - level %d\n", DEBUG_LEVEL);
+ 1299.                       fprintf ( OutFile, "-----------------\n\n");
+ 1300.  +                    fflush( OutFile );
+ 1301.                     }
+ 1302.                 # endif
+ 1303.                 
+ 1304.                   /* The following timings are used for the cross ping pong.
+ 1305.                      Additionally, about 300 seconds (on a 100 MB/s) are necessary
+ 1306.                      for benchmarking the ring patterns. */
+ 1307.                   max_time_for_latency   = 10.0 /*sec*/;
+ 1308.                   max_time_for_bandwidth = 30.0 /*sec*/;
+ 1309.  +                bench_lat_bw( max_time_for_latency, max_time_for_bandwidth,
+ 1310.                                 &msg_length_for_lat, &msg_length_for_bw,
+ 1311.                                 &latency_min, &latency_avg, &latency_max,
+ 1312.                                 &number_of_pairs_for_lat,
+ 1313.                                 &bandwidth_min, &bandwidth_avg, &bandwidth_max,
+ 1314.                                 &number_of_pairs_for_bw,
+ 1315.                                 &ring_lat, &rand_lat, &ring_bw, &rand_bw );
+ 1316.                 
+ 1317.                   if (myrank == 0 )
+ 1318.                   {
+ 1319.                       fprintf ( OutFile, "\n------------------------------------------------------------------\n");
+ 1320.                       fprintf ( OutFile, "Latency-Bandwidth-Benchmark R1.5.1 (c) HLRS, University of Stuttgart\n");
+ 1321.                       fprintf ( OutFile, "Written by Rolf Rabenseifner, Gerrit Schulz, and Michael Speck, Germany\n\n");
+ 1322.                 
+ 1323.                       fprintf( OutFile,  "Major Benchmark results:\n" );
+ 1324.                       fprintf( OutFile,  "------------------------\n\n" );
+ 1325.                       fprintf( OutFile,  "Max Ping Pong Latency:            %13.6f msecs\n", latency_max*1e3 );
+ 1326.                       fprintf( OutFile,  "Randomly Ordered Ring Latency:    %13.6f msecs\n", rand_lat*1e3 );
+ 1327.                       fprintf( OutFile,  "Min Ping Pong Bandwidth:          %13.6f MB/s\n", bandwidth_min/1e6 );
+ 1328.                       fprintf( OutFile,  "Naturally Ordered Ring Bandwidth: %13.6f MB/s\n", ring_bw/1e6 );
+ 1329.                       fprintf( OutFile,  "Randomly  Ordered Ring Bandwidth: %13.6f MB/s\n", rand_bw/1e6 );
+ 1330.                       *MaxPingPongLatency = latency_max * 1e6;      /* usec */
+ 1331.                       *RandomlyOrderedRingLatency = rand_lat * 1e6; /* usec */
+ 1332.                       *MinPingPongBandwidth = bandwidth_min * 1e-9;    /* GB/s */
+ 1333.                       *NaturallyOrderedRingBandwidth = ring_bw * 1e-9; /* GB/s */
+ 1334.                       *RandomlyOrderedRingBandwidth = rand_bw * 1e-9;  /* GB/s */
+ 1335.                       *MinPingPongLatency = latency_min * 1e6;      /* usec */
+ 1336.                       *AvgPingPongLatency = latency_avg * 1e6;      /* usec */
+ 1337.                       *MaxPingPongBandwidth = bandwidth_max * 1e-9;    /* GB/s */
+ 1338.                       *AvgPingPongBandwidth = bandwidth_avg * 1e-9;    /* GB/s */
+ 1339.                       *NaturallyOrderedRingLatency = ring_lat * 1e6; /* usec */
+ 1340.                 
+ 1341.                 
+ 1342.                       fprintf ( OutFile, "\n------------------------------------------------------------------\n");
+ 1343.                 
+ 1344.                       fprintf( OutFile,  "\nDetailed benchmark results:\n" );
+ 1345.                       fprintf( OutFile,  "Ping Pong:\n" );
+ 1346.                       fprintf ( OutFile, "Latency   min / avg / max: %10.6f / %10.6f / %10.6f msecs\n",
+ 1347.                                latency_min*1e3, latency_avg*1e3, latency_max*1e3);
+ 1348.                       fprintf ( OutFile, "Bandwidth min / avg / max: %10.3f / %10.3f / %10.3f MByte/s\n",
+ 1349.                                bandwidth_min/1e6, bandwidth_avg/1e6, bandwidth_max/1e6);
+ 1350.                       fprintf( OutFile,  "Ring:\n" );
+ 1351.                       fprintf( OutFile,  "On naturally ordered ring: latency= %13.6f msec, bandwidth= %13.6f MB/s\n", ring_lat*1e3, ring_bw/1e6);
+ 1352.                       fprintf( OutFile,  "On randomly  ordered ring: latency= %13.6f msec, bandwidth= %13.6f MB/s\n", rand_lat*1e3, rand_bw/1e6);
+ 1353.                 
+ 1354.                       fprintf ( OutFile, "\n------------------------------------------------------------------\n");
+ 1355.                 
+ 1356.                       fprintf( OutFile,  "\nBenchmark conditions:\n" );
+ 1357.                       fprintf( OutFile,  " The latency   measurements were done with %8d bytes\n", msg_length_for_lat);
+ 1358.                       fprintf( OutFile,  " The bandwidth measurements were done with %8d bytes\n", msg_length_for_bw);
+ 1359.                       fprintf( OutFile,  " The ring communication was done in both directions on %1d processes\n", size);
+ 1360.                 
+ 1361.                       fprintf( OutFile,  " The Ping Pong measurements were done on \n");
+ 1362.                       fprintf( OutFile,  "  -  %10.0f pairs of processes for latency benchmarking, and \n", 1.0*number_of_pairs_for_lat);
+ 1363.                       fprintf( OutFile,  "  -  %10.0f pairs of processes for bandwidth benchmarking, \n", 1.0*number_of_pairs_for_bw);
+ 1364.                       fprintf( OutFile,  " out of %d*(%d-1) = %10.0f possible combinations on %1d processes.\n", size, size, 1.0*size*(size-1), size);
+ 1365.                       fprintf( OutFile,  " (1 MB/s = 10**6 byte/sec)\n" );
+ 1366.                       fprintf( OutFile,  "\n------------------------------------------------------------------\n");
+ 1367.  +                    fflush( OutFile );
+ 1368.                   }
+ 1369.                 }
+ 1370.                 
+ 1371.                 void
+ 1372.                 main_bench_lat_bw(HPCC_Params *params) {
+ 1373.                   int myRank, commSize;
+ 1374.                   MPI_Comm comm = MPI_COMM_WORLD;
+ 1375.                 
+ 1376.  +                MPI_Comm_size( comm, &commSize );
+ 1377.  +                MPI_Comm_rank( comm, &myRank );
+ 1378.                 
+ 1379.                   if (0 == myRank) {
+ 1380.  +                  OutFile = fopen( params->outFname, "a" );
+ 1381.                     if (! OutFile) {
+ 1382.                       OutFile = stderr;
+ 1383.                       fprintf( OutFile, "Cannot open output file.\n" );
+ 1384.                     }
+ 1385.                   } else OutFile = stderr;
+ 1386.                 
+ 1387.                   if (commSize > 1)
+ 1388.  +                bench_lat_bw_print( &params->MaxPingPongLatency, &params->RandomlyOrderedRingLatency,
+ 1389.                                       &params->MinPingPongBandwidth, &params->NaturallyOrderedRingBandwidth,
+ 1390.                                       &params->RandomlyOrderedRingBandwidth,
+ 1391.                                       &params->MinPingPongLatency, &params->AvgPingPongLatency,
+ 1392.                                       &params->MaxPingPongBandwidth, &params->AvgPingPongBandwidth,
+ 1393.                                       &params->NaturallyOrderedRingLatency );
+ 1394.                 
+ 1395.  +                MPI_Bcast( &params->MaxPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+ 1396.  +                MPI_Bcast( &params->RandomlyOrderedRingLatency, 1, MPI_DOUBLE, 0, comm );
+ 1397.  +                MPI_Bcast( &params->MinPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+ 1398.  +                MPI_Bcast( &params->NaturallyOrderedRingBandwidth, 1, MPI_DOUBLE, 0, comm );
+ 1399.  +                MPI_Bcast( &params->RandomlyOrderedRingBandwidth, 1, MPI_DOUBLE, 0, comm );
+ 1400.  +                MPI_Bcast( &params->MinPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+ 1401.  +                MPI_Bcast( &params->AvgPingPongLatency, 1, MPI_DOUBLE, 0, comm );
+ 1402.  +                MPI_Bcast( &params->MaxPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+ 1403.  +                MPI_Bcast( &params->AvgPingPongBandwidth, 1, MPI_DOUBLE, 0, comm );
+ 1404.  +                MPI_Bcast( &params->NaturallyOrderedRingLatency, 1, MPI_DOUBLE, 0, comm );
+ 1405.                 
+ 1406.  +                fflush( OutFile );
+ 1407.  +                if (stderr != OutFile) fclose(OutFile);
+ 1408.                 }
+
+CC-6005 CC: SCALAR File = bench_lat_bw_1.5.2.c, Line = 211 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 211 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 416 
+  "MPI_Comm_size" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 417 
+  "MPI_Comm_rank" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 443 
+  A loop was not vectorized because it contains a call to function "fprintf" on line 463.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 446 
+  A loop was not vectorized because it contains a call to function "fprintf" on line 463.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 457 
+  A loop was not vectorized because it contains a call to function "fprintf" on line 463.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 467 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 476.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 474 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 476.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 476 
+  "MPI_Wtime" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 497 
+  "fflush" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 501 
+  "MPI_Wtime" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 519 
+  "fflush" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 542 
+  A loop was not vectorized because a recurrence was found on "loop_length" at line 546.
+
+CC-3182 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 542 
+  Loop has been flattened.
+
+CC-6289 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 549 
+  A loop was not vectorized because a recurrence was found on "rcvbuf" between lines 552 and 559.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 586 
+  "MPI_Bcast" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-6204 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 597 
+  A loop was vectorized.
+
+CC-6005 CC: SCALAR File = bench_lat_bw_1.5.2.c, Line = 598 
+  A loop was unrolled 4 times.
+
+CC-6208 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 598 
+  A loop was vectorized as part of the loop starting at line 597.
+
+CC-6005 CC: SCALAR File = bench_lat_bw_1.5.2.c, Line = 608 
+  A loop was unrolled 2 times.
+
+CC-6291 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 608 
+  A loop was not vectorized because a recurrence was found between "local_results" at line 610 and "loc_latency_avg" at line 617.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 636 
+  "MPI_Op_create" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 637 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 639 
+  "MPI_Op_free" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 640 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 641 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 642 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 643 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 644 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 645 
+  "MPI_Reduce" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 663 
+  "fflush" (called from "cross_ping_pong_set") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 714 
+  "MPI_Comm_size" (called from "cross_ping_pong_controlled") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 715 
+  "MPI_Comm_rank" (called from "cross_ping_pong_controlled") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 717 
+  "cross_ping_pong_set" (called from "cross_ping_pong_controlled") was not inlined because the type of argument 11 - RESTRICT
+  qualifiers differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 732 
+  "fflush" (called from "cross_ping_pong_controlled") was not inlined because the compiler was unable to locate the routine.
+
+CC-6306 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 740 
+  A loop was not vectorized because the iteration space is too irregular.
+
+CC-6334 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 742 
+  A loop was not vectorized because it contains multiple potential exits.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 762 
+  "fflush" (called from "cross_ping_pong_controlled") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 765 
+  "MPI_Bcast" (called from "cross_ping_pong_controlled") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 766 
+  "cross_ping_pong_set" (called from "cross_ping_pong_controlled") was not inlined because the call site will not flatten. 
+  "fflush" is missing.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 826 
+  "MPI_Comm_size" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 827 
+  "MPI_Comm_rank" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 839 
+  "time" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 845 
+  A loop was not vectorized because it contains a call to function "srand" on line 846.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 846 
+  "srand" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 847 
+  A loop was not vectorized because it contains a call to function "rand" on line 853.
+
+CC-6290 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 851 
+  A loop was not vectorized because a recurrence was found between "ranks" and "size" at line 851.
+
+CC-3182 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 851 
+  Loop has been flattened.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 852 
+  A loop was not vectorized because it contains a call to function "rand" on line 853.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 853 
+  "rand" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 854 
+  A loop was not vectorized because a recurrence was found on "j" at line 854.
+
+CC-6290 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 859 
+  A loop was not vectorized because a recurrence was found between "ranks" and "size" at line 859.
+
+CC-3182 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 859 
+  Loop has been flattened.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 869 
+  "MPI_Bcast" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6339 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 873 
+  A loop was not vectorized because of a potential hazard in conditional code on line 875.
+
+CC-3182 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 873 
+  Loop has been flattened.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 879 
+  A loop was not vectorized because it contains a call to function "MPI_Allreduce" on line 882.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 882 
+  "MPI_Allreduce" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 886 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 887.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 887 
+  "MPI_Wtime" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 900 
+  "MPI_Sendrecv" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 906 
+  "MPI_Sendrecv" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 919 
+  "fflush" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 926 
+  "fflush" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 930 
+  "MPI_Wtime" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 937 
+  "MPI_Allreduce" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6287 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 944 
+  A loop was not vectorized because it contains a call to function "MPI_Wtime" on line 945.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 945 
+  "MPI_Wtime" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 981 
+  "fflush" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 988 
+  "fflush" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 992 
+  "MPI_Wtime" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1025 
+  "MPI_Reduce" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 1045 
+  A loop was not vectorized because a recurrence was found on "max_latencies" at line 1049.
+
+CC-6005 CC: SCALAR File = bench_lat_bw_1.5.2.c, Line = 1047 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 1047 
+  A loop was not vectorized because a recurrence was found on "max_latencies" at line 1049.
+
+CC-6005 CC: SCALAR File = bench_lat_bw_1.5.2.c, Line = 1056 
+  A loop was unrolled 6 times.
+
+CC-6204 CC: VECTOR File = bench_lat_bw_1.5.2.c, Line = 1056 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1086 
+  "fflush" (called from "ring_lat_bw_loop") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1151 
+  "MPI_Comm_size" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1152 
+  "MPI_Comm_rank" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1156 
+  "MPI_Wtick" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1161 
+  "MPI_Allreduce" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1176 
+  "fflush" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1184 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1185 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1188 
+  "cross_ping_pong_controlled" (called from "bench_lat_bw") was not inlined because the type of argument 8 - RESTRICT qualifiers
+  differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1194 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1195 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1198 
+  "cross_ping_pong_controlled" (called from "bench_lat_bw") was not inlined because the type of argument 5 - RESTRICT qualifiers
+  differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1204 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1210 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1213 
+  "ring_lat_bw_loop" (called from "bench_lat_bw") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1218 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1219 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1222 
+  "ring_lat_bw_loop" (called from "bench_lat_bw") was not inlined because the type of argument 5 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1227 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1228 
+  "MPI_Wtime" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1238 
+  "fflush" (called from "bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1290 
+  "MPI_Comm_size" (called from "bench_lat_bw_print") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1291 
+  "MPI_Comm_rank" (called from "bench_lat_bw_print") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1300 
+  "fflush" (called from "bench_lat_bw_print") was not inlined because the compiler was unable to locate the routine.
+
+CC-3005 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1309 
+  "bench_lat_bw" (called from "bench_lat_bw_print") was not inlined because the type of argument 3 - RESTRICT qualifiers differ.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1367 
+  "fflush" (called from "bench_lat_bw_print") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1376 
+  "MPI_Comm_size" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1377 
+  "MPI_Comm_rank" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1380 
+  "fopen" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3118 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1388 
+  "bench_lat_bw_print" (called from "main_bench_lat_bw") was not inlined because the call site will not flatten.  "MPI_Comm_rank"
+  is missing.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1395 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1396 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1397 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1398 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1399 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1400 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1401 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1402 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1403 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1404 
+  "MPI_Bcast" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1406 
+  "fflush" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = bench_lat_bw_1.5.2.c, Line = 1407 
+  "fclose" (called from "main_bench_lat_bw") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

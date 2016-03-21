@@ -1,0 +1,386 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_pdlange.c
+Compiled : 2016-03-19  13:19:46
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pauxil/HPL_pdlange.o
+           -c ../../../src/pauxil/HPL_pdlange.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_pdlange.c
+Date     : 03/19/2016  13:19:46
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.              /* 
+    2.               * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.               *    HPL - 2.0 - September 10, 2008                          
+    4.               *    Antoine P. Petitet                                                
+    5.               *    University of Tennessee, Knoxville                                
+    6.               *    Innovative Computing Laboratory                                 
+    7.               *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.               *                                                                      
+    9.               * -- Copyright notice and Licensing terms:                             
+   10.               *                                                                      
+   11.               * Redistribution  and  use in  source and binary forms, with or without
+   12.               * modification, are  permitted provided  that the following  conditions
+   13.               * are met:                                                             
+   14.               *                                                                      
+   15.               * 1. Redistributions  of  source  code  must retain the above copyright
+   16.               * notice, this list of conditions and the following disclaimer.        
+   17.               *                                                                      
+   18.               * 2. Redistributions in binary form must reproduce  the above copyright
+   19.               * notice, this list of conditions,  and the following disclaimer in the
+   20.               * documentation and/or other materials provided with the distribution. 
+   21.               *                                                                      
+   22.               * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.               * software must display the following acknowledgement:                 
+   24.               * This  product  includes  software  developed  at  the  University  of
+   25.               * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.               *                                                                      
+   27.               * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.               * names  of  its  contributors  may  not  be used to endorse or promote
+   29.               * products  derived   from   this  software  without  specific  written
+   30.               * permission.                                                          
+   31.               *                                                                      
+   32.               * -- Disclaimer:                                                       
+   33.               *                                                                      
+   34.               * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.               * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.               * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.               * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.               * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.               * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.               * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.               * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.               * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.               * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.               * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.               * ---------------------------------------------------------------------
+   46.               */ 
+   47.              /*
+   48.               * Include files
+   49.               */
+   50.              #include "hpl.h"
+   51.              
+   52.              #ifdef HPL_STDC_HEADERS
+   53.              double HPL_pdlange
+   54.              (
+   55.                 const HPL_T_grid *               GRID,
+   56.                 const HPL_T_NORM                 NORM,
+   57.                 const int                        M,
+   58.                 const int                        N,
+   59.                 const int                        NB,
+   60.                 const double *                   A,
+   61.                 const int                        LDA
+   62.              )
+   63.              #else
+   64.              double HPL_pdlange
+   65.              ( GRID, NORM, M, N, NB, A, LDA )
+   66.                 const HPL_T_grid *               GRID;
+   67.                 const HPL_T_NORM                 NORM;
+   68.                 const int                        M;
+   69.                 const int                        N;
+   70.                 const int                        NB;
+   71.                 const double *                   A;
+   72.                 const int                        LDA;
+   73.              #endif
+   74.              {
+   75.              /* 
+   76.               * Purpose
+   77.               * =======
+   78.               *
+   79.               * HPL_pdlange returns  the value of the one norm,  or the infinity norm,
+   80.               * or the element of largest absolute value of a distributed matrix A:  
+   81.               *  
+   82.               *  
+   83.               *    max(abs(A(i,j))) when NORM = HPL_NORM_A,                          
+   84.               *    norm1(A),        when NORM = HPL_NORM_1,                          
+   85.               *    normI(A),        when NORM = HPL_NORM_I,                          
+   86.               *  
+   87.               * where norm1 denotes the one norm of a matrix (maximum column sum) and
+   88.               * normI denotes  the infinity norm of a matrix (maximum row sum).  Note
+   89.               * that max(abs(A(i,j))) is not a matrix norm.
+   90.               *
+   91.               * Arguments
+   92.               * =========
+   93.               *
+   94.               * GRID    (local input)                 const HPL_T_grid *
+   95.               *         On entry,  GRID  points  to the data structure containing the
+   96.               *         process grid information.
+   97.               *
+   98.               * NORM    (global input)                const HPL_T_NORM
+   99.               *         On entry,  NORM  specifies  the  value to be returned by this
+  100.               *         function as described above.
+  101.               *
+  102.               * M       (global input)                const int
+  103.               *         On entry,  M  specifies  the number  of rows of the matrix A.
+  104.               *         M must be at least zero.
+  105.               *
+  106.               * N       (global input)                const int
+  107.               *         On entry,  N specifies the number of columns of the matrix A.
+  108.               *         N must be at least zero.
+  109.               *
+  110.               * NB      (global input)                const int
+  111.               *         On entry,  NB specifies the blocking factor used to partition
+  112.               *         and distribute the matrix. NB must be larger than one.
+  113.               *
+  114.               * A       (local input)                 const double *
+  115.               *         On entry,  A  points to an array of dimension  (LDA,LocQ(N)),
+  116.               *         that contains the local pieces of the distributed matrix A.
+  117.               *
+  118.               * LDA     (local input)                 const int
+  119.               *         On entry, LDA specifies the leading dimension of the array A.
+  120.               *         LDA must be at least max(1,LocP(M)).
+  121.               *
+  122.               * ---------------------------------------------------------------------
+  123.               */ 
+  124.              /*
+  125.               * .. Local Variables ..
+  126.               */
+  127.                 double                     s, v0=HPL_rzero, * work = NULL;
+  128.                 MPI_Comm                   Acomm, Ccomm, Rcomm;
+  129.                 int                        ii, jj, mp, mycol, myrow, npcol, nprow,
+  130.                                            nq;
+  131.              /* ..
+  132.               * .. Executable Statements ..
+  133.               */
+  134.  +              (void) HPL_grid_info( GRID, &nprow, &npcol, &myrow, &mycol );
+  135.                 Rcomm = GRID->row_comm; Ccomm = GRID->col_comm;
+  136.                 Acomm = GRID->all_comm;
+  137.              
+  138.                 Mnumroc( mp, M, NB, NB, myrow, 0, nprow );
+  139.                 Mnumroc( nq, N, NB, NB, mycol, 0, npcol );
+  140.              
+  141.                 if( Mmin( M, N ) == 0 ) { return( v0 ); }
+  142.                 else if( NORM == HPL_NORM_A )
+  143.                 {
+  144.              /*
+  145.               * max( abs( A ) )
+  146.               */
+  147.                    if( ( nq > 0 ) && ( mp > 0 ) )
+  148.                    {
+  149.  + 1-------<          for( jj = 0; jj < nq; jj++ )
+  150.    1                  {
+  151.  + 1 r4----<             for( ii = 0; ii < mp; ii++ )
+  152.    1 r4---->             { v0 = Mmax( v0, Mabs( *A ) ); A++; }
+  153.    1                     A += LDA - mp;
+  154.    1------->          }
+  155.                    }
+  156.  +                 (void) HPL_reduce( (void *)(&v0), 1, HPL_DOUBLE, HPL_max, 0,
+  157.                                       Acomm );
+  158.                 }
+  159.                 else if( NORM == HPL_NORM_1 )
+  160.                 {
+  161.              /*
+  162.               * Find norm_1( A ).
+  163.               */
+  164.                    if( nq > 0 )
+  165.                    {
+  166.                       work = (double*)malloc( (size_t)(nq) * sizeof( double ) );
+  167.                       if( work == NULL )
+  168.  +                    { HPL_pabort( __LINE__, "HPL_pdlange", "Memory allocation failed" ); }
+  169.              
+  170.  + 1-------<          for( jj = 0; jj < nq; jj++ )
+  171.    1                  {
+  172.    1                     s = HPL_rzero;
+  173.    1 Vr6--<>             for( ii = 0; ii < mp; ii++ ) { s += Mabs( *A ); A++; }
+  174.    1 A----<>             work[jj] = s; A += LDA - mp;
+  175.    1------->          }
+  176.              /*
+  177.               * Find sum of global matrix columns, store on row 0 of process grid
+  178.               */
+  179.  +                    (void) HPL_reduce( (void *)(work), nq, HPL_DOUBLE, HPL_sum,
+  180.                                          0, Ccomm );
+  181.              /*
+  182.               * Find maximum sum of columns for 1-norm
+  183.               */
+  184.                       if( myrow == 0 )
+  185.  +                    { v0 = work[HPL_idamax( nq, work, 1 )]; v0 = Mabs( v0 ); }
+  186.                       if( work ) free( work );
+  187.                    }
+  188.              /*
+  189.               * Find max in row 0, store result in process (0,0)
+  190.               */
+  191.                    if( myrow == 0 )
+  192.  +                    (void) HPL_reduce( (void *)(&v0), 1, HPL_DOUBLE, HPL_max, 0,
+  193.                                          Rcomm );
+  194.                 }
+  195.                 else if( NORM == HPL_NORM_I )
+  196.                 {
+  197.              /*
+  198.               * Find norm_inf( A )
+  199.               */
+  200.                    if( mp > 0 )
+  201.                    {
+  202.                       work = (double*)malloc( (size_t)(mp) * sizeof( double ) );
+  203.                       if( work == NULL )
+  204.  +                    { HPL_pabort( __LINE__, "HPL_pdlange", "Memory allocation failed" ); }
+  205.              
+  206.    A------<>          for( ii = 0; ii < mp; ii++ ) { work[ii] = HPL_rzero; }
+  207.              
+  208.  + 1-------<          for( jj = 0; jj < nq; jj++ )
+  209.    1                  {
+  210.    1 Vr2---<             for( ii = 0; ii < mp; ii++ )
+  211.    1 Vr2--->             { work[ii] += Mabs( *A ); A++; }
+  212.    1                     A += LDA - mp;
+  213.    1------->          }
+  214.              /*       
+  215.               * Find sum of global matrix rows, store on column 0 of process grid
+  216.               */      
+  217.  +                    (void) HPL_reduce( (void *)(work), mp, HPL_DOUBLE, HPL_sum,
+  218.                                          0, Rcomm );
+  219.              /*       
+  220.               * Find maximum sum of rows for inf-norm
+  221.               */      
+  222.                       if( mycol == 0 )
+  223.  +                    { v0 = work[HPL_idamax( mp, work, 1 )]; v0 = Mabs( v0 ); }
+  224.                       if( work ) free( work );
+  225.                    }
+  226.              /*
+  227.               * Find max in column 0, store result in process (0,0)
+  228.               */
+  229.                    if( mycol == 0 )
+  230.  +                    (void) HPL_reduce( (void *)(&v0), 1, HPL_DOUBLE, HPL_max,
+  231.                                          0, Ccomm );
+  232.                 }
+  233.              /*
+  234.               * Broadcast answer to every process in the grid
+  235.               */
+  236.  +              (void) HPL_broadcast( (void *)(&v0), 1, HPL_DOUBLE, 0, Acomm );
+  237.              
+  238.                 return( v0 );
+  239.              /*
+  240.               * End of HPL_pdlange
+  241.               */
+  242.              }
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 134 
+  "HPL_grid_info" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-6254 CC: VECTOR File = HPL_pdlange.c, Line = 149 
+  A loop was not vectorized because a recurrence was found on "v0" at line 152.
+
+CC-6005 CC: SCALAR File = HPL_pdlange.c, Line = 151 
+  A loop was unrolled 4 times.
+
+CC-6254 CC: VECTOR File = HPL_pdlange.c, Line = 151 
+  A loop was not vectorized because a recurrence was found on "v0" at line 152.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 156 
+  "HPL_reduce" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 168 
+  "HPL_pabort" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-6294 CC: VECTOR File = HPL_pdlange.c, Line = 170 
+  A loop was not vectorized because a better candidate was found at line 173.
+
+CC-6005 CC: SCALAR File = HPL_pdlange.c, Line = 173 
+  A loop was unrolled 6 times.
+
+CC-6204 CC: VECTOR File = HPL_pdlange.c, Line = 173 
+  A loop was vectorized.
+
+CC-6231 CC: VECTOR File = HPL_pdlange.c, Line = 174 
+  A statement was replaced by a library call.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 179 
+  "HPL_reduce" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 185 
+  "HPL_idamax" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 192 
+  "HPL_reduce" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 204 
+  "HPL_pabort" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-6202 CC: VECTOR File = HPL_pdlange.c, Line = 206 
+  A loop was replaced by a library call.
+
+CC-6254 CC: VECTOR File = HPL_pdlange.c, Line = 208 
+  A loop was not vectorized because a recurrence was found on "work" at line 211.
+
+CC-6005 CC: SCALAR File = HPL_pdlange.c, Line = 210 
+  A loop was unrolled 2 times.
+
+CC-6204 CC: VECTOR File = HPL_pdlange.c, Line = 210 
+  A loop was vectorized.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 217 
+  "HPL_reduce" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 223 
+  "HPL_idamax" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 230 
+  "HPL_reduce" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = HPL_pdlange.c, Line = 236 
+  "HPL_broadcast" (called from "HPL_pdlange") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

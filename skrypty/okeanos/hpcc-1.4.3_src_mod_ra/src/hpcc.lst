@@ -1,0 +1,457 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/hpcc.c
+Compiled : 2016-03-19  13:20:22
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../../src/hpcc.o -c ../../../../src/hpcc.c
+           -I ../../../../include -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../../src/hpcc.c
+Date     : 03/19/2016  13:20:22
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.     /* -*- mode: C; tab-width: 2; indent-tabs-mode: nil; fill-column: 79; coding: iso-latin-1-unix -*- */
+    2.     /*
+    3.       hpcc.c
+    4.     */
+    5.     
+    6.     #include <hpcc.h>
+    7.     #include <ctype.h>
+    8.     
+    9.     int
+   10.     main(int argc, char *argv[]) {
+   11.       int myRank, commSize;
+   12.       char *outFname;
+   13.       FILE *outputFile;
+   14.       HPCC_Params params;
+   15.       time_t currentTime;
+   16.       void *extdata;
+   17.     
+   18.  +    MPI_Init( &argc, &argv );
+   19.     
+   20.  +    if (HPCC_external_init( argc, argv, &extdata ))
+   21.         goto hpcc_end;
+   22.     
+   23.  +    if (HPCC_Init( &params ))
+   24.         goto hpcc_end;
+   25.     
+   26.  +    MPI_Comm_size( MPI_COMM_WORLD, &commSize );
+   27.  +    MPI_Comm_rank( MPI_COMM_WORLD, &myRank );
+   28.     
+   29.       outFname = params.outFname;
+   30.     
+   31.       /* -------------------------------------------------- */
+   32.       /*                 MPI RandomAccess                   */
+   33.       /* -------------------------------------------------- */
+   34.     
+   35.  +    MPI_Barrier( MPI_COMM_WORLD );
+   36.     
+   37.  +    BEGIN_IO( myRank, outFname, outputFile);
+   38.       fprintf( outputFile, "Begin of MPIRandomAccess section.\n" );
+   39.  +    END_IO( myRank, outputFile );
+   40.     
+   41.  +    if (params.RunMPIRandomAccess) HPCC_MPIRandomAccess( &params );
+   42.     
+   43.  +    time( &currentTime );
+   44.  +    BEGIN_IO(myRank, outFname, outputFile);
+   45.  +    fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+   46.       fprintf( outputFile, "End of MPIRandomAccess section.\n" );
+   47.  +    END_IO( myRank, outputFile );
+   48.     
+   49.       /* -------------------------------------------------- */
+   50.       /*                  StarRandomAccess                  */
+   51.       /* -------------------------------------------------- */
+   52.     
+   53.     /*  MPI_Barrier( MPI_COMM_WORLD );
+   54.     
+   55.       BEGIN_IO( myRank, outFname, outputFile);
+   56.       fprintf( outputFile, "Begin of StarRandomAccess section.\n" );
+   57.       END_IO( myRank, outputFile );
+   58.     
+   59.       if (params.RunStarRandomAccess) HPCC_StarRandomAccess( &params );
+   60.     
+   61.       time( &currentTime );
+   62.       BEGIN_IO( myRank, outFname, outputFile);
+   63.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+   64.       fprintf( outputFile, "End of StarRandomAccess section.\n" );
+   65.       END_IO( myRank, outputFile );
+   66.     */
+   67.       /* -------------------------------------------------- */
+   68.       /*                 SingleRandomAccess                 */
+   69.       /* -------------------------------------------------- */
+   70.     /*
+   71.       MPI_Barrier( MPI_COMM_WORLD );
+   72.     
+   73.       BEGIN_IO( myRank, outFname, outputFile);
+   74.       fprintf( outputFile, "Begin of SingleRandomAccess section.\n" );
+   75.       END_IO( myRank, outputFile );
+   76.     
+   77.       if (params.RunSingleRandomAccess) HPCC_SingleRandomAccess( &params );
+   78.     
+   79.       time( &currentTime );
+   80.       BEGIN_IO( myRank, outFname, outputFile);
+   81.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+   82.       fprintf( outputFile, "End of SingleRandomAccess section.\n" );
+   83.       END_IO( myRank, outputFile );
+   84.     */
+   85.       /* -------------------------------------------------- */
+   86.       /*                 MPI RandomAccess LCG               */
+   87.       /* -------------------------------------------------- */
+   88.     /*
+   89.       MPI_Barrier( MPI_COMM_WORLD );
+   90.     
+   91.       BEGIN_IO( myRank, outFname, outputFile);
+   92.       fprintf( outputFile, "Begin of MPIRandomAccess_LCG section.\n" );
+   93.       END_IO( myRank, outputFile );
+   94.     
+   95.       if (params.RunMPIRandomAccess_LCG) HPCC_MPIRandomAccess_LCG( &params );
+   96.     
+   97.       time( &currentTime );
+   98.       BEGIN_IO(myRank, outFname, outputFile);
+   99.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  100.       fprintf( outputFile, "End of MPIRandomAccess_LCG section.\n" );
+  101.       END_IO( myRank, outputFile );
+  102.     */
+  103.       /* -------------------------------------------------- */
+  104.       /*                  StarRandomAccess LCG              */
+  105.       /* -------------------------------------------------- */
+  106.     /*
+  107.       MPI_Barrier( MPI_COMM_WORLD );
+  108.     
+  109.       BEGIN_IO( myRank, outFname, outputFile);
+  110.       fprintf( outputFile, "Begin of StarRandomAccess_LCG section.\n" );
+  111.       END_IO( myRank, outputFile );
+  112.     
+  113.       if (params.RunStarRandomAccess_LCG) HPCC_StarRandomAccess_LCG( &params );
+  114.     
+  115.       time( &currentTime );
+  116.       BEGIN_IO( myRank, outFname, outputFile);
+  117.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  118.       fprintf( outputFile, "End of StarRandomAccess_LCG section.\n" );
+  119.       END_IO( myRank, outputFile );
+  120.     */
+  121.       /* -------------------------------------------------- */
+  122.       /*                 SingleRandomAccess LCG             */
+  123.       /* -------------------------------------------------- */
+  124.     /*
+  125.       MPI_Barrier( MPI_COMM_WORLD );
+  126.     
+  127.       BEGIN_IO( myRank, outFname, outputFile);
+  128.       fprintf( outputFile, "Begin of SingleRandomAccess_LCG section.\n" );
+  129.       END_IO( myRank, outputFile );
+  130.     
+  131.       if (params.RunSingleRandomAccess_LCG) HPCC_SingleRandomAccess_LCG( &params );
+  132.     
+  133.       time( &currentTime );
+  134.       BEGIN_IO( myRank, outFname, outputFile);
+  135.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  136.       fprintf( outputFile, "End of SingleRandomAccess_LCG section.\n" );
+  137.       END_IO( myRank, outputFile );
+  138.     */
+  139.       /* -------------------------------------------------- */
+  140.       /*                       PTRANS                       */
+  141.       /* -------------------------------------------------- */
+  142.     /*
+  143.       MPI_Barrier( MPI_COMM_WORLD );
+  144.     
+  145.       BEGIN_IO( myRank, outFname, outputFile);
+  146.       fprintf( outputFile, "Begin of PTRANS section.\n" );
+  147.       END_IO( myRank, outputFile );
+  148.     
+  149.       if (params.RunPTRANS) PTRANS( &params );
+  150.     
+  151.       time( &currentTime );
+  152.       BEGIN_IO( myRank, outFname, outputFile);
+  153.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  154.       fprintf( outputFile, "End of PTRANS section.\n" );
+  155.       END_IO( myRank, outputFile );
+  156.     */
+  157.       /* -------------------------------------------------- */
+  158.       /*                    StarDGEMM                       */
+  159.       /* -------------------------------------------------- */
+  160.     /*
+  161.       MPI_Barrier( MPI_COMM_WORLD );
+  162.     
+  163.       BEGIN_IO( myRank, outFname, outputFile);
+  164.       fprintf( outputFile, "Begin of StarDGEMM section.\n" );
+  165.       END_IO( myRank, outputFile );
+  166.     
+  167.       if (params.RunStarDGEMM) HPCC_StarDGEMM( &params );
+  168.     
+  169.       time( &currentTime );
+  170.       BEGIN_IO( myRank, outFname, outputFile);
+  171.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  172.       fprintf( outputFile, "End of StarDGEMM section.\n" );
+  173.       END_IO( myRank, outputFile );
+  174.     */
+  175.       /* -------------------------------------------------- */
+  176.       /*                    SingleDGEMM                     */
+  177.       /* -------------------------------------------------- */
+  178.     /*
+  179.       MPI_Barrier( MPI_COMM_WORLD );
+  180.     
+  181.       BEGIN_IO( myRank, outFname, outputFile);
+  182.       fprintf( outputFile, "Begin of SingleDGEMM section.\n" );
+  183.       END_IO( myRank, outputFile );
+  184.     
+  185.       if (params.RunSingleDGEMM) HPCC_SingleDGEMM( &params );
+  186.     
+  187.       time( &currentTime );
+  188.       BEGIN_IO( myRank, outFname, outputFile);
+  189.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  190.       fprintf( outputFile, "End of SingleDGEMM section.\n" );
+  191.       END_IO( myRank, outputFile );
+  192.     */
+  193.       /* -------------------------------------------------- */
+  194.       /*                    StarSTREAM                      */
+  195.       /* -------------------------------------------------- */
+  196.     /*
+  197.       MPI_Barrier( MPI_COMM_WORLD );
+  198.     
+  199.       BEGIN_IO( myRank, outFname, outputFile);
+  200.       fprintf( outputFile, "Begin of StarSTREAM section.\n" );
+  201.       END_IO( myRank, outputFile );
+  202.     
+  203.       if (params.RunStarStream) HPCC_StarStream( &params );
+  204.     
+  205.       time( &currentTime );
+  206.       BEGIN_IO( myRank, outFname, outputFile);
+  207.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  208.       fprintf( outputFile, "End of StarSTREAM section.\n" );
+  209.       END_IO( myRank, outputFile );
+  210.     */
+  211.       /* -------------------------------------------------- */
+  212.       /*                    SingleSTREAM                    */
+  213.       /* -------------------------------------------------- */
+  214.     /*
+  215.       MPI_Barrier( MPI_COMM_WORLD );
+  216.     
+  217.       BEGIN_IO( myRank, outFname, outputFile);
+  218.       fprintf( outputFile, "Begin of SingleSTREAM section.\n" );
+  219.       END_IO( myRank, outputFile );
+  220.     
+  221.       if (params.RunSingleStream) HPCC_SingleStream( &params );
+  222.     
+  223.       time( &currentTime );
+  224.       BEGIN_IO( myRank, outFname, outputFile);
+  225.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  226.       fprintf( outputFile, "End of SingleSTREAM section.\n" );
+  227.       END_IO( myRank, outputFile );
+  228.     */
+  229.       /* -------------------------------------------------- */
+  230.       /*                       MPIFFT                       */
+  231.       /* -------------------------------------------------- */
+  232.     /*
+  233.       MPI_Barrier( MPI_COMM_WORLD );
+  234.     
+  235.       BEGIN_IO( myRank, outFname, outputFile);
+  236.       fprintf( outputFile, "Begin of MPIFFT section.\n" );
+  237.       END_IO( myRank, outputFile );
+  238.     
+  239.       if (params.RunMPIFFT) HPCC_MPIFFT( &params );
+  240.     
+  241.       time( &currentTime );
+  242.       BEGIN_IO( myRank, outFname, outputFile);
+  243.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  244.       fprintf( outputFile, "End of MPIFFT section.\n" );
+  245.       END_IO( myRank, outputFile );
+  246.     */
+  247.       /* -------------------------------------------------- */
+  248.       /*                      StarFFT                       */
+  249.       /* -------------------------------------------------- */
+  250.     /*
+  251.       MPI_Barrier( MPI_COMM_WORLD );
+  252.     
+  253.       BEGIN_IO( myRank, outFname, outputFile);
+  254.       fprintf( outputFile, "Begin of StarFFT section.\n" );
+  255.       END_IO( myRank, outputFile );
+  256.     
+  257.       if (params.RunStarFFT) HPCC_StarFFT( &params );
+  258.     
+  259.       time( &currentTime );
+  260.       BEGIN_IO( myRank, outFname, outputFile);
+  261.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  262.       fprintf( outputFile, "End of StarFFT section.\n" );
+  263.       END_IO( myRank, outputFile );
+  264.     */
+  265.       /* -------------------------------------------------- */
+  266.       /*                      SingleFFT                     */
+  267.       /* -------------------------------------------------- */
+  268.     /*
+  269.       MPI_Barrier( MPI_COMM_WORLD );
+  270.     
+  271.       BEGIN_IO( myRank, outFname, outputFile);
+  272.       fprintf( outputFile, "Begin of SingleFFT section.\n" );
+  273.       END_IO( myRank, outputFile );
+  274.     
+  275.       if (params.RunSingleFFT) HPCC_SingleFFT( &params );
+  276.     
+  277.       time( &currentTime );
+  278.       BEGIN_IO( myRank, outFname, outputFile);
+  279.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  280.       fprintf( outputFile, "End of SingleFFT section.\n" );
+  281.       END_IO( myRank, outputFile );
+  282.     */
+  283.       /* -------------------------------------------------- */
+  284.       /*                  Latency/Bandwidth                 */
+  285.       /* -------------------------------------------------- */
+  286.     /*
+  287.       MPI_Barrier( MPI_COMM_WORLD );
+  288.     
+  289.       BEGIN_IO( myRank, outFname, outputFile);
+  290.       fprintf( outputFile, "Begin of LatencyBandwidth section.\n" );
+  291.       END_IO( myRank, outputFile );
+  292.     
+  293.       if (params.RunLatencyBandwidth) main_bench_lat_bw( &params );
+  294.     
+  295.       time( &currentTime );
+  296.       BEGIN_IO( myRank, outFname, outputFile);
+  297.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  298.       fprintf( outputFile, "End of LatencyBandwidth section.\n" );
+  299.       END_IO( myRank, outputFile );
+  300.     */
+  301.       /* -------------------------------------------------- */
+  302.       /*                        HPL                         */
+  303.       /* -------------------------------------------------- */
+  304.     /*
+  305.       BEGIN_IO( myRank, outFname, outputFile);
+  306.       fprintf( outputFile, "Begin of HPL section.\n" );
+  307.       END_IO( myRank, outputFile );
+  308.     
+  309.       if (params.RunHPL) HPL_main( argc, argv, &params.HPLrdata, &params.Failure );
+  310.     
+  311.       time( &currentTime );
+  312.       BEGIN_IO( myRank, outFname, outputFile);
+  313.       fprintf( outputFile,"Current time (%ld) is %s\n",(long)currentTime,ctime(&currentTime));
+  314.       fprintf( outputFile, "End of HPL section.\n" );
+  315.       END_IO( myRank, outputFile );
+  316.     */
+  317.       hpcc_end:
+  318.     
+  319.  +    HPCC_Finalize( &params );
+  320.     
+  321.  +    HPCC_external_finalize( argc, argv, extdata );
+  322.     
+  323.  +    MPI_Finalize();
+  324.       return 0;
+  325.     }
+
+CC-3021 CC: IPA File = hpcc.c, Line = 18 
+  "MPI_Init" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 20 
+  "HPCC_external_init" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 23 
+  "HPCC_Init" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 26 
+  "MPI_Comm_size" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 27 
+  "MPI_Comm_rank" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 35 
+  "MPI_Barrier" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 37 
+  "fopen" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 39 
+  "fflush" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 39 
+  "fclose" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 41 
+  "HPCC_MPIRandomAccess" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 43 
+  "time" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 44 
+  "fopen" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 45 
+  "ctime" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 47 
+  "fflush" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 47 
+  "fclose" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 319 
+  "HPCC_Finalize" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 321 
+  "HPCC_external_finalize" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+CC-3021 CC: IPA File = hpcc.c, Line = 323 
+  "MPI_Finalize" (called from "main") was not inlined because the compiler was unable to locate the routine.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

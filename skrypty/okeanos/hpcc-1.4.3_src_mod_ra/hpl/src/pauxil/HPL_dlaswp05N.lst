@@ -1,0 +1,288 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_dlaswp05N.c
+Compiled : 2016-03-19  13:19:43
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pauxil/HPL_dlaswp05N.o
+           -c ../../../src/pauxil/HPL_dlaswp05N.c -I ../../../include
+           -I ../../../include/CrayX1 -D Add_ -D StringSunStyle
+           -D F77_INTEGER=int -O 2 -h list=m -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pauxil/HPL_dlaswp05N.c
+Date     : 03/19/2016  13:19:43
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.               /* 
+    2.                * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.                *    HPL - 2.0 - September 10, 2008                          
+    4.                *    Antoine P. Petitet                                                
+    5.                *    University of Tennessee, Knoxville                                
+    6.                *    Innovative Computing Laboratory                                 
+    7.                *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.                *                                                                      
+    9.                * -- Copyright notice and Licensing terms:                             
+   10.                *                                                                      
+   11.                * Redistribution  and  use in  source and binary forms, with or without
+   12.                * modification, are  permitted provided  that the following  conditions
+   13.                * are met:                                                             
+   14.                *                                                                      
+   15.                * 1. Redistributions  of  source  code  must retain the above copyright
+   16.                * notice, this list of conditions and the following disclaimer.        
+   17.                *                                                                      
+   18.                * 2. Redistributions in binary form must reproduce  the above copyright
+   19.                * notice, this list of conditions,  and the following disclaimer in the
+   20.                * documentation and/or other materials provided with the distribution. 
+   21.                *                                                                      
+   22.                * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.                * software must display the following acknowledgement:                 
+   24.                * This  product  includes  software  developed  at  the  University  of
+   25.                * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.                *                                                                      
+   27.                * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.                * names  of  its  contributors  may  not  be used to endorse or promote
+   29.                * products  derived   from   this  software  without  specific  written
+   30.                * permission.                                                          
+   31.                *                                                                      
+   32.                * -- Disclaimer:                                                       
+   33.                *                                                                      
+   34.                * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.                * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.                * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.                * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.                * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.                * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.                * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.                * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.                * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.                * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.                * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.                * ---------------------------------------------------------------------
+   46.                */ 
+   47.               /*
+   48.                * Include files
+   49.                */
+   50.               #include "hpl.h"
+   51.               /*
+   52.                * Define default value for unrolling factor
+   53.                */
+   54.               #ifndef HPL_LASWP05N_DEPTH
+   55.               #define    HPL_LASWP05N_DEPTH       32
+   56.               #define    HPL_LASWP05N_LOG2_DEPTH   5
+   57.               #endif
+   58.               
+   59.               #ifdef HPL_STDC_HEADERS
+   60.               void HPL_dlaswp05N
+   61.               (
+   62.                  const int                        M,
+   63.                  const int                        N,
+   64.                  double *                         A,
+   65.                  const int                        LDA,
+   66.                  const double *                   U,
+   67.                  const int                        LDU,
+   68.                  const int *                      LINDXA,
+   69.                  const int *                      LINDXAU
+   70.               )
+   71.               #else
+   72.               void HPL_dlaswp05N
+   73.               ( M, N, A, LDA, U, LDU, LINDXA, LINDXAU )
+   74.                  const int                        M;
+   75.                  const int                        N;
+   76.                  double *                         A;
+   77.                  const int                        LDA;
+   78.                  const double *                   U;
+   79.                  const int                        LDU;
+   80.                  const int *                      LINDXA;
+   81.                  const int *                      LINDXAU;
+   82.               #endif
+   83.               {
+   84.               /* 
+   85.                * Purpose
+   86.                * =======
+   87.                *
+   88.                * HPL_dlaswp05N copies rows of  U of global offset LINDXAU into rows of
+   89.                * A at positions indicated by LINDXA.
+   90.                *
+   91.                * Arguments
+   92.                * =========
+   93.                *
+   94.                * M       (local input)                 const int
+   95.                *         On entry, M  specifies the number of rows of U that should be
+   96.                *         copied into A. M must be at least zero.
+   97.                *
+   98.                * N       (local input)                 const int
+   99.                *         On entry, N specifies the length of the rows of U that should
+  100.                *         be copied into A. N must be at least zero.
+  101.                *
+  102.                * A       (local output)                double *
+  103.                *         On entry, A points to an array of dimension (LDA,N). On exit,
+  104.                *         the  rows of this array specified by  LINDXA  are replaced by
+  105.                *         rows of U indicated by LINDXAU.
+  106.                *
+  107.                * LDA     (local input)                 const int
+  108.                *         On entry, LDA specifies the leading dimension of the array A.
+  109.                *         LDA must be at least MAX(1,M).
+  110.                *
+  111.                * U       (local input/output)          const double *
+  112.                *         On entry,  U  points to an array of dimension  (LDU,N).  This
+  113.                *         array contains the rows that are to be copied into A.
+  114.                *
+  115.                * LDU     (local input)                 const int
+  116.                *         On entry, LDU specifies the leading dimension of the array U.
+  117.                *         LDU must be at least MAX(1,M).
+  118.                *
+  119.                * LINDXA  (local input)                 const int *
+  120.                *         On entry, LINDXA is an array of dimension M that contains the
+  121.                *         local row indexes of A that should be copied from U.
+  122.                *
+  123.                * LINDXAU (local input)                 const int *
+  124.                *         On entry, LINDXAU  is an array of dimension  M that  contains
+  125.                *         the local row indexes of U that should be copied in A.
+  126.                *
+  127.                * ---------------------------------------------------------------------
+  128.                */ 
+  129.               /*
+  130.                * .. Local Variables ..
+  131.                */
+  132.                  const double               * U0 = U, * u0;
+  133.                  double                     * a0;
+  134.                  const int                  incA = (int)( (unsigned int)(LDA) <<
+  135.                                                           HPL_LASWP05N_LOG2_DEPTH ),
+  136.                                             incU = (int)( (unsigned int)(LDU) <<
+  137.                                                           HPL_LASWP05N_LOG2_DEPTH );
+  138.                  int                        nr, nu;
+  139.                  register int               i, j;
+  140.               /* ..
+  141.                * .. Executable Statements ..
+  142.                */
+  143.                  if( ( M <= 0 ) || ( N <= 0 ) ) return;
+  144.               
+  145.                  nr = N - ( nu = (int)( ( (unsigned int)(N) >> HPL_LASWP05N_LOG2_DEPTH ) <<
+  146.                                           HPL_LASWP05N_LOG2_DEPTH ) );
+  147.               
+  148.  + 1--------<    for( j = 0; j < nu; j += HPL_LASWP05N_DEPTH, A += incA, U0 += incU )
+  149.    1             {
+  150.  + 1 2------<       for( i = 0; i < M; i++ )
+  151.    1 2              {
+  152.    1 2                 a0 = A + (size_t)(LINDXA[i]); u0 = U0 + (size_t)(LINDXAU[i]);
+  153.    1 2        
+  154.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU;
+  155.    1 2        #if ( HPL_LASWP05N_DEPTH >  1 )
+  156.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU;
+  157.    1 2        #endif
+  158.    1 2        #if ( HPL_LASWP05N_DEPTH >  2 )
+  159.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  160.    1 2        #endif
+  161.    1 2        #if ( HPL_LASWP05N_DEPTH >  4 )
+  162.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  163.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  164.    1 2        #endif
+  165.    1 2        #if ( HPL_LASWP05N_DEPTH >  8 )
+  166.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  167.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  168.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  169.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  170.    1 2        #endif
+  171.    1 2        #if ( HPL_LASWP05N_DEPTH > 16 )
+  172.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  173.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  174.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  175.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  176.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  177.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  178.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  179.    1 2                 *a0 = *u0; a0 += LDA; u0 += LDU; *a0 = *u0; a0 += LDA; u0 += LDU;
+  180.    1 2        #endif
+  181.    1 2------>       }
+  182.    1-------->    }
+  183.               
+  184.                  if( nr )
+  185.                  {
+  186.  + 1--------<       for( i = 0; i < M; i++ )
+  187.    1                {
+  188.    1                   a0 = A + (size_t)(LINDXA[i]); u0 = U0 + (size_t)(LINDXAU[i]);
+  189.    1 Vcr2--<>          for( j = 0; j < nr; j++, a0 += LDA, u0 += LDU ) { *a0 = *u0; }
+  190.    1-------->       }
+  191.                  }
+  192.               /*
+  193.                * End of HPL_dlaswp05N
+  194.                */
+  195.               }
+
+CC-6254 CC: VECTOR File = HPL_dlaswp05N.c, Line = 148 
+  A loop was not vectorized because a recurrence was found on "a0" at line 159.
+
+CC-6254 CC: VECTOR File = HPL_dlaswp05N.c, Line = 150 
+  A loop was not vectorized because a recurrence was found on "a0" at line 159.
+
+CC-6294 CC: VECTOR File = HPL_dlaswp05N.c, Line = 186 
+  A loop was not vectorized because a better candidate was found at line 189.
+
+CC-6005 CC: SCALAR File = HPL_dlaswp05N.c, Line = 189 
+  A loop was unrolled 2 times.
+
+CC-6213 CC: VECTOR File = HPL_dlaswp05N.c, Line = 189 
+  A loop was conditionally vectorized.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

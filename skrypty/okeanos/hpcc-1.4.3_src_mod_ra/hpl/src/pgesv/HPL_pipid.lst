@@ -1,0 +1,274 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S u m m a r y   R e p o r t
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Compilation
+-----------
+File     : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pipid.c
+Compiled : 2016-03-19  13:19:55
+Compiler : Version 8.4.5
+Ftnlx    : Version 8413 (libcif 84006)
+Target   : x86-64
+Command  : driver.cc -h cpu=haswell -h static -D __CRAYXC -D __CRAY_HASWELL
+           -D __CRAYXT_COMPUTE_LINUX_TARGET -h network=aries
+           -o ../../../src/pgesv/HPL_pipid.o -c ../../../src/pgesv/HPL_pipid.c
+           -I ../../../include -I ../../../include/CrayX1 -D Add_
+           -D StringSunStyle -D F77_INTEGER=int -O 2 -h list=m
+           -D LONG_IS_64BITS -h restrict=a
+           -W l,--rpath=/opt/cray/cce/8.4.5/craylibs/x86-64
+           -ibase-compiler /opt/cray/cce/8.4.5/CC/x86-64/compiler_include_base
+           -isystem /opt/cray/cce/8.4.5/craylibs/x86-64/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include
+           -I /opt/gcc/4.8.1/snos/lib/gcc/x86_64-suse-linux/4.8.1/include-fixed
+           -isystem /usr/include
+           -I /opt/cray/mpt/7.3.2/gni/mpich-cray/8.3/include
+           -I /opt/cray/libsci/16.03.1/CRAY/8.3/x86_64/include
+           -I /opt/cray/rca/1.0.0-2.0502.60530.1.62.ari/include
+           -I /opt/cray/pmi/5.0.10-1.0000.11050.0.0.ari/include
+           -I /opt/cray/xpmem/0.1-2.0502.64982.5.3.ari/include
+           -I /opt/cray/dmapp/7.0.1-1.0502.11080.8.76.ari/include
+           -I /opt/cray/gni-headers/4.0-1.0502.10859.7.8.ari/include
+           -I /opt/cray/ugni/6.0-1.0502.10863.8.29.ari/include
+           -I /opt/cray/udreg/2.3.2-1.0502.10518.2.17.ari/include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/../include
+           -I /opt/cray/cce/8.4.5/craylibs/x86-64/pkgconfig/..//include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/wlm_detect/1.0-1.0502.64649.2.1.ari/include
+           -I /opt/cray/alps/5.2.4-2.0502.9774.31.11.ari/include
+           -I /opt/cray/krca/1.0.0-2.0502.63139.4.31.ari/include
+           -I /opt/cray-hss-devel/7.2.0/include
+
+clx report
+------------
+Source   : /lustre/tetyda/home/lgorski/okeanos_scripts/randomaccess/hpcc-1.4.3_src_mod_ra/hpl/lib/arch/build/../../../src/pgesv/HPL_pipid.c
+Date     : 03/19/2016  13:19:55
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                          S o u r c e   L i s t i n g
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+     %%%    L o o p m a r k   L e g e n d    %%%
+
+     Primary Loop Type        Modifiers
+     ------- ---- ----        ---------
+     A - Pattern matched      a - atomic memory operation
+                              b - blocked
+     C - Collapsed            c - conditional and/or computed
+     D - Deleted               
+     E - Cloned                
+     F - Flat - No calls      f - fused
+     G - Accelerated          g - partitioned
+     I - Inlined              i - interchanged
+     M - Multithreaded        m - partitioned
+                              n - non-blocking remote transfer
+                              p - partial
+                              r - unrolled
+                              s - shortloop
+     V - Vectorized           w - unwound
+
+     + - More messages listed at end of listing
+     ------------------------------------------
+
+
+    1.           /* 
+    2.            * -- High Performance Computing Linpack Benchmark (HPL)                
+    3.            *    HPL - 2.0 - September 10, 2008                          
+    4.            *    Antoine P. Petitet                                                
+    5.            *    University of Tennessee, Knoxville                                
+    6.            *    Innovative Computing Laboratory                                 
+    7.            *    (C) Copyright 2000-2008 All Rights Reserved                       
+    8.            *                                                                      
+    9.            * -- Copyright notice and Licensing terms:                             
+   10.            *                                                                      
+   11.            * Redistribution  and  use in  source and binary forms, with or without
+   12.            * modification, are  permitted provided  that the following  conditions
+   13.            * are met:                                                             
+   14.            *                                                                      
+   15.            * 1. Redistributions  of  source  code  must retain the above copyright
+   16.            * notice, this list of conditions and the following disclaimer.        
+   17.            *                                                                      
+   18.            * 2. Redistributions in binary form must reproduce  the above copyright
+   19.            * notice, this list of conditions,  and the following disclaimer in the
+   20.            * documentation and/or other materials provided with the distribution. 
+   21.            *                                                                      
+   22.            * 3. All  advertising  materials  mentioning  features  or  use of this
+   23.            * software must display the following acknowledgement:                 
+   24.            * This  product  includes  software  developed  at  the  University  of
+   25.            * Tennessee, Knoxville, Innovative Computing Laboratory.             
+   26.            *                                                                      
+   27.            * 4. The name of the  University,  the name of the  Laboratory,  or the
+   28.            * names  of  its  contributors  may  not  be used to endorse or promote
+   29.            * products  derived   from   this  software  without  specific  written
+   30.            * permission.                                                          
+   31.            *                                                                      
+   32.            * -- Disclaimer:                                                       
+   33.            *                                                                      
+   34.            * THIS  SOFTWARE  IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+   35.            * ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,  INCLUDING,  BUT NOT
+   36.            * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+   37.            * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE UNIVERSITY
+   38.            * OR  CONTRIBUTORS  BE  LIABLE FOR ANY  DIRECT,  INDIRECT,  INCIDENTAL,
+   39.            * SPECIAL,  EXEMPLARY,  OR  CONSEQUENTIAL DAMAGES  (INCLUDING,  BUT NOT
+   40.            * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+   41.            * DATA OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER CAUSED AND ON ANY
+   42.            * THEORY OF LIABILITY, WHETHER IN CONTRACT,  STRICT LIABILITY,  OR TORT
+   43.            * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+   44.            * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. 
+   45.            * ---------------------------------------------------------------------
+   46.            */ 
+   47.           /*
+   48.            * Include files
+   49.            */
+   50.           #include "hpl.h"
+   51.           
+   52.           #ifdef HPL_STDC_HEADERS
+   53.           void HPL_pipid
+   54.           (
+   55.              HPL_T_panel *                    PANEL,
+   56.              int *                            K,
+   57.              int *                            IPID
+   58.           )
+   59.           #else
+   60.           void HPL_pipid
+   61.           ( PANEL, K, IPID )
+   62.              HPL_T_panel *                    PANEL;
+   63.              int *                            K;
+   64.              int *                            IPID;
+   65.           #endif
+   66.           {
+   67.           /* 
+   68.            * Purpose
+   69.            * =======
+   70.            *
+   71.            * HPL_pipid computes an array  IPID  that contains the source and final
+   72.            * destination  of  matrix rows  resulting  from  the  application  of N
+   73.            * interchanges  as computed by the  LU  factorization  with row partial
+   74.            * pivoting. The array IPID is such that the row of global index IPID(i)
+   75.            * should be mapped onto the row of global index IPID(i+1). Note that we
+   76.            * cannot really know the length of IPID a priori. However, we know that
+   77.            * this array is at least 2*N long,  since  there are N rows to swap and
+   78.            * broadcast. The length of this array  must be smaller than or equal to
+   79.            * 4*N, since every row is swapped with at most a single distinct remote
+   80.            * row. The algorithm constructing  IPID  goes as follows: Let IA be the
+   81.            * global index of the first row to be swapped.
+   82.            *  
+   83.            * For every row src IA + i with i in [0..N) to be swapped with row  dst
+   84.            * such that dst is given by DPIV[i]:
+   85.            *  
+   86.            * Is row  src  the destination  of a previous row of the current block,
+   87.            * that is, is there k odd such that IPID(k) is equal to src ?
+   88.            *     Yes:  update  this destination  with dst.  For  example,  if  the
+   89.            * pivot array is  (0,2)(1,1)(2,5) ... , then when we swap rows 2 and 5,
+   90.            * we swap in fact row 0 and 5,  i.e.,  row 0 goes to 5 and not 2  as it
+   91.            * was thought so far ...
+   92.            *     No :  add  the pair (src,dst) at the end of IPID; row src has not
+   93.            * been moved yet.
+   94.            *  
+   95.            * Is row  dst  different  from src the destination of a previous row of
+   96.            * the current block, i.e., is there k odd such that IPID(k) is equal to
+   97.            * dst ?
+   98.            *     Yes:  update  IPID(k) with src.  For example,  if the pivot array
+   99.            * is (0,5)(1,1)(2,5) ... , then when  we swap rows  2 and 5, we swap in
+  100.            * fact row 2 and 0,  i.e.,  row 0 goes to 2 and not 5 as it was thought
+  101.            * so far ...
+  102.            *     No : add  the  pair (dst,src) at the end of IPID; row dst has not
+  103.            * been moved yet.
+  104.            *  
+  105.            * Note that when src is equal to dst, the pair (dst,src)  should not be
+  106.            * added to  IPID  in  order  to avoid duplicated entries in this array.
+  107.            * During  the construction of the array  IPID,  we  make  sure that the
+  108.            * first N entries are such that IPID(k) with k odd is equal to  IA+k/2.
+  109.            * For k in  [0..K/2),  the  row  of global index  IPID(2*k)  should  be
+  110.            * mapped onto the row of global index IPID(2*k+1).
+  111.            *
+  112.            * Arguments
+  113.            * =========
+  114.            *
+  115.            * PANEL   (local input/output)          HPL_T_panel *
+  116.            *         On entry,  PANEL  points to the data structure containing the
+  117.            *         panel information.
+  118.            *
+  119.            * K       (global output)               int *
+  120.            *         On exit, K specifies the number of entries in  IPID.  K is at
+  121.            *         least 2*N, and at most 4*N.
+  122.            *
+  123.            * IPID    (global output)               int *
+  124.            *         On entry, IPID is an array of length 4*N.  On exit, the first
+  125.            *         K entries of that array contain the src and final destination
+  126.            *         resulting  from  the  application of the  N  interchanges  as
+  127.            *         specified by  DPIV.  The  pairs  (src,dst)  are  contiguously
+  128.            *         stored and sorted so that IPID(2*i+1) is equal to IA+i with i
+  129.            *         in [0..N)
+  130.            *
+  131.            * ---------------------------------------------------------------------
+  132.            */ 
+  133.           /*
+  134.            * .. Local Variables ..
+  135.            */
+  136.              int                        dst, fndd, fnds, ia, i, j, jb, lst, off,
+  137.                                         src;
+  138.              double                     * dpiv;
+  139.           /* ..
+  140.            * .. Executable Statements ..
+  141.            */
+  142.              dpiv = PANEL->DPIV; jb = PANEL->jb; src = ia = PANEL->ia;
+  143.              dst  = (int)(dpiv[0]); IPID[0] = dst; IPID[1] = src; *K = 2;
+  144.              if( src != dst ) { IPID[2] = src; IPID[3] = dst; *K += 2; }
+  145.           
+  146.  + 1----<    for( i = 1; i < jb; i++ )
+  147.    1         {
+  148.    1            fnds = 0; j = 1;
+  149.    1      
+  150.    1            if( ( src = ia + i ) == ( dst = (int)(dpiv[i]) ) )
+  151.    1            {
+  152.  + 1 2--<          do { if( src == IPID[j] ) { fnds = j; } else { j += 2; } }
+  153.    1 2-->          while( !( fnds ) && ( j < *K ) );
+  154.    1               if( !fnds ) { lst = *K;     off = 2; IPID[lst] = src; }
+  155.    1               else        { lst = fnds-1; off = 0; }
+  156.    1               IPID[lst+1] = dst;
+  157.    1            }
+  158.    1            else
+  159.    1            {
+  160.    1               fndd = 0;
+  161.  + 1 2--<          do
+  162.    1 2             {
+  163.    1 2                if     ( src == IPID[j] ) { fnds = j; }
+  164.    1 2                else if( dst == IPID[j] ) { fndd = j; }
+  165.    1 2                j += 2;
+  166.    1 2             }
+  167.    1 2-->          while( ( !( fnds ) || !( fndd ) ) && ( j < *K ) );
+  168.    1               if( !fnds ) { IPID[*K] = src; IPID[*K+1] = dst; off  = 2; }
+  169.    1               else        {                 IPID[fnds] = dst; off  = 0; }
+  170.    1               if( !fndd ) { lst = *K+off;   IPID[lst ] = dst; off += 2; }
+  171.    1               else        { lst = fndd-1; }
+  172.    1               IPID[lst+1] = src;
+  173.    1            }
+  174.    1      /*
+  175.    1       * Enforce IPID(1,i) equal to src = ia + i
+  176.    1       */
+  177.    1            if( lst != ( j = ( i << 1 ) ) )
+  178.    1            {
+  179.    1               src = IPID[j  ]; IPID[j  ] = IPID[lst  ]; IPID[lst  ] = src;
+  180.    1               dst = IPID[j+1]; IPID[j+1] = IPID[lst+1]; IPID[lst+1] = dst;
+  181.    1            }
+  182.    1            *K += off;
+  183.    1---->    }
+  184.           /*
+  185.            * End of HPL_pipid
+  186.            */
+  187.           }
+
+CC-6254 CC: VECTOR File = HPL_pipid.c, Line = 146 
+  A loop was not vectorized because a recurrence was found on "IPID" at line 168.
+
+CC-6254 CC: VECTOR File = HPL_pipid.c, Line = 152 
+  A loop was not vectorized because a recurrence was found on "j" at line 152.
+
+CC-6289 CC: VECTOR File = HPL_pipid.c, Line = 161 
+  A loop was not vectorized because a recurrence was found on "fnds" between lines 163 and 161.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
