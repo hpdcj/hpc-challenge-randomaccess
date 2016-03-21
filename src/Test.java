@@ -20,19 +20,17 @@ import org.pcj.Storage;
  */
 public class Test extends Storage implements StartPoint {
     
-    @Shared
-    boolean bailOut=false;
-    
-    Random random = new Random();
 
     public void main () {
-        for (int i = 0; i < 100_000; i++) {
-            PCJ.put(random.nextInt(PCJ.threadCount()), "bailOut", random.nextBoolean());
-            PCJ.getLocal("bailOut");
-        }
+        System.out.println("Hello from " + PCJ.myId());
     }
     public static void main (String[] args) {
-        PCJ.deploy(Test.class, Test.class, new String[] {"localhost", "localhost","localhost","localhost","localhost","localhost","localhost","localhost"});
+        String nodesFileName = "nodes.txt";
+        if (args.length > 0) {
+            nodesFileName = args[0];
+        }
+        
+        PCJ.start (Test.class, Test.class, nodesFileName);
     }
     
 }

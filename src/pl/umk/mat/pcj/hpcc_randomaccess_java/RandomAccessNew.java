@@ -44,7 +44,7 @@ public class RandomAccessNew implements StartPoint {
         if (args.length > 0) {
             nodesFileName = args[0];
         }
-        PCJ.deploy(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
+        PCJ.start(RandomAccessNew.class, RandomAccessNewStorage.class, nodesFileName);
     }
 
     int logN;
