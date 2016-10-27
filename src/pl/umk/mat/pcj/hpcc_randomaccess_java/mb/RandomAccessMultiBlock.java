@@ -41,7 +41,7 @@ public class RandomAccessMultiBlock implements StartPoint {
     
     public static final int INBOUND_UPDATES_BY_THREAD_MAX = 200;
     public static final int BLOCKED_VALUES_PER_THREAD_MAX = 1024;
-    public static final int THREADS_
+    //public static final int THREADS_
 
     private int[] remoteThreadBufferPosition;
     

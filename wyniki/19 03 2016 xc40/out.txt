@@ -1,0 +1,3108 @@
+0 > Warmup round
+0 > Starting verification
+Time: 11.48 s, global size = 8388608 updates = 33554432, performance: 0.002922859930313589
+0 > After warmup round
+0 > Starting verification
+Time: 10.037 s, global size = 8388608 updates = 33554432, performance: 0.0033430738268406895
+1 > Warmup round
+0 > Warmup round
+1 > Starting verification
+0 > Starting verification
+Time: 18.006 s, global size = 8388608 updates = 33554432, performance: 0.0018635139397978452
+1 > After warmup round
+0 > After warmup round
+0 > Starting verification
+1 > Starting verification
+Time: 15.356 s, global size = 8388608 updates = 33554432, performance: 0.002185102370408961
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+3 > Warmup round
+3 > Starting verification
+2 > Starting verification
+0 > Starting verification
+1 > Starting verification
+Time: 24.378 s, global size = 8388608 updates = 33554432, performance: 0.001376422676183444
+3 > After warmup round
+2 > After warmup round
+1 > After warmup round
+0 > After warmup round
+1 > Starting verification
+3 > Starting verification
+0 > Starting verification
+2 > Starting verification
+Time: 21.746000000000002 s, global size = 8388608 updates = 33554432, performance: 0.0015430162788558814
+1 > Warmup round
+0 > Warmup round
+2 > Warmup round
+3 > Warmup round
+5 > Warmup round
+4 > Warmup round
+7 > Warmup round
+6 > Warmup round
+4 > Starting verification
+3 > Starting verification
+7 > Starting verification
+1 > Starting verification
+0 > Starting verification
+2 > Starting verification
+5 > Starting verification
+6 > Starting verification
+Time: 30.299 s, global size = 8388608 updates = 33554432, performance: 0.001107443545991617
+4 > After warmup round
+7 > After warmup round
+3 > After warmup round
+6 > After warmup round
+5 > After warmup round
+1 > After warmup round
+0 > After warmup round
+2 > After warmup round
+3 > Starting verification
+7 > Starting verification
+2 > Starting verification
+6 > Starting verification
+4 > Starting verification
+0 > Starting verification
+1 > Starting verification
+5 > Starting verification
+Time: 27.744 s, global size = 8388608 updates = 33554432, performance: 0.0012094302191464823
+0 > Warmup round
+1 > Warmup round
+3 > Warmup round
+2 > Warmup round
+4 > Warmup round
+5 > Warmup round
+6 > Warmup round
+8 > Warmup round
+7 > Warmup round
+9 > Warmup round
+10 > Warmup round
+12 > Warmup round
+11 > Warmup round
+15 > Warmup round
+13 > Warmup round
+14 > Warmup round
+3 > Starting verification
+11 > Starting verification
+5 > Starting verification
+0 > Starting verification
+13 > Starting verification
+10 > Starting verification
+2 > Starting verification
+9 > Starting verification
+1 > Starting verification
+4 > Starting verification
+6 > Starting verification
+15 > Starting verification
+8 > Starting verification
+14 > Starting verification
+7 > Starting verification
+12 > Starting verification
+Time: 37.395 s, global size = 8388608 updates = 33554432, performance: 8.972972857333868E-4
+9 > After warmup round
+3 > After warmup round
+4 > After warmup round
+15 > After warmup round
+13 > After warmup round
+11 > After warmup round
+6 > After warmup round
+5 > After warmup round
+7 > After warmup round
+14 > After warmup round
+2 > After warmup round
+12 > After warmup round
+8 > After warmup round
+1 > After warmup round
+10 > After warmup round
+0 > After warmup round
+14 > Starting verification
+6 > Starting verification
+7 > Starting verification
+15 > Starting verification
+10 > Starting verification
+8 > Starting verification
+13 > Starting verification
+4 > Starting verification
+5 > Starting verification
+9 > Starting verification
+11 > Starting verification
+0 > Starting verification
+12 > Starting verification
+1 > Starting verification
+3 > Starting verification
+2 > Starting verification
+Time: 34.416000000000004 s, global size = 8388608 updates = 33554432, performance: 9.749660622966062E-4
+0 > Warmup round
+8 > Warmup round
+11 > Warmup round
+15 > Warmup round
+19 > Warmup round
+1 > Warmup round
+20 > Warmup round
+21 > Warmup round
+3 > Warmup round
+22 > Warmup round
+23 > Warmup round
+24 > Warmup round
+25 > Warmup round
+26 > Warmup round
+2 > Warmup round
+27 > Warmup round
+30 > Warmup round
+28 > Warmup round
+29 > Warmup round
+18 > Warmup round
+9 > Warmup round
+31 > Warmup round
+10 > Warmup round
+7 > Warmup round
+6 > Warmup round
+5 > Warmup round
+4 > Warmup round
+17 > Warmup round
+16 > Warmup round
+12 > Warmup round
+14 > Warmup round
+13 > Warmup round
+3 > Starting verification
+1 > Starting verification
+4 > Starting verification
+19 > Starting verification
+20 > Starting verification
+31 > Starting verification
+15 > Starting verification
+17 > Starting verification
+12 > Starting verification
+8 > Starting verification
+24 > Starting verification
+28 > Starting verification
+11 > Starting verification
+29 > Starting verification
+13 > Starting verification
+0 > Starting verification
+14 > Starting verification
+5 > Starting verification
+9 > Starting verification
+7 > Starting verification
+6 > Starting verification
+10 > Starting verification
+18 > Starting verification
+30 > Starting verification
+25 > Starting verification
+21 > Starting verification
+23 > Starting verification
+27 > Starting verification
+22 > Starting verification
+26 > Starting verification
+16 > Starting verification
+2 > Starting verification
+Time: 26.552 s, global size = 8388608 updates = 33554432, performance: 0.001263725218439289
+30 > After warmup round
+29 > After warmup round
+3 > After warmup round
+18 > After warmup round
+14 > After warmup round
+5 > After warmup round
+7 > After warmup round
+12 > After warmup round
+6 > After warmup round
+17 > After warmup round
+1 > After warmup round
+22 > After warmup round
+19 > After warmup round
+11 > After warmup round
+27 > After warmup round
+25 > After warmup round
+31 > After warmup round
+24 > After warmup round
+8 > After warmup round
+23 > After warmup round
+20 > After warmup round
+26 > After warmup round
+16 > After warmup round
+10 > After warmup round
+13 > After warmup round
+4 > After warmup round
+2 > After warmup round
+9 > After warmup round
+0 > After warmup round
+15 > After warmup round
+21 > After warmup round
+28 > After warmup round
+26 > Starting verification
+16 > Starting verification
+15 > Starting verification
+0 > Starting verification
+31 > Starting verification
+11 > Starting verification
+10 > Starting verification
+4 > Starting verification
+8 > Starting verification
+20 > Starting verification
+7 > Starting verification
+27 > Starting verification
+18 > Starting verification
+14 > Starting verification
+24 > Starting verification
+23 > Starting verification
+30 > Starting verification
+2 > Starting verification
+3 > Starting verification
+19 > Starting verification
+1 > Starting verification
+9 > Starting verification
+25 > Starting verification
+17 > Starting verification
+29 > Starting verification
+13 > Starting verification
+6 > Starting verification
+22 > Starting verification
+12 > Starting verification
+28 > Starting verification
+21 > Starting verification
+5 > Starting verification
+Time: 22.8 s, global size = 8388608 updates = 33554432, performance: 0.0014716856140350877
+0 > Warmup round
+33 > Warmup round
+34 > Warmup round
+2 > Warmup round
+4 > Warmup round
+5 > Warmup round
+6 > Warmup round
+35 > Warmup round
+3 > Warmup round
+1 > Warmup round
+39 > Warmup round
+48 > Warmup round
+37 > Warmup round
+17 > Warmup round
+20 > Warmup round
+12 > Warmup round
+16 > Warmup round
+49 > Warmup round
+11 > Warmup round
+24 > Warmup round
+52 > Warmup round
+51 > Warmup round
+56 > Warmup round
+50 > Warmup round
+28 > Warmup round
+32 > Warmup round
+42 > Warmup round
+40 > Warmup round
+41 > Warmup round
+55 > Warmup round
+53 > Warmup round
+36 > Warmup round
+38 > Warmup round
+44 > Warmup round
+54 > Warmup round
+63 > Warmup round
+59 > Warmup round
+43 > Warmup round
+62 > Warmup round
+61 > Warmup round
+45 > Warmup round
+47 > Warmup round
+60 > Warmup round
+58 > Warmup round
+57 > Warmup round
+46 > Warmup round
+9 > Warmup round
+7 > Warmup round
+8 > Warmup round
+30 > Warmup round
+27 > Warmup round
+29 > Warmup round
+25 > Warmup round
+26 > Warmup round
+22 > Warmup round
+23 > Warmup round
+21 > Warmup round
+19 > Warmup round
+18 > Warmup round
+15 > Warmup round
+14 > Warmup round
+13 > Warmup round
+10 > Warmup round
+31 > Warmup round
+25 > Starting verification
+57 > Starting verification
+6 > Starting verification
+38 > Starting verification
+31 > Starting verification
+22 > Starting verification
+21 > Starting verification
+63 > Starting verification
+53 > Starting verification
+27 > Starting verification
+29 > Starting verification
+11 > Starting verification
+43 > Starting verification
+47 > Starting verification
+36 > Starting verification
+15 > Starting verification
+10 > Starting verification
+61 > Starting verification
+59 > Starting verification
+42 > Starting verification
+13 > Starting verification
+4 > Starting verification
+45 > Starting verification
+14 > Starting verification
+44 > Starting verification
+12 > Starting verification
+9 > Starting verification
+8 > Starting verification
+54 > Starting verification
+19 > Starting verification
+41 > Starting verification
+32 > Starting verification
+46 > Starting verification
+40 > Starting verification
+0 > Starting verification
+51 > Starting verification
+7 > Starting verification
+39 > Starting verification
+33 > Starting verification
+1 > Starting verification
+30 > Starting verification
+5 > Starting verification
+62 > Starting verification
+23 > Starting verification
+55 > Starting verification
+50 > Starting verification
+35 > Starting verification
+37 > Starting verification
+18 > Starting verification
+52 > Starting verification
+3 > Starting verification
+56 > Starting verification
+20 > Starting verification
+24 > Starting verification
+49 > Starting verification
+17 > Starting verification
+58 > Starting verification
+26 > Starting verification
+2 > Starting verification
+34 > Starting verification
+60 > Starting verification
+48 > Starting verification
+16 > Starting verification
+28 > Starting verification
+Time: 21.946 s, global size = 8388608 updates = 33554432, performance: 0.001528954342476989
+37 > After warmup round
+35 > After warmup round
+28 > After warmup round
+12 > After warmup round
+6 > After warmup round
+57 > After warmup round
+61 > After warmup round
+58 > After warmup round
+39 > After warmup round
+62 > After warmup round
+52 > After warmup round
+41 > After warmup round
+33 > After warmup round
+47 > After warmup round
+17 > After warmup round
+51 > After warmup round
+48 > After warmup round
+59 > After warmup round
+55 > After warmup round
+31 > After warmup round
+21 > After warmup round
+18 > After warmup round
+25 > After warmup round
+14 > After warmup round
+29 > After warmup round
+49 > After warmup round
+46 > After warmup round
+7 > After warmup round
+15 > After warmup round
+26 > After warmup round
+22 > After warmup round
+19 > After warmup round
+30 > After warmup round
+53 > After warmup round
+34 > After warmup round
+23 > After warmup round
+10 > After warmup round
+36 > After warmup round
+9 > After warmup round
+13 > After warmup round
+8 > After warmup round
+1 > After warmup round
+5 > After warmup round
+27 > After warmup round
+54 > After warmup round
+43 > After warmup round
+44 > After warmup round
+0 > After warmup round
+42 > After warmup round
+3 > After warmup round
+24 > After warmup round
+20 > After warmup round
+38 > After warmup round
+40 > After warmup round
+16 > After warmup round
+56 > After warmup round
+63 > After warmup round
+50 > After warmup round
+60 > After warmup round
+2 > After warmup round
+32 > After warmup round
+45 > After warmup round
+11 > After warmup round
+4 > After warmup round
+6 > Starting verification
+21 > Starting verification
+9 > Starting verification
+50 > Starting verification
+60 > Starting verification
+44 > Starting verification
+18 > Starting verification
+38 > Starting verification
+22 > Starting verification
+53 > Starting verification
+54 > Starting verification
+14 > Starting verification
+41 > Starting verification
+12 > Starting verification
+11 > Starting verification
+43 > Starting verification
+28 > Starting verification
+23 > Starting verification
+20 > Starting verification
+52 > Starting verification
+26 > Starting verification
+46 > Starting verification
+15 > Starting verification
+58 > Starting verification
+55 > Starting verification
+27 > Starting verification
+25 > Starting verification
+19 > Starting verification
+1 > Starting verification
+29 > Starting verification
+16 > Starting verification
+48 > Starting verification
+49 > Starting verification
+35 > Starting verification
+33 > Starting verification
+17 > Starting verification
+5 > Starting verification
+8 > Starting verification
+7 > Starting verification
+47 > Starting verification
+59 > Starting verification
+61 > Starting verification
+56 > Starting verification
+57 > Starting verification
+51 > Starting verification
+37 > Starting verification
+24 > Starting verification
+3 > Starting verification
+40 > Starting verification
+30 > Starting verification
+2 > Starting verification
+39 > Starting verification
+62 > Starting verification
+36 > Starting verification
+4 > Starting verification
+34 > Starting verification
+32 > Starting verification
+0 > Starting verification
+42 > Starting verification
+10 > Starting verification
+31 > Starting verification
+63 > Starting verification
+13 > Starting verification
+45 > Starting verification
+Time: 18.447 s, global size = 8388608 updates = 33554432, performance: 0.0018189641676153306
+0 > Warmup round
+3 > Warmup round
+12 > Warmup round
+16 > Warmup round
+18 > Warmup round
+20 > Warmup round
+21 > Warmup round
+6 > Warmup round
+15 > Warmup round
+17 > Warmup round
+14 > Warmup round
+13 > Warmup round
+26 > Warmup round
+34 > Warmup round
+23 > Warmup round
+25 > Warmup round
+45 > Warmup round
+22 > Warmup round
+19 > Warmup round
+24 > Warmup round
+35 > Warmup round
+47 > Warmup round
+50 > Warmup round
+61 > Warmup round
+41 > Warmup round
+53 > Warmup round
+55 > Warmup round
+40 > Warmup round
+71 > Warmup round
+43 > Warmup round
+49 > Warmup round
+66 > Warmup round
+42 > Warmup round
+63 > Warmup round
+48 > Warmup round
+54 > Warmup round
+76 > Warmup round
+64 > Warmup round
+59 > Warmup round
+75 > Warmup round
+60 > Warmup round
+74 > Warmup round
+113 > Warmup round
+58 > Warmup round
+80 > Warmup round
+65 > Warmup round
+99 > Warmup round
+110 > Warmup round
+104 > Warmup round
+62 > Warmup round
+52 > Warmup round
+90 > Warmup round
+87 > Warmup round
+78 > Warmup round
+57 > Warmup round
+72 > Warmup round
+94 > Warmup round
+86 > Warmup round
+83 > Warmup round
+84 > Warmup round
+56 > Warmup round
+44 > Warmup round
+98 > Warmup round
+108 > Warmup round
+89 > Warmup round
+79 > Warmup round
+51 > Warmup round
+114 > Warmup round
+88 > Warmup round
+85 > Warmup round
+92 > Warmup round
+95 > Warmup round
+46 > Warmup round
+33 > Warmup round
+103 > Warmup round
+73 > Warmup round
+97 > Warmup round
+115 > Warmup round
+70 > Warmup round
+107 > Warmup round
+105 > Warmup round
+111 > Warmup round
+106 > Warmup round
+112 > Warmup round
+102 > Warmup round
+125 > Warmup round
+127 > Warmup round
+68 > Warmup round
+124 > Warmup round
+116 > Warmup round
+91 > Warmup round
+101 > Warmup round
+93 > Warmup round
+117 > Warmup round
+126 > Warmup round
+109 > Warmup round
+118 > Warmup round
+96 > Warmup round
+69 > Warmup round
+67 > Warmup round
+100 > Warmup round
+77 > Warmup round
+119 > Warmup round
+82 > Warmup round
+81 > Warmup round
+120 > Warmup round
+1 > Warmup round
+123 > Warmup round
+122 > Warmup round
+121 > Warmup round
+8 > Warmup round
+7 > Warmup round
+5 > Warmup round
+4 > Warmup round
+2 > Warmup round
+27 > Warmup round
+11 > Warmup round
+10 > Warmup round
+9 > Warmup round
+28 > Warmup round
+30 > Warmup round
+38 > Warmup round
+29 > Warmup round
+37 > Warmup round
+36 > Warmup round
+31 > Warmup round
+32 > Warmup round
+39 > Warmup round
+119 > Starting verification
+31 > Starting verification
+39 > Starting verification
+107 > Starting verification
+55 > Starting verification
+45 > Starting verification
+103 > Starting verification
+109 > Starting verification
+122 > Starting verification
+61 > Starting verification
+75 > Starting verification
+91 > Starting verification
+88 > Starting verification
+27 > Starting verification
+11 > Starting verification
+29 > Starting verification
+22 > Starting verification
+17 > Starting verification
+124 > Starting verification
+20 > Starting verification
+60 > Starting verification
+7 > Starting verification
+84 > Starting verification
+110 > Starting verification
+127 > Starting verification
+18 > Starting verification
+126 > Starting verification
+114 > Starting verification
+50 > Starting verification
+83 > Starting verification
+94 > Starting verification
+125 > Starting verification
+47 > Starting verification
+77 > Starting verification
+63 > Starting verification
+62 > Starting verification
+81 > Starting verification
+12 > Starting verification
+87 > Starting verification
+90 > Starting verification
+21 > Starting verification
+98 > Starting verification
+93 > Starting verification
+86 > Starting verification
+54 > Starting verification
+111 > Starting verification
+49 > Starting verification
+113 > Starting verification
+38 > Starting verification
+116 > Starting verification
+30 > Starting verification
+9 > Starting verification
+8 > Starting verification
+5 > Starting verification
+4 > Starting verification
+121 > Starting verification
+13 > Starting verification
+95 > Starting verification
+2 > Starting verification
+71 > Starting verification
+106 > Starting verification
+19 > Starting verification
+76 > Starting verification
+118 > Starting verification
+99 > Starting verification
+102 > Starting verification
+115 > Starting verification
+34 > Starting verification
+97 > Starting verification
+72 > Starting verification
+51 > Starting verification
+26 > Starting verification
+104 > Starting verification
+42 > Starting verification
+58 > Starting verification
+46 > Starting verification
+23 > Starting verification
+52 > Starting verification
+57 > Starting verification
+66 > Starting verification
+6 > Starting verification
+108 > Starting verification
+120 > Starting verification
+35 > Starting verification
+65 > Starting verification
+92 > Starting verification
+89 > Starting verification
+101 > Starting verification
+100 > Starting verification
+40 > Starting verification
+28 > Starting verification
+3 > Starting verification
+43 > Starting verification
+44 > Starting verification
+56 > Starting verification
+85 > Starting verification
+82 > Starting verification
+70 > Starting verification
+33 > Starting verification
+73 > Starting verification
+69 > Starting verification
+67 > Starting verification
+24 > Starting verification
+25 > Starting verification
+36 > Starting verification
+1 > Starting verification
+37 > Starting verification
+64 > Starting verification
+74 > Starting verification
+41 > Starting verification
+78 > Starting verification
+53 > Starting verification
+15 > Starting verification
+59 > Starting verification
+96 > Starting verification
+16 > Starting verification
+48 > Starting verification
+105 > Starting verification
+123 > Starting verification
+112 > Starting verification
+14 > Starting verification
+117 > Starting verification
+79 > Starting verification
+80 > Starting verification
+68 > Starting verification
+10 > Starting verification
+0 > Starting verification
+32 > Starting verification
+Time: 15.263 s, global size = 8388608 updates = 33554432, performance: 0.0021984165629299617
+39 > After warmup round
+37 > After warmup round
+31 > After warmup round
+29 > After warmup round
+27 > After warmup round
+7 > After warmup round
+11 > After warmup round
+5 > After warmup round
+30 > After warmup round
+28 > After warmup round
+38 > After warmup round
+4 > After warmup round
+9 > After warmup round
+32 > After warmup round
+61 > After warmup round
+75 > After warmup round
+12 > After warmup round
+105 > After warmup round
+122 > After warmup round
+123 > After warmup round
+66 > After warmup round
+116 > After warmup round
+103 > After warmup round
+55 > After warmup round
+90 > After warmup round
+108 > After warmup round
+119 > After warmup round
+74 > After warmup round
+78 > After warmup round
+41 > After warmup round
+101 > After warmup round
+89 > After warmup round
+92 > After warmup round
+93 > After warmup round
+35 > After warmup round
+15 > After warmup round
+59 > After warmup round
+22 > After warmup round
+88 > After warmup round
+86 > After warmup round
+48 > After warmup round
+53 > After warmup round
+16 > After warmup round
+65 > After warmup round
+95 > After warmup round
+117 > After warmup round
+43 > After warmup round
+111 > After warmup round
+79 > After warmup round
+71 > After warmup round
+102 > After warmup round
+99 > After warmup round
+76 > After warmup round
+14 > After warmup round
+85 > After warmup round
+115 > After warmup round
+106 > After warmup round
+118 > After warmup round
+80 > After warmup round
+97 > After warmup round
+83 > After warmup round
+124 > After warmup round
+125 > After warmup round
+51 > After warmup round
+114 > After warmup round
+18 > After warmup round
+49 > After warmup round
+50 > After warmup round
+72 > After warmup round
+126 > After warmup round
+104 > After warmup round
+47 > After warmup round
+110 > After warmup round
+94 > After warmup round
+84 > After warmup round
+113 > After warmup round
+67 > After warmup round
+58 > After warmup round
+73 > After warmup round
+57 > After warmup round
+46 > After warmup round
+82 > After warmup round
+63 > After warmup round
+6 > After warmup round
+96 > After warmup round
+91 > After warmup round
+64 > After warmup round
+100 > After warmup round
+26 > After warmup round
+20 > After warmup round
+60 > After warmup round
+127 > After warmup round
+34 > After warmup round
+2 > After warmup round
+121 > After warmup round
+8 > After warmup round
+10 > After warmup round
+3 > After warmup round
+87 > After warmup round
+33 > After warmup round
+45 > After warmup round
+25 > After warmup round
+52 > After warmup round
+62 > After warmup round
+70 > After warmup round
+1 > After warmup round
+36 > After warmup round
+21 > After warmup round
+23 > After warmup round
+44 > After warmup round
+0 > After warmup round
+120 > After warmup round
+24 > After warmup round
+81 > After warmup round
+112 > After warmup round
+107 > After warmup round
+17 > After warmup round
+13 > After warmup round
+98 > After warmup round
+109 > After warmup round
+19 > After warmup round
+40 > After warmup round
+54 > After warmup round
+77 > After warmup round
+56 > After warmup round
+68 > After warmup round
+42 > After warmup round
+69 > After warmup round
+39 > Starting verification
+55 > Starting verification
+119 > Starting verification
+31 > Starting verification
+43 > Starting verification
+9 > Starting verification
+3 > Starting verification
+73 > Starting verification
+58 > Starting verification
+122 > Starting verification
+103 > Starting verification
+65 > Starting verification
+95 > Starting verification
+107 > Starting verification
+13 > Starting verification
+111 > Starting verification
+49 > Starting verification
+50 > Starting verification
+114 > Starting verification
+127 > Starting verification
+47 > Starting verification
+45 > Starting verification
+4 > Starting verification
+1 > Starting verification
+10 > Starting verification
+37 > Starting verification
+70 > Starting verification
+67 > Starting verification
+68 > Starting verification
+63 > Starting verification
+33 > Starting verification
+6 > Starting verification
+59 > Starting verification
+101 > Starting verification
+22 > Starting verification
+74 > Starting verification
+115 > Starting verification
+113 > Starting verification
+124 > Starting verification
+18 > Starting verification
+11 > Starting verification
+109 > Starting verification
+75 > Starting verification
+123 > Starting verification
+88 > Starting verification
+118 > Starting verification
+106 > Starting verification
+60 > Starting verification
+62 > Starting verification
+61 > Starting verification
+86 > Starting verification
+23 > Starting verification
+89 > Starting verification
+87 > Starting verification
+38 > Starting verification
+8 > Starting verification
+66 > Starting verification
+102 > Starting verification
+20 > Starting verification
+97 > Starting verification
+57 > Starting verification
+2 > Starting verification
+17 > Starting verification
+54 > Starting verification
+82 > Starting verification
+84 > Starting verification
+126 > Starting verification
+78 > Starting verification
+7 > Starting verification
+52 > Starting verification
+14 > Starting verification
+121 > Starting verification
+116 > Starting verification
+93 > Starting verification
+125 > Starting verification
+110 > Starting verification
+51 > Starting verification
+29 > Starting verification
+72 > Starting verification
+120 > Starting verification
+108 > Starting verification
+5 > Starting verification
+19 > Starting verification
+77 > Starting verification
+104 > Starting verification
+71 > Starting verification
+53 > Starting verification
+83 > Starting verification
+27 > Starting verification
+28 > Starting verification
+92 > Starting verification
+76 > Starting verification
+94 > Starting verification
+81 > Starting verification
+90 > Starting verification
+48 > Starting verification
+26 > Starting verification
+34 > Starting verification
+117 > Starting verification
+44 > Starting verification
+85 > Starting verification
+42 > Starting verification
+91 > Starting verification
+12 > Starting verification
+112 > Starting verification
+25 > Starting verification
+15 > Starting verification
+30 > Starting verification
+40 > Starting verification
+56 > Starting verification
+21 > Starting verification
+69 > Starting verification
+98 > Starting verification
+100 > Starting verification
+79 > Starting verification
+24 > Starting verification
+36 > Starting verification
+46 > Starting verification
+35 > Starting verification
+99 > Starting verification
+105 > Starting verification
+41 > Starting verification
+96 > Starting verification
+32 > Starting verification
+64 > Starting verification
+16 > Starting verification
+80 > Starting verification
+0 > Starting verification
+Time: 11.898 s, global size = 8388608 updates = 33554432, performance: 0.002820174146915448
+0 > Warmup round
+0 > Starting verification
+Time: 43.923 s, global size = 33554432 updates = 134217728, performance: 0.00305575047241764
+0 > After warmup round
+0 > Starting verification
+Time: 43.273 s, global size = 33554432 updates = 134217728, performance: 0.0031016506366556514
+0 > Warmup round
+1 > Warmup round
+0 > Starting verification
+1 > Starting verification
+Time: 60.002 s, global size = 33554432 updates = 122017792, performance: 0.002033562081263958
+1 > After warmup round
+0 > After warmup round
+1 > Starting verification
+0 > Starting verification
+Time: 60.002 s, global size = 33554432 updates = 129497088, performance: 0.0021582128595713478
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+3 > Warmup round
+2 > Starting verification
+3 > Starting verification
+1 > Starting verification
+0 > Starting verification
+Time: 60.008 s, global size = 33554432 updates = 85684224, performance: 0.001427880015997867
+1 > After warmup round
+3 > After warmup round
+2 > After warmup round
+0 > After warmup round
+3 > Starting verification
+1 > Starting verification
+2 > Starting verification
+0 > Starting verification
+Time: 60.005 s, global size = 33554432 updates = 89194496, performance: 0.001486451062411466
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+3 > Warmup round
+4 > Warmup round
+5 > Warmup round
+7 > Warmup round
+6 > Warmup round
+6 > Starting verification
+2 > Starting verification
+0 > Starting verification
+5 > Starting verification
+1 > Starting verification
+7 > Starting verification
+3 > Starting verification
+4 > Starting verification
+Time: 60.015 s, global size = 33554432 updates = 67837952, performance: 0.0011303499458468716
+1 > After warmup round
+7 > After warmup round
+2 > After warmup round
+3 > After warmup round
+5 > After warmup round
+4 > After warmup round
+6 > After warmup round
+0 > After warmup round
+3 > Starting verification
+7 > Starting verification
+6 > Starting verification
+1 > Starting verification
+2 > Starting verification
+5 > Starting verification
+0 > Starting verification
+4 > Starting verification
+Time: 60.011 s, global size = 33554432 updates = 71770112, performance: 0.001195949275966073
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+3 > Warmup round
+4 > Warmup round
+6 > Warmup round
+5 > Warmup round
+8 > Warmup round
+12 > Warmup round
+9 > Warmup round
+7 > Warmup round
+13 > Warmup round
+11 > Warmup round
+10 > Warmup round
+15 > Warmup round
+14 > Warmup round
+14 > Starting verification
+12 > Starting verification
+6 > Starting verification
+4 > Starting verification
+1 > Starting verification
+9 > Starting verification
+2 > Starting verification
+10 > Starting verification
+7 > Starting verification
+15 > Starting verification
+0 > Starting verification
+3 > Starting verification
+8 > Starting verification
+11 > Starting verification
+13 > Starting verification
+5 > Starting verification
+Time: 60.03 s, global size = 33554432 updates = 55754752, performance: 9.287814759287024E-4
+9 > After warmup round
+15 > After warmup round
+14 > After warmup round
+12 > After warmup round
+7 > After warmup round
+13 > After warmup round
+10 > After warmup round
+11 > After warmup round
+3 > After warmup round
+5 > After warmup round
+2 > After warmup round
+8 > After warmup round
+6 > After warmup round
+1 > After warmup round
+4 > After warmup round
+0 > After warmup round
+3 > Starting verification
+11 > Starting verification
+6 > Starting verification
+14 > Starting verification
+7 > Starting verification
+15 > Starting verification
+12 > Starting verification
+9 > Starting verification
+1 > Starting verification
+4 > Starting verification
+13 > Starting verification
+2 > Starting verification
+5 > Starting verification
+8 > Starting verification
+0 > Starting verification
+10 > Starting verification
+Time: 60.022 s, global size = 33554432 updates = 58720256, performance: 9.783122188530874E-4
+0 > Warmup round
+1 > Warmup round
+8 > Warmup round
+10 > Warmup round
+7 > Warmup round
+2 > Warmup round
+19 > Warmup round
+20 > Warmup round
+21 > Warmup round
+22 > Warmup round
+4 > Warmup round
+3 > Warmup round
+9 > Warmup round
+24 > Warmup round
+31 > Warmup round
+28 > Warmup round
+29 > Warmup round
+30 > Warmup round
+25 > Warmup round
+6 > Warmup round
+5 > Warmup round
+26 > Warmup round
+23 > Warmup round
+27 > Warmup round
+18 > Warmup round
+17 > Warmup round
+16 > Warmup round
+15 > Warmup round
+14 > Warmup round
+13 > Warmup round
+12 > Warmup round
+11 > Warmup round
+14 > Starting verification
+29 > Starting verification
+10 > Starting verification
+26 > Starting verification
+12 > Starting verification
+4 > Starting verification
+28 > Starting verification
+30 > Starting verification
+20 > Starting verification
+0 > Starting verification
+8 > Starting verification
+1 > Starting verification
+17 > Starting verification
+9 > Starting verification
+24 > Starting verification
+15 > Starting verification
+25 > Starting verification
+7 > Starting verification
+31 > Starting verification
+16 > Starting verification
+5 > Starting verification
+3 > Starting verification
+21 > Starting verification
+19 > Starting verification
+6 > Starting verification
+22 > Starting verification
+11 > Starting verification
+13 > Starting verification
+18 > Starting verification
+2 > Starting verification
+23 > Starting verification
+27 > Starting verification
+Time: 60.051 s, global size = 33554432 updates = 81625088, performance: 0.001359262759987344
+15 > After warmup round
+11 > After warmup round
+3 > After warmup round
+9 > After warmup round
+14 > After warmup round
+5 > After warmup round
+6 > After warmup round
+12 > After warmup round
+13 > After warmup round
+4 > After warmup round
+17 > After warmup round
+1 > After warmup round
+16 > After warmup round
+2 > After warmup round
+18 > After warmup round
+29 > After warmup round
+23 > After warmup round
+7 > After warmup round
+31 > After warmup round
+25 > After warmup round
+30 > After warmup round
+22 > After warmup round
+26 > After warmup round
+20 > After warmup round
+28 > After warmup round
+19 > After warmup round
+10 > After warmup round
+24 > After warmup round
+27 > After warmup round
+8 > After warmup round
+21 > After warmup round
+0 > After warmup round
+15 > Starting verification
+31 > Starting verification
+18 > Starting verification
+14 > Starting verification
+7 > Starting verification
+2 > Starting verification
+30 > Starting verification
+23 > Starting verification
+10 > Starting verification
+0 > Starting verification
+26 > Starting verification
+16 > Starting verification
+5 > Starting verification
+27 > Starting verification
+21 > Starting verification
+13 > Starting verification
+29 > Starting verification
+8 > Starting verification
+28 > Starting verification
+11 > Starting verification
+12 > Starting verification
+24 > Starting verification
+9 > Starting verification
+22 > Starting verification
+25 > Starting verification
+17 > Starting verification
+3 > Starting verification
+6 > Starting verification
+19 > Starting verification
+20 > Starting verification
+1 > Starting verification
+4 > Starting verification
+Time: 60.033 s, global size = 33554432 updates = 89292800, performance: 0.001487395265937068
+6 > Warmup round
+11 > Warmup round
+12 > Warmup round
+28 > Warmup round
+7 > Warmup round
+33 > Warmup round
+36 > Warmup round
+38 > Warmup round
+37 > Warmup round
+21 > Warmup round
+4 > Warmup round
+5 > Warmup round
+29 > Warmup round
+39 > Warmup round
+18 > Warmup round
+47 > Warmup round
+27 > Warmup round
+32 > Warmup round
+31 > Warmup round
+42 > Warmup round
+3 > Warmup round
+30 > Warmup round
+40 > Warmup round
+54 > Warmup round
+2 > Warmup round
+34 > Warmup round
+35 > Warmup round
+41 > Warmup round
+53 > Warmup round
+52 > Warmup round
+51 > Warmup round
+43 > Warmup round
+44 > Warmup round
+55 > Warmup round
+61 > Warmup round
+46 > Warmup round
+1 > Warmup round
+59 > Warmup round
+50 > Warmup round
+45 > Warmup round
+60 > Warmup round
+48 > Warmup round
+57 > Warmup round
+58 > Warmup round
+56 > Warmup round
+49 > Warmup round
+63 > Warmup round
+62 > Warmup round
+0 > Warmup round
+8 > Warmup round
+9 > Warmup round
+14 > Warmup round
+10 > Warmup round
+13 > Warmup round
+16 > Warmup round
+15 > Warmup round
+19 > Warmup round
+25 > Warmup round
+17 > Warmup round
+26 > Warmup round
+24 > Warmup round
+23 > Warmup round
+22 > Warmup round
+20 > Warmup round
+29 > Starting verification
+14 > Starting verification
+55 > Starting verification
+61 > Starting verification
+49 > Starting verification
+46 > Starting verification
+23 > Starting verification
+13 > Starting verification
+20 > Starting verification
+26 > Starting verification
+17 > Starting verification
+9 > Starting verification
+25 > Starting verification
+19 > Starting verification
+16 > Starting verification
+41 > Starting verification
+43 > Starting verification
+11 > Starting verification
+30 > Starting verification
+45 > Starting verification
+31 > Starting verification
+50 > Starting verification
+18 > Starting verification
+2 > Starting verification
+0 > Starting verification
+34 > Starting verification
+3 > Starting verification
+48 > Starting verification
+35 > Starting verification
+40 > Starting verification
+63 > Starting verification
+52 > Starting verification
+28 > Starting verification
+60 > Starting verification
+8 > Starting verification
+58 > Starting verification
+57 > Starting verification
+51 > Starting verification
+62 > Starting verification
+32 > Starting verification
+21 > Starting verification
+44 > Starting verification
+6 > Starting verification
+27 > Starting verification
+7 > Starting verification
+24 > Starting verification
+56 > Starting verification
+53 > Starting verification
+54 > Starting verification
+12 > Starting verification
+42 > Starting verification
+10 > Starting verification
+22 > Starting verification
+5 > Starting verification
+37 > Starting verification
+33 > Starting verification
+47 > Starting verification
+38 > Starting verification
+59 > Starting verification
+39 > Starting verification
+36 > Starting verification
+1 > Starting verification
+15 > Starting verification
+4 > Starting verification
+Time: 60.086 s, global size = 33554432 updates = 101515264, performance: 0.0016894994507872052
+25 > After warmup round
+23 > After warmup round
+22 > After warmup round
+15 > After warmup round
+3 > After warmup round
+2 > After warmup round
+5 > After warmup round
+24 > After warmup round
+20 > After warmup round
+9 > After warmup round
+19 > After warmup round
+13 > After warmup round
+14 > After warmup round
+26 > After warmup round
+16 > After warmup round
+17 > After warmup round
+8 > After warmup round
+4 > After warmup round
+1 > After warmup round
+10 > After warmup round
+35 > After warmup round
+18 > After warmup round
+41 > After warmup round
+46 > After warmup round
+50 > After warmup round
+7 > After warmup round
+31 > After warmup round
+44 > After warmup round
+21 > After warmup round
+49 > After warmup round
+33 > After warmup round
+37 > After warmup round
+57 > After warmup round
+12 > After warmup round
+52 > After warmup round
+62 > After warmup round
+36 > After warmup round
+61 > After warmup round
+28 > After warmup round
+55 > After warmup round
+40 > After warmup round
+11 > After warmup round
+29 > After warmup round
+30 > After warmup round
+48 > After warmup round
+6 > After warmup round
+27 > After warmup round
+45 > After warmup round
+34 > After warmup round
+32 > After warmup round
+43 > After warmup round
+51 > After warmup round
+38 > After warmup round
+47 > After warmup round
+60 > After warmup round
+39 > After warmup round
+59 > After warmup round
+54 > After warmup round
+42 > After warmup round
+56 > After warmup round
+53 > After warmup round
+58 > After warmup round
+63 > After warmup round
+0 > After warmup round
+5 > Starting verification
+15 > Starting verification
+11 > Starting verification
+3 > Starting verification
+2 > Starting verification
+31 > Starting verification
+43 > Starting verification
+47 > Starting verification
+60 > Starting verification
+56 > Starting verification
+63 > Starting verification
+61 > Starting verification
+24 > Starting verification
+20 > Starting verification
+53 > Starting verification
+34 > Starting verification
+21 > Starting verification
+35 > Starting verification
+10 > Starting verification
+29 > Starting verification
+14 > Starting verification
+46 > Starting verification
+0 > Starting verification
+32 > Starting verification
+7 > Starting verification
+28 > Starting verification
+1 > Starting verification
+26 > Starting verification
+37 > Starting verification
+33 > Starting verification
+4 > Starting verification
+22 > Starting verification
+19 > Starting verification
+52 > Starting verification
+51 > Starting verification
+42 > Starting verification
+23 > Starting verification
+44 > Starting verification
+41 > Starting verification
+49 > Starting verification
+45 > Starting verification
+27 > Starting verification
+40 > Starting verification
+30 > Starting verification
+6 > Starting verification
+48 > Starting verification
+50 > Starting verification
+55 > Starting verification
+57 > Starting verification
+58 > Starting verification
+12 > Starting verification
+39 > Starting verification
+36 > Starting verification
+38 > Starting verification
+59 > Starting verification
+62 > Starting verification
+54 > Starting verification
+18 > Starting verification
+25 > Starting verification
+9 > Starting verification
+17 > Starting verification
+13 > Starting verification
+8 > Starting verification
+16 > Starting verification
+Time: 60.063 s, global size = 33554432 updates = 112656384, performance: 0.001875636981169772
+0 > Warmup round
+5 > Warmup round
+2 > Warmup round
+1 > Warmup round
+3 > Warmup round
+37 > Warmup round
+6 > Warmup round
+13 > Warmup round
+26 > Warmup round
+36 > Warmup round
+17 > Warmup round
+60 > Warmup round
+19 > Warmup round
+8 > Warmup round
+4 > Warmup round
+84 > Warmup round
+20 > Warmup round
+30 > Warmup round
+11 > Warmup round
+10 > Warmup round
+34 > Warmup round
+31 > Warmup round
+28 > Warmup round
+107 > Warmup round
+21 > Warmup round
+41 > Warmup round
+91 > Warmup round
+102 > Warmup round
+88 > Warmup round
+104 > Warmup round
+29 > Warmup round
+23 > Warmup round
+18 > Warmup round
+99 > Warmup round
+39 > Warmup round
+52 > Warmup round
+51 > Warmup round
+103 > Warmup round
+105 > Warmup round
+55 > Warmup round
+89 > Warmup round
+66 > Warmup round
+59 > Warmup round
+45 > Warmup round
+27 > Warmup round
+40 > Warmup round
+106 > Warmup round
+74 > Warmup round
+32 > Warmup round
+86 > Warmup round
+78 > Warmup round
+57 > Warmup round
+87 > Warmup round
+62 > Warmup round
+61 > Warmup round
+71 > Warmup round
+58 > Warmup round
+33 > Warmup round
+85 > Warmup round
+90 > Warmup round
+54 > Warmup round
+56 > Warmup round
+38 > Warmup round
+109 > Warmup round
+108 > Warmup round
+115 > Warmup round
+121 > Warmup round
+122 > Warmup round
+53 > Warmup round
+76 > Warmup round
+68 > Warmup round
+63 > Warmup round
+65 > Warmup round
+111 > Warmup round
+93 > Warmup round
+92 > Warmup round
+94 > Warmup round
+117 > Warmup round
+120 > Warmup round
+77 > Warmup round
+64 > Warmup round
+113 > Warmup round
+95 > Warmup round
+69 > Warmup round
+110 > Warmup round
+96 > Warmup round
+118 > Warmup round
+70 > Warmup round
+112 > Warmup round
+67 > Warmup round
+119 > Warmup round
+116 > Warmup round
+83 > Warmup round
+79 > Warmup round
+81 > Warmup round
+126 > Warmup round
+72 > Warmup round
+75 > Warmup round
+82 > Warmup round
+97 > Warmup round
+100 > Warmup round
+114 > Warmup round
+98 > Warmup round
+125 > Warmup round
+124 > Warmup round
+101 > Warmup round
+80 > Warmup round
+123 > Warmup round
+127 > Warmup round
+73 > Warmup round
+7 > Warmup round
+15 > Warmup round
+14 > Warmup round
+12 > Warmup round
+9 > Warmup round
+16 > Warmup round
+22 > Warmup round
+50 > Warmup round
+44 > Warmup round
+46 > Warmup round
+43 > Warmup round
+42 > Warmup round
+35 > Warmup round
+24 > Warmup round
+25 > Warmup round
+48 > Warmup round
+49 > Warmup round
+47 > Warmup round
+7 > Starting verification
+48 > Starting verification
+103 > Starting verification
+47 > Starting verification
+43 > Starting verification
+46 > Starting verification
+35 > Starting verification
+62 > Starting verification
+16 > Starting verification
+15 > Starting verification
+39 > Starting verification
+12 > Starting verification
+2 > Starting verification
+61 > Starting verification
+76 > Starting verification
+80 > Starting verification
+66 > Starting verification
+79 > Starting verification
+30 > Starting verification
+52 > Starting verification
+93 > Starting verification
+29 > Starting verification
+96 > Starting verification
+25 > Starting verification
+14 > Starting verification
+94 > Starting verification
+89 > Starting verification
+55 > Starting verification
+100 > Starting verification
+51 > Starting verification
+85 > Starting verification
+90 > Starting verification
+126 > Starting verification
+125 > Starting verification
+60 > Starting verification
+124 > Starting verification
+102 > Starting verification
+116 > Starting verification
+119 > Starting verification
+37 > Starting verification
+36 > Starting verification
+117 > Starting verification
+115 > Starting verification
+84 > Starting verification
+42 > Starting verification
+67 > Starting verification
+11 > Starting verification
+3 > Starting verification
+9 > Starting verification
+75 > Starting verification
+73 > Starting verification
+0 > Starting verification
+32 > Starting verification
+18 > Starting verification
+59 > Starting verification
+64 > Starting verification
+65 > Starting verification
+5 > Starting verification
+44 > Starting verification
+71 > Starting verification
+50 > Starting verification
+107 > Starting verification
+38 > Starting verification
+111 > Starting verification
+110 > Starting verification
+112 > Starting verification
+99 > Starting verification
+114 > Starting verification
+105 > Starting verification
+26 > Starting verification
+109 > Starting verification
+31 > Starting verification
+108 > Starting verification
+53 > Starting verification
+21 > Starting verification
+82 > Starting verification
+56 > Starting verification
+1 > Starting verification
+6 > Starting verification
+8 > Starting verification
+41 > Starting verification
+77 > Starting verification
+68 > Starting verification
+83 > Starting verification
+81 > Starting verification
+101 > Starting verification
+20 > Starting verification
+87 > Starting verification
+78 > Starting verification
+40 > Starting verification
+97 > Starting verification
+13 > Starting verification
+95 > Starting verification
+19 > Starting verification
+17 > Starting verification
+92 > Starting verification
+127 > Starting verification
+123 > Starting verification
+106 > Starting verification
+120 > Starting verification
+121 > Starting verification
+104 > Starting verification
+91 > Starting verification
+118 > Starting verification
+122 > Starting verification
+69 > Starting verification
+70 > Starting verification
+72 > Starting verification
+45 > Starting verification
+4 > Starting verification
+10 > Starting verification
+23 > Starting verification
+57 > Starting verification
+27 > Starting verification
+63 > Starting verification
+33 > Starting verification
+74 > Starting verification
+28 > Starting verification
+34 > Starting verification
+58 > Starting verification
+54 > Starting verification
+49 > Starting verification
+113 > Starting verification
+86 > Starting verification
+98 > Starting verification
+22 > Starting verification
+24 > Starting verification
+88 > Starting verification
+Time: 52.235 s, global size = 33554432 updates = 134217728, performance: 0.0025694979994256724
+35 > After warmup round
+49 > After warmup round
+71 > After warmup round
+114 > After warmup round
+74 > After warmup round
+58 > After warmup round
+111 > After warmup round
+28 > After warmup round
+31 > After warmup round
+99 > After warmup round
+110 > After warmup round
+61 > After warmup round
+62 > After warmup round
+83 > After warmup round
+41 > After warmup round
+39 > After warmup round
+30 > After warmup round
+52 > After warmup round
+80 > After warmup round
+76 > After warmup round
+79 > After warmup round
+123 > After warmup round
+116 > After warmup round
+124 > After warmup round
+126 > After warmup round
+121 > After warmup round
+104 > After warmup round
+118 > After warmup round
+117 > After warmup round
+101 > After warmup round
+93 > After warmup round
+97 > After warmup round
+95 > After warmup round
+89 > After warmup round
+29 > After warmup round
+78 > After warmup round
+51 > After warmup round
+17 > After warmup round
+57 > After warmup round
+73 > After warmup round
+33 > After warmup round
+75 > After warmup round
+70 > After warmup round
+72 > After warmup round
+23 > After warmup round
+63 > After warmup round
+65 > After warmup round
+27 > After warmup round
+103 > After warmup round
+81 > After warmup round
+6 > After warmup round
+66 > After warmup round
+8 > After warmup round
+21 > After warmup round
+56 > After warmup round
+77 > After warmup round
+68 > After warmup round
+53 > After warmup round
+55 > After warmup round
+94 > After warmup round
+59 > After warmup round
+11 > After warmup round
+45 > After warmup round
+4 > After warmup round
+3 > After warmup round
+10 > After warmup round
+69 > After warmup round
+32 > After warmup round
+67 > After warmup round
+64 > After warmup round
+37 > After warmup round
+115 > After warmup round
+106 > After warmup round
+84 > After warmup round
+36 > After warmup round
+120 > After warmup round
+88 > After warmup round
+127 > After warmup round
+18 > After warmup round
+108 > After warmup round
+90 > After warmup round
+60 > After warmup round
+24 > After warmup round
+15 > After warmup round
+25 > After warmup round
+12 > After warmup round
+46 > After warmup round
+14 > After warmup round
+43 > After warmup round
+22 > After warmup round
+44 > After warmup round
+48 > After warmup round
+86 > After warmup round
+112 > After warmup round
+26 > After warmup round
+38 > After warmup round
+34 > After warmup round
+107 > After warmup round
+113 > After warmup round
+54 > After warmup round
+105 > After warmup round
+109 > After warmup round
+125 > After warmup round
+102 > After warmup round
+119 > After warmup round
+47 > After warmup round
+91 > After warmup round
+122 > After warmup round
+82 > After warmup round
+1 > After warmup round
+92 > After warmup round
+19 > After warmup round
+87 > After warmup round
+13 > After warmup round
+98 > After warmup round
+20 > After warmup round
+40 > After warmup round
+85 > After warmup round
+100 > After warmup round
+96 > After warmup round
+16 > After warmup round
+7 > After warmup round
+9 > After warmup round
+5 > After warmup round
+42 > After warmup round
+2 > After warmup round
+50 > After warmup round
+0 > After warmup round
+48 > Starting verification
+47 > Starting verification
+16 > Starting verification
+15 > Starting verification
+79 > Starting verification
+80 > Starting verification
+7 > Starting verification
+103 > Starting verification
+114 > Starting verification
+58 > Starting verification
+50 > Starting verification
+71 > Starting verification
+12 > Starting verification
+39 > Starting verification
+82 > Starting verification
+30 > Starting verification
+76 > Starting verification
+36 > Starting verification
+124 > Starting verification
+37 > Starting verification
+119 > Starting verification
+60 > Starting verification
+120 > Starting verification
+122 > Starting verification
+93 > Starting verification
+100 > Starting verification
+29 > Starting verification
+101 > Starting verification
+55 > Starting verification
+94 > Starting verification
+96 > Starting verification
+17 > Starting verification
+67 > Starting verification
+3 > Starting verification
+43 > Starting verification
+75 > Starting verification
+11 > Starting verification
+18 > Starting verification
+32 > Starting verification
+45 > Starting verification
+111 > Starting verification
+112 > Starting verification
+107 > Starting verification
+56 > Starting verification
+109 > Starting verification
+118 > Starting verification
+31 > Starting verification
+106 > Starting verification
+77 > Starting verification
+81 > Starting verification
+13 > Starting verification
+72 > Starting verification
+14 > Starting verification
+35 > Starting verification
+42 > Starting verification
+44 > Starting verification
+46 > Starting verification
+54 > Starting verification
+99 > Starting verification
+38 > Starting verification
+108 > Starting verification
+74 > Starting verification
+115 > Starting verification
+104 > Starting verification
+25 > Starting verification
+102 > Starting verification
+126 > Starting verification
+88 > Starting verification
+116 > Starting verification
+95 > Starting verification
+40 > Starting verification
+51 > Starting verification
+19 > Starting verification
+85 > Starting verification
+78 > Starting verification
+21 > Starting verification
+62 > Starting verification
+1 > Starting verification
+24 > Starting verification
+2 > Starting verification
+83 > Starting verification
+65 > Starting verification
+4 > Starting verification
+59 > Starting verification
+10 > Starting verification
+57 > Starting verification
+70 > Starting verification
+110 > Starting verification
+26 > Starting verification
+123 > Starting verification
+125 > Starting verification
+117 > Starting verification
+121 > Starting verification
+89 > Starting verification
+90 > Starting verification
+61 > Starting verification
+8 > Starting verification
+52 > Starting verification
+6 > Starting verification
+53 > Starting verification
+20 > Starting verification
+66 > Starting verification
+84 > Starting verification
+68 > Starting verification
+22 > Starting verification
+28 > Starting verification
+92 > Starting verification
+41 > Starting verification
+86 > Starting verification
+98 > Starting verification
+49 > Starting verification
+105 > Starting verification
+113 > Starting verification
+64 > Starting verification
+73 > Starting verification
+23 > Starting verification
+63 > Starting verification
+27 > Starting verification
+69 > Starting verification
+34 > Starting verification
+127 > Starting verification
+87 > Starting verification
+33 > Starting verification
+97 > Starting verification
+91 > Starting verification
+0 > Starting verification
+9 > Starting verification
+5 > Starting verification
+Time: 44.423 s, global size = 33554432 updates = 134217728, performance: 0.00302135668460032
+0 > Warmup round
+0 > Starting verification
+Time: 60.001000000000005 s, global size = 134217728 updates = 178796544, performance: 0.0029798927351210812
+0 > After warmup round
+0 > Starting verification
+Time: 60.001000000000005 s, global size = 134217728 updates = 177888256, performance: 0.0029647548540857652
+1 > Warmup round
+0 > Warmup round
+0 > Starting verification
+1 > Starting verification
+Time: 60.002 s, global size = 134217728 updates = 114282496, performance: 0.0019046447785073832
+0 > After warmup round
+1 > After warmup round
+0 > Starting verification
+1 > Starting verification
+Time: 60.002 s, global size = 134217728 updates = 116922368, performance: 0.0019486411786273793
+1 > Warmup round
+3 > Warmup round
+0 > Warmup round
+2 > Warmup round
+2 > Starting verification
+3 > Starting verification
+1 > Starting verification
+0 > Starting verification
+Time: 60.007 s, global size = 134217728 updates = 83398656, performance: 0.0013898154548635992
+1 > After warmup round
+3 > After warmup round
+2 > After warmup round
+0 > After warmup round
+1 > Starting verification
+3 > Starting verification
+2 > Starting verification
+0 > Starting verification
+Time: 60.004 s, global size = 134217728 updates = 89042944, performance: 0.0014839501366575563
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+5 > Warmup round
+3 > Warmup round
+4 > Warmup round
+6 > Warmup round
+7 > Warmup round
+7 > Starting verification
+3 > Starting verification
+1 > Starting verification
+5 > Starting verification
+4 > Starting verification
+0 > Starting verification
+2 > Starting verification
+6 > Starting verification
+Time: 60.014 s, global size = 134217728 updates = 63062016, performance: 0.0010507884160362582
+3 > After warmup round
+1 > After warmup round
+2 > After warmup round
+4 > After warmup round
+5 > After warmup round
+7 > After warmup round
+6 > After warmup round
+0 > After warmup round
+2 > Starting verification
+6 > Starting verification
+5 > Starting verification
+1 > Starting verification
+4 > Starting verification
+3 > Starting verification
+0 > Starting verification
+7 > Starting verification
+Time: 60.009 s, global size = 134217728 updates = 63348736, performance: 0.0010556539185788798
+0 > Warmup round
+1 > Warmup round
+2 > Warmup round
+4 > Warmup round
+3 > Warmup round
+5 > Warmup round
+6 > Warmup round
+12 > Warmup round
+11 > Warmup round
+7 > Warmup round
+10 > Warmup round
+9 > Warmup round
+8 > Warmup round
+14 > Warmup round
+15 > Warmup round
+13 > Warmup round
+15 > Starting verification
+7 > Starting verification
+1 > Starting verification
+9 > Starting verification
+14 > Starting verification
+6 > Starting verification
+3 > Starting verification
+10 > Starting verification
+11 > Starting verification
+12 > Starting verification
+4 > Starting verification
+2 > Starting verification
+8 > Starting verification
+13 > Starting verification
+5 > Starting verification
+0 > Starting verification
+Time: 60.056000000000004 s, global size = 134217728 updates = 53280768, performance: 8.871847608898362E-4
+15 > After warmup round
+12 > After warmup round
+3 > After warmup round
+7 > After warmup round
+14 > After warmup round
+10 > After warmup round
+4 > After warmup round
+5 > After warmup round
+6 > After warmup round
+11 > After warmup round
+8 > After warmup round
+2 > After warmup round
+13 > After warmup round
+9 > After warmup round
+1 > After warmup round
+0 > After warmup round
+7 > Starting verification
+9 > Starting verification
+1 > Starting verification
+15 > Starting verification
+2 > Starting verification
+10 > Starting verification
+11 > Starting verification
+4 > Starting verification
+12 > Starting verification
+0 > Starting verification
+13 > Starting verification
+5 > Starting verification
+6 > Starting verification
+8 > Starting verification
+3 > Starting verification
+14 > Starting verification
+Time: 60.028 s, global size = 134217728 updates = 52805632, performance: 8.796833477710403E-4
+0 > Warmup round
+1 > Warmup round
+4 > Warmup round
+3 > Warmup round
+5 > Warmup round
+2 > Warmup round
+11 > Warmup round
+6 > Warmup round
+9 > Warmup round
+7 > Warmup round
+13 > Warmup round
+15 > Warmup round
+14 > Warmup round
+8 > Warmup round
+21 > Warmup round
+26 > Warmup round
+12 > Warmup round
+10 > Warmup round
+19 > Warmup round
+27 > Warmup round
+28 > Warmup round
+31 > Warmup round
+18 > Warmup round
+30 > Warmup round
+29 > Warmup round
+17 > Warmup round
+16 > Warmup round
+25 > Warmup round
+24 > Warmup round
+23 > Warmup round
+22 > Warmup round
+20 > Warmup round
+18 > Starting verification
+31 > Starting verification
+22 > Starting verification
+2 > Starting verification
+30 > Starting verification
+25 > Starting verification
+6 > Starting verification
+17 > Starting verification
+14 > Starting verification
+8 > Starting verification
+24 > Starting verification
+10 > Starting verification
+11 > Starting verification
+27 > Starting verification
+19 > Starting verification
+13 > Starting verification
+20 > Starting verification
+29 > Starting verification
+1 > Starting verification
+21 > Starting verification
+16 > Starting verification
+28 > Starting verification
+3 > Starting verification
+5 > Starting verification
+12 > Starting verification
+26 > Starting verification
+4 > Starting verification
+0 > Starting verification
+23 > Starting verification
+9 > Starting verification
+15 > Starting verification
+7 > Starting verification
+Time: 60.062000000000005 s, global size = 134217728 updates = 79265792, performance: 0.0013197328094302554
+31 > After warmup round
+28 > After warmup round
+29 > After warmup round
+15 > After warmup round
+26 > After warmup round
+7 > After warmup round
+5 > After warmup round
+11 > After warmup round
+25 > After warmup round
+20 > After warmup round
+18 > After warmup round
+23 > After warmup round
+12 > After warmup round
+19 > After warmup round
+3 > After warmup round
+10 > After warmup round
+17 > After warmup round
+6 > After warmup round
+24 > After warmup round
+4 > After warmup round
+14 > After warmup round
+21 > After warmup round
+8 > After warmup round
+16 > After warmup round
+13 > After warmup round
+22 > After warmup round
+30 > After warmup round
+0 > After warmup round
+2 > After warmup round
+1 > After warmup round
+27 > After warmup round
+9 > After warmup round
+27 > Starting verification
+8 > Starting verification
+11 > Starting verification
+28 > Starting verification
+1 > Starting verification
+24 > Starting verification
+17 > Starting verification
+12 > Starting verification
+0 > Starting verification
+13 > Starting verification
+29 > Starting verification
+16 > Starting verification
+18 > Starting verification
+20 > Starting verification
+2 > Starting verification
+4 > Starting verification
+30 > Starting verification
+15 > Starting verification
+31 > Starting verification
+10 > Starting verification
+14 > Starting verification
+7 > Starting verification
+23 > Starting verification
+26 > Starting verification
+6 > Starting verification
+22 > Starting verification
+19 > Starting verification
+25 > Starting verification
+21 > Starting verification
+5 > Starting verification
+9 > Starting verification
+3 > Starting verification
+Time: 60.045 s, global size = 134217728 updates = 85917696, performance: 0.0014308884336747439
+0 > Warmup round
+4 > Warmup round
+2 > Warmup round
+6 > Warmup round
+5 > Warmup round
+10 > Warmup round
+1 > Warmup round
+18 > Warmup round
+3 > Warmup round
+9 > Warmup round
+13 > Warmup round
+14 > Warmup round
+17 > Warmup round
+25 > Warmup round
+20 > Warmup round
+11 > Warmup round
+28 > Warmup round
+32 > Warmup round
+36 > Warmup round
+51 > Warmup round
+38 > Warmup round
+50 > Warmup round
+49 > Warmup round
+52 > Warmup round
+8 > Warmup round
+53 > Warmup round
+54 > Warmup round
+37 > Warmup round
+45 > Warmup round
+46 > Warmup round
+55 > Warmup round
+47 > Warmup round
+44 > Warmup round
+43 > Warmup round
+41 > Warmup round
+42 > Warmup round
+40 > Warmup round
+63 > Warmup round
+39 > Warmup round
+57 > Warmup round
+62 > Warmup round
+48 > Warmup round
+61 > Warmup round
+58 > Warmup round
+59 > Warmup round
+60 > Warmup round
+56 > Warmup round
+7 > Warmup round
+19 > Warmup round
+12 > Warmup round
+15 > Warmup round
+16 > Warmup round
+26 > Warmup round
+24 > Warmup round
+21 > Warmup round
+23 > Warmup round
+22 > Warmup round
+27 > Warmup round
+29 > Warmup round
+30 > Warmup round
+33 > Warmup round
+35 > Warmup round
+34 > Warmup round
+31 > Warmup round
+22 > Starting verification
+50 > Starting verification
+31 > Starting verification
+26 > Starting verification
+24 > Starting verification
+37 > Starting verification
+5 > Starting verification
+11 > Starting verification
+41 > Starting verification
+9 > Starting verification
+27 > Starting verification
+16 > Starting verification
+14 > Starting verification
+15 > Starting verification
+13 > Starting verification
+45 > Starting verification
+47 > Starting verification
+46 > Starting verification
+38 > Starting verification
+36 > Starting verification
+18 > Starting verification
+57 > Starting verification
+25 > Starting verification
+20 > Starting verification
+52 > Starting verification
+58 > Starting verification
+54 > Starting verification
+48 > Starting verification
+2 > Starting verification
+17 > Starting verification
+42 > Starting verification
+44 > Starting verification
+28 > Starting verification
+3 > Starting verification
+19 > Starting verification
+21 > Starting verification
+12 > Starting verification
+34 > Starting verification
+4 > Starting verification
+8 > Starting verification
+0 > Starting verification
+33 > Starting verification
+23 > Starting verification
+29 > Starting verification
+30 > Starting verification
+7 > Starting verification
+6 > Starting verification
+60 > Starting verification
+49 > Starting verification
+10 > Starting verification
+56 > Starting verification
+53 > Starting verification
+63 > Starting verification
+59 > Starting verification
+51 > Starting verification
+61 > Starting verification
+1 > Starting verification
+62 > Starting verification
+32 > Starting verification
+43 > Starting verification
+39 > Starting verification
+40 > Starting verification
+55 > Starting verification
+35 > Starting verification
+Time: 60.076 s, global size = 134217728 updates = 98959360, performance: 0.00164723616752114
+11 > After warmup round
+58 > After warmup round
+50 > After warmup round
+18 > After warmup round
+39 > After warmup round
+41 > After warmup round
+14 > After warmup round
+52 > After warmup round
+43 > After warmup round
+46 > After warmup round
+48 > After warmup round
+47 > After warmup round
+59 > After warmup round
+61 > After warmup round
+9 > After warmup round
+36 > After warmup round
+28 > After warmup round
+38 > After warmup round
+13 > After warmup round
+3 > After warmup round
+35 > After warmup round
+30 > After warmup round
+40 > After warmup round
+44 > After warmup round
+42 > After warmup round
+2 > After warmup round
+57 > After warmup round
+25 > After warmup round
+31 > After warmup round
+33 > After warmup round
+62 > After warmup round
+12 > After warmup round
+51 > After warmup round
+10 > After warmup round
+63 > After warmup round
+60 > After warmup round
+6 > After warmup round
+17 > After warmup round
+23 > After warmup round
+24 > After warmup round
+45 > After warmup round
+37 > After warmup round
+5 > After warmup round
+26 > After warmup round
+29 > After warmup round
+7 > After warmup round
+16 > After warmup round
+22 > After warmup round
+15 > After warmup round
+27 > After warmup round
+20 > After warmup round
+55 > After warmup round
+53 > After warmup round
+56 > After warmup round
+54 > After warmup round
+49 > After warmup round
+32 > After warmup round
+1 > After warmup round
+8 > After warmup round
+19 > After warmup round
+4 > After warmup round
+34 > After warmup round
+21 > After warmup round
+0 > After warmup round
+29 > Starting verification
+50 > Starting verification
+18 > Starting verification
+19 > Starting verification
+7 > Starting verification
+24 > Starting verification
+39 > Starting verification
+41 > Starting verification
+61 > Starting verification
+51 > Starting verification
+4 > Starting verification
+25 > Starting verification
+36 > Starting verification
+9 > Starting verification
+3 > Starting verification
+35 > Starting verification
+15 > Starting verification
+45 > Starting verification
+47 > Starting verification
+56 > Starting verification
+57 > Starting verification
+63 > Starting verification
+20 > Starting verification
+52 > Starting verification
+31 > Starting verification
+26 > Starting verification
+13 > Starting verification
+33 > Starting verification
+44 > Starting verification
+37 > Starting verification
+5 > Starting verification
+38 > Starting verification
+1 > Starting verification
+58 > Starting verification
+54 > Starting verification
+12 > Starting verification
+55 > Starting verification
+30 > Starting verification
+23 > Starting verification
+21 > Starting verification
+60 > Starting verification
+43 > Starting verification
+2 > Starting verification
+46 > Starting verification
+28 > Starting verification
+22 > Starting verification
+14 > Starting verification
+53 > Starting verification
+6 > Starting verification
+62 > Starting verification
+0 > Starting verification
+34 > Starting verification
+32 > Starting verification
+59 > Starting verification
+48 > Starting verification
+27 > Starting verification
+8 > Starting verification
+42 > Starting verification
+40 > Starting verification
+10 > Starting verification
+49 > Starting verification
+16 > Starting verification
+11 > Starting verification
+17 > Starting verification
+Time: 60.038000000000004 s, global size = 134217728 updates = 109903872, performance: 0.0018305718378360373
+0 > Warmup round
+2 > Warmup round
+1 > Warmup round
+6 > Warmup round
+15 > Warmup round
+3 > Warmup round
+5 > Warmup round
+20 > Warmup round
+23 > Warmup round
+13 > Warmup round
+11 > Warmup round
+76 > Warmup round
+83 > Warmup round
+35 > Warmup round
+55 > Warmup round
+34 > Warmup round
+22 > Warmup round
+89 > Warmup round
+7 > Warmup round
+54 > Warmup round
+39 > Warmup round
+72 > Warmup round
+9 > Warmup round
+21 > Warmup round
+38 > Warmup round
+12 > Warmup round
+36 > Warmup round
+66 > Warmup round
+91 > Warmup round
+40 > Warmup round
+37 > Warmup round
+24 > Warmup round
+52 > Warmup round
+57 > Warmup round
+85 > Warmup round
+42 > Warmup round
+47 > Warmup round
+71 > Warmup round
+59 > Warmup round
+73 > Warmup round
+68 > Warmup round
+41 > Warmup round
+26 > Warmup round
+84 > Warmup round
+97 > Warmup round
+112 > Warmup round
+113 > Warmup round
+101 > Warmup round
+30 > Warmup round
+25 > Warmup round
+77 > Warmup round
+86 > Warmup round
+90 > Warmup round
+92 > Warmup round
+88 > Warmup round
+87 > Warmup round
+93 > Warmup round
+110 > Warmup round
+100 > Warmup round
+119 > Warmup round
+114 > Warmup round
+118 > Warmup round
+121 > Warmup round
+120 > Warmup round
+50 > Warmup round
+75 > Warmup round
+74 > Warmup round
+70 > Warmup round
+69 > Warmup round
+67 > Warmup round
+49 > Warmup round
+48 > Warmup round
+81 > Warmup round
+99 > Warmup round
+103 > Warmup round
+117 > Warmup round
+115 > Warmup round
+111 > Warmup round
+109 > Warmup round
+108 > Warmup round
+94 > Warmup round
+107 > Warmup round
+106 > Warmup round
+96 > Warmup round
+105 > Warmup round
+104 > Warmup round
+102 > Warmup round
+98 > Warmup round
+51 > Warmup round
+63 > Warmup round
+61 > Warmup round
+62 > Warmup round
+53 > Warmup round
+60 > Warmup round
+58 > Warmup round
+56 > Warmup round
+64 > Warmup round
+82 > Warmup round
+80 > Warmup round
+79 > Warmup round
+78 > Warmup round
+116 > Warmup round
+95 > Warmup round
+65 > Warmup round
+122 > Warmup round
+125 > Warmup round
+126 > Warmup round
+123 > Warmup round
+124 > Warmup round
+127 > Warmup round
+8 > Warmup round
+4 > Warmup round
+18 > Warmup round
+17 > Warmup round
+16 > Warmup round
+14 > Warmup round
+10 > Warmup round
+19 > Warmup round
+27 > Warmup round
+46 > Warmup round
+45 > Warmup round
+44 > Warmup round
+43 > Warmup round
+33 > Warmup round
+32 > Warmup round
+31 > Warmup round
+28 > Warmup round
+29 > Warmup round
+28 > Starting verification
+111 > Starting verification
+92 > Starting verification
+45 > Starting verification
+2 > Starting verification
+44 > Starting verification
+109 > Starting verification
+83 > Starting verification
+127 > Starting verification
+19 > Starting verification
+27 > Starting verification
+126 > Starting verification
+122 > Starting verification
+124 > Starting verification
+33 > Starting verification
+91 > Starting verification
+97 > Starting verification
+121 > Starting verification
+125 > Starting verification
+46 > Starting verification
+22 > Starting verification
+63 > Starting verification
+47 > Starting verification
+62 > Starting verification
+58 > Starting verification
+61 > Starting verification
+60 > Starting verification
+21 > Starting verification
+53 > Starting verification
+9 > Starting verification
+13 > Starting verification
+3 > Starting verification
+41 > Starting verification
+51 > Starting verification
+26 > Starting verification
+1 > Starting verification
+102 > Starting verification
+40 > Starting verification
+38 > Starting verification
+104 > Starting verification
+35 > Starting verification
+87 > Starting verification
+37 > Starting verification
+95 > Starting verification
+43 > Starting verification
+54 > Starting verification
+55 > Starting verification
+69 > Starting verification
+5 > Starting verification
+31 > Starting verification
+18 > Starting verification
+82 > Starting verification
+25 > Starting verification
+74 > Starting verification
+39 > Starting verification
+29 > Starting verification
+20 > Starting verification
+77 > Starting verification
+67 > Starting verification
+30 > Starting verification
+12 > Starting verification
+49 > Starting verification
+10 > Starting verification
+79 > Starting verification
+78 > Starting verification
+80 > Starting verification
+50 > Starting verification
+14 > Starting verification
+16 > Starting verification
+17 > Starting verification
+81 > Starting verification
+7 > Starting verification
+48 > Starting verification
+70 > Starting verification
+75 > Starting verification
+52 > Starting verification
+116 > Starting verification
+57 > Starting verification
+36 > Starting verification
+4 > Starting verification
+86 > Starting verification
+68 > Starting verification
+66 > Starting verification
+108 > Starting verification
+23 > Starting verification
+101 > Starting verification
+110 > Starting verification
+89 > Starting verification
+100 > Starting verification
+118 > Starting verification
+119 > Starting verification
+123 > Starting verification
+76 > Starting verification
+113 > Starting verification
+120 > Starting verification
+112 > Starting verification
+114 > Starting verification
+65 > Starting verification
+56 > Starting verification
+42 > Starting verification
+11 > Starting verification
+24 > Starting verification
+64 > Starting verification
+6 > Starting verification
+84 > Starting verification
+72 > Starting verification
+93 > Starting verification
+107 > Starting verification
+105 > Starting verification
+94 > Starting verification
+98 > Starting verification
+59 > Starting verification
+71 > Starting verification
+106 > Starting verification
+88 > Starting verification
+96 > Starting verification
+99 > Starting verification
+34 > Starting verification
+85 > Starting verification
+15 > Starting verification
+103 > Starting verification
+73 > Starting verification
+117 > Starting verification
+90 > Starting verification
+115 > Starting verification
+0 > Starting verification
+8 > Starting verification
+32 > Starting verification
+Time: 60.117000000000004 s, global size = 134217728 updates = 143523840, performance: 0.002387408553321024
+29 > After warmup round
+31 > After warmup round
+18 > After warmup round
+27 > After warmup round
+44 > After warmup round
+28 > After warmup round
+14 > After warmup round
+43 > After warmup round
+33 > After warmup round
+45 > After warmup round
+16 > After warmup round
+17 > After warmup round
+4 > After warmup round
+19 > After warmup round
+10 > After warmup round
+2 > After warmup round
+8 > After warmup round
+1 > After warmup round
+32 > After warmup round
+46 > After warmup round
+0 > After warmup round
+52 > After warmup round
+117 > After warmup round
+115 > After warmup round
+15 > After warmup round
+73 > After warmup round
+116 > After warmup round
+111 > After warmup round
+23 > After warmup round
+103 > After warmup round
+62 > After warmup round
+58 > After warmup round
+61 > After warmup round
+11 > After warmup round
+41 > After warmup round
+13 > After warmup round
+51 > After warmup round
+63 > After warmup round
+56 > After warmup round
+24 > After warmup round
+114 > After warmup round
+122 > After warmup round
+100 > After warmup round
+101 > After warmup round
+83 > After warmup round
+97 > After warmup round
+126 > After warmup round
+121 > After warmup round
+119 > After warmup round
+37 > After warmup round
+35 > After warmup round
+72 > After warmup round
+105 > After warmup round
+102 > After warmup round
+55 > After warmup round
+95 > After warmup round
+71 > After warmup round
+104 > After warmup round
+78 > After warmup round
+74 > After warmup round
+82 > After warmup round
+50 > After warmup round
+39 > After warmup round
+75 > After warmup round
+25 > After warmup round
+67 > After warmup round
+70 > After warmup round
+12 > After warmup round
+90 > After warmup round
+86 > After warmup round
+99 > After warmup round
+108 > After warmup round
+92 > After warmup round
+66 > After warmup round
+36 > After warmup round
+85 > After warmup round
+34 > After warmup round
+68 > After warmup round
+57 > After warmup round
+109 > After warmup round
+21 > After warmup round
+47 > After warmup round
+26 > After warmup round
+6 > After warmup round
+60 > After warmup round
+65 > After warmup round
+53 > After warmup round
+9 > After warmup round
+42 > After warmup round
+64 > After warmup round
+3 > After warmup round
+22 > After warmup round
+118 > After warmup round
+89 > After warmup round
+125 > After warmup round
+112 > After warmup round
+76 > After warmup round
+124 > After warmup round
+113 > After warmup round
+110 > After warmup round
+120 > After warmup round
+127 > After warmup round
+123 > After warmup round
+91 > After warmup round
+84 > After warmup round
+87 > After warmup round
+106 > After warmup round
+93 > After warmup round
+38 > After warmup round
+59 > After warmup round
+107 > After warmup round
+94 > After warmup round
+88 > After warmup round
+98 > After warmup round
+40 > After warmup round
+96 > After warmup round
+54 > After warmup round
+49 > After warmup round
+7 > After warmup round
+5 > After warmup round
+80 > After warmup round
+77 > After warmup round
+20 > After warmup round
+30 > After warmup round
+79 > After warmup round
+48 > After warmup round
+81 > After warmup round
+69 > After warmup round
+71 > Starting verification
+52 > Starting verification
+45 > Starting verification
+116 > Starting verification
+126 > Starting verification
+38 > Starting verification
+102 > Starting verification
+69 > Starting verification
+5 > Starting verification
+73 > Starting verification
+97 > Starting verification
+9 > Starting verification
+31 > Starting verification
+43 > Starting verification
+33 > Starting verification
+109 > Starting verification
+19 > Starting verification
+44 > Starting verification
+85 > Starting verification
+108 > Starting verification
+99 > Starting verification
+83 > Starting verification
+124 > Starting verification
+125 > Starting verification
+127 > Starting verification
+122 > Starting verification
+27 > Starting verification
+120 > Starting verification
+104 > Starting verification
+40 > Starting verification
+107 > Starting verification
+95 > Starting verification
+35 > Starting verification
+88 > Starting verification
+1 > Starting verification
+2 > Starting verification
+8 > Starting verification
+32 > Starting verification
+54 > Starting verification
+96 > Starting verification
+37 > Starting verification
+3 > Starting verification
+62 > Starting verification
+61 > Starting verification
+58 > Starting verification
+60 > Starting verification
+21 > Starting verification
+63 > Starting verification
+51 > Starting verification
+24 > Starting verification
+6 > Starting verification
+4 > Starting verification
+56 > Starting verification
+47 > Starting verification
+26 > Starting verification
+18 > Starting verification
+7 > Starting verification
+70 > Starting verification
+67 > Starting verification
+14 > Starting verification
+10 > Starting verification
+16 > Starting verification
+82 > Starting verification
+80 > Starting verification
+0 > Starting verification
+79 > Starting verification
+74 > Starting verification
+78 > Starting verification
+50 > Starting verification
+30 > Starting verification
+39 > Starting verification
+20 > Starting verification
+77 > Starting verification
+25 > Starting verification
+57 > Starting verification
+111 > Starting verification
+66 > Starting verification
+115 > Starting verification
+15 > Starting verification
+86 > Starting verification
+90 > Starting verification
+34 > Starting verification
+103 > Starting verification
+68 > Starting verification
+117 > Starting verification
+92 > Starting verification
+36 > Starting verification
+17 > Starting verification
+23 > Starting verification
+121 > Starting verification
+22 > Starting verification
+101 > Starting verification
+91 > Starting verification
+114 > Starting verification
+118 > Starting verification
+89 > Starting verification
+112 > Starting verification
+100 > Starting verification
+123 > Starting verification
+110 > Starting verification
+119 > Starting verification
+76 > Starting verification
+113 > Starting verification
+94 > Starting verification
+28 > Starting verification
+72 > Starting verification
+84 > Starting verification
+98 > Starting verification
+106 > Starting verification
+59 > Starting verification
+105 > Starting verification
+55 > Starting verification
+87 > Starting verification
+93 > Starting verification
+42 > Starting verification
+11 > Starting verification
+13 > Starting verification
+53 > Starting verification
+65 > Starting verification
+41 > Starting verification
+64 > Starting verification
+46 > Starting verification
+75 > Starting verification
+48 > Starting verification
+12 > Starting verification
+49 > Starting verification
+81 > Starting verification
+29 > Starting verification
+Time: 60.074 s, global size = 134217728 updates = 176422912, performance: 0.0029367598628358364
