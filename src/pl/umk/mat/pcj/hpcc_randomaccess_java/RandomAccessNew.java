@@ -176,6 +176,7 @@ public class RandomAccessNew implements StartPoint {
 
             if (isTimeBound()) {
                 if (shutDown) {
+                    PCJ.log("Shutting down");
                     break;
                 }
             }
@@ -189,9 +190,10 @@ public class RandomAccessNew implements StartPoint {
         List<Long> keep = new ArrayList<>();
 
         for (int dimension = 0; dimension < logNumProcs; dimension++) {
-            PCJ.barrier(); //try removing this or changing to barrier(partner)
+            
             int partner = (1 << dimension) ^ myId;
-
+            PCJ.barrier(partner); //try removing this or changing to barrier(partner)
+            
             long mask = 1L << (logLocalN + dimension);
             List<Long> received = receiveUpdates(dimension);
             updates.addAll(received);
