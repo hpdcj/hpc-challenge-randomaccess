@@ -21,10 +21,8 @@ class RandomAccessNewStorage extends Storage {
     private long[] table;
 
     @Shared
-    private ArrayList<Long> receivedUpdates0;
+    private ArrayList<Long>[] receivedUpdates;
 
-    @Shared
-    private ArrayList<Long> receivedUpdates1;
 
     @Shared
     private int okCells;
@@ -113,20 +111,14 @@ public class RandomAccessNew implements StartPoint {
             table[i] = i + myId * localN;
         }
 
-        PCJ.monitor("receivedUpdates0");
-        PCJ.monitor("receivedUpdates1");
 
         PCJ.putLocal("table", table);
         PCJ.putLocal("executed", 0);
         PCJ.putLocal("okCells", 0);
-        PCJ.putLocal("receivedUpdates0", new ArrayList<Long>());
-        PCJ.putLocal("receivedUpdates1", new ArrayList<Long>());
+        PCJ.putLocal("receivedUpdates", new ArrayList<?>[logNumProcs + 1]);
 
-        PCJ.waitFor("receivedUpdates0");
-        PCJ.waitFor("receivedUpdates1");
 
-        PCJ.monitor("receivedUpdates0");
-        PCJ.monitor("receivedUpdates1");
+        PCJ.monitor("receivedUpdates");
         PCJ.monitor("executed");
         PCJ.monitor("okCells");
         PCJ.monitor("table");
@@ -192,33 +184,33 @@ public class RandomAccessNew implements StartPoint {
         for (int dimension = 0; dimension < logNumProcs; dimension++) {
             
             int partner = (1 << dimension) ^ myId;
-            PCJ.barrier(partner); //try removing this or changing to barrier(partner)
             
             long mask = 1L << (logLocalN + dimension);
-            List<Long> received = receiveUpdates(dimension);
-            updates.addAll(received);
+            
             prepareUpdateLists(partner, updates, keep, send, mask);
             sendListToPartner(send, partner, dimension);
+            List<Long> received = receiveUpdates(dimension);
             updates = keep;
+            updates.addAll(received);
             keep = new ArrayList<>();
         }
-        List<Long> received = receiveUpdates(logNumProcs);
-        updates.addAll(received);
+        //List<Long> received = receiveUpdates(logNumProcs);
+        //updates.addAll(received);
         return updates;
     }
 
     private void sendListToPartner(List<Long> send, int partner, int dimension) throws ClassCastException {
-        PCJ.put(partner, "receivedUpdates" + (dimension % 2), send);
+        PCJ.put(partner, "receivedUpdates", send, dimension);
         send.clear();
     }
 
     private List<Long> receiveUpdates(int dimension) {
-        if (dimension > 0) {
-            int previousDimension = dimension - 1;
-            PCJ.waitFor("receivedUpdates" + (previousDimension % 2));
-            return PCJ.getLocal("receivedUpdates" + (previousDimension % 2));
-        }
-        return new ArrayList<>();
+            List<Long> received = null;
+            while (received == null) {
+                received = PCJ.getLocal("receivedUpdates", dimension);
+            }
+            PCJ.putLocal("receivedUpdates", null, dimension);
+            return received;
     }
 
     private void prepareUpdateLists(int partner, List<Long> updates1, List<Long> keep, List<Long> send, long mask) {
