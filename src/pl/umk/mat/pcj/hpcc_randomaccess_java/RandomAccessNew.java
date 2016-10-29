@@ -21,9 +21,11 @@ class RandomAccessNewStorage extends Storage {
     private long[] table;
 
     @Shared
-    private ArrayList<Long>[] receivedUpdates;
+    private ArrayList<Long>[][] receivedUpdates;
 
-
+    @Shared
+    Integer test;
+    
     @Shared
     private int okCells;
 
@@ -60,7 +62,8 @@ public class RandomAccessNew implements StartPoint {
     boolean shutDown = false;
     int preparedLocally = 0;
 
-    public void main() throws Throwable {
+    public void main() throws Throwable {       
+        
         String[] rounds = {"Warmup", "After warmup"};
         for (String round : rounds) {
 
@@ -115,8 +118,7 @@ public class RandomAccessNew implements StartPoint {
         PCJ.putLocal("table", table);
         PCJ.putLocal("executed", 0);
         PCJ.putLocal("okCells", 0);
-        PCJ.putLocal("receivedUpdates", new ArrayList<?>[logNumProcs + 1]);
-
+        PCJ.putLocal("receivedUpdates", new ArrayList<?>[(int)(localUpdates/BUFFERED_UPDATES)][logNumProcs + 1]);
 
         PCJ.monitor("receivedUpdates");
         PCJ.monitor("executed");
@@ -154,6 +156,7 @@ public class RandomAccessNew implements StartPoint {
 
     private void performRandomAccess() {
         long timeBoundStart = System.currentTimeMillis();
+        int iter = 0;
         for (int update = 0; update < localUpdates; update += BUFFERED_UPDATES) {
             List<Long> updateList = generateRemoteUpdates(update, BUFFERED_UPDATES);
 
@@ -163,7 +166,7 @@ public class RandomAccessNew implements StartPoint {
                 }
             }
 
-            updateList = alltoallHypercube(updateList);
+            updateList = alltoallHypercube(updateList, iter++);
             performUpdates(updateList);
 
             if (isTimeBound()) {
@@ -175,7 +178,7 @@ public class RandomAccessNew implements StartPoint {
         }
     }
 
-    private List<Long> alltoallHypercube(List<Long> updates) {
+    private List<Long> alltoallHypercube(List<Long> updates, int iterNo) {
         //all-to-all hypercube personalized communication, per 
         //http://www.sandia.gov/~sjplimp/docs/cluster06.pdf, p. 5.
         List<Long> send = new ArrayList<>();
@@ -188,8 +191,8 @@ public class RandomAccessNew implements StartPoint {
             long mask = 1L << (logLocalN + dimension);
             
             prepareUpdateLists(partner, updates, keep, send, mask);
-            sendListToPartner(send, partner, dimension);
-            List<Long> received = receiveUpdates(dimension);
+            sendListToPartner(send, partner, iterNo, dimension);
+            List<Long> received = receiveUpdates(iterNo, dimension);
             updates = keep;
             updates.addAll(received);
             keep = new ArrayList<>();
@@ -199,17 +202,17 @@ public class RandomAccessNew implements StartPoint {
         return updates;
     }
 
-    private void sendListToPartner(List<Long> send, int partner, int dimension) throws ClassCastException {
-        PCJ.put(partner, "receivedUpdates", send, dimension);
+    private void sendListToPartner(List<Long> send, int partner, int iterNo, int dimension) throws ClassCastException {
+        PCJ.put(partner, "receivedUpdates", send, iterNo, dimension);
         send.clear();
     }
 
-    private List<Long> receiveUpdates(int dimension) {
+    private List<Long> receiveUpdates(int iterNo, int dimension) {
             List<Long> received = null;
             while (received == null) {
-                received = PCJ.getLocal("receivedUpdates", dimension);
+                received = PCJ.getLocal("receivedUpdates", iterNo, dimension);
             }
-            PCJ.putLocal("receivedUpdates", null, dimension);
+            PCJ.putLocal("receivedUpdates", null, iterNo, dimension);
             return received;
     }
 
