@@ -6,8 +6,8 @@ def gogo (text):
 		if "Tasks" in line:
 			tasks = int(log2(float(line.split()[1])))
 			pernode= int(log2(float(line.split()[7])))
-		if "Time" in line:
-			perf=float(line.split()[11])
+		if "performance" in line:
+			perf=float(line.split()[9])
 			print(tasks, pernode, perf)
 			if rez[tasks][pernode] is None or rez[tasks][pernode] < perf: rez[tasks][pernode] = perf
 	return rez
