@@ -154,6 +154,7 @@ public class RandomAccessNew implements StartPoint {
         return timeBoundSeconds != Long.MAX_VALUE;
     }
 
+    
     private void performRandomAccess() {
         long timeBoundStart = System.currentTimeMillis();
         int iter = 0;
@@ -368,7 +369,10 @@ public class RandomAccessNew implements StartPoint {
         }
 
         public long nextLong() {
-            return rand = (rand << 1) ^ ((long) rand < 0L ? POLY : 0L);
+          
+            rand = (rand << 1) ^ ((long) rand < 0L ? POLY : 0L);
+           // System.out.println(rand);
+            return rand;
         }
     }
 }
