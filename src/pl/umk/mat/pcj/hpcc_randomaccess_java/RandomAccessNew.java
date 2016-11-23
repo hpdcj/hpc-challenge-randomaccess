@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
+import org.pcj.FutureObject;
 import org.pcj.PCJ;
 import org.pcj.Shared;
 import org.pcj.StartPoint;
@@ -25,12 +26,15 @@ class RandomAccessNewStorage extends Storage {
 
     @Shared
     Integer test;
-    
+
     @Shared
     private int okCells;
 
     @Shared
     private int executed;
+
+    @Shared
+    List<Long> updatesShared[];
 
 }
 
@@ -62,8 +66,8 @@ public class RandomAccessNew implements StartPoint {
     boolean shutDown = false;
     int preparedLocally = 0;
 
-    public void main() throws Throwable {       
-        
+    public void main() throws Throwable {
+
         String[] rounds = {"Warmup", "After warmup"};
         for (String round : rounds) {
 
@@ -75,6 +79,7 @@ public class RandomAccessNew implements StartPoint {
             performRandomAccess();
             double stop = System.currentTimeMillis();
 
+            PCJ.barrier();
             PCJ.putLocal("executed", this.preparedLocally);
             PCJ.waitFor("executed");
             PCJ.log("Starting verification");
@@ -114,11 +119,10 @@ public class RandomAccessNew implements StartPoint {
             table[i] = i + myId * localN;
         }
 
-
         PCJ.putLocal("table", table);
         PCJ.putLocal("executed", 0);
         PCJ.putLocal("okCells", 0);
-        PCJ.putLocal("receivedUpdates", new ArrayList<?>[(int)(localUpdates/BUFFERED_UPDATES)][logNumProcs + 1]);
+        PCJ.putLocal("receivedUpdates", new ArrayList<?>[(int) (localUpdates / BUFFERED_UPDATES)][logNumProcs + 1]);
 
         PCJ.monitor("receivedUpdates");
         PCJ.monitor("executed");
@@ -127,7 +131,6 @@ public class RandomAccessNew implements StartPoint {
         random = new RandomForRA(myId);
         this.preparedLocally = 0;
         this.shutDown = false;
-
     }
 
     private int randomNumberToLocalPosition(long rand) {
@@ -154,7 +157,6 @@ public class RandomAccessNew implements StartPoint {
         return timeBoundSeconds != Long.MAX_VALUE;
     }
 
-    
     private void performRandomAccess() {
         long timeBoundStart = System.currentTimeMillis();
         int iter = 0;
@@ -167,16 +169,86 @@ public class RandomAccessNew implements StartPoint {
                 }
             }
 
-            updateList = alltoallHypercube(updateList, iter++);
+            //updateList = alltoallHypercube(updateList, iter++);
+            updateList = alltoallBlocking(updateList, iter++);
+            //updateList = allToAllNonBlocking(updateList, iter++);
             performUpdates(updateList);
 
             if (isTimeBound()) {
                 if (shutDown) {
                     PCJ.log("Shutting down");
+                    
                     break;
                 }
             }
         }
+    }
+
+    private List<Long> prepareBlocks(List<Long> updates) {
+        Iterator<Long> iter = updates.iterator();
+        List<Long>[] updatesToAdd = (List<Long>[]) new ArrayList[PCJ.threadCount()];
+        for (int i = 0; i < updatesToAdd.length; i++) {
+            updatesToAdd[i] = new ArrayList<>();
+        }
+        while (iter.hasNext()) {
+            long val = iter.next();
+            int PENumber = whichPE(val);
+            if (PENumber != PCJ.myId()) {
+                updatesToAdd[PENumber].add(val);
+                iter.remove();
+            }
+        }
+        if (isTimeBound()) {
+            if (shutDown) {
+                for (int i = 0; i < updatesToAdd.length; i++) {
+                    updatesToAdd[i].add(POISON_PILL);
+                }
+            }
+        }
+        PCJ.putLocal("updatesShared", updatesToAdd);
+        return updates;
+    }
+
+    private List<Long> allToAllNonBlocking(List<Long> updates, int iterNo) {
+        
+        PCJ.barrier();
+        updates = prepareBlocks(updates);
+        PCJ.barrier();
+        //prepare futures array
+        FutureObject<int[]>[] futures = new FutureObject[PCJ.threadCount()];
+
+        //get the data 
+        for (int image = (PCJ.myId() + 1) % PCJ.threadCount(), num = 0; num != PCJ.threadCount() - 1; image = (image + 1) % PCJ.threadCount()) {
+            if (image != PCJ.myId()) {
+                futures[image] = PCJ.getFutureObject(image, "updatesShared", PCJ.myId());
+            }
+            num++;
+        }
+
+        int numReceived = 0;
+        while (numReceived != PCJ.threadCount() - 1) {
+            for (int i = 0; i < futures.length; i++) {
+                if (futures[i] != null && futures[i].isDone()) {
+                    List<Long> recv = futures[i].getObject();
+                    updates.addAll(recv);
+                    numReceived++;
+                    futures[i] = null;
+                }
+            }
+        }
+        return updates;
+    }
+
+    private List<Long> alltoallBlocking(List<Long> updates, int iterNo) {
+        updates = prepareBlocks(updates);
+        PCJ.barrier();
+        for (int image = (PCJ.myId() + 1) % PCJ.threadCount(), num = 0; num != PCJ.threadCount() - 1; image = (image + 1) % PCJ.threadCount()) {
+            List<Long> recv = (List<Long>) PCJ.get(image, "updatesShared", PCJ.myId());
+            updates.addAll(recv);
+            num++;
+        }
+        PCJ.barrier();
+        return updates;
     }
 
     private List<Long> alltoallHypercube(List<Long> updates, int iterNo) {
@@ -186,11 +258,11 @@ public class RandomAccessNew implements StartPoint {
         List<Long> keep = new ArrayList<>();
 
         for (int dimension = 0; dimension < logNumProcs; dimension++) {
-            
+
             int partner = (1 << dimension) ^ myId;
-            
+
             long mask = 1L << (logLocalN + dimension);
-            
+
             prepareUpdateLists(partner, updates, keep, send, mask);
             sendListToPartner(send, partner, iterNo, dimension);
             List<Long> received = receiveUpdates(iterNo, dimension);
@@ -209,12 +281,12 @@ public class RandomAccessNew implements StartPoint {
     }
 
     private List<Long> receiveUpdates(int iterNo, int dimension) {
-            List<Long> received = null;
-            while (received == null) {
-                received = PCJ.getLocal("receivedUpdates", iterNo, dimension);
-            }
-            PCJ.putLocal("receivedUpdates", null, iterNo, dimension);
-            return received;
+        List<Long> received = null;
+        while (received == null) {
+            received = PCJ.getLocal("receivedUpdates", iterNo, dimension);
+        }
+        PCJ.putLocal("receivedUpdates", null, iterNo, dimension);
+        return received;
     }
 
     private void prepareUpdateLists(int partner, List<Long> updates1, List<Long> keep, List<Long> send, long mask) {
@@ -296,7 +368,7 @@ public class RandomAccessNew implements StartPoint {
             if (table[i] == i + myId * localN) {
                 ok++;
             } else {
-                PCJ.log("Cell #" + i + " is " + table[i] + ", should be: " + (i + myId * localN));
+                //PCJ.log("Cell #" + i + " is " + table[i] + ", should be: " + (i + myId * localN));
             }
         }
         PCJ.putLocal("okCells", ok);
@@ -369,9 +441,9 @@ public class RandomAccessNew implements StartPoint {
         }
 
         public long nextLong() {
-          
+
             rand = (rand << 1) ^ ((long) rand < 0L ? POLY : 0L);
-           // System.out.println(rand);
+            // System.out.println(rand);
             return rand;
         }
     }
