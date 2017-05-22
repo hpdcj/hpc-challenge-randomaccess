@@ -1,4 +1,5 @@
 def gogo (text):
+	from math import log2
 	rez = [[None]*6 for i in range(12)]
 	tasks = None
 	pernode = None
@@ -6,8 +7,8 @@ def gogo (text):
 		if "Tasks" in line:
 			tasks = int(log2(float(line.split()[1])))
 			pernode= int(log2(float(line.split()[7])))
-		if "performance" in line:
-			perf=float(line.split()[9])
+		if "performance" in line and "skipped" not in line:
+			perf=float(line.split()[11])
 			print(tasks, pernode, perf)
 			if rez[tasks][pernode] is None or rez[tasks][pernode] < perf: rez[tasks][pernode] = perf
 	return rez
@@ -20,3 +21,21 @@ def interpret (arr):
 			if elem is None: elem = 0
 			print (elem, end='\t')
 		print ()
+
+
+def read_all_lines() -> str:
+	contents = []
+	while True:
+		try:
+			line = input()
+		except EOFError:
+			break
+		contents.append(line)
+	return "\n".join(contents)
+
+dane="""
+
+"""
+if __name__ == "__main__":
+	wynik = gogo(dane)
+	interpret(wynik)
