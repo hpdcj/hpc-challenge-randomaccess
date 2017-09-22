@@ -69,6 +69,7 @@ public class RandomAccessAsyncAt implements StartPoint {
             PCJ.barrier();
             double start = System.currentTimeMillis();
             performRandomAccess();
+            PCJ.barrier();
             double stop = System.currentTimeMillis();
 
             PCJ.barrier();
